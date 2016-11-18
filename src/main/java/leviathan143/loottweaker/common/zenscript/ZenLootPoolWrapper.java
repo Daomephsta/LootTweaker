@@ -1,9 +1,10 @@
-package leviathan143.droptweaker.common.zenscript;
+package leviathan143.loottweaker.common.zenscript;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import leviathan143.droptweaker.common.LootUtils;
-import leviathan143.droptweaker.common.darkmagic.CommonMethodHandles;
+import leviathan143.loottweaker.common.LootUtils;
+import leviathan143.loottweaker.common.LootTweakerMain.Constants;
+import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IItemStack;
@@ -17,7 +18,7 @@ import net.minecraft.world.storage.loot.LootPool;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
-@ZenClass("droptweaker.vanilla.loot.LootPool")
+@ZenClass(Constants.MODID + ".vanilla.loot.LootPool")
 public class ZenLootPoolWrapper 
 {
 	private final LootPool backingPool;

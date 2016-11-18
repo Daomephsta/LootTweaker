@@ -1,10 +1,10 @@
-package leviathan143.droptweaker.common.tweakers;
+package leviathan143.loottweaker.common.tweakers;
 
 import java.util.Collections;
 
 import com.google.common.collect.Lists;
 
-import leviathan143.droptweaker.common.handlers.DropHandler;
+import leviathan143.loottweaker.common.handlers.DropHandler;
 import minetweaker.MineTweakerImplementationAPI;
 import minetweaker.MineTweakerImplementationAPI.ReloadEvent;
 import minetweaker.api.item.IItemStack;
