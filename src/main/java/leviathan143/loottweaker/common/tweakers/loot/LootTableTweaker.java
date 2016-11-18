@@ -1,4 +1,4 @@
-package leviathan143.droptweaker.common.tweakers.loot;
+package leviathan143.loottweaker.common.tweakers.loot;
 
 import java.util.Map;
 
@@ -6,10 +6,11 @@ import org.apache.logging.log4j.Level;
 
 import com.google.common.collect.Maps;
 
-import leviathan143.droptweaker.common.DropTweakerMain;
-import leviathan143.droptweaker.common.LootUtils;
-import leviathan143.droptweaker.common.handlers.DropHandler;
-import leviathan143.droptweaker.common.zenscript.ZenLootTableWrapper;
+import leviathan143.loottweaker.common.LootTweakerMain;
+import leviathan143.loottweaker.common.LootUtils;
+import leviathan143.loottweaker.common.LootTweakerMain.Constants;
+import leviathan143.loottweaker.common.handlers.DropHandler;
+import leviathan143.loottweaker.common.zenscript.ZenLootTableWrapper;
 import minetweaker.MineTweakerImplementationAPI;
 import minetweaker.MineTweakerImplementationAPI.ReloadEvent;
 import minetweaker.util.IEventHandler;
@@ -20,7 +21,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
-@ZenClass("droptweaker.vanilla.LootTables")
+@ZenClass(Constants.MODID + ".vanilla.LootTables")
 public class LootTableTweaker
 {	
 	//Stores the added LootPools as LootTables until they can be added to the real LootTables
@@ -73,8 +74,8 @@ public class LootTableTweaker
 			@Override
 			public void handle(ReloadEvent paramT) 
 			{
-				DropTweakerMain.proxy.getWorld().getLootTableManager().reloadLootTables();
-				DropTweakerMain.logger.log(Level.INFO, "Reloading loot tables");
+				LootTweakerMain.proxy.getWorld().getLootTableManager().reloadLootTables();
+				LootTweakerMain.logger.log(Level.INFO, "Reloading loot tables");
 			}
 		});
 	}

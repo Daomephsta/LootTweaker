@@ -1,21 +1,22 @@
-package leviathan143.droptweaker.common.zenscript;
+package leviathan143.loottweaker.common.zenscript;
 
 import java.util.Map;
 
 import com.google.common.collect.Maps;
 
-import leviathan143.droptweaker.common.LootUtils;
-import leviathan143.droptweaker.common.darkmagic.CommonMethodHandles;
-import leviathan143.droptweaker.common.handlers.DropHandler;
-import leviathan143.droptweaker.common.tweakers.loot.LootTableTweaker;
-import leviathan143.droptweaker.common.tweakers.loot.LootTableTweaker.LootTweakType;
+import leviathan143.loottweaker.common.LootTweakerMain.Constants;
+import leviathan143.loottweaker.common.LootUtils;
+import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
+import leviathan143.loottweaker.common.handlers.DropHandler;
+import leviathan143.loottweaker.common.tweakers.loot.LootTableTweaker;
+import leviathan143.loottweaker.common.tweakers.loot.LootTableTweaker.LootTweakType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
-@ZenClass("droptweaker.vanilla.loot.LootTable")
+@ZenClass(Constants.MODID + ".vanilla.loot.LootTable")
 public class ZenLootTableWrapper 
 {
 	private ResourceLocation name;
@@ -29,9 +30,9 @@ public class ZenLootTableWrapper
 		this.backingTable = table;
 		this.name = name;
 	}
-	
+
 	@ZenMethod
-	public void clearDefaults()
+	public void clear()
 	{
 		clear = true;
 		DropHandler.clearedLootTables.add(name);
@@ -43,13 +44,13 @@ public class ZenLootTableWrapper
 		backingTable.addPool(LootUtils.createPool(poolName, minRolls, maxRolls, minBonusRolls, maxBonusRolls));
 		lootTweakTypeMap.put(poolName, LootTweakType.ADD);
 	}
-	
+
 	@ZenMethod
 	public void removePool(String poolName)
 	{
 		lootTweakTypeMap.put(poolName, LootTweakType.REMOVE);
 	}
-	
+
 	@ZenMethod
 	public ZenLootPoolWrapper getPool(String poolName)
 	{

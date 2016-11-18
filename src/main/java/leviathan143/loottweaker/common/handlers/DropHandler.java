@@ -1,4 +1,4 @@
-package leviathan143.droptweaker.common.handlers;
+package leviathan143.loottweaker.common.handlers;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -7,7 +7,7 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 
-import leviathan143.droptweaker.common.darkmagic.CommonMethodHandles;
+import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;

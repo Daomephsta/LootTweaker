@@ -1,8 +1,8 @@
 [
 {
-  "modid": "droptweaker",
-  "name": "DropTweaker",
-  "description": "An addon for CraftTweaker that allows modification of entity and block drops",
+  "modid": "loottweaker",
+  "name": "LootTweaker",
+  "description": "An addon for CraftTweaker that allows modification of loot tables",
   "version": "0.0.1",
   "mcversion": "1.10.2",
   "url": "",

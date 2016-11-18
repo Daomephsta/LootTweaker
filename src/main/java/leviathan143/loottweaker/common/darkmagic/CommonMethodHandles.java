@@ -1,4 +1,4 @@
-package leviathan143.droptweaker.common.darkmagic;
+package leviathan143.loottweaker.common.darkmagic;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;

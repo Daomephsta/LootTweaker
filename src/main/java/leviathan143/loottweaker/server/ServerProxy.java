@@ -1,8 +1,8 @@
-package leviathan143.droptweaker.server;
+package leviathan143.loottweaker.server;
 
 import org.apache.logging.log4j.Level;
 
-import leviathan143.droptweaker.common.CommonProxy;
+import leviathan143.loottweaker.common.CommonProxy;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLLog;

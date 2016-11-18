@@ -1,6 +1,6 @@
-package leviathan143.droptweaker.client;
+package leviathan143.loottweaker.client;
 
-import leviathan143.droptweaker.common.CommonProxy;
+import leviathan143.loottweaker.common.CommonProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.World;
 

@@ -1,4 +1,4 @@
-package leviathan143.droptweaker.common.zenscript;
+package leviathan143.loottweaker.common.zenscript;
 
 import java.util.Collection;
 import java.util.Random;
@@ -6,7 +6,7 @@ import java.util.Random;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 
-import leviathan143.droptweaker.common.LootUtils;
+import leviathan143.loottweaker.common.LootUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootEntry;
