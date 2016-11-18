@@ -1,0 +1,16 @@
+[
+{
+  "modid": "droptweaker",
+  "name": "DropTweaker",
+  "description": "An addon for CraftTweaker that allows modification of entity and block drops",
+  "version": "0.0.1",
+  "mcversion": "1.10.2",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Leviathan143"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
