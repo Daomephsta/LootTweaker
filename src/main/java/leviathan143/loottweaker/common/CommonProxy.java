@@ -1,7 +1,7 @@
-package leviathan143.droptweaker.common;
+package leviathan143.loottweaker.common;
 
-import leviathan143.droptweaker.common.tweakers.RegisterTweakers;
-import leviathan143.droptweaker.common.tweakers.loot.LootTableTweaker;
+import leviathan143.loottweaker.common.tweakers.RegisterTweakers;
+import leviathan143.loottweaker.common.tweakers.loot.LootTableTweaker;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;

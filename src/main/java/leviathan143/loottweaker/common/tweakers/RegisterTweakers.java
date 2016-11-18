@@ -1,8 +1,8 @@
-package leviathan143.droptweaker.common.tweakers;
+package leviathan143.loottweaker.common.tweakers;
 
-import leviathan143.droptweaker.common.tweakers.loot.LootTableTweaker;
-import leviathan143.droptweaker.common.zenscript.ZenLootPoolWrapper;
-import leviathan143.droptweaker.common.zenscript.ZenLootTableWrapper;
+import leviathan143.loottweaker.common.tweakers.loot.LootTableTweaker;
+import leviathan143.loottweaker.common.zenscript.ZenLootPoolWrapper;
+import leviathan143.loottweaker.common.zenscript.ZenLootTableWrapper;
 import minetweaker.MineTweakerAPI;
 
 public class RegisterTweakers 

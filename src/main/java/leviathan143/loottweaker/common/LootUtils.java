@@ -1,4 +1,4 @@
-package leviathan143.droptweaker.common;
+package leviathan143.loottweaker.common;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 import com.google.gson.Gson;
 
-import leviathan143.droptweaker.common.darkmagic.CommonMethodHandles;
+import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.data.DataMap;
 import minetweaker.api.data.IData;
@@ -44,7 +44,7 @@ public class LootUtils
 
 	public static LootTable getTable(ResourceLocation tableLoc)
 	{
-		LootTable table = DropTweakerMain.proxy.getWorld().getLootTableManager().getLootTableFromLocation(tableLoc);
+		LootTable table = LootTweakerMain.proxy.getWorld().getLootTableManager().getLootTableFromLocation(tableLoc);
 		if(table == null)
 		{
 			MineTweakerAPI.logWarning(String.format("No loot table with name %s exists!", tableLoc));
