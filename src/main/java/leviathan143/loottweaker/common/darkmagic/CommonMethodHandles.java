@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.logging.log4j.Level;
 
 import com.google.common.base.Throwables;
+import com.google.common.cache.LoadingCache;
 import com.google.gson.Gson;
 
 import net.minecraft.entity.EntityLiving;
@@ -23,28 +24,31 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class CommonMethodHandles 
 {
-	public static MethodHandle lootTable$poolsGetter, lootPool$poolConditionsGetter, lootPool$lootEntriesGetter, lootTableManager$GSON_INSTANCE, entityLiving$getLootTable;
+	public static MethodHandle lootTable$poolsGetter, lootPool$poolConditionsGetter, lootPool$lootEntriesGetter
+	, lootTableManager$GSON_INSTANCEGetter, lootTableManager$registeredLootTablesGetter, entityLiving$getLootTable;
 	
 	static
 	{
 		try 
 		{
-			//TODO add obfuscated names
 			Field f;
 			Method m;
-			f = ReflectionHelper.findField(LootTable.class, "pools");
+			f = ReflectionHelper.findField(LootTable.class, "c", "field_186466_c", "pools");
 			lootTable$poolsGetter = MethodHandles.lookup().unreflectGetter(f);
 			
-			f = ReflectionHelper.findField(LootPool.class, "poolConditions");
+			f = ReflectionHelper.findField(LootPool.class, "b", "field_186454_b", "poolConditions");
 			lootPool$poolConditionsGetter = MethodHandles.lookup().unreflectGetter(f);
 			
-			f = ReflectionHelper.findField(LootPool.class, "lootEntries");
+			f = ReflectionHelper.findField(LootPool.class, "a", "field_186453_a", "lootEntries");
 			lootPool$lootEntriesGetter = MethodHandles.lookup().unreflectGetter(f);
 			
-			f = ReflectionHelper.findField(LootTableManager.class, "GSON_INSTANCE");
-			lootTableManager$GSON_INSTANCE = MethodHandles.lookup().unreflectGetter(f);
+			f = ReflectionHelper.findField(LootTableManager.class, "b", "field_186526_b", "GSON_INSTANCE");
+			lootTableManager$GSON_INSTANCEGetter = MethodHandles.lookup().unreflectGetter(f);
 			
-			m = ReflectionHelper.findMethod(EntityLiving.class, null, new String[] {"getLootTable"});
+			f = ReflectionHelper.findField(LootTableManager.class, "c", "field_186527_c" , "registeredLootTables");
+			lootTableManager$registeredLootTablesGetter = MethodHandles.lookup().unreflectGetter(f);
+			
+			m = ReflectionHelper.findMethod(EntityLiving.class, null, new String[] {"J", "func_184647_J", "getLootTable"});
 			entityLiving$getLootTable = MethodHandles.lookup().unreflect(m);
 		} 
 		catch (IllegalAccessException e) 
@@ -106,11 +110,24 @@ public class CommonMethodHandles
 		}
 	}
 	
-	public static Gson getLootConditionGSON()
+	public static Gson getLootTableGSON()
 	{
 		try 
 		{
-			return (Gson) lootTableManager$GSON_INSTANCE.invokeExact();
+			return (Gson) lootTableManager$GSON_INSTANCEGetter.invokeExact();
+		}
+		catch (Throwable t) 
+		{
+			t.printStackTrace();
+			throw Throwables.propagate(t);
+		}
+	}
+	
+	public static LoadingCache<ResourceLocation, LootTable> getRegisteredLootTables(LootTableManager manager)
+	{
+		try 
+		{
+			return (LoadingCache<ResourceLocation, LootTable>) lootTableManager$registeredLootTablesGetter.invoke(manager);
 		}
 		catch (Throwable t) 
 		{

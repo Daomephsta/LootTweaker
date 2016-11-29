@@ -1,4 +1,4 @@
-package leviathan143.loottweaker.common.zenscript;
+package leviathan143.loottweaker.common.loot;
 
 import java.util.Collection;
 import java.util.Random;

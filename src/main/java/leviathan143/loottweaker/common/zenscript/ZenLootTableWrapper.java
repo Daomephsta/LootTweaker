@@ -7,7 +7,6 @@ import com.google.common.collect.Maps;
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.LootUtils;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
-import leviathan143.loottweaker.common.handlers.DropHandler;
 import leviathan143.loottweaker.common.tweakers.loot.LootTableTweaker;
 import leviathan143.loottweaker.common.tweakers.loot.LootTableTweaker.LootTweakType;
 import net.minecraft.util.ResourceLocation;
@@ -35,14 +34,15 @@ public class ZenLootTableWrapper
 	public void clear()
 	{
 		clear = true;
-		DropHandler.clearedLootTables.add(name);
 	}
 
 	@ZenMethod
-	public void addPool(String poolName, int minRolls, int maxRolls, int minBonusRolls, int maxBonusRolls)
+	public ZenLootPoolWrapper addPool(String poolName, int minRolls, int maxRolls, int minBonusRolls, int maxBonusRolls)
 	{
-		backingTable.addPool(LootUtils.createPool(poolName, minRolls, maxRolls, minBonusRolls, maxBonusRolls));
+		LootPool pool = LootUtils.createPool(poolName, minRolls, maxRolls, minBonusRolls, maxBonusRolls);
+		backingTable.addPool(pool);
 		lootTweakTypeMap.put(poolName, LootTweakType.ADD);
+		return new ZenLootPoolWrapper(pool);
 	}
 
 	@ZenMethod
@@ -54,13 +54,17 @@ public class ZenLootTableWrapper
 	@ZenMethod
 	public ZenLootPoolWrapper getPool(String poolName)
 	{
+		LootPool pool = null;
 		//Create a temporary pool if the pool is a default pool
 		if(LootUtils.DEFAULT_POOL_REGEX.matcher(poolName).find())
-			backingTable.addPool(LootUtils.createTemporaryPool(poolName));
+		{
+			pool = LootUtils.createTemporaryPool(poolName);
+			backingTable.addPool(pool);
+		}
 		//Don't set the tweak type to TWEAK if the pool already exists
 		if(!lootTweakTypeMap.containsKey(poolName))
 			lootTweakTypeMap.put(poolName, LootTweakType.TWEAK);
-		return new ZenLootPoolWrapper(backingTable.getPool(poolName));
+		return new ZenLootPoolWrapper(pool != null ? pool : backingTable.getPool(poolName));
 	}
 
 	public void applyLootTweaks(LootTable table)
@@ -78,6 +82,7 @@ public class ZenLootTableWrapper
 			switch (lootTweak.getValue()) 
 			{
 			case ADD:
+				System.out.println("Adding pool " + lootTweak.getKey() + " to " + name);
 				table.addPool(backingTable.getPool(lootTweak.getKey()));
 				break;
 
@@ -86,6 +91,7 @@ public class ZenLootTableWrapper
 				break;
 
 			case REMOVE:
+				System.out.println("Removing pool " + lootTweak.getKey() + " from " + name);
 				table.removePool(lootTweak.getKey());
 				break;
 
