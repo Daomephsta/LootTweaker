@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 
 
@@ -19,7 +20,7 @@ public class LootTweakerMain
 		public static final String MODNAME = "LootTweaker";
 		public static final  String  MODID = "loottweaker";
 		public static final  String  VERSION = "0.0.1";
-		public static final String DEPENDENCIES = "required-after:MineTweaker3";
+		public static final String DEPENDENCIES = "required-after:MineTweaker3; before:jeresources";
 		public static final  String  CLIENT_PROXY_PATH = "leviathan143.loottweaker.client.ClientProxy";
 		public static final  String  SERVER_PROXY_PATH = "leviathan143.loottweaker.server.ServerProxy";
 	}
@@ -52,5 +53,11 @@ public class LootTweakerMain
 	public void serverStarted(FMLServerStartedEvent event)
 	{
 		proxy.serverStarted(event);
+	}
+	
+	@Mod.EventHandler
+	public void serverAboutToStart(FMLServerAboutToStartEvent event)
+	{
+		proxy.serverAboutToStart(event);
 	}
 }
