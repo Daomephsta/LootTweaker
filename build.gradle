@@ -21,8 +21,11 @@ plugins {
 }
 */
 version = "1.10.2-0.0.1"
-group= "leviathan143.droptweaker" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "DropTweaker"
+group= "leviathan143.loottweaker" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "LootTweaker"
+
+targetCompatibility = "1.7"
+sourceCompatibility = "1.7"
 
 minecraft {
     version = "1.10.2-12.18.1.2064"
@@ -46,7 +49,7 @@ repositories
 }
 
 dependencies {
-	deobfCompile "mezz.jei:jei_1.10.2:3.7.8.234"
+	deobfCompile "mezz.jei:jei_1.10.2:3.13.3.380"
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"

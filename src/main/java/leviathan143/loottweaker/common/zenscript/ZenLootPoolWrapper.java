@@ -5,6 +5,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import leviathan143.loottweaker.common.LootUtils;
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
+import leviathan143.loottweaker.common.loot.LootEntryPendingRemoval;
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IItemStack;

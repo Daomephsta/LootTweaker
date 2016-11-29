@@ -1,5 +1,8 @@
 package leviathan143.loottweaker.common;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,11 +16,15 @@ import minetweaker.api.data.DataMap;
 import minetweaker.api.data.IData;
 import minetweaker.api.item.IItemStack;
 import minetweaker.api.minecraft.MineTweakerMC;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
+import net.minecraft.world.storage.loot.LootTableManager;
 import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.functions.LootFunction;
@@ -28,9 +35,8 @@ import net.minecraft.world.storage.loot.functions.SetNBT;
 
 public class LootUtils 
 {
-	public static final Gson LOOT_TABLE_GSON_INSTANCE = CommonMethodHandles.getLootConditionGSON();
-
-
+	public static final Gson LOOT_TABLE_GSON_INSTANCE = CommonMethodHandles.getLootTableGSON();
+	
 	//A regex that matches any vanilla pool name
 	public static final Pattern DEFAULT_POOL_REGEX = Pattern.compile("(?:^(?:main$|pool[1-9]+)$)+");
 	public static final LootCondition[] NO_CONDITIONS = new LootCondition[0];
@@ -42,16 +48,43 @@ public class LootUtils
 
 	//Tables
 
-	public static LootTable getTable(ResourceLocation tableLoc)
+	public static ResourceLocation getBlockLootTableFromRegistryName(ResourceLocation registryName)
 	{
-		LootTable table = LootTweakerMain.proxy.getWorld().getLootTableManager().getLootTableFromLocation(tableLoc);
-		if(table == null)
+		return new ResourceLocation(registryName.getResourceDomain(), "blocks/" + registryName.getResourcePath());
+	}
+
+	public static ResourceLocation getEntityLootTableFromName(String entityName)
+	{
+		Entity entity = EntityList.createEntityByName(entityName, LootTweakerMain.proxy.getWorld());
+		if(entity == null) return null;
+		if(!(entity instanceof EntityLiving)) return null;
+		return CommonMethodHandles.getEntityLootTable((EntityLiving) entity);
+	}
+	
+	public static void writeTableToJSON(ResourceLocation tableLoc, LootTableManager manager, File file)
+	{
+		writeTableToJSON(tableLoc, manager, file, false);
+	}
+	
+	public static void writeTableToJSON(ResourceLocation tableLoc, LootTableManager manager, File file, boolean log)
+	{
+		writeTableToJSON(tableLoc, LootTweakerMain.proxy.getWorld().getLootTableManager().getLootTableFromLocation(tableLoc), file, log);
+	}
+
+	public static void writeTableToJSON(ResourceLocation tableLoc, LootTable table, File file, boolean log)
+	{
+		try 
 		{
-			MineTweakerAPI.logWarning(String.format("No loot table with name %s exists!", tableLoc));
-			//Returned to prevent NPEs
-			return LootTable.EMPTY_LOOT_TABLE;
+			file.getParentFile().mkdirs();
+			file.createNewFile();
+			FileWriter writer = new FileWriter(file);
+			writer.write(CommonMethodHandles.getLootTableGSON().toJson(table));
+			writer.close();
+			if (log) LootTweakerMain.logger.info(String.format("Loot table %s saved to %s", tableLoc, file.getCanonicalPath()));
+		} catch (IOException e) 
+		{
+			e.printStackTrace();
 		}
-		return table;
 	}
 
 	//Pools

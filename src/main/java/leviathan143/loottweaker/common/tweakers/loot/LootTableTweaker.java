@@ -1,22 +1,26 @@
 package leviathan143.loottweaker.common.tweakers.loot;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.logging.log4j.Level;
 
 import com.google.common.collect.Maps;
 
 import leviathan143.loottweaker.common.LootTweakerMain;
-import leviathan143.loottweaker.common.LootUtils;
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
-import leviathan143.loottweaker.common.handlers.DropHandler;
+import leviathan143.loottweaker.common.LootUtils;
+import leviathan143.loottweaker.common.loot.block.BlockLootHandler;
 import leviathan143.loottweaker.common.zenscript.ZenLootTableWrapper;
 import minetweaker.MineTweakerImplementationAPI;
 import minetweaker.MineTweakerImplementationAPI.ReloadEvent;
 import minetweaker.util.IEventHandler;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTable;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -26,6 +30,7 @@ public class LootTableTweaker
 {	
 	//Stores the added LootPools as LootTables until they can be added to the real LootTables
 	private static Map<ResourceLocation, ZenLootTableWrapper> tweakedTableStorage = Maps.newHashMap();
+	public static Set<ResourceLocation> blockLootTables = new HashSet<ResourceLocation>();
 
 	public enum LootTweakType
 	{
@@ -48,12 +53,18 @@ public class LootTableTweaker
 		return tweakedTableStorage.get(tableLoc);
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void onTableLoad(LootTableLoadEvent event)
 	{
-		if(tweakedTableStorage.containsKey(event.getName()))
+		applyTweaks(event.getName(), event.getTable());
+	}
+	
+	private static void applyTweaks(ResourceLocation tableName, LootTable table)
+	{
+		if(tweakedTableStorage.containsKey(tableName))
 		{
-			tweakedTableStorage.get(event.getName()).applyLootTweaks(event.getTable());
+			System.out.println(tableName + ":" + table);
+			tweakedTableStorage.get(tableName).applyLootTweaks(table);
 		}
 	}
 
@@ -65,7 +76,6 @@ public class LootTableTweaker
 			public void handle(ReloadEvent paramT) 
 			{
 				tweakedTableStorage.clear();
-				DropHandler.clearedLootTables.clear();
 			}
 		});
 
@@ -75,6 +85,7 @@ public class LootTableTweaker
 			public void handle(ReloadEvent paramT) 
 			{
 				LootTweakerMain.proxy.getWorld().getLootTableManager().reloadLootTables();
+				BlockLootHandler.getBlockLootTableManager().reloadLootTables();
 				LootTweakerMain.logger.log(Level.INFO, "Reloading loot tables");
 			}
 		});
