@@ -4,23 +4,12 @@ import java.io.File;
 
 import leviathan143.loottweaker.common.commands.CommandLootTables;
 import leviathan143.loottweaker.common.handlers.DropHandler;
-import leviathan143.loottweaker.common.loot.block.BlockLootHandler;
-import leviathan143.loottweaker.common.loot.block.BlockLootTableManager;
 import leviathan143.loottweaker.common.tweakers.RegisterTweakers;
 import leviathan143.loottweaker.common.tweakers.loot.LootTableTweaker;
 import minetweaker.MineTweakerImplementationAPI;
-import net.minecraft.block.Block;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.LootTable;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
+import net.minecraftforge.fml.common.event.*;
 
 public class CommonProxy 
 {	
@@ -39,20 +28,6 @@ public class CommonProxy
 
 	public void postInit(FMLPostInitializationEvent event)
 	{
-		int numTables = 0;
-		for(ResourceLocation registryName : Block.REGISTRY.getKeys())
-		{
-			ResourceLocation blockLootTable = LootUtils.getBlockLootTableFromRegistryName(registryName);
-			LootUtils.writeTableToJSON(blockLootTable, new LootTable(LootUtils.NO_POOLS), BlockLootTableManager.getBlockLootTableFilePath(blockLootTable), false);
-			BlockLootHandler.registerTable(blockLootTable);
-			numTables++;
-		}
-		BlockLootHandler.initBlockLootTableManager();
-		System.out.println(numTables + " block loot tables registered");
-		for(ResourceLocation blockLootTable : BlockLootHandler.getBlockLootTables())
-		{
-			BlockLootHandler.getBlockLootTableManager().getLootTableFromLocation(blockLootTable);
-		}
 	}
 
 	public void registerRenders()

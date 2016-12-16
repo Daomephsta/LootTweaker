@@ -5,14 +5,8 @@ import java.io.File;
 import org.apache.logging.log4j.Level;
 
 import leviathan143.loottweaker.common.CommonProxy;
-import leviathan143.loottweaker.common.LootUtils;
-import leviathan143.loottweaker.common.loot.block.BlockLootHandler;
-import net.minecraft.block.Block;
-import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.server.FMLServerHandler;
