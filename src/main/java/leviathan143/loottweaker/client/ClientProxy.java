@@ -3,9 +3,7 @@ package leviathan143.loottweaker.client;
 import java.io.File;
 
 import leviathan143.loottweaker.common.CommonProxy;
-import leviathan143.loottweaker.common.loot.block.BlockLootHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 
@@ -17,7 +15,6 @@ public class ClientProxy extends CommonProxy
 	public void postInit(FMLPostInitializationEvent event) 
 	{
 		super.postInit(event);
-		((IReloadableResourceManager )mc.getResourceManager()).registerReloadListener(new BlockLootHandler());
 	}
 	
 	@Override
