@@ -2,8 +2,8 @@ package leviathan143.loottweaker.common.commands;
 
 import java.io.File;
 
+import leviathan143.loottweaker.common.LootTweakerMain;
 import leviathan143.loottweaker.common.LootUtils;
-import leviathan143.loottweaker.common.loot.block.BlockLootHandler;
 import minetweaker.api.player.IPlayer;
 import minetweaker.api.server.ICommandFunction;
 import net.minecraft.entity.EntityList;
@@ -29,7 +29,7 @@ public class CommandLootTables implements ICommandFunction
 		{
 			for(ResourceLocation tableLoc : LootTableList.getAll())
 			{
-				LootUtils.writeTableToJSON(tableLoc, BlockLootHandler.getBlockLootTableManager(), getLootTableDumpFilePath(tableLoc));
+				LootUtils.writeTableToJSON(tableLoc, LootTweakerMain.proxy.getWorld().getLootTableManager(), getLootTableDumpFilePath(tableLoc));
 			}
 		}
 		else if(args[0].equals("entity"))
@@ -46,7 +46,7 @@ public class CommandLootTables implements ICommandFunction
 			}
 			ResourceLocation tableLoc = LootUtils.getEntityLootTableFromName(args[1]);
 			if(tableLoc == null) return;
-			LootUtils.writeTableToJSON(tableLoc, BlockLootHandler.getBlockLootTableManager(), getLootTableDumpFilePath(tableLoc));
+			LootUtils.writeTableToJSON(tableLoc, LootTweakerMain.proxy.getWorld().getLootTableManager(), getLootTableDumpFilePath(tableLoc));
 		}
 		else if(args[0].equals("byName"))
 		{
@@ -61,7 +61,7 @@ public class CommandLootTables implements ICommandFunction
 				player.sendChat("Invalid loot table name!");
 				return;
 			}
-			LootUtils.writeTableToJSON(tableLoc, BlockLootHandler.getBlockLootTableManager(), getLootTableDumpFilePath(tableLoc));
+			LootUtils.writeTableToJSON(tableLoc, LootTweakerMain.proxy.getWorld().getLootTableManager(), getLootTableDumpFilePath(tableLoc));
 		}
 	}
 	

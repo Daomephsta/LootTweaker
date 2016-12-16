@@ -10,7 +10,6 @@ import minetweaker.MineTweakerImplementationAPI.ReloadEvent;
 import minetweaker.api.item.IItemStack;
 import minetweaker.api.minecraft.MineTweakerMC;
 import minetweaker.util.IEventHandler;
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import stanhebben.zenscript.annotations.ZenClass;
@@ -34,20 +33,6 @@ public class EventDropsTweaker
 		}
 	}
 	
-	@ZenMethod
-	public static void removeBlockDrop(IItemStack blockStack, IItemStack drop)
-	{
-		int stateID = Block.getStateId(MineTweakerMC.getBlock(blockStack.asBlock()).getStateFromMeta(blockStack.getDamage()));
-		if(DropHandler.removedBlockDrops.containsKey(stateID))
-		{
-			Collections.addAll(DropHandler.removedBlockDrops.get(stateID), MineTweakerMC.getItemStack(drop));
-		}
-		else
-		{
-			DropHandler.removedBlockDrops.put(stateID, Lists.newArrayList(MineTweakerMC.getItemStack(drop)));
-		}
-	}
-	
 	public static void onRegister()
 	{
 		MineTweakerImplementationAPI.onReloadEvent(new IEventHandler<ReloadEvent>() 
@@ -56,7 +41,6 @@ public class EventDropsTweaker
 			public void handle(ReloadEvent paramT) 
 			{
 				DropHandler.removedEntityDrops.clear();
-				DropHandler.removedBlockDrops.clear();
 			}
 		});
 	}
