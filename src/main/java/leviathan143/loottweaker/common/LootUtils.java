@@ -32,11 +32,12 @@ import net.minecraft.world.storage.loot.functions.SetCount;
 import net.minecraft.world.storage.loot.functions.SetDamage;
 import net.minecraft.world.storage.loot.functions.SetMetadata;
 import net.minecraft.world.storage.loot.functions.SetNBT;
+import net.minecraftforge.fml.common.FMLLog;
 
 public class LootUtils 
 {
 	public static final Gson LOOT_TABLE_GSON_INSTANCE = CommonMethodHandles.getLootTableGSON();
-	
+
 	//A regex that matches any vanilla pool name
 	public static final Pattern DEFAULT_POOL_REGEX = Pattern.compile("(?:^(?:main$|pool[1-9]+)$)+");
 	public static final LootCondition[] NO_CONDITIONS = new LootCondition[0];
@@ -60,12 +61,12 @@ public class LootUtils
 		if(!(entity instanceof EntityLiving)) return null;
 		return CommonMethodHandles.getEntityLootTable((EntityLiving) entity);
 	}
-	
+
 	public static void writeTableToJSON(ResourceLocation tableLoc, LootTableManager manager, File file)
 	{
 		writeTableToJSON(tableLoc, manager, file, false);
 	}
-	
+
 	public static void writeTableToJSON(ResourceLocation tableLoc, LootTableManager manager, File file, boolean log)
 	{
 		writeTableToJSON(tableLoc, LootTweakerMain.proxy.getWorld().getLootTableManager().getLootTableFromLocation(tableLoc), file, log);
@@ -78,7 +79,15 @@ public class LootUtils
 			file.getParentFile().mkdirs();
 			file.createNewFile();
 			FileWriter writer = new FileWriter(file);
-			writer.write(CommonMethodHandles.getLootTableGSON().toJson(table));
+			try
+			{
+				writer.write(CommonMethodHandles.getLootTableGSON().toJson(table));
+			}
+			catch(Throwable t)
+			{
+				FMLLog.warning("Failed to dump loot table %s", tableLoc.toString());
+				t.printStackTrace();
+			}
 			writer.close();
 			if (log) LootTweakerMain.logger.info(String.format("Loot table %s saved to %s", tableLoc, file.getCanonicalPath()));
 		} catch (IOException e) 
