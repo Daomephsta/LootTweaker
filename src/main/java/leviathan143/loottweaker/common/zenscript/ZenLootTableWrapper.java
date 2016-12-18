@@ -82,7 +82,6 @@ public class ZenLootTableWrapper
 			switch (lootTweak.getValue()) 
 			{
 			case ADD:
-				System.out.println("Adding pool " + lootTweak.getKey() + " to " + name);
 				table.addPool(backingTable.getPool(lootTweak.getKey()));
 				break;
 

@@ -15,6 +15,7 @@ import minetweaker.MineTweakerImplementationAPI.ReloadEvent;
 import minetweaker.util.IEventHandler;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTable;
+import net.minecraft.world.storage.loot.LootTableManager;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -59,7 +60,6 @@ public class LootTableTweaker
 	{
 		if(tweakedTableStorage.containsKey(tableName))
 		{
-			System.out.println(tableName + ":" + table);
 			tweakedTableStorage.get(tableName).applyLootTweaks(table);
 		}
 	}
@@ -80,8 +80,12 @@ public class LootTableTweaker
 			@Override
 			public void handle(ReloadEvent paramT) 
 			{
-				LootTweakerMain.proxy.getWorld().getLootTableManager().reloadLootTables();
-				LootTweakerMain.logger.log(Level.INFO, "Reloading loot tables");
+				LootTableManager manager = LootTweakerMain.proxy.getWorld().getLootTableManager();
+				if(manager != null)
+				{
+					manager.reloadLootTables();
+					LootTweakerMain.logger.log(Level.INFO, "Reloading loot tables");
+				}
 			}
 		});
 	}
