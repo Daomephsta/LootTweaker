@@ -29,8 +29,9 @@ public class CommandLootTables implements ICommandFunction
 		{
 			for(ResourceLocation tableLoc : LootTableList.getAll())
 			{
-				LootUtils.writeTableToJSON(tableLoc, LootTweakerMain.proxy.getWorld().getLootTableManager(), getLootTableDumpFilePath(tableLoc));
+				LootUtils.writeTableToJSON(tableLoc, LootTweakerMain.proxy.getWorld().getLootTableManager(), getLootTableDumpFilePath(tableLoc), true);
 			}
+			player.sendChat("Done!");
 		}
 		else if(args[0].equals("entity"))
 		{
@@ -46,7 +47,8 @@ public class CommandLootTables implements ICommandFunction
 			}
 			ResourceLocation tableLoc = LootUtils.getEntityLootTableFromName(args[1]);
 			if(tableLoc == null) return;
-			LootUtils.writeTableToJSON(tableLoc, LootTweakerMain.proxy.getWorld().getLootTableManager(), getLootTableDumpFilePath(tableLoc));
+			LootUtils.writeTableToJSON(tableLoc, LootTweakerMain.proxy.getWorld().getLootTableManager(), getLootTableDumpFilePath(tableLoc), true);
+			player.sendChat("Done!");
 		}
 		else if(args[0].equals("byName"))
 		{
@@ -61,7 +63,8 @@ public class CommandLootTables implements ICommandFunction
 				player.sendChat("Invalid loot table name!");
 				return;
 			}
-			LootUtils.writeTableToJSON(tableLoc, LootTweakerMain.proxy.getWorld().getLootTableManager(), getLootTableDumpFilePath(tableLoc));
+			LootUtils.writeTableToJSON(tableLoc, LootTweakerMain.proxy.getWorld().getLootTableManager(), getLootTableDumpFilePath(tableLoc), true);
+			player.sendChat("Done!");
 		}
 	}
 	
