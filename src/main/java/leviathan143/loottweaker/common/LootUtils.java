@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import com.google.gson.Gson;
+import com.google.gson.*;
 
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
 import minetweaker.MineTweakerAPI;
@@ -37,6 +37,8 @@ import net.minecraftforge.fml.common.FMLLog;
 public class LootUtils 
 {
 	public static final Gson LOOT_TABLE_GSON_INSTANCE = CommonMethodHandles.getLootTableGSON();
+	static final Gson PRETTY_PRINTER = new GsonBuilder().setPrettyPrinting().create();
+	static final JsonParser parser = new JsonParser();
 
 	//A regex that matches any vanilla pool name
 	public static final Pattern DEFAULT_POOL_REGEX = Pattern.compile("(?:^(?:main$|pool[1-9]+)$)+");
@@ -81,7 +83,7 @@ public class LootUtils
 			FileWriter writer = new FileWriter(file);
 			try
 			{
-				writer.write(CommonMethodHandles.getLootTableGSON().toJson(table));
+				writer.write(prettify(CommonMethodHandles.getLootTableGSON().toJson(table)));
 			}
 			catch(Throwable t)
 			{
@@ -94,6 +96,11 @@ public class LootUtils
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	static String prettify(String jsonBarf)
+	{
+		return PRETTY_PRINTER.toJson(parser.parse(jsonBarf));
 	}
 
 	//Pools
