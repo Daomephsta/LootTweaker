@@ -4,7 +4,7 @@ import java.io.File;
 
 import leviathan143.loottweaker.common.commands.CommandLootTables;
 import leviathan143.loottweaker.common.handlers.DropHandler;
-import leviathan143.loottweaker.common.tweakers.RegisterTweakers;
+import leviathan143.loottweaker.common.tweakers.RegisterZenscript;
 import leviathan143.loottweaker.common.tweakers.loot.LootTableTweaker;
 import minetweaker.MineTweakerImplementationAPI;
 import net.minecraft.world.World;
@@ -22,7 +22,7 @@ public class CommonProxy
 
 	public void init(FMLInitializationEvent event)
 	{
-		RegisterTweakers.register();
+		RegisterZenscript.register();
 		MineTweakerImplementationAPI.addMineTweakerCommand(CommandLootTables.NAME, CommandLootTables.DESCRIPTION, new CommandLootTables());
 	}
 
