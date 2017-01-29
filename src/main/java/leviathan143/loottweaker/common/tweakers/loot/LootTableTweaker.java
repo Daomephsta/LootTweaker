@@ -23,7 +23,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
-@ZenClass(Constants.MODID + ".vanilla.LootTables")
+@ZenClass(Constants.MODID + ".vanilla.loot.LootTables")
 public class LootTableTweaker
 {	
     //Stores the added LootPools as LootTables until they can be added to the real LootTables
