@@ -10,13 +10,13 @@ import leviathan143.loottweaker.common.LootTweakerMain;
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.LootUtils;
 import leviathan143.loottweaker.common.zenscript.ZenLootTableWrapper;
+import minetweaker.MineTweakerAPI;
 import minetweaker.MineTweakerImplementationAPI;
 import minetweaker.MineTweakerImplementationAPI.ReloadEvent;
 import minetweaker.util.IEventHandler;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.LootTable;
-import net.minecraft.world.storage.loot.LootTableManager;
+import net.minecraft.world.storage.loot.*;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -44,6 +44,12 @@ public class LootTableTweaker
     public static ZenLootTableWrapper getTable(String tableName)
     {
 	ResourceLocation tableLoc = new ResourceLocation(tableName);
+	if(!LootTableList.getAll().contains(tableLoc))
+	{
+	    MineTweakerAPI.logError(String.format("No loot table with name %s exists!", tableName));
+	    //Returned to prevent NPEs
+	    return LootUtils.EMPTY_LOOT_TABLE;
+	}
 	if(!tweakedTableStorage.containsKey(tableLoc))
 	{
 	    tweakedTableStorage.put(tableLoc, new ZenLootTableWrapper(new LootTable(LootUtils.NO_POOLS), tableLoc));
