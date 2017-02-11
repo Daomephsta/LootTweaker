@@ -29,7 +29,7 @@ public class ZenLootPoolWrapper
     }
     
     @ZenMethod
-    public void addConditions2(Object[] conditions)
+    public void addConditionsMixed(Object[] conditions)
     {
 	LootUtils.addConditionsToPool(backingPool, LootUtils.convertToConditions(conditions));
     }
@@ -78,7 +78,7 @@ public class ZenLootPoolWrapper
     }
     
     @ZenMethod
-    public void addItemEntry2(IItemStack iStack, int weight, int quality, Object[] functions, Object[] conditions)
+    public void addItemEntryMixed(IItemStack iStack, int weight, int quality, Object[] functions, Object[] conditions)
     {
 	addItemEntry(iStack, weight, quality, LootUtils.convertToFunctions(functions), LootUtils.convertToConditions(conditions));
     }
@@ -129,7 +129,7 @@ public class ZenLootPoolWrapper
     }
 
     @ZenMethod
-    public void addLootTableEntry2(String tableName, int weightIn, int qualityIn, Object[] conditions)
+    public void addLootTableEntryMixed(String tableName, int weightIn, int qualityIn, Object[] conditions)
     {
 	addLootTableEntry(tableName, weightIn, qualityIn, LootUtils.convertToConditions(conditions));
     }
