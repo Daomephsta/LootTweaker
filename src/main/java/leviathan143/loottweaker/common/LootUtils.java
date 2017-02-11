@@ -8,9 +8,9 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.google.gson.*;
 
+import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
-import leviathan143.loottweaker.common.zenscript.ZenLootConditionWrapper;
-import leviathan143.loottweaker.common.zenscript.ZenLootFunctionWrapper;
+import leviathan143.loottweaker.common.zenscript.*;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.data.DataMap;
 import minetweaker.api.data.IData;
@@ -37,7 +37,8 @@ public class LootUtils
     public static final LootFunction[] NO_FUNCTIONS = new LootFunction[0];
     public static final LootPool[] NO_POOLS = new LootPool[0];
     //Used if the pool does not exist to prevent NPEs
-    private static final LootPool EMPTY_LOOT_POOL = new LootPool(NO_ENTRIES, NO_CONDITIONS, new RandomValueRange(0), new RandomValueRange(0), "empty");
+    public static final ZenLootPoolWrapper EMPTY_LOOT_POOL = new ZenLootPoolWrapper(new LootPool(NO_ENTRIES, NO_CONDITIONS, new RandomValueRange(0), new RandomValueRange(0), "empty"));
+    public static final ZenLootTableWrapper EMPTY_LOOT_TABLE = new ZenLootTableWrapper(new LootTable(NO_POOLS), new ResourceLocation(Constants.MODID, "empty"));
 
     //Tables
 
@@ -94,19 +95,7 @@ public class LootUtils
     }
 
     //Pools
-
-    public static LootPool getPool(LootTable table, String poolName)
-    {
-	LootPool pool = table.getPool(poolName);
-	if(pool == null)
-	{
-	    MineTweakerAPI.logWarning(String.format("No loot pool with name %s exists!", poolName));
-	    //Returned to prevent NPEs
-	    return EMPTY_LOOT_POOL;
-	}
-	return pool;
-    }
-
+    
     /**
      * @param name - the name of the loot pool
      * @return a temporary loot pool with that name

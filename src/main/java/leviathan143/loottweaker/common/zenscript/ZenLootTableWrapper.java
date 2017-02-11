@@ -9,6 +9,7 @@ import leviathan143.loottweaker.common.LootUtils;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
 import leviathan143.loottweaker.common.tweakers.loot.LootTableTweaker;
 import leviathan143.loottweaker.common.tweakers.loot.LootTableTweaker.LootTweakType;
+import minetweaker.MineTweakerAPI;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
@@ -79,6 +80,10 @@ public class ZenLootTableWrapper
 		}
 		for(Map.Entry<String, LootTableTweaker.LootTweakType> lootTweak : lootTweakTypeMap.entrySet())
 		{
+		    	if(backingTable.getPool(lootTweak.getKey()) == null)
+		    	{
+		    	    MineTweakerAPI.logError(String.format("No loot pool with name %s exists!", lootTweak.getKey()));
+		    	}
 			switch (lootTweak.getValue()) 
 			{
 			case ADD:
@@ -90,7 +95,6 @@ public class ZenLootTableWrapper
 				break;
 
 			case REMOVE:
-				System.out.println("Removing pool " + lootTweak.getKey() + " from " + name);
 				table.removePool(lootTweak.getKey());
 				break;
 
