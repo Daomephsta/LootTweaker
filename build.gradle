@@ -20,7 +20,7 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "1.10.2-0.0.1"
+version = "1.10.2-0.0.2"
 group= "leviathan143.loottweaker" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "LootTweaker"
 
@@ -49,7 +49,7 @@ repositories
 }
 
 dependencies {
-	deobfCompile "mezz.jei:jei_1.10.2:3.13.3.380"
+	deobfCompile "mezz.jei:jei_1.10.2:3.14.2.401"
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"
