@@ -74,13 +74,12 @@ public class ZenLootTableWrapper
 		{
 			for(java.util.Iterator<LootPool> iter = CommonMethodHandles.getPoolsFromTable(table).iterator(); iter.hasNext();)
 			{
-				iter.next();
 				iter.remove();
 			}
 		}
 		for(Map.Entry<String, LootTableTweaker.LootTweakType> lootTweak : lootTweakTypeMap.entrySet())
 		{
-		    	if(backingTable.getPool(lootTweak.getKey()) == null)
+		    	if(table.getPool(lootTweak.getKey()) == null)
 		    	{
 		    	    MineTweakerAPI.logError(String.format("No loot pool with name %s exists!", lootTweak.getKey()));
 		    	}
