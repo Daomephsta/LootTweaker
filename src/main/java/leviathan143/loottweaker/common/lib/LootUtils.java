@@ -1,4 +1,4 @@
-package leviathan143.loottweaker.common;
+package leviathan143.loottweaker.common.lib;
 
 import java.io.*;
 import java.util.Collections;
@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import com.google.common.collect.Lists;
 import com.google.gson.*;
 
+import leviathan143.loottweaker.common.LootTweakerMain;
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
 import leviathan143.loottweaker.common.zenscript.*;

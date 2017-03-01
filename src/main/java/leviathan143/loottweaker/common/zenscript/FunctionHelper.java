@@ -5,7 +5,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
-import leviathan143.loottweaker.common.LootUtils;
+import leviathan143.loottweaker.common.lib.LootUtils;
 import minetweaker.MineTweakerImplementationAPI;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.nbt.*;

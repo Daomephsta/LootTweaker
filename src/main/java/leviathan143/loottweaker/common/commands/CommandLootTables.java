@@ -3,7 +3,7 @@ package leviathan143.loottweaker.common.commands;
 import java.io.File;
 
 import leviathan143.loottweaker.common.LootTweakerMain;
-import leviathan143.loottweaker.common.LootUtils;
+import leviathan143.loottweaker.common.lib.LootUtils;
 import minetweaker.api.player.IPlayer;
 import minetweaker.api.server.ICommandFunction;
 import net.minecraft.entity.EntityList;
