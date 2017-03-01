@@ -1,17 +1,16 @@
 package leviathan143.loottweaker.common;
 
 import java.io.*;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.ArrayUtils;
-
+import com.google.common.collect.Lists;
 import com.google.gson.*;
 
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
 import leviathan143.loottweaker.common.zenscript.*;
-import minetweaker.MineTweakerAPI;
 import minetweaker.api.data.DataMap;
 import minetweaker.api.data.IData;
 import minetweaker.api.item.IItemStack;
@@ -172,30 +171,33 @@ public class LootUtils
 	    if(lootFunction instanceof SetDamage || lootFunction instanceof SetMetadata) damageFuncExists = true;
 	    if(lootFunction instanceof SetNBT) nbtFuncExists = true;
 	}
-	List<LootFunction> retList = new ArrayList<LootFunction>();
+	int capacityRequired = existingFunctions.length + (sizeFuncExists ? 0 : 1) + (damageFuncExists ? 0 : 1) + (nbtFuncExists ? 0 : 1);
+	List<LootFunction> retList = Lists.newArrayListWithCapacity(capacityRequired);
+	Collections.addAll(retList, existingFunctions);
 	if(iStack.getAmount() > 1 && !sizeFuncExists)
 	{
-	    ArrayUtils.add(existingFunctions, new SetCount(NO_CONDITIONS, new RandomValueRange(iStack.getAmount())));
+	    retList.add(new SetCount(NO_CONDITIONS, new RandomValueRange(iStack.getAmount())));
+	    System.out.println(iStack.getAmount());
 	}
 	if(iStack.getDamage() > 0 && !damageFuncExists)
 	{
 	    if(stack.isItemStackDamageable())
 	    {
 		//SetDamage takes a percentage, not a number
-		ArrayUtils.add(existingFunctions, new SetDamage(NO_CONDITIONS, new RandomValueRange((float)stack.getItemDamage() / (float)stack.getMaxDamage())));
+		retList.add(new SetDamage(NO_CONDITIONS, new RandomValueRange((float)stack.getItemDamage() / (float)stack.getMaxDamage())));
 	    }
 	    else
 	    {
-		ArrayUtils.add(existingFunctions, new SetMetadata(NO_CONDITIONS, new RandomValueRange(iStack.getDamage())));
+		retList.add(new SetMetadata(NO_CONDITIONS, new RandomValueRange(iStack.getDamage())));
 	    }
 	}
 	IData stackData = iStack.getTag();
 	if(stackData != DataMap.EMPTY && !nbtFuncExists)
 	{
-	    ArrayUtils.add(existingFunctions, new SetNBT(NO_CONDITIONS, MineTweakerMC.getNBTCompound(stackData)));
+	    retList.add(new SetNBT(NO_CONDITIONS, MineTweakerMC.getNBTCompound(stackData)));
 	}
 
-	return existingFunctions;
+	return retList.toArray(LootUtils.NO_FUNCTIONS);
     }
 
     public static LootFunction[] parseFunctions(String[] functions) 
