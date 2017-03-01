@@ -8,7 +8,7 @@ import com.google.common.collect.Maps;
 
 import leviathan143.loottweaker.common.LootTweakerMain;
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
-import leviathan143.loottweaker.common.LootUtils;
+import leviathan143.loottweaker.common.lib.LootUtils;
 import leviathan143.loottweaker.common.zenscript.ZenLootTableWrapper;
 import minetweaker.MineTweakerAPI;
 import minetweaker.MineTweakerImplementationAPI;

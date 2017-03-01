@@ -3,8 +3,8 @@ package leviathan143.loottweaker.common.zenscript;
 import org.apache.commons.lang3.ArrayUtils;
 
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
-import leviathan143.loottweaker.common.LootUtils;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
+import leviathan143.loottweaker.common.lib.LootUtils;
 import leviathan143.loottweaker.common.loot.LootEntryPendingRemoval;
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
@@ -31,19 +31,19 @@ public class ZenLootPoolWrapper
     @ZenMethod
     public void addConditionsMixed(Object[] conditions)
     {
-	LootUtils.addConditionsToPool(backingPool, LootUtils.convertToConditions(conditions));
+	MineTweakerAPI.apply(new AddConditions(backingPool, LootUtils.convertToConditions(conditions)));
     }
 
     @ZenMethod
     public void addConditions(ZenLootConditionWrapper[] conditions)
     {
-	LootUtils.addConditionsToPool(backingPool, LootUtils.convertConditionWrappers(conditions));
+	MineTweakerAPI.apply(new AddConditions(backingPool, LootUtils.convertConditionWrappers(conditions)));
     }
 
     @ZenMethod
     public void addConditions(String[] conditions)
     {
-	LootUtils.addConditionsToPool(backingPool, LootUtils.parseConditions(conditions));
+	MineTweakerAPI.apply(new AddConditions(backingPool, LootUtils.parseConditions(conditions)));
     }
 
     @ZenMethod
@@ -177,8 +177,8 @@ public class ZenLootPoolWrapper
 
     private static class AddLootEntry implements IUndoableAction
     {
-	LootEntry entry;
-	LootPool pool;
+	private LootEntry entry;
+	private LootPool pool;
 
 	public AddLootEntry(LootPool pool, LootEntry entry) 
 	{
@@ -223,8 +223,8 @@ public class ZenLootPoolWrapper
 
     private static class RemoveLootEntry implements IUndoableAction
     {
-	String entryName;
-	LootPool pool;
+	private String entryName;
+	private LootPool pool;
 
 	public RemoveLootEntry(LootPool pool, String entryName) 
 	{
@@ -258,6 +258,52 @@ public class ZenLootPoolWrapper
 	public String describeUndo() 
 	{
 	    return String.format("Adding entry %s to pool %s", entryName, pool.getName());
+	}
+
+	@Override
+	public Object getOverrideKey() 
+	{
+	    return null;
+	}
+    }
+    
+    private static class AddConditions implements IUndoableAction
+    {
+	private LootCondition[] conditions;
+	private LootPool pool;
+
+	public AddConditions(LootPool pool, LootCondition[] conditions) 
+	{
+	    this.conditions = conditions;
+	    this.pool = pool;
+	}
+
+	@Override
+	public void apply() 
+	{
+	    LootUtils.addConditionsToPool(pool, conditions);
+	}
+
+	@Override
+	public boolean canUndo()
+	{
+	    return true;
+	}
+
+	//No undo needed, the tweak map is cleared on reload anyway
+	@Override
+	public void undo() {}
+
+	@Override
+	public String describe() 
+	{
+	    return String.format("Adding conditions %s to pool %s", ArrayUtils.toString(conditions), pool.getName());
+	}
+
+	@Override
+	public String describeUndo() 
+	{
+	    return String.format("Removing conditions %s from pool %s", ArrayUtils.toString(conditions), pool.getName());
 	}
 
 	@Override

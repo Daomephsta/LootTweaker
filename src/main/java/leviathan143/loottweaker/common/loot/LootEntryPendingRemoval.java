@@ -6,7 +6,7 @@ import java.util.Random;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 
-import leviathan143.loottweaker.common.LootUtils;
+import leviathan143.loottweaker.common.lib.LootUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootEntry;
