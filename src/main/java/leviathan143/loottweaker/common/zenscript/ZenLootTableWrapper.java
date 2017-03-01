@@ -79,22 +79,25 @@ public class ZenLootTableWrapper
 		}
 		for(Map.Entry<String, LootTableTweaker.LootTweakType> lootTweak : lootTweakTypeMap.entrySet())
 		{
-		    	if(table.getPool(lootTweak.getKey()) == null)
+		    	String poolName = lootTweak.getKey();
+		    	LootTweakType tweakType = lootTweak.getValue();
+		    	
+		    	if(tweakType != LootTweakType.ADD && table.getPool(poolName) == null)
 		    	{
-		    	    MineTweakerAPI.logError(String.format("No loot pool with name %s exists!", lootTweak.getKey()));
+		    	    MineTweakerAPI.logError(String.format("No loot pool with name %s exists!", poolName));
 		    	}
-			switch (lootTweak.getValue()) 
+			switch (tweakType) 
 			{
 			case ADD:
-				table.addPool(backingTable.getPool(lootTweak.getKey()));
+				table.addPool(backingTable.getPool(poolName));
 				break;
 
 			case TWEAK:
-				ZenLootPoolWrapper.applyLootTweaks(backingTable.getPool(lootTweak.getKey()), table.getPool(lootTweak.getKey()));
+				ZenLootPoolWrapper.applyLootTweaks(backingTable.getPool(poolName), table.getPool(poolName));
 				break;
 
 			case REMOVE:
-				table.removePool(lootTweak.getKey());
+				table.removePool(poolName);
 				break;
 
 			default:
