@@ -36,7 +36,7 @@ minecraft {
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not allways work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "snapshot_20160518"
+    mappings = "stable_29"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
@@ -49,7 +49,7 @@ repositories
 }
 
 dependencies {
-	deobfCompile "mezz.jei:jei_1.10.2:3.14.2.401"
+	deobfCompile "mezz.jei:jei_1.10.2:3.14.7.415"
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"

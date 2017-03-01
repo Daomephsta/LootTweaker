@@ -25,7 +25,7 @@ public class ClientProxy extends CommonProxy
 			return mc.getIntegratedServer().getEntityWorld();
 		}
 		else
-			return mc.theWorld;
+			return mc.world;
 	}
 	
 	@Override
