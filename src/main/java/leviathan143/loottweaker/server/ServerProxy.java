@@ -23,7 +23,7 @@ public class ServerProxy extends CommonProxy
 	
 	public World getWorld()
 	{
-		if(mcServer.worldServers.length == 0)
+		if(mcServer.worlds.length == 0)
 		{
 			FMLLog.log(Level.WARN, "World does not exist yet");
 			return null;
