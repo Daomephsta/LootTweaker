@@ -9,9 +9,7 @@ public class RegisterZenscript
 	public static void register() 
 	{
 		MineTweakerAPI.registerClass(LootTableTweaker.class);
-		MineTweakerAPI.registerClass(EventDropsTweaker.class);
 		LootTableTweaker.onRegister();
-		EventDropsTweaker.onRegister();
 		
 		MineTweakerAPI.registerClass(ZenLootTableWrapper.class);
 		MineTweakerAPI.registerClass(ZenLootPoolWrapper.class);
