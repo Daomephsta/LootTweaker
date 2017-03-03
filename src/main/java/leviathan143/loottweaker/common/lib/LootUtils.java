@@ -178,7 +178,6 @@ public class LootUtils
 	if(iStack.getAmount() > 1 && !sizeFuncExists)
 	{
 	    retList.add(new SetCount(NO_CONDITIONS, new RandomValueRange(iStack.getAmount())));
-	    System.out.println(iStack.getAmount());
 	}
 	if(iStack.getDamage() > 0 && !damageFuncExists)
 	{
