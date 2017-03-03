@@ -5,6 +5,7 @@
 /asm/*
 /bin/*
 /libs/*
+/deps/*
 /run/*
 /.settings/*
 *.psd
