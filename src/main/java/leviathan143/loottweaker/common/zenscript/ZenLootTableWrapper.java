@@ -116,6 +116,7 @@ public class ZenLootTableWrapper
 	{
 	    this.wrapper = wrapper;
 	    this.tableName = name;
+	    this.pool = pool;
 	}
 
 	@Override
