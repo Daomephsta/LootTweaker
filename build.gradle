@@ -50,6 +50,8 @@ repositories
 
 dependencies {
 	deobfCompile "mezz.jei:jei_1.10.2:3.14.7.415"
+	compile files('deps/CraftTweaker-1.10.2-3.0.20.jar')
+	compile files('deps/MTLib-1.0.1.jar')
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"
