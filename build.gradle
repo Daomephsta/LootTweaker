@@ -28,7 +28,7 @@ targetCompatibility = "1.7"
 sourceCompatibility = "1.7"
 
 minecraft {
-    version = "1.10.2-12.18.1.2064"
+    version = "1.11.2-13.20.0.2228"
     runDir = "run"
     
     // the mappings can be changed at any time, and must be in the following format.
@@ -49,7 +49,7 @@ repositories
 }
 
 dependencies {
-	deobfCompile "mezz.jei:jei_1.10.2:3.14.7.415"
+	deobfCompile "mezz.jei:jei_1.11.2:4.2.7.241"
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"
