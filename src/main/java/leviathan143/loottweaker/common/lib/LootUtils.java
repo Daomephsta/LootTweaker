@@ -47,9 +47,9 @@ public class LootUtils
 	return new ResourceLocation(registryName.getResourceDomain(), "blocks/" + registryName.getResourcePath());
     }
 
-    public static ResourceLocation getEntityLootTableFromName(String entityName)
+    public static ResourceLocation getEntityLootTableFromName(ResourceLocation entityName)
     {
-	Entity entity = EntityList.createEntityByName(entityName, LootTweakerMain.proxy.getWorld());
+	Entity entity = EntityList.createEntityByIDFromName(entityName, LootTweakerMain.proxy.getWorld());
 	if(entity == null) return null;
 	if(!(entity instanceof EntityLiving)) return null;
 	return CommonMethodHandles.getEntityLootTable((EntityLiving) entity);

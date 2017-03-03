@@ -67,12 +67,13 @@ public class CommandLootTables implements ICommandFunction
 		player.sendChat("Entity name required!");
 		return;
 	    }
-	    if(!EntityList.NAME_TO_CLASS.containsKey(args[1]))
+	    ResourceLocation entityName = new ResourceLocation(args[1]);
+	    if(!EntityList.isStringValidEntityName(entityName))
 	    {
 		player.sendChat("Invalid entity name!");
 		return;
 	    }
-	    tableLoc = LootUtils.getEntityLootTableFromName(args[1]);
+	    tableLoc = LootUtils.getEntityLootTableFromName(entityName);
 	    if(tableLoc == null) return;
 	    LootUtils.writeTableToJSON(tableLoc, LootTweakerMain.proxy.getWorld().getLootTableManager(), getLootTableDumpFilePath(tableLoc), true);
 	    player.sendChat("Done!");
