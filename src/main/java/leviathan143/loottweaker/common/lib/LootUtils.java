@@ -19,6 +19,7 @@ import minetweaker.api.minecraft.MineTweakerMC;
 import net.minecraft.entity.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.functions.*;
@@ -62,7 +63,10 @@ public class LootUtils
 
     public static void writeTableToJSON(ResourceLocation tableLoc, LootTableManager manager, File file, boolean log)
     {
-	writeTableToJSON(tableLoc, LootTweakerMain.proxy.getWorld().getLootTableManager().getLootTableFromLocation(tableLoc), file, log);
+	World world = LootTweakerMain.proxy.getWorld();
+	if(world.isRemote) return;
+	LootTable table = manager.getLootTableFromLocation(tableLoc);
+	writeTableToJSON(tableLoc, table, file, log);
     }
 
     public static void writeTableToJSON(ResourceLocation tableLoc, LootTable table, File file, boolean log)

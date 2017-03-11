@@ -40,7 +40,7 @@ public class CommandLootTables implements ICommandFunction
 	case all:
 	    for(ResourceLocation table : LootTableList.getAll())
 	    {
-		LootUtils.writeTableToJSON(tableLoc, LootTweakerMain.proxy.getWorld().getLootTableManager(), getLootTableDumpFilePath(table), true);
+		LootUtils.writeTableToJSON(table, LootTweakerMain.proxy.getWorld().getLootTableManager(), getLootTableDumpFilePath(table), true);
 	    }
 	    player.sendChat("Done!");
 	    break;
