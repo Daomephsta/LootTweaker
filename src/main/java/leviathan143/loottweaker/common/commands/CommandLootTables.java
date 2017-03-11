@@ -13,7 +13,7 @@ import net.minecraft.world.storage.loot.LootTableList;
 public class CommandLootTables implements ICommandFunction
 {
     public static final String NAME = "loottables";
-    public static final String[] DESCRIPTION = new String[]{"Dumps the specified loottable(s) to <minecraft folder>/dumps"};
+    public static final String[] DESCRIPTION = new String[]{"/mt loottables [mode] <args>", "    Dumps the specified loottable(s)", "    to <minecraft folder>/dumps"};
 
     private static enum Option
     {
@@ -29,8 +29,8 @@ public class CommandLootTables implements ICommandFunction
 	if(args.length < 1)
 	{
 	    player.sendChat("Usage: /mt loottables [mode] <args>");
-	    player.sendChat("Modes:| all|  entity  | byName  |");
-	    player.sendChat("Args: |none|entityName|tableName|");
+	    player.sendChat("Modes: all | entity | byName");
+	    player.sendChat("Args: none | entityName | tableName");
 	    return;
 	}
 	Option option = Enum.valueOf(Option.class, args[0]);
