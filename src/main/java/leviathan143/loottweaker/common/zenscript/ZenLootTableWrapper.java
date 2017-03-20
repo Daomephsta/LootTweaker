@@ -85,6 +85,7 @@ public class ZenLootTableWrapper
 	    if(tweakType != LootTweakType.ADD && table.getPool(poolName) == null)
 	    {
 		MineTweakerAPI.logError(String.format("No loot pool with name %s exists!", poolName));
+		continue;
 	    }
 	    switch (tweakType) 
 	    {
