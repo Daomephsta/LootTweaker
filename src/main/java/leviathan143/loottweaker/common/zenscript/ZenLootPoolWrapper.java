@@ -17,6 +17,8 @@ import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.functions.LootFunction;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
+import stanhebben.zenscript.util.IAnyDefinition;
+import stanhebben.zenscript.value.IAny;
 
 @ZenClass(Constants.MODID + ".vanilla.loot.LootPool")
 public class ZenLootPoolWrapper 
@@ -29,19 +31,12 @@ public class ZenLootPoolWrapper
     }
     
     @ZenMethod
-    public void addConditionsMixed(Object[] conditions)
+    public void addConditionsHelper(ZenLootConditionWrapper[] conditions)
     {
-	MineTweakerAPI.apply(new AddConditions(backingPool, LootUtils.convertToConditions(conditions)));
+	MineTweakerAPI.apply(new AddConditions(backingPool, LootUtils.parseConditions(conditions)));
     }
-
-    @ZenMethod
-    public void addConditions(ZenLootConditionWrapper[] conditions)
-    {
-	MineTweakerAPI.apply(new AddConditions(backingPool, LootUtils.convertConditionWrappers(conditions)));
-    }
-
-    @ZenMethod
-    public void addConditions(String[] conditions)
+    
+    public void addConditionsJSON(String[] conditions)
     {
 	MineTweakerAPI.apply(new AddConditions(backingPool, LootUtils.parseConditions(conditions)));
     }
@@ -68,34 +63,28 @@ public class ZenLootPoolWrapper
     @ZenMethod
     public void addItemEntry(IItemStack stack, int weightIn)
     {
-	addItemEntry(stack, weightIn, 1, ArrayUtils.EMPTY_STRING_ARRAY, ArrayUtils.EMPTY_STRING_ARRAY);
+	addItemEntry(stack, weightIn, 1);
     }
 
     @ZenMethod
     public void addItemEntry(IItemStack stack, int weightIn, int qualityIn)
     {
-	addItemEntry(stack, weightIn, qualityIn, ArrayUtils.EMPTY_STRING_ARRAY, ArrayUtils.EMPTY_STRING_ARRAY);
+	addItemEntryHelper(stack, weightIn, qualityIn, null, null);
     }
     
     @ZenMethod
-    public void addItemEntryMixed(IItemStack iStack, int weight, int quality, Object[] functions, Object[] conditions)
+    public void addItemEntryHelper(IItemStack iStack, int weight, int quality, ZenLootFunctionWrapper[] functions, ZenLootConditionWrapper[] conditions)
     {
-	addItemEntry(iStack, weight, quality, LootUtils.convertToFunctions(functions), LootUtils.convertToConditions(conditions));
+	addItemEntryInternal(iStack, weight, quality, LootUtils.parseFunctions(functions), LootUtils.parseConditions(conditions));
     }
-
+    
     @ZenMethod
-    public void addItemEntry(IItemStack iStack, int weight, int quality, ZenLootFunctionWrapper[] functions, ZenLootConditionWrapper[] conditions)
+    public void addItemEntryJSON(IItemStack iStack, int weight, int quality, String[] functions, String[] conditions)
     {
-	addItemEntry(iStack, weight, quality, LootUtils.convertFunctionWrappers(functions), LootUtils.convertConditionWrappers(conditions));
+	addItemEntryInternal(iStack, weight, quality, LootUtils.parseFunctions(functions), LootUtils.parseConditions(conditions));
     }
-
-    @ZenMethod
-    public void addItemEntry(IItemStack iStack, int weight, int quality, String[] functions, String[] conditions)
-    {
-	addItemEntry(iStack, weight, quality, LootUtils.parseFunctions(functions), LootUtils.parseConditions(conditions));
-    }
-
-    private void addItemEntry(IItemStack iStack, int weight, int quality, LootFunction[] functions, LootCondition[] conditions)
+    
+    private void addItemEntryInternal(IItemStack iStack, int weight, int quality, LootFunction[] functions, LootCondition[] conditions)
     {
 	Item item = MineTweakerMC.getItemStack(iStack).getItem();
 	MineTweakerAPI.apply
@@ -125,28 +114,22 @@ public class ZenLootPoolWrapper
     @ZenMethod
     public void addLootTableEntry(String tableName, int weightIn, int qualityIn)
     {
-	addLootTableEntry(tableName, weightIn, qualityIn, ArrayUtils.EMPTY_STRING_ARRAY);
+	addLootTableEntryHelper(tableName, weightIn, qualityIn, null);
     }
 
     @ZenMethod
-    public void addLootTableEntryMixed(String tableName, int weightIn, int qualityIn, Object[] conditions)
+    public void addLootTableEntryHelper(String tableName, int weightIn, int qualityIn, ZenLootConditionWrapper[] conditions)
     {
-	addLootTableEntry(tableName, weightIn, qualityIn, LootUtils.convertToConditions(conditions));
+	addLootTableEntryInternal(tableName, weightIn, qualityIn, LootUtils.parseConditions(conditions));
     }
     
     @ZenMethod
-    public void addLootTableEntry(String tableName, int weightIn, int qualityIn, ZenLootConditionWrapper[] conditions)
+    public void addLootTableEntryJSON(String tableName, int weightIn, int qualityIn, String[] conditions)
     {
-	addLootTableEntry(tableName, weightIn, qualityIn, LootUtils.convertConditionWrappers(conditions));
+	addLootTableEntryInternal(tableName, weightIn, qualityIn, LootUtils.parseConditions(conditions));
     }
 
-    @ZenMethod
-    public void addLootTableEntry(String tableName, int weightIn, int qualityIn, String[] conditions)
-    {
-	addLootTableEntry(tableName, weightIn, qualityIn, LootUtils.parseConditions(conditions));
-    }
-
-    private void addLootTableEntry(String tableName, int weightIn, int qualityIn, LootCondition[] conditions)
+    private void addLootTableEntryInternal(String tableName, int weightIn, int qualityIn, LootCondition[] conditions)
     {
 	MineTweakerAPI.apply
 	(
