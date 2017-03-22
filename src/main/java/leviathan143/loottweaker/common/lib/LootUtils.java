@@ -12,6 +12,7 @@ import leviathan143.loottweaker.common.LootTweakerMain;
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
 import leviathan143.loottweaker.common.zenscript.*;
+import minetweaker.MineTweakerAPI;
 import minetweaker.api.data.DataMap;
 import minetweaker.api.data.IData;
 import minetweaker.api.item.IItemStack;
@@ -99,7 +100,7 @@ public class LootUtils
     }
 
     //Pools
-    
+
     /**
      * @param name - the name of the loot pool
      * @return a temporary loot pool with that name
@@ -121,44 +122,24 @@ public class LootUtils
 
     //Conditions
 
-    public static LootCondition[] parseConditions(String[] conditions)
+    public static LootCondition[] parseConditions(Object[] conditions)
     {
 	if(conditions == null) return NO_CONDITIONS;
 	LootCondition[] parsedConditions = new LootCondition[conditions.length];
 	for(int c = 0; c < conditions.length; c++)
 	{
-	    parsedConditions[c] = parseCondition("{" + conditions[c] + "}");
+	    if(conditions[c] instanceof String)
+		parsedConditions[c] = parseJSONCondition("{" + conditions[c] + "}");
+	    else if(conditions[c] instanceof ZenLootConditionWrapper)
+		parsedConditions[c] = ((ZenLootConditionWrapper)conditions[c]).condition; 
+	    else MineTweakerAPI.logError(conditions[c] + " is not a String or a LootCondition!");
 	}
 	return parsedConditions;
     }
 
-    private static LootCondition parseCondition(String condition)
+    public static LootCondition parseJSONCondition(String condition)
     {
 	return LOOT_TABLE_GSON_INSTANCE.fromJson(condition, LootCondition.class);
-    }
-
-    public static LootCondition[] convertConditionWrappers(ZenLootConditionWrapper[] wrappers)
-    {
-	if(wrappers == null) return NO_CONDITIONS;
-	LootCondition[] conditions = new LootCondition[wrappers.length];
-	for(int c = 0; c < conditions.length; c++)
-	{
-	    conditions[c] = wrappers[c].condition;
-	}
-	return conditions;
-    }
-
-    public static LootCondition[] convertToConditions(Object[] mixedArray)
-    {
-	if(mixedArray == null) return NO_CONDITIONS;
-	LootCondition[] conditions = new LootCondition[mixedArray.length];
-	for(int o = 0;  o < conditions.length; o++)
-	{
-	    if(mixedArray[o] instanceof ZenLootConditionWrapper) conditions[o] = ((ZenLootConditionWrapper)mixedArray[o]).condition;
-	    else if(mixedArray[o] instanceof String) conditions[o] = parseCondition((String) mixedArray[o]);
-	    else throw new IllegalArgumentException(mixedArray[o] + " is not a String or a LootCondition!");
-	}
-	return conditions;
     }
 
     //Functions
@@ -204,43 +185,23 @@ public class LootUtils
 	return retList.toArray(LootUtils.NO_FUNCTIONS);
     }
 
-    public static LootFunction[] parseFunctions(String[] functions) 
+    public static LootFunction[] parseFunctions(Object[] functions) 
     {
 	if(functions == null) return NO_FUNCTIONS;
 	LootFunction[] parsedFunctions = new LootFunction[functions.length];
-	for(int c = 0; c < functions.length; c++)
+	for(int f = 0; f < functions.length; f++)
 	{
-	    parsedFunctions[c] = parseFunction("{" + functions[c] + "}");
+	    if(functions[f] instanceof String)
+		parsedFunctions[f] = parseJSONFunction("{" + functions[f] + "}");
+	    else if(functions[f] instanceof ZenLootFunctionWrapper)
+		parsedFunctions[f] = ((ZenLootFunctionWrapper)functions[f]).function; 
+	    else MineTweakerAPI.logError(functions[f] + " is not a String or a LootFunction!");
 	}
 	return parsedFunctions;
     }
 
-    private static LootFunction parseFunction(String function) 
+    public static LootFunction parseJSONFunction(String function) 
     {
 	return LOOT_TABLE_GSON_INSTANCE.fromJson(function, LootFunction.class);
-    }
-
-    public static LootFunction[] convertFunctionWrappers(ZenLootFunctionWrapper[] wrappers)
-    {
-	if(wrappers == null) return NO_FUNCTIONS;
-	LootFunction[] functions = new LootFunction[wrappers.length];
-	for(int f = 0; f < functions.length; f++)
-	{
-	    functions[f] = wrappers[f].function;
-	}
-	return functions;
-    }
-
-    public static LootFunction[] convertToFunctions(Object[] mixedArray)
-    {
-	if(mixedArray == null) return NO_FUNCTIONS;
-	LootFunction[] functions = new LootFunction[mixedArray.length];
-	for(int o = 0;  o < functions.length; o++)
-	{
-	    if(mixedArray[o] instanceof ZenLootFunctionWrapper) functions[o] = ((ZenLootFunctionWrapper)mixedArray[o]).function;
-	    else if(mixedArray[o] instanceof String) functions[o] = parseFunction((String) mixedArray[o]);
-	    else throw new IllegalArgumentException(mixedArray[o] + " is not a String or a LootFunction!");
-	}
-	return functions;
     }
 }

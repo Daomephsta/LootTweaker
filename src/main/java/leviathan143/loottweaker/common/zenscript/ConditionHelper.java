@@ -1,6 +1,7 @@
 package leviathan143.loottweaker.common.zenscript;
 
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
+import leviathan143.loottweaker.common.lib.LootUtils;
 import net.minecraft.world.storage.loot.conditions.*;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -30,5 +31,11 @@ public class ConditionHelper
     public static ZenLootConditionWrapper killedByNonPlayer()
     {
 	return new ZenLootConditionWrapper(new KilledByPlayer(true));
+    }
+    
+    @ZenMethod
+    public static ZenLootConditionWrapper parse(String json)
+    {
+	return new ZenLootConditionWrapper(LootUtils.parseJSONCondition("{" + json + "}"));
     }
 }
