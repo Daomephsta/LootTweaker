@@ -83,4 +83,10 @@ public class FunctionHelper
     {
 	return new ZenLootFunctionWrapper(new Smelt(LootUtils.NO_CONDITIONS));
     }
+    
+    @ZenMethod
+    public static ZenLootFunctionWrapper parse(String json)
+    {
+	return new ZenLootFunctionWrapper(LootUtils.parseJSONFunction("{" + json + "}"));
+    }
 }
