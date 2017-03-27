@@ -23,12 +23,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
+import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraft.world.storage.loot.functions.*;
 import net.minecraftforge.fml.common.FMLLog;
 
 public class LootUtils 
 {
-    public static final Gson LOOT_TABLE_GSON_INSTANCE = CommonMethodHandles.getLootTableGSON();
+    public static final Gson LOOT_TABLE_GSON_INSTANCE = new GsonBuilder().registerTypeAdapter(RandomValueRange.class, new RandomValueRange.Serializer()).registerTypeAdapter(LootPool.class, new LootPool.Serializer()).registerTypeAdapter(LootTable.class, new LootTable.Serializer()).registerTypeHierarchyAdapter(LootEntry.class, new PatchedLootEntrySerialiser()).registerTypeHierarchyAdapter(LootFunction.class, new LootFunctionManager.Serializer()).registerTypeHierarchyAdapter(LootCondition.class, new LootConditionManager.Serializer()).registerTypeHierarchyAdapter(LootContext.EntityTarget.class, new LootContext.EntityTarget.Serializer()).create();
     static final Gson PRETTY_PRINTER = new GsonBuilder().setPrettyPrinting().create();
     static final JsonParser parser = new JsonParser();
 
@@ -79,7 +80,7 @@ public class LootUtils
 	    FileWriter writer = new FileWriter(file);
 	    try
 	    {
-		writer.write(prettify(CommonMethodHandles.getLootTableGSON().toJson(table)));
+		writer.write(prettify(LOOT_TABLE_GSON_INSTANCE.toJson(table)));
 	    }
 	    catch(Throwable t)
 	    {
