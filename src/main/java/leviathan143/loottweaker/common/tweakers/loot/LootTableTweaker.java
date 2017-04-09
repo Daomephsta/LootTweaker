@@ -30,16 +30,6 @@ public class LootTableTweaker
     private static Map<ResourceLocation, ZenLootTableWrapper> tweakedTableStorage = Maps.newHashMap();
     public static Set<ResourceLocation> blockLootTables = new HashSet<ResourceLocation>();
 
-    public enum LootTweakType
-    {
-	//Add a new pool
-	ADD,
-	//Modify an existing pool
-	TWEAK,
-	//Remove an existing pool
-	REMOVE;
-    }
-
     @ZenMethod
     public static ZenLootTableWrapper getTable(String tableName)
     {
