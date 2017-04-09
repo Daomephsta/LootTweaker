@@ -1,5 +1,7 @@
 package leviathan143.loottweaker.common.zenscript;
 
+import java.util.List;
+
 import org.apache.commons.lang3.ArrayUtils;
 
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
@@ -17,8 +19,6 @@ import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.functions.LootFunction;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
-import stanhebben.zenscript.util.IAnyDefinition;
-import stanhebben.zenscript.value.IAny;
 
 @ZenClass(Constants.MODID + ".vanilla.loot.LootPool")
 public class ZenLootPoolWrapper 
@@ -147,7 +147,19 @@ public class ZenLootPoolWrapper
 			)
 		);
     }
-
+    
+    @ZenMethod
+    public void setRolls(float minRolls, float maxRolls)
+    {
+	backingPool.setRolls(new RandomValueRange(minRolls, maxRolls));
+    }
+    
+    @ZenMethod
+    public void setBonusRolls(float minBonusRolls, float maxBonusRolls)
+    {
+	backingPool.setBonusRolls(new RandomValueRange(minBonusRolls, maxBonusRolls));
+    }
+    
     public static void applyLootTweaks(LootPool backingPool, LootPool pool)
     {
 	for(LootEntry tempEntry : CommonMethodHandles.getEntriesFromPool(backingPool))
@@ -156,6 +168,13 @@ public class ZenLootPoolWrapper
 	    else pool.addEntry(tempEntry);
 	}
 	CommonMethodHandles.getConditionsFromPool(pool).addAll(CommonMethodHandles.getConditionsFromPool(backingPool));
+	pool.setRolls(backingPool.getRolls());
+	pool.setBonusRolls(backingPool.getBonusRolls());
+    }
+    
+    public LootPool getPool()
+    {
+	return backingPool;
     }
 
     private static class AddLootEntry implements IUndoableAction
