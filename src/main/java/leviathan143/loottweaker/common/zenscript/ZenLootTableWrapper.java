@@ -1,14 +1,13 @@
 package leviathan143.loottweaker.common.zenscript;
 
-import java.util.Map;
+import java.util.List;
 
-import com.google.common.collect.Maps;
+import com.google.common.collect.Lists;
 
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
+import leviathan143.loottweaker.common.lib.IDelayedTweak;
 import leviathan143.loottweaker.common.lib.LootUtils;
-import leviathan143.loottweaker.common.tweakers.loot.LootTableTweaker;
-import leviathan143.loottweaker.common.tweakers.loot.LootTableTweaker.LootTweakType;
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
 import net.minecraft.util.ResourceLocation;
@@ -22,7 +21,7 @@ public class ZenLootTableWrapper
 {
     private ResourceLocation name;
     private final LootTable backingTable;
-    private final Map<String, LootTableTweaker.LootTweakType> lootTweakTypeMap = Maps.<String, LootTableTweaker.LootTweakType>newHashMap();
+    private final List<IDelayedTweak<LootTable, ZenLootTableWrapper>> delayedTweaks = Lists.newArrayList();
     //If true the table is wiped
     private boolean clear;
 
@@ -62,12 +61,10 @@ public class ZenLootTableWrapper
 	    pool = LootUtils.createTemporaryPool(poolName);
 	    backingTable.addPool(pool);
 	}
-	//Don't set the tweak type to TWEAK if the pool already exists
-	if(!lootTweakTypeMap.containsKey(poolName))
-	    lootTweakTypeMap.put(poolName, LootTweakType.TWEAK);
+	delayedTweaks.add(new TweakPool(poolName));
 	return new ZenLootPoolWrapper(pool != null ? pool : backingTable.getPool(poolName));
     }
-
+    
     public void applyLootTweaks(LootTable table)
     {
 	if(clear)
@@ -77,37 +74,29 @@ public class ZenLootTableWrapper
 		iter.remove();
 	    }
 	}
-	for(Map.Entry<String, LootTableTweaker.LootTweakType> lootTweak : lootTweakTypeMap.entrySet())
+	for(IDelayedTweak<LootTable, ZenLootTableWrapper> tweak : delayedTweaks)
 	{
-	    String poolName = lootTweak.getKey();
-	    LootTweakType tweakType = lootTweak.getValue();
-
-	    if(tweakType != LootTweakType.ADD && table.getPool(poolName) == null)
-	    {
-		MineTweakerAPI.logError(String.format("No loot pool with name %s exists!", poolName));
-		continue;
-	    }
-	    switch (tweakType) 
-	    {
-	    case ADD:
-		table.addPool(backingTable.getPool(poolName));
-		break;
-
-	    case TWEAK:
-		ZenLootPoolWrapper.applyLootTweaks(backingTable.getPool(poolName), table.getPool(poolName));
-		break;
-
-	    case REMOVE:
-		table.removePool(poolName);
-		break;
-
-	    default:
-		break;
-	    }
+	    tweak.applyTweak(table, this);
 	}
     }
 
-    private static class AddPool implements IUndoableAction
+    private static class TweakPool implements IDelayedTweak<LootTable, ZenLootTableWrapper>
+    {
+	private String poolName;
+	
+	public TweakPool(String poolName)
+	{
+	    this.poolName = poolName;
+	}
+	
+	@Override
+	public void applyTweak(LootTable table, ZenLootTableWrapper wrapper)
+	{
+	    ZenLootPoolWrapper.applyLootTweaks(wrapper.backingTable.getPool(poolName), table.getPool(poolName));
+	}
+    }
+    
+    private static class AddPool implements IUndoableAction, IDelayedTweak<LootTable, ZenLootTableWrapper>
     {
 	private ZenLootTableWrapper wrapper;
 	private ResourceLocation tableName;
@@ -123,8 +112,13 @@ public class ZenLootTableWrapper
 	@Override
 	public void apply() 
 	{
-	    wrapper.backingTable.addPool(pool);
-	    wrapper.lootTweakTypeMap.put(pool.getName(), LootTweakType.ADD);
+	    wrapper.delayedTweaks.add(this);
+	}
+	
+	@Override
+	public void applyTweak(LootTable table, ZenLootTableWrapper wrapper)
+	{
+	    table.addPool(pool);
 	}
 
 	@Override
@@ -156,7 +150,7 @@ public class ZenLootTableWrapper
 	}
     }
 
-    private static class RemovePool implements IUndoableAction
+    private static class RemovePool implements IUndoableAction, IDelayedTweak<LootTable, ZenLootTableWrapper>
     {
 	private ZenLootTableWrapper wrapper;
 	private ResourceLocation tableName;
@@ -172,7 +166,18 @@ public class ZenLootTableWrapper
 	@Override
 	public void apply() 
 	{
-	    wrapper.lootTweakTypeMap.put(poolName, LootTweakType.REMOVE);
+	    wrapper.delayedTweaks.add(this);
+	}
+
+	@Override
+	public void applyTweak(LootTable table, ZenLootTableWrapper wrapper)
+	{
+	    if(table.getPool(poolName) == null)
+	    {
+		MineTweakerAPI.logError(String.format("No loot pool with name %s exists!", poolName));
+		return;
+	    }
+	    table.removePool(poolName);
 	}
 
 	@Override
