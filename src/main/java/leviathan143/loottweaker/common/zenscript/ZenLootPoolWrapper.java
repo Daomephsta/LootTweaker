@@ -1,8 +1,10 @@
 package leviathan143.loottweaker.common.zenscript;
 
-import java.util.List;
+import java.util.Arrays;
 
 import org.apache.commons.lang3.ArrayUtils;
+
+import com.google.common.base.Objects;
 
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
@@ -17,8 +19,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.functions.LootFunction;
-import stanhebben.zenscript.annotations.ZenClass;
-import stanhebben.zenscript.annotations.ZenMethod;
+import stanhebben.zenscript.annotations.*;
 
 @ZenClass(Constants.MODID + ".vanilla.loot.LootPool")
 public class ZenLootPoolWrapper 
@@ -61,32 +62,42 @@ public class ZenLootPoolWrapper
     }
 
     @ZenMethod
-    public void addItemEntry(IItemStack stack, int weightIn)
+    public void addItemEntry(IItemStack stack, int weightIn, @Optional String name)
     {
-	addItemEntry(stack, weightIn, 1);
+	addItemEntry(stack, weightIn, 1, name);
     }
 
     @ZenMethod
-    public void addItemEntry(IItemStack stack, int weightIn, int qualityIn)
+    public void addItemEntry(IItemStack stack, int weightIn, int qualityIn, @Optional String name)
     {
-	addItemEntryHelper(stack, weightIn, qualityIn, null, null);
+	addItemEntryHelper(stack, weightIn, qualityIn, null, null, name);
     }
     
     @ZenMethod
-    public void addItemEntryHelper(IItemStack iStack, int weight, int quality, ZenLootFunctionWrapper[] functions, ZenLootConditionWrapper[] conditions)
+    public void addItemEntryHelper(IItemStack iStack, int weight, int quality, ZenLootFunctionWrapper[] functions, ZenLootConditionWrapper[] conditions, @Optional String name)
     {
-	addItemEntryInternal(iStack, weight, quality, LootUtils.parseFunctions(functions), LootUtils.parseConditions(conditions));
+	addItemEntryInternal(iStack, weight, quality, LootUtils.parseFunctions(functions), LootUtils.parseConditions(conditions), name);
     }
     
     @ZenMethod
-    public void addItemEntryJSON(IItemStack iStack, int weight, int quality, String[] functions, String[] conditions)
+    public void addItemEntryJSON(IItemStack iStack, int weight, int quality, String[] functions, String[] conditions, @Optional String name)
     {
-	addItemEntryInternal(iStack, weight, quality, LootUtils.parseFunctions(functions), LootUtils.parseConditions(conditions));
+	addItemEntryInternal(iStack, weight, quality, LootUtils.parseFunctions(functions), LootUtils.parseConditions(conditions), name);
     }
     
-    private void addItemEntryInternal(IItemStack iStack, int weight, int quality, LootFunction[] functions, LootCondition[] conditions)
-    {
+    private void addItemEntryInternal(IItemStack iStack, int weight, int quality, LootFunction[] functions, LootCondition[] conditions, String name)
+    { 
 	Item item = MineTweakerMC.getItemStack(iStack).getItem();
+	if(name == null)
+	{
+	    name = item.getRegistryName().toString() + "-lt";
+	    int counter = 1;
+	    while(backingPool.getEntry(name) != null)
+	    {
+		name = item.getRegistryName().toString() + "-lt#" + ++counter;
+	    }
+	}
+	    
 	MineTweakerAPI.apply
 	(
 		new AddLootEntry
@@ -99,38 +110,47 @@ public class ZenLootPoolWrapper
 				quality,
 				LootUtils.addStackFunctions(iStack, functions),
 				conditions,
-				item.getRegistryName().toString() + "_" + iStack.getDamage()
+				name
 				)
 			)
 		);
     }
 
     @ZenMethod
-    public void addLootTableEntry(String tableName, int weightIn)
+    public void addLootTableEntry(String tableName, int weightIn, @Optional String name)
     {
-	addLootTableEntry(tableName, weightIn, 1);
+	addLootTableEntry(tableName, weightIn, 1, name);
     }
 
     @ZenMethod
-    public void addLootTableEntry(String tableName, int weightIn, int qualityIn)
+    public void addLootTableEntry(String tableName, int weightIn, int qualityIn, @Optional String name)
     {
-	addLootTableEntryHelper(tableName, weightIn, qualityIn, null);
+	addLootTableEntryHelper(tableName, weightIn, qualityIn, null, name);
     }
 
     @ZenMethod
-    public void addLootTableEntryHelper(String tableName, int weightIn, int qualityIn, ZenLootConditionWrapper[] conditions)
+    public void addLootTableEntryHelper(String tableName, int weightIn, int qualityIn, ZenLootConditionWrapper[] conditions, @Optional String name)
     {
-	addLootTableEntryInternal(tableName, weightIn, qualityIn, LootUtils.parseConditions(conditions));
+	addLootTableEntryInternal(tableName, weightIn, qualityIn, LootUtils.parseConditions(conditions), name);
     }
     
     @ZenMethod
-    public void addLootTableEntryJSON(String tableName, int weightIn, int qualityIn, String[] conditions)
+    public void addLootTableEntryJSON(String tableName, int weightIn, int qualityIn, String[] conditions, @Optional String name)
     {
-	addLootTableEntryInternal(tableName, weightIn, qualityIn, LootUtils.parseConditions(conditions));
+	addLootTableEntryInternal(tableName, weightIn, qualityIn, LootUtils.parseConditions(conditions), name);
     }
 
-    private void addLootTableEntryInternal(String tableName, int weightIn, int qualityIn, LootCondition[] conditions)
+    private void addLootTableEntryInternal(String tableName, int weightIn, int qualityIn, LootCondition[] conditions, String name)
     {
+	if(name == null) 
+	{ 	
+	    name = tableName + "-lt"; 
+	    int counter = 1;
+	    while(backingPool.getEntry(name) != null)
+	    {
+		name = tableName + "-lt#" + ++counter;
+	    }
+	}
 	MineTweakerAPI.apply
 	(
 		new AddLootEntry
@@ -142,7 +162,7 @@ public class ZenLootPoolWrapper
 				weightIn, 
 				qualityIn, 
 				conditions, 
-				tableName
+				name
 				)
 			)
 		);
