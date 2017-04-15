@@ -10,8 +10,7 @@ import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
 import leviathan143.loottweaker.common.lib.LootUtils;
 import leviathan143.loottweaker.common.loot.LootEntryPendingRemoval;
-import minetweaker.IUndoableAction;
-import minetweaker.MineTweakerAPI;
+import minetweaker.*;
 import minetweaker.api.item.IItemStack;
 import minetweaker.api.minecraft.MineTweakerMC;
 import net.minecraft.item.Item;
@@ -52,6 +51,11 @@ public class ZenLootPoolWrapper
     @ZenMethod
     public void removeLootTableEntry(String tableName)
     {
+	if(!LootTableList.getAll().contains(new ResourceLocation(tableName)))
+	{
+	    MineTweakerImplementationAPI.logger.logError(tableName + " is not a loot table!");
+	    return;
+	}
 	removeEntry(tableName);
     }
 
