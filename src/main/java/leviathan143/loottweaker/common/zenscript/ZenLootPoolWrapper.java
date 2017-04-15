@@ -29,13 +29,13 @@ public class ZenLootPoolWrapper
     {
 	backingPool = pool;
     }
-    
+
     @ZenMethod
     public void addConditionsHelper(ZenLootConditionWrapper[] conditions)
     {
 	MineTweakerAPI.apply(new AddConditions(backingPool, LootUtils.parseConditions(conditions)));
     }
-    
+
     public void addConditionsJSON(String[] conditions)
     {
 	MineTweakerAPI.apply(new AddConditions(backingPool, LootUtils.parseConditions(conditions)));
@@ -76,19 +76,19 @@ public class ZenLootPoolWrapper
     {
 	addItemEntryHelper(stack, weightIn, qualityIn, null, null, name);
     }
-    
+
     @ZenMethod
     public void addItemEntryHelper(IItemStack iStack, int weight, int quality, ZenLootFunctionWrapper[] functions, ZenLootConditionWrapper[] conditions, @Optional String name)
     {
 	addItemEntryInternal(iStack, weight, quality, LootUtils.parseFunctions(functions), LootUtils.parseConditions(conditions), name);
     }
-    
+
     @ZenMethod
     public void addItemEntryJSON(IItemStack iStack, int weight, int quality, String[] functions, String[] conditions, @Optional String name)
     {
 	addItemEntryInternal(iStack, weight, quality, LootUtils.parseFunctions(functions), LootUtils.parseConditions(conditions), name);
     }
-    
+
     private void addItemEntryInternal(IItemStack iStack, int weight, int quality, LootFunction[] functions, LootCondition[] conditions, String name)
     { 
 	Item item = MineTweakerMC.getItemStack(iStack).getItem();
@@ -101,7 +101,7 @@ public class ZenLootPoolWrapper
 		name = item.getRegistryName().toString() + "-lt#" + ++counter;
 	    }
 	}
-	    
+
 	MineTweakerAPI.apply
 	(
 		new AddLootEntry
@@ -137,7 +137,7 @@ public class ZenLootPoolWrapper
     {
 	addLootTableEntryInternal(tableName, weightIn, qualityIn, LootUtils.parseConditions(conditions), name);
     }
-    
+
     @ZenMethod
     public void addLootTableEntryJSON(String tableName, int weightIn, int qualityIn, String[] conditions, @Optional String name)
     {
@@ -171,31 +171,38 @@ public class ZenLootPoolWrapper
 			)
 		);
     }
-    
+
     @ZenMethod
     public void setRolls(float minRolls, float maxRolls)
     {
 	backingPool.setRolls(new RandomValueRange(minRolls, maxRolls));
     }
-    
+
     @ZenMethod
     public void setBonusRolls(float minBonusRolls, float maxBonusRolls)
     {
 	backingPool.setBonusRolls(new RandomValueRange(minBonusRolls, maxBonusRolls));
     }
-    
+
     public static void applyLootTweaks(LootPool backingPool, LootPool pool)
     {
 	for(LootEntry tempEntry : CommonMethodHandles.getEntriesFromPool(backingPool))
 	{
-	    if(tempEntry instanceof LootEntryPendingRemoval) pool.removeEntry(tempEntry.getEntryName());
+	    if(tempEntry instanceof LootEntryPendingRemoval) 
+	    {
+		if(pool.removeEntry(tempEntry.getEntryName()) == null)
+		{
+		    MineTweakerImplementationAPI.logger.logError("No entry with name " + tempEntry.getEntryName());
+		    return;
+		}
+	    }
 	    else pool.addEntry(tempEntry);
 	}
 	CommonMethodHandles.getConditionsFromPool(pool).addAll(CommonMethodHandles.getConditionsFromPool(backingPool));
 	pool.setRolls(backingPool.getRolls());
 	pool.setBonusRolls(backingPool.getBonusRolls());
     }
-    
+
     public LootPool getPool()
     {
 	return backingPool;
@@ -292,7 +299,7 @@ public class ZenLootPoolWrapper
 	    return null;
 	}
     }
-    
+
     private static class AddConditions implements IUndoableAction
     {
 	private LootCondition[] conditions;
