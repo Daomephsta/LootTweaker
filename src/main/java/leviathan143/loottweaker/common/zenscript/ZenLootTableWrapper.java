@@ -138,9 +138,11 @@ public class ZenLootTableWrapper
 	    return true;
 	}
 
-	//No undo needed, the tweak map is cleared on reload anyway
 	@Override
-	public void undo() {}
+	public void undo() 
+	{
+	    wrapper.delayedTweaks.remove(this);
+	}
 
 	@Override
 	public String describe() 
@@ -197,9 +199,11 @@ public class ZenLootTableWrapper
 	    return true;
 	}
 
-	//No undo needed, the tweak map is cleared on reload anyway
 	@Override
-	public void undo() {}
+	public void undo() 
+	{
+	    wrapper.delayedTweaks.remove(this);
+	}
 
 	@Override
 	public String describe() 
