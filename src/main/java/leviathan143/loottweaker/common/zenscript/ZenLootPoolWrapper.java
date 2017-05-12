@@ -1,15 +1,16 @@
 package leviathan143.loottweaker.common.zenscript;
 
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
 
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
+import leviathan143.loottweaker.common.lib.IDelayedTweak;
 import leviathan143.loottweaker.common.lib.LootUtils;
-import leviathan143.loottweaker.common.loot.LootEntryPendingRemoval;
 import minetweaker.*;
 import minetweaker.api.item.IItemStack;
 import minetweaker.api.minecraft.MineTweakerMC;
@@ -24,6 +25,7 @@ import stanhebben.zenscript.annotations.*;
 public class ZenLootPoolWrapper 
 {
     private final LootPool backingPool;
+    private final List<IDelayedTweak<LootPool, ZenLootPoolWrapper>> delayedTweaks = Lists.newArrayList();
 
     public ZenLootPoolWrapper(LootPool pool) 
     {
@@ -33,12 +35,12 @@ public class ZenLootPoolWrapper
     @ZenMethod
     public void addConditionsHelper(ZenLootConditionWrapper[] conditions)
     {
-	MineTweakerAPI.apply(new AddConditions(backingPool, LootUtils.parseConditions(conditions)));
+	MineTweakerAPI.apply(new AddConditions(this, LootUtils.parseConditions(conditions)));
     }
 
     public void addConditionsJSON(String[] conditions)
     {
-	MineTweakerAPI.apply(new AddConditions(backingPool, LootUtils.parseConditions(conditions)));
+	MineTweakerAPI.apply(new AddConditions(this, LootUtils.parseConditions(conditions)));
     }
 
     @ZenMethod
@@ -62,7 +64,7 @@ public class ZenLootPoolWrapper
     @ZenMethod
     public void removeEntry(String entryName)
     {
-	MineTweakerAPI.apply(new RemoveLootEntry(backingPool, entryName));
+	MineTweakerAPI.apply(new RemoveLootEntry(this, entryName));
     }
 
     @ZenMethod
@@ -106,7 +108,7 @@ public class ZenLootPoolWrapper
 	(
 		new AddLootEntry
 		(
-			backingPool,
+			this,
 			new LootEntryItem
 			(
 				item,
@@ -159,7 +161,7 @@ public class ZenLootPoolWrapper
 	(
 		new AddLootEntry
 		(
-			backingPool,
+			this,
 			new LootEntryTable
 			(
 				new ResourceLocation(tableName), 
@@ -175,32 +177,21 @@ public class ZenLootPoolWrapper
     @ZenMethod
     public void setRolls(float minRolls, float maxRolls)
     {
-	backingPool.setRolls(new RandomValueRange(minRolls, maxRolls));
+	MineTweakerAPI.apply(new SetRolls(this, new RandomValueRange(minRolls, maxRolls)));
     }
 
     @ZenMethod
     public void setBonusRolls(float minBonusRolls, float maxBonusRolls)
     {
-	backingPool.setBonusRolls(new RandomValueRange(minBonusRolls, maxBonusRolls));
+	MineTweakerAPI.apply(new SetBonusRolls(this, new RandomValueRange(minBonusRolls, maxBonusRolls)));
     }
 
-    public static void applyLootTweaks(LootPool backingPool, LootPool pool)
+    public void applyLootTweaks(LootPool pool)
     {
-	for(LootEntry tempEntry : CommonMethodHandles.getEntriesFromPool(backingPool))
+	for(IDelayedTweak<LootPool, ZenLootPoolWrapper> tweak : delayedTweaks)
 	{
-	    if(tempEntry instanceof LootEntryPendingRemoval) 
-	    {
-		if(pool.removeEntry(tempEntry.getEntryName()) == null)
-		{
-		    MineTweakerImplementationAPI.logger.logError("No entry with name " + tempEntry.getEntryName());
-		    return;
-		}
-	    }
-	    else pool.addEntry(tempEntry);
+	    tweak.applyTweak(pool, this);
 	}
-	CommonMethodHandles.getConditionsFromPool(pool).addAll(CommonMethodHandles.getConditionsFromPool(backingPool));
-	pool.setRolls(backingPool.getRolls());
-	pool.setBonusRolls(backingPool.getBonusRolls());
     }
 
     public LootPool getPool()
@@ -208,113 +199,167 @@ public class ZenLootPoolWrapper
 	return backingPool;
     }
 
-    private static class AddLootEntry implements IUndoableAction
+    private static class AddLootEntry extends UndoableDelayedPoolTweak
     {
 	private LootEntry entry;
-	private LootPool pool;
 
-	public AddLootEntry(LootPool pool, LootEntry entry) 
+	public AddLootEntry(ZenLootPoolWrapper wrapper, LootEntry entry) 
 	{
+	    super(wrapper);
 	    this.entry = entry;
-	    this.pool = pool;
 	}
-
+	
 	@Override
-	public void apply() 
+	public void applyTweak(LootPool pool, ZenLootPoolWrapper zenWrapper)
 	{
 	    pool.addEntry(entry);
 	}
 
 	@Override
-	public boolean canUndo()
-	{
-	    return true;
-	}
-
-	//No undo needed, the tweak map is cleared on reload anyway
-	@Override
-	public void undo() {}
-
-	@Override
 	public String describe() 
 	{
-	    return String.format("Adding entry %s to pool %s", entry.getEntryName(), pool.getName());
+	    return String.format("Adding entry %s to pool %s", entry.getEntryName(), wrapper.backingPool.getName());
 	}
 
 	@Override
 	public String describeUndo() 
 	{
-	    return String.format("Removing entry %s from pool %s", entry.getEntryName(), pool.getName());
-	}
-
-	@Override
-	public Object getOverrideKey() 
-	{
-	    return null;
+	    return String.format("Removing entry %s from pool %s", entry.getEntryName(), wrapper.backingPool.getName());
 	}
     }
 
-    private static class RemoveLootEntry implements IUndoableAction
+    private static class RemoveLootEntry extends UndoableDelayedPoolTweak
     {
 	private String entryName;
-	private LootPool pool;
 
-	public RemoveLootEntry(LootPool pool, String entryName) 
+	public RemoveLootEntry(ZenLootPoolWrapper wrapper, String entryName) 
 	{
+	    super(wrapper);
 	    this.entryName = entryName;
-	    this.pool = pool;
 	}
 
 	@Override
-	public void apply() 
+	public void applyTweak(LootPool pool, ZenLootPoolWrapper zenWrapper)
 	{
-	    pool.addEntry(new LootEntryPendingRemoval(entryName));
+	    if(pool.removeEntry(entryName) == null)
+	    {
+		MineTweakerImplementationAPI.logger.logError("No entry with name " + entryName);
+		return;
+	    }
 	}
-
-	@Override
-	public boolean canUndo()
-	{
-	    return true;
-	}
-
-	//No undo needed, the tweak map is cleared on reload anyway
-	@Override
-	public void undo() {}
 
 	@Override
 	public String describe() 
 	{
-	    return String.format("Removing entry %s from pool %s", entryName, pool.getName());
+	    return String.format("Removing entry %s from pool %s", entryName, wrapper.backingPool.getName());
 	}
 
 	@Override
 	public String describeUndo() 
 	{
-	    return String.format("Adding entry %s to pool %s", entryName, pool.getName());
-	}
-
-	@Override
-	public Object getOverrideKey() 
-	{
-	    return null;
+	    return String.format("Adding entry %s to pool %s", entryName, wrapper.backingPool.getName());
 	}
     }
 
-    private static class AddConditions implements IUndoableAction
+    private static class AddConditions extends UndoableDelayedPoolTweak
     {
 	private LootCondition[] conditions;
-	private LootPool pool;
 
-	public AddConditions(LootPool pool, LootCondition[] conditions) 
+	public AddConditions(ZenLootPoolWrapper wrapper, LootCondition[] conditions) 
 	{
+	    super(wrapper);
 	    this.conditions = conditions;
-	    this.pool = pool;
+	}
+
+	public void applyTweak(LootPool pool, ZenLootPoolWrapper zenWrapper)
+	{
+	    Collections.addAll(CommonMethodHandles.getConditionsFromPool(pool), conditions);
 	}
 
 	@Override
+	public String describe() 
+	{
+	    return String.format("Adding conditions %s to pool %s", ArrayUtils.toString(conditions), wrapper.backingPool.getName());
+	}
+
+	@Override
+	public String describeUndo() 
+	{
+	    return String.format("Removing conditions %s from pool %s", ArrayUtils.toString(conditions), wrapper.backingPool.getName());
+	}
+    }
+    
+    private static class SetRolls extends UndoableDelayedPoolTweak
+    {
+	private RandomValueRange range;
+	
+	public SetRolls(ZenLootPoolWrapper wrapper, RandomValueRange range)
+	{
+	    super(wrapper);
+	    this.range = range;
+	}
+	
+	@Override
+	public void applyTweak(LootPool lootPool, ZenLootPoolWrapper zenWrapper)
+	{
+	    lootPool.setRolls(range);
+	}
+
+	@Override
+	public String describe()
+	{
+	    return String.format("Setting rolls for pool %s to (%d, %d)", wrapper.backingPool.getName(), range.getMin(), range.getMax());
+	}
+
+	@Override
+	public String describeUndo()
+	{
+	    return String.format("Resetting rolls for pool %s to defaults", wrapper.backingPool.getName());
+	}
+    }
+    
+    private static class SetBonusRolls extends UndoableDelayedPoolTweak
+    {
+	private RandomValueRange range;
+	
+	public SetBonusRolls(ZenLootPoolWrapper wrapper, RandomValueRange range)
+	{
+	    super(wrapper);
+	    this.range = range;
+	}
+	
+	@Override
+	public void applyTweak(LootPool lootPool, ZenLootPoolWrapper zenWrapper)
+	{
+	    lootPool.setBonusRolls(range);
+	}
+
+	@Override
+	public String describe()
+	{
+	    return String.format("Setting bonusRolls for pool %s to (%d, %d)", wrapper.backingPool.getName(), range.getMin(), range.getMax());
+	}
+
+	@Override
+	public String describeUndo()
+	{
+	    return String.format("Resetting bonusRolls for pool %s to defaults", wrapper.backingPool.getName());
+	}
+    }
+    
+    private static abstract class UndoableDelayedPoolTweak implements IUndoableAction, IDelayedTweak<LootPool, ZenLootPoolWrapper>
+    {
+	protected ZenLootPoolWrapper wrapper;
+	
+	public UndoableDelayedPoolTweak(ZenLootPoolWrapper wrapper)
+	{
+	    this.wrapper = wrapper;
+	}
+	
+	@Override
 	public void apply() 
 	{
-	    LootUtils.addConditionsToPool(pool, conditions);
+	    wrapper.delayedTweaks.add(this);
 	}
 
 	@Override
@@ -323,20 +368,10 @@ public class ZenLootPoolWrapper
 	    return true;
 	}
 
-	//No undo needed, the tweak map is cleared on reload anyway
 	@Override
-	public void undo() {}
-
-	@Override
-	public String describe() 
+	public void undo() 
 	{
-	    return String.format("Adding conditions %s to pool %s", ArrayUtils.toString(conditions), pool.getName());
-	}
-
-	@Override
-	public String describeUndo() 
-	{
-	    return String.format("Removing conditions %s from pool %s", ArrayUtils.toString(conditions), pool.getName());
+	    wrapper.delayedTweaks.remove(this);
 	}
 
 	@Override
