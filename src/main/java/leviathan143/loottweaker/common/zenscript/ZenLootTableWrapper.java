@@ -1,8 +1,10 @@
 package leviathan143.loottweaker.common.zenscript;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
@@ -22,6 +24,7 @@ public class ZenLootTableWrapper
     private ResourceLocation name;
     private final LootTable backingTable;
     private final List<IDelayedTweak<LootTable, ZenLootTableWrapper>> delayedTweaks = Lists.newArrayList();
+    private final Map<String, ZenLootPoolWrapper> wrapperCache = Maps.newHashMap();
     //If true the table is wiped
     private boolean clear;
 
@@ -42,7 +45,9 @@ public class ZenLootTableWrapper
     {
 	LootPool pool = LootUtils.createPool(poolName, minRolls, maxRolls, minBonusRolls, maxBonusRolls);
 	MineTweakerAPI.apply(new AddPool(this, name, pool));
-	return new ZenLootPoolWrapper(pool);
+	ZenLootPoolWrapper wrapper = new ZenLootPoolWrapper(pool);
+	wrapperCache.put(poolName, wrapper);
+	return wrapper;
     }
 
     @ZenMethod
@@ -66,7 +71,9 @@ public class ZenLootTableWrapper
 	    }
 	    delayedTweaks.add(new TweakPool(poolName));
 	} 
-	return new ZenLootPoolWrapper(pool != null ? pool : backingTable.getPool(poolName));
+	if(!wrapperCache.containsKey(poolName))
+	    wrapperCache.put(poolName, new ZenLootPoolWrapper(pool != null ? pool : backingTable.getPool(poolName)));
+	return wrapperCache.get(poolName);
     }
     
     public void applyLootTweaks(LootTable table)
@@ -96,7 +103,7 @@ public class ZenLootTableWrapper
 	@Override
 	public void applyTweak(LootTable table, ZenLootTableWrapper wrapper)
 	{
-	    ZenLootPoolWrapper.applyLootTweaks(wrapper.backingTable.getPool(poolName), table.getPool(poolName));
+	    wrapper.wrapperCache.get(poolName).applyLootTweaks(table.getPool(poolName));
 	}
     }
     
