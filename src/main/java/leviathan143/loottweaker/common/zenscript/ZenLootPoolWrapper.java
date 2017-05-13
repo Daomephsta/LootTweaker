@@ -19,6 +19,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.functions.LootFunction;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import stanhebben.zenscript.annotations.*;
 
 @ZenClass(Constants.MODID + ".vanilla.loot.LootPool")
@@ -95,14 +96,7 @@ public class ZenLootPoolWrapper
     { 
 	Item item = MineTweakerMC.getItemStack(iStack).getItem();
 	if(name == null)
-	{
-	    name = item.getRegistryName().toString() + "-lt";
-	    int counter = 1;
-	    while(backingPool.getEntry(name) != null)
-	    {
-		name = item.getRegistryName().toString() + "-lt#" + ++counter;
-	    }
-	}
+	    name = item.getRegistryName().toString();
 
 	MineTweakerAPI.apply
 	(
@@ -148,15 +142,8 @@ public class ZenLootPoolWrapper
 
     private void addLootTableEntryInternal(String tableName, int weightIn, int qualityIn, LootCondition[] conditions, String name)
     {
-	if(name == null) 
-	{ 	
-	    name = tableName + "-lt"; 
-	    int counter = 1;
-	    while(backingPool.getEntry(name) != null)
-	    {
-		name = tableName + "-lt#" + ++counter;
-	    }
-	}
+	if(name == null)
+	    name = tableName;
 	MineTweakerAPI.apply
 	(
 		new AddLootEntry
@@ -212,6 +199,17 @@ public class ZenLootPoolWrapper
 	@Override
 	public void applyTweak(LootPool pool, ZenLootPoolWrapper zenWrapper)
 	{
+	    if(pool.getEntry(entry.getEntryName()) != null)
+	    {
+		int counter = 1;
+		String baseName = entry.getEntryName();
+		String name = baseName;
+		while(pool.getEntry(name) != null)
+		{
+		    name = baseName + "-lt#" + ++counter;
+		}
+		ObfuscationReflectionHelper.setPrivateValue(LootEntry.class, entry, name, "entryName");
+	    }
 	    pool.addEntry(entry);
 	}
 
