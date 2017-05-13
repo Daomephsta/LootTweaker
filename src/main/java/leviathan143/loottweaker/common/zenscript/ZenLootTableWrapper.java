@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.sun.xml.internal.ws.spi.db.WrapperComposite;
 
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
@@ -130,6 +131,7 @@ public class ZenLootTableWrapper
 	public void applyTweak(LootTable table, ZenLootTableWrapper wrapper)
 	{
 	    table.addPool(pool);
+	    wrapper.wrapperCache.get(pool.getName()).applyLootTweaks(pool);
 	}
 
 	@Override
