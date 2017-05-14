@@ -306,7 +306,7 @@ public class ZenLootPoolWrapper
 	@Override
 	public String describe()
 	{
-	    return String.format("Setting rolls for pool %s to (%d, %d)", wrapper.backingPool.getName(), range.getMin(), range.getMax());
+	    return String.format("Setting rolls for pool %s to (%f, %f)", wrapper.backingPool.getName(), range.getMin(), range.getMax());
 	}
 
 	@Override
@@ -335,7 +335,7 @@ public class ZenLootPoolWrapper
 	@Override
 	public String describe()
 	{
-	    return String.format("Setting bonusRolls for pool %s to (%d, %d)", wrapper.backingPool.getName(), range.getMin(), range.getMax());
+	    return String.format("Setting bonusRolls for pool %s to (%f, %f)", wrapper.backingPool.getName(), range.getMin(), range.getMax());
 	}
 
 	@Override
