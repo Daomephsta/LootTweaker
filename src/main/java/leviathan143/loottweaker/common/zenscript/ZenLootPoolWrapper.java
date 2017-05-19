@@ -245,9 +245,6 @@ public class ZenLootPoolWrapper
 	{
 	    super(wrapper);
 	    this.entryName = entryName;
-	    System.out.println(wrapper);
-	    if(wrapper != null) System.out.println(wrapper.backingPool);
-	    System.out.println(entryName);
 	}
 
 	@Override
