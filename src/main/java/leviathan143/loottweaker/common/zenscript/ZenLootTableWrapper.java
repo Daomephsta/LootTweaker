@@ -63,16 +63,12 @@ public class ZenLootTableWrapper
 	LootPool pool = backingTable.getPool(poolName);
 	if(pool == null)
 	{
-	    //Create a temporary pool if the pool is a default pool
-	    if(LootUtils.DEFAULT_POOL_REGEX.matcher(poolName).find())
-	    {
-		pool = LootUtils.createTemporaryPool(poolName);
-		backingTable.addPool(pool);
-	    }
+	    pool = LootUtils.createTemporaryPool(poolName);
+	    backingTable.addPool(pool);
 	    delayedTweaks.add(new TweakPool(poolName));
 	} 
 	if(!wrapperCache.containsKey(poolName))
-	    wrapperCache.put(poolName, new ZenLootPoolWrapper(pool != null ? pool : backingTable.getPool(poolName)));
+	    wrapperCache.put(poolName, new ZenLootPoolWrapper(pool));
 	return wrapperCache.get(poolName);
     }
     
