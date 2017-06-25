@@ -65,7 +65,8 @@ public class ZenLootTableWrapper
 	{
 	    pool = LootUtils.createTemporaryPool(poolName);
 	    backingTable.addPool(pool);
-	    delayedTweaks.add(new TweakPool(poolName));
+	    //Check that an action doesn't already exist
+	    if(!wrapperCache.containsKey(poolName)) delayedTweaks.add(new TweakPool(poolName));
 	} 
 	if(!wrapperCache.containsKey(poolName))
 	    wrapperCache.put(poolName, new ZenLootPoolWrapper(pool));
