@@ -74,13 +74,7 @@ public class ZenLootTableWrapper
     
     public void applyLootTweaks(LootTable table)
     {
-	if(clear)
-	{
-	    for(java.util.Iterator<LootPool> iter = CommonMethodHandles.getPoolsFromTable(table).iterator(); iter.hasNext();)
-	    {
-		iter.remove();
-	    }
-	}
+	if(clear) CommonMethodHandles.getPoolsFromTable(table).clear();
 	for(IDelayedTweak<LootTable, ZenLootTableWrapper> tweak : delayedTweaks)
 	{
 	    tweak.applyTweak(table, this);
