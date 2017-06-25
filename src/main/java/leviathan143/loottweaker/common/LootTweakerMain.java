@@ -19,7 +19,7 @@ public class LootTweakerMain
 	{
 		public static final String MODNAME = "LootTweaker";
 		public static final  String  MODID = "loottweaker";
-		public static final  String  VERSION = "0.0.6.2";
+		public static final  String  VERSION = "0.0.6.3";
 		public static final String DEPENDENCIES = "required-after:MineTweaker3; before:jeresources";
 		public static final  String  CLIENT_PROXY_PATH = "leviathan143.loottweaker.client.ClientProxy";
 		public static final  String  SERVER_PROXY_PATH = "leviathan143.loottweaker.server.ServerProxy";
