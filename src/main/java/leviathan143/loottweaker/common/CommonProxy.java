@@ -2,14 +2,17 @@ package leviathan143.loottweaker.common;
 
 import java.io.File;
 
+import crafttweaker.mc1120.commands.CTChatCommand;
 import leviathan143.loottweaker.common.commands.CommandLootTables;
 import leviathan143.loottweaker.common.handlers.DropHandler;
-import leviathan143.loottweaker.common.tweakers.RegisterZenscript;
 import leviathan143.loottweaker.common.tweakers.loot.LootTableTweaker;
-import minetweaker.MineTweakerImplementationAPI;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 
 public class CommonProxy 
 {	
@@ -22,8 +25,7 @@ public class CommonProxy
 
 	public void init(FMLInitializationEvent event)
 	{
-		RegisterZenscript.register();
-		MineTweakerImplementationAPI.addMineTweakerCommand(CommandLootTables.NAME, CommandLootTables.DESCRIPTION, new CommandLootTables());
+		CTChatCommand.registerCommand(new CommandLootTables());
 	}
 
 	public void postInit(FMLPostInitializationEvent event)

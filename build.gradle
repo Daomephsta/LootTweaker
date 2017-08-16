@@ -9,7 +9,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -20,15 +20,12 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "1.11.2-0.0.6.3"
+version = "1.12-0.0.6.3"
 group= "leviathan143.loottweaker" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "LootTweaker"
 
-targetCompatibility = "1.7"
-sourceCompatibility = "1.7"
-
 minecraft {
-    version = "1.11.2-13.20.0.2228"
+    version = "1.12-14.21.1.2443"
     runDir = "run"
     
     // the mappings can be changed at any time, and must be in the following format.
@@ -36,7 +33,7 @@ minecraft {
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not allways work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "stable_29"
+    mappings = "snapshot_20170624"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
@@ -49,8 +46,11 @@ repositories
 }
 
 dependencies {
-	deobfCompile "mezz.jei:jei_1.11.2:4.2.7.241"
-	compile fileTree(dir: 'deps/1.11.2', include: '*.jar')
+  // compile against the JEI API but do not include it at runtime
+  deobfProvided "mezz.jei:jei_1.12.1:4.7.5.87:api"
+  // at runtime, use the full JEI jar
+  runtime "mezz.jei:jei_1.12.1:4.7.5.87"
+	compile fileTree(dir: 'deps/1.12', include: '*.jar')
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"

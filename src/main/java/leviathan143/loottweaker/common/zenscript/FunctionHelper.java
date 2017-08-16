@@ -6,8 +6,9 @@ import com.google.common.collect.Lists;
 
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.lib.LootUtils;
-import minetweaker.MineTweakerAPI;
-import minetweaker.MineTweakerImplementationAPI;
+import crafttweaker.CraftTweakerAPI;
+import crafttweaker.CrafttweakerImplementationAPI;
+import crafttweaker.annotations.ZenRegister;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.nbt.*;
 import net.minecraft.world.storage.loot.RandomValueRange;
@@ -15,6 +16,7 @@ import net.minecraft.world.storage.loot.functions.*;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
+@ZenRegister
 @ZenClass(Constants.MODID + ".vanilla.loot.Functions")
 public class FunctionHelper
 {
@@ -27,7 +29,7 @@ public class FunctionHelper
 	    Enchantment ench = Enchantment.getEnchantmentByLocation(id);
 	    if(ench == null)
 	    {
-		MineTweakerImplementationAPI.logger.logError(id + " is not a valid enchantment id");
+		CrafttweakerImplementationAPI.logger.logError(id + " is not a valid enchantment id");
 		continue;
 	    }
 	    enchantments.add(ench);
@@ -56,7 +58,7 @@ public class FunctionHelper
     @ZenMethod
     public static ZenLootFunctionWrapper setDamage(float min, float max)
     {
-	if(max > 1.0F) MineTweakerAPI.logError("Items cannot recieve more than 100% damage!");
+	if(max > 1.0F) CraftTweakerAPI.logError("Items cannot recieve more than 100% damage!");
 	return new ZenLootFunctionWrapper(new SetDamage(LootUtils.NO_CONDITIONS, new RandomValueRange(min, max)));
     }
     

@@ -8,10 +8,10 @@ import java.util.List;
 
 import org.apache.logging.log4j.Level;
 
-import com.google.common.base.Throwables;
 import com.google.common.cache.LoadingCache;
 import com.google.gson.Gson;
 
+import leviathan143.loottweaker.common.LootTweakerMain;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootEntry;
@@ -19,7 +19,6 @@ import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
 import net.minecraft.world.storage.loot.LootTableManager;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
-import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class CommonMethodHandles 
@@ -48,12 +47,12 @@ public class CommonMethodHandles
 			f = ReflectionHelper.findField(LootTableManager.class, "c", "field_186527_c" , "registeredLootTables");
 			lootTableManager$registeredLootTablesGetter = MethodHandles.lookup().unreflectGetter(f);
 			
-			m = ReflectionHelper.findMethod(EntityLiving.class, null, new String[] {"J", "func_184647_J", "getLootTable"});
+			m = ReflectionHelper.findMethod(EntityLiving.class, "getLootTable", /*"J"*/"func_184647_J");
 			entityLiving$getLootTable = MethodHandles.lookup().unreflect(m);
 		} 
 		catch (IllegalAccessException e) 
 		{
-			FMLLog.log(Level.ERROR, "Failed to initialize MethodHandles!");
+			LootTweakerMain.logger.log(Level.ERROR, "Failed to initialize MethodHandles!");
 			e.printStackTrace();
 		}
 	}
@@ -67,7 +66,7 @@ public class CommonMethodHandles
 		catch (Throwable t) 
 		{
 			t.printStackTrace();
-			throw Throwables.propagate(t);
+			throw new RuntimeException(t);
 		}
 	}
 	
@@ -80,7 +79,7 @@ public class CommonMethodHandles
 		catch (Throwable t) 
 		{
 			t.printStackTrace();
-			throw Throwables.propagate(t);
+			throw new RuntimeException(t);
 		}
 	}
 	
@@ -93,7 +92,7 @@ public class CommonMethodHandles
 		catch (Throwable t) 
 		{
 			t.printStackTrace();
-			throw Throwables.propagate(t);
+			throw new RuntimeException(t);
 		}
 	}
 	
@@ -106,7 +105,7 @@ public class CommonMethodHandles
 		catch (Throwable t) 
 		{
 			t.printStackTrace();
-			throw Throwables.propagate(t);
+			throw new RuntimeException(t);
 		}
 	}
 	
@@ -119,7 +118,7 @@ public class CommonMethodHandles
 		catch (Throwable t) 
 		{
 			t.printStackTrace();
-			throw Throwables.propagate(t);
+			throw new RuntimeException(t);
 		}
 	}
 	
@@ -132,7 +131,7 @@ public class CommonMethodHandles
 		catch (Throwable t) 
 		{
 			t.printStackTrace();
-			throw Throwables.propagate(t);
+			throw new RuntimeException(t);
 		}
 	}
 }

@@ -11,9 +11,10 @@ import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
 import leviathan143.loottweaker.common.lib.IDelayedTweak;
 import leviathan143.loottweaker.common.lib.LootUtils;
-import minetweaker.*;
-import minetweaker.api.item.IItemStack;
-import minetweaker.api.minecraft.MineTweakerMC;
+import crafttweaker.*;
+import crafttweaker.annotations.ZenRegister;
+import crafttweaker.api.item.IItemStack;
+import crafttweaker.api.minecraft.CraftTweakerMC;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.*;
@@ -22,6 +23,7 @@ import net.minecraft.world.storage.loot.functions.LootFunction;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import stanhebben.zenscript.annotations.*;
 
+@ZenRegister
 @ZenClass(Constants.MODID + ".vanilla.loot.LootPool")
 public class ZenLootPoolWrapper 
 {
@@ -37,18 +39,18 @@ public class ZenLootPoolWrapper
     @ZenMethod
     public void addConditionsHelper(ZenLootConditionWrapper[] conditions)
     {
-	MineTweakerAPI.apply(new AddConditions(this, LootUtils.parseConditions(conditions)));
+	CraftTweakerAPI.apply(new AddConditions(this, LootUtils.parseConditions(conditions)));
     }
 
     public void addConditionsJSON(String[] conditions)
     {
-	MineTweakerAPI.apply(new AddConditions(this, LootUtils.parseConditions(conditions)));
+	CraftTweakerAPI.apply(new AddConditions(this, LootUtils.parseConditions(conditions)));
     }
 
     @ZenMethod
     public void removeItemEntry(IItemStack stack)
     {
-	Item item = MineTweakerMC.getItemStack(stack).getItem();
+	Item item = CraftTweakerMC.getItemStack(stack).getItem();
 	removeEntry(item.getRegistryName().toString());
     }
 
@@ -57,7 +59,7 @@ public class ZenLootPoolWrapper
     {
 	if(!LootTableList.getAll().contains(new ResourceLocation(tableName)))
 	{
-	    MineTweakerImplementationAPI.logger.logError(tableName + " is not a loot table!");
+	    CrafttweakerImplementationAPI.logger.logError(tableName + " is not a loot table!");
 	    return;
 	}
 	removeEntry(tableName);
@@ -66,7 +68,7 @@ public class ZenLootPoolWrapper
     @ZenMethod
     public void removeEntry(String entryName)
     {
-	MineTweakerAPI.apply(new RemoveLootEntry(this, entryName));
+	CraftTweakerAPI.apply(new RemoveLootEntry(this, entryName));
     }
 
     @ZenMethod
@@ -95,11 +97,11 @@ public class ZenLootPoolWrapper
 
     private void addItemEntryInternal(IItemStack iStack, int weight, int quality, LootFunction[] functions, LootCondition[] conditions, String name)
     { 
-	Item item = MineTweakerMC.getItemStack(iStack).getItem();
+	Item item = CraftTweakerMC.getItemStack(iStack).getItem();
 	if(name == null)
 	    name = item.getRegistryName().toString();
 
-	MineTweakerAPI.apply
+	CraftTweakerAPI.apply
 	(
 		new AddLootEntry
 		(
@@ -145,7 +147,7 @@ public class ZenLootPoolWrapper
     {
 	if(name == null)
 	    name = tableName;
-	MineTweakerAPI.apply
+	CraftTweakerAPI.apply
 	(
 		new AddLootEntry
 		(
@@ -165,7 +167,7 @@ public class ZenLootPoolWrapper
     @ZenMethod
     public void setRolls(float minRolls, float maxRolls)
     {
-	MineTweakerAPI.apply(new SetRolls(this, new RandomValueRange(minRolls, maxRolls)));
+	CraftTweakerAPI.apply(new SetRolls(this, new RandomValueRange(minRolls, maxRolls)));
     }
 
     @ZenMethod
@@ -173,15 +175,15 @@ public class ZenLootPoolWrapper
     {
 	if(minBonusRolls <= 0.0F)
 	{
-	    MineTweakerAPI.logError("Minimum parameter of bonusRolls must be greater than 0.0F!");
+	    CraftTweakerAPI.logError("Minimum parameter of bonusRolls must be greater than 0.0F!");
 	    return;
 	}
 	if(maxBonusRolls <= 0.0F)
 	{
-	    MineTweakerAPI.logError("Maximum parameter of bonusRolls must be greater than 0.0F!");
+	    CraftTweakerAPI.logError("Maximum parameter of bonusRolls must be greater than 0.0F!");
 	    return;
 	}
-	MineTweakerAPI.apply(new SetBonusRolls(this, new RandomValueRange(minBonusRolls, maxBonusRolls)));
+	CraftTweakerAPI.apply(new SetBonusRolls(this, new RandomValueRange(minBonusRolls, maxBonusRolls)));
     }
 
     public void applyLootTweaks(LootPool pool)
@@ -229,12 +231,6 @@ public class ZenLootPoolWrapper
 	{
 	    return String.format("Adding entry %s to pool %s", entry.getEntryName(), wrapper.backingPool.getName());
 	}
-
-	@Override
-	public String describeUndo() 
-	{
-	    return String.format("Removing entry %s from pool %s", entry.getEntryName(), wrapper.backingPool.getName());
-	}
     }
 
     private static class RemoveLootEntry extends UndoableDelayedPoolTweak
@@ -252,7 +248,7 @@ public class ZenLootPoolWrapper
 	{
 	    if(pool.removeEntry(entryName) == null)
 	    {
-		MineTweakerImplementationAPI.logger.logError("No entry with name " + entryName);
+		CrafttweakerImplementationAPI.logger.logError("No entry with name " + entryName);
 		return;
 	    }
 	}
@@ -261,12 +257,6 @@ public class ZenLootPoolWrapper
 	public String describe() 
 	{
 	    return String.format("Removing entry %s from pool %s", entryName, wrapper.backingPool.getName());
-	}
-
-	@Override
-	public String describeUndo() 
-	{
-	    return String.format("Adding entry %s to pool %s", entryName, wrapper.backingPool.getName());
 	}
     }
 
@@ -289,12 +279,6 @@ public class ZenLootPoolWrapper
 	public String describe() 
 	{
 	    return String.format("Adding conditions %s to pool %s", ArrayUtils.toString(conditions), wrapper.backingPool.getName());
-	}
-
-	@Override
-	public String describeUndo() 
-	{
-	    return String.format("Removing conditions %s from pool %s", ArrayUtils.toString(conditions), wrapper.backingPool.getName());
 	}
     }
     
@@ -319,12 +303,6 @@ public class ZenLootPoolWrapper
 	{
 	    return String.format("Setting rolls for pool %s to (%f, %f)", wrapper.backingPool.getName(), range.getMin(), range.getMax());
 	}
-
-	@Override
-	public String describeUndo()
-	{
-	    return String.format("Resetting rolls for pool %s to defaults", wrapper.backingPool.getName());
-	}
     }
     
     private static class SetBonusRolls extends UndoableDelayedPoolTweak
@@ -348,15 +326,9 @@ public class ZenLootPoolWrapper
 	{
 	    return String.format("Setting bonusRolls for pool %s to (%f, %f)", wrapper.backingPool.getName(), range.getMin(), range.getMax());
 	}
-
-	@Override
-	public String describeUndo()
-	{
-	    return String.format("Resetting bonusRolls for pool %s to defaults", wrapper.backingPool.getName());
-	}
     }
     
-    private static abstract class UndoableDelayedPoolTweak implements IUndoableAction, IDelayedTweak<LootPool, ZenLootPoolWrapper>
+    private static abstract class UndoableDelayedPoolTweak implements IAction, IDelayedTweak<LootPool, ZenLootPoolWrapper>
     {
 	protected ZenLootPoolWrapper wrapper;
 	
@@ -369,24 +341,6 @@ public class ZenLootPoolWrapper
 	public void apply() 
 	{
 	    wrapper.delayedTweaks.add(this);
-	}
-
-	@Override
-	public boolean canUndo()
-	{
-	    return true;
-	}
-
-	@Override
-	public void undo() 
-	{
-	    wrapper.delayedTweaks.remove(this);
-	}
-
-	@Override
-	public Object getOverrideKey() 
-	{
-	    return null;
 	}
     }
 }

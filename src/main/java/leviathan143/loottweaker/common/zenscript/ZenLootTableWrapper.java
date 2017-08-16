@@ -6,18 +6,20 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import crafttweaker.CraftTweakerAPI;
+import crafttweaker.IAction;
+import crafttweaker.annotations.ZenRegister;
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
 import leviathan143.loottweaker.common.lib.IDelayedTweak;
 import leviathan143.loottweaker.common.lib.LootUtils;
-import minetweaker.IUndoableAction;
-import minetweaker.MineTweakerAPI;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
+@ZenRegister
 @ZenClass(Constants.MODID + ".vanilla.loot.LootTable")
 public class ZenLootTableWrapper 
 {
@@ -44,7 +46,7 @@ public class ZenLootTableWrapper
     public ZenLootPoolWrapper addPool(String poolName, int minRolls, int maxRolls, int minBonusRolls, int maxBonusRolls)
     {
 	LootPool pool = LootUtils.createPool(poolName, minRolls, maxRolls, minBonusRolls, maxBonusRolls);
-	MineTweakerAPI.apply(new AddPool(this, name, pool));
+	CraftTweakerAPI.apply(new AddPool(this, name, pool));
 	ZenLootPoolWrapper wrapper = new ZenLootPoolWrapper(pool);
 	wrapperCache.put(poolName, wrapper);
 	return wrapper;
@@ -53,7 +55,7 @@ public class ZenLootTableWrapper
     @ZenMethod
     public void removePool(String poolName)
     {
-	MineTweakerAPI.apply(new RemovePool(this, name, poolName));
+	CraftTweakerAPI.apply(new RemovePool(this, name, poolName));
     }
 
     @ZenMethod
@@ -98,7 +100,7 @@ public class ZenLootTableWrapper
 	}
     }
     
-    private static class AddPool implements IUndoableAction, IDelayedTweak<LootTable, ZenLootTableWrapper>
+    private static class AddPool implements IAction, IDelayedTweak<LootTable, ZenLootTableWrapper>
     {
 	private ZenLootTableWrapper wrapper;
 	private ResourceLocation tableName;
@@ -125,37 +127,13 @@ public class ZenLootTableWrapper
 	}
 
 	@Override
-	public boolean canUndo()
-	{
-	    return true;
-	}
-
-	@Override
-	public void undo() 
-	{
-	    wrapper.delayedTweaks.remove(this);
-	}
-
-	@Override
 	public String describe() 
 	{
 	    return String.format("Adding pool %s to table %s", pool.getName(), tableName);
 	}
-
-	@Override
-	public String describeUndo() 
-	{
-	    return String.format("Removing pool %s from table %s", pool.getName(), tableName);
-	}
-
-	@Override
-	public Object getOverrideKey() 
-	{
-	    return null;
-	}
     }
 
-    private static class RemovePool implements IUndoableAction, IDelayedTweak<LootTable, ZenLootTableWrapper>
+    private static class RemovePool implements IAction, IDelayedTweak<LootTable, ZenLootTableWrapper>
     {
 	private ZenLootTableWrapper wrapper;
 	private ResourceLocation tableName;
@@ -179,40 +157,15 @@ public class ZenLootTableWrapper
 	{
 	    if(table.getPool(poolName) == null)
 	    {
-		MineTweakerAPI.logError(String.format("No loot pool with name %s exists!", poolName));
+		CraftTweakerAPI.logError(String.format("No loot pool with name %s exists!", poolName));
 		return;
 	    }
 	    table.removePool(poolName);
 	}
-
-	@Override
-	public boolean canUndo()
-	{
-	    return true;
-	}
-
-	@Override
-	public void undo() 
-	{
-	    wrapper.delayedTweaks.remove(this);
-	}
-
 	@Override
 	public String describe() 
 	{
 	    return String.format("Adding pool %s to table %s", poolName, tableName);
-	}
-
-	@Override
-	public String describeUndo() 
-	{
-	    return String.format("Removing pool %s from table %s", poolName, tableName);
-	}
-
-	@Override
-	public Object getOverrideKey() 
-	{
-	    return null;
 	}
     }
 }

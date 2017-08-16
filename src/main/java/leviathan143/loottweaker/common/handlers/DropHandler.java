@@ -29,7 +29,7 @@ public class DropHandler
 			EntityLiving living = (EntityLiving) event.getEntityLiving();
 			for(Iterator<EntityItem> iter = event.getDrops().iterator(); iter.hasNext();)
 			{
-				ItemStack stack = iter.next().getEntityItem();
+				ItemStack stack = iter.next().getItem();
 				if(!removedEntityDrops.containsKey(living.getClass())) continue;
 				for(ItemStack removedStack : removedEntityDrops.get(living.getClass()))
 				{

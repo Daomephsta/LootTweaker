@@ -1,28 +1,26 @@
 package leviathan143.loottweaker.common.tweakers.loot;
 
-import java.util.*;
-
-import org.apache.logging.log4j.Level;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import com.google.common.collect.Maps;
 
-import leviathan143.loottweaker.common.LootTweakerMain;
+import crafttweaker.CraftTweakerAPI;
+import crafttweaker.annotations.ZenRegister;
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.lib.LootUtils;
 import leviathan143.loottweaker.common.zenscript.ZenLootTableWrapper;
-import minetweaker.MineTweakerAPI;
-import minetweaker.MineTweakerImplementationAPI;
-import minetweaker.MineTweakerImplementationAPI.ReloadEvent;
-import minetweaker.util.IEventHandler;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.*;
+import net.minecraft.world.storage.loot.LootTable;
+import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
+@ZenRegister
 @ZenClass(Constants.MODID + ".vanilla.loot.LootTables")
 public class LootTableTweaker
 {	
@@ -36,7 +34,7 @@ public class LootTableTweaker
 	ResourceLocation tableLoc = new ResourceLocation(tableName);
 	if(!LootTableList.getAll().contains(tableLoc))
 	{
-	    MineTweakerAPI.logError(String.format("No loot table with name %s exists!", tableName));
+	    CraftTweakerAPI.logError(String.format("No loot table with name %s exists!", tableName));
 	    //Returned to prevent NPEs
 	    return LootUtils.EMPTY_LOOT_TABLE;
 	}
@@ -63,31 +61,5 @@ public class LootTableTweaker
 
     public static void onRegister()
     {
-	MineTweakerImplementationAPI.onReloadEvent(new IEventHandler<ReloadEvent>() 
-	{
-	    @Override
-	    public void handle(ReloadEvent paramT) 
-	    {
-		tweakedTableStorage.clear();
-	    }
-	});
-
-	MineTweakerImplementationAPI.onPostReload(new IEventHandler<ReloadEvent>() 
-	{
-	    @Override
-	    public void handle(ReloadEvent paramT) 
-	    {
-		World world = LootTweakerMain.proxy.getWorld();
-		if(world != null)
-		{
-		    LootTableManager manager = world.getLootTableManager();
-		    if(manager != null)
-		    {
-			manager.reloadLootTables();
-			LootTweakerMain.logger.log(Level.INFO, "Reloading loot tables");
-		    }
-		}
-	    }
-	});
     }
 }

@@ -1,11 +1,13 @@
 package leviathan143.loottweaker.common.zenscript;
 
+import crafttweaker.annotations.ZenRegister;
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.lib.LootUtils;
 import net.minecraft.world.storage.loot.conditions.*;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
+@ZenRegister
 @ZenClass(Constants.MODID + ".vanilla.loot.Conditions")
 public class ConditionHelper
 {

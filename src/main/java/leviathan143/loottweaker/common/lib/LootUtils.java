@@ -1,35 +1,49 @@
 package leviathan143.loottweaker.common.lib;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import com.google.common.collect.Lists;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParser;
 
+import crafttweaker.CraftTweakerAPI;
+import crafttweaker.api.data.DataMap;
+import crafttweaker.api.data.IData;
+import crafttweaker.api.item.IItemStack;
+import crafttweaker.api.minecraft.CraftTweakerMC;
 import leviathan143.loottweaker.common.LootTweakerMain;
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
-import leviathan143.loottweaker.common.zenscript.*;
-import minetweaker.MineTweakerAPI;
-import minetweaker.api.data.DataMap;
-import minetweaker.api.data.IData;
-import minetweaker.api.item.IItemStack;
-import minetweaker.api.minecraft.MineTweakerMC;
-import net.minecraft.entity.*;
+import leviathan143.loottweaker.common.zenscript.ZenLootConditionWrapper;
+import leviathan143.loottweaker.common.zenscript.ZenLootFunctionWrapper;
+import leviathan143.loottweaker.common.zenscript.ZenLootPoolWrapper;
+import leviathan143.loottweaker.common.zenscript.ZenLootTableWrapper;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.*;
+import net.minecraft.world.storage.loot.LootEntry;
+import net.minecraft.world.storage.loot.LootPool;
+import net.minecraft.world.storage.loot.LootTable;
+import net.minecraft.world.storage.loot.LootTableManager;
+import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
-import net.minecraft.world.storage.loot.conditions.LootConditionManager;
-import net.minecraft.world.storage.loot.functions.*;
-import net.minecraftforge.fml.common.FMLLog;
+import net.minecraft.world.storage.loot.functions.LootFunction;
+import net.minecraft.world.storage.loot.functions.SetCount;
+import net.minecraft.world.storage.loot.functions.SetDamage;
+import net.minecraft.world.storage.loot.functions.SetMetadata;
+import net.minecraft.world.storage.loot.functions.SetNBT;
 
 public class LootUtils 
 {
-    public static final Gson LOOT_TABLE_GSON_INSTANCE = new GsonBuilder().registerTypeAdapter(RandomValueRange.class, new RandomValueRange.Serializer()).registerTypeAdapter(LootPool.class, new LootPool.Serializer()).registerTypeAdapter(LootTable.class, new LootTable.Serializer()).registerTypeHierarchyAdapter(LootEntry.class, new PatchedLootEntrySerialiser()).registerTypeHierarchyAdapter(LootFunction.class, new LootFunctionManager.Serializer()).registerTypeHierarchyAdapter(LootCondition.class, new LootConditionManager.Serializer()).registerTypeHierarchyAdapter(LootContext.EntityTarget.class, new LootContext.EntityTarget.Serializer()).create();
     static final Gson PRETTY_PRINTER = new GsonBuilder().setPrettyPrinting().create();
     static final JsonParser parser = new JsonParser();
 
@@ -44,11 +58,6 @@ public class LootUtils
     public static final ZenLootTableWrapper EMPTY_LOOT_TABLE = new ZenLootTableWrapper(new LootTable(NO_POOLS), new ResourceLocation(Constants.MODID, "empty"));
 
     //Tables
-
-    public static ResourceLocation getBlockLootTableFromRegistryName(ResourceLocation registryName)
-    {
-	return new ResourceLocation(registryName.getResourceDomain(), "blocks/" + registryName.getResourcePath());
-    }
 
     public static ResourceLocation getEntityLootTableFromName(ResourceLocation entityName)
     {
@@ -80,11 +89,11 @@ public class LootUtils
 	    FileWriter writer = new FileWriter(file);
 	    try
 	    {
-		writer.write(prettify(LOOT_TABLE_GSON_INSTANCE.toJson(table)));
+		writer.write(prettify(CommonMethodHandles.getLootTableGSON().toJson(table)));
 	    }
 	    catch(Throwable t)
 	    {
-		FMLLog.warning("Failed to dump loot table %s", tableLoc.toString());
+		LootTweakerMain.logger.warn("Failed to dump loot table %s", tableLoc.toString());
 		t.printStackTrace();
 	    }
 	    writer.close();
@@ -133,14 +142,14 @@ public class LootUtils
 		parsedConditions[c] = parseJSONCondition("{" + conditions[c] + "}");
 	    else if(conditions[c] instanceof ZenLootConditionWrapper)
 		parsedConditions[c] = ((ZenLootConditionWrapper)conditions[c]).condition; 
-	    else MineTweakerAPI.logError(conditions[c] + " is not a String or a LootCondition!");
+	    else CraftTweakerAPI.logError(conditions[c] + " is not a String or a LootCondition!");
 	}
 	return parsedConditions;
     }
 
     public static LootCondition parseJSONCondition(String condition)
     {
-	return LOOT_TABLE_GSON_INSTANCE.fromJson(condition, LootCondition.class);
+	return CommonMethodHandles.getLootTableGSON().fromJson(condition, LootCondition.class);
     }
 
     //Functions
@@ -150,7 +159,7 @@ public class LootUtils
      */
     public static LootFunction[] addStackFunctions(IItemStack iStack, LootFunction[] existingFunctions)
     {
-	ItemStack stack = MineTweakerMC.getItemStack(iStack);
+	ItemStack stack = CraftTweakerMC.getItemStack(iStack);
 	boolean sizeFuncExists = false, damageFuncExists = false, nbtFuncExists = false; 
 	for (LootFunction lootFunction : existingFunctions)
 	{
@@ -180,7 +189,7 @@ public class LootUtils
 	IData stackData = iStack.getTag();
 	if(stackData != DataMap.EMPTY && !nbtFuncExists)
 	{
-	    retList.add(new SetNBT(NO_CONDITIONS, MineTweakerMC.getNBTCompound(stackData)));
+	    retList.add(new SetNBT(NO_CONDITIONS, CraftTweakerMC.getNBTCompound(stackData)));
 	}
 
 	return retList.toArray(LootUtils.NO_FUNCTIONS);
@@ -196,13 +205,13 @@ public class LootUtils
 		parsedFunctions[f] = parseJSONFunction("{" + functions[f] + "}");
 	    else if(functions[f] instanceof ZenLootFunctionWrapper)
 		parsedFunctions[f] = ((ZenLootFunctionWrapper)functions[f]).function; 
-	    else MineTweakerAPI.logError(functions[f] + " is not a String or a LootFunction!");
+	    else CraftTweakerAPI.logError(functions[f] + " is not a String or a LootFunction!");
 	}
 	return parsedFunctions;
     }
 
     public static LootFunction parseJSONFunction(String function) 
     {
-	return LOOT_TABLE_GSON_INSTANCE.fromJson(function, LootFunction.class);
+	return CommonMethodHandles.getLootTableGSON().fromJson(function, LootFunction.class);
     }
 }
