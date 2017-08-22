@@ -53,6 +53,7 @@ public class LootTableTweaker
 
     private static void applyTweaks(ResourceLocation tableName, LootTable table)
     {
+	if(table.isFrozen()) return;
 	if(tweakedTableStorage.containsKey(tableName))
 	{
 	    tweakedTableStorage.get(tableName).applyLootTweaks(table);

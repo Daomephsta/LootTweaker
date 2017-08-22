@@ -188,6 +188,7 @@ public class ZenLootPoolWrapper
 
     public void applyLootTweaks(LootPool pool)
     {
+	if(pool.isFrozen()) return;
 	for(IDelayedTweak<LootPool, ZenLootPoolWrapper> tweak : delayedTweaks)
 	{
 	    tweak.applyTweak(pool, this);
