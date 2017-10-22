@@ -11,16 +11,25 @@ import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
 import leviathan143.loottweaker.common.lib.IDelayedTweak;
 import leviathan143.loottweaker.common.lib.LootUtils;
-import minetweaker.*;
+import minetweaker.IUndoableAction;
+import minetweaker.MineTweakerAPI;
+import minetweaker.MineTweakerImplementationAPI;
 import minetweaker.api.item.IItemStack;
 import minetweaker.api.minecraft.MineTweakerMC;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.*;
+import net.minecraft.world.storage.loot.LootEntry;
+import net.minecraft.world.storage.loot.LootEntryItem;
+import net.minecraft.world.storage.loot.LootEntryTable;
+import net.minecraft.world.storage.loot.LootPool;
+import net.minecraft.world.storage.loot.LootTableList;
+import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.functions.LootFunction;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import stanhebben.zenscript.annotations.*;
+import stanhebben.zenscript.annotations.Optional;
+import stanhebben.zenscript.annotations.ZenClass;
+import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenClass(Constants.MODID + ".vanilla.loot.LootPool")
 public class ZenLootPoolWrapper 
@@ -242,7 +251,7 @@ public class ZenLootPoolWrapper
 	{
 	    if(pool.removeEntry(entryName) == null)
 	    {
-		MineTweakerImplementationAPI.logger.logError("No entry with name " + entryName);
+		MineTweakerAPI.logError(String.format("No entry with name %s exists in pool %s", entryName, zenWrapper.backingPool.getName()));
 		return;
 	    }
 	}
