@@ -19,6 +19,7 @@ import minetweaker.api.minecraft.MineTweakerMC;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootEntry;
+import net.minecraft.world.storage.loot.LootEntryEmpty;
 import net.minecraft.world.storage.loot.LootEntryItem;
 import net.minecraft.world.storage.loot.LootEntryTable;
 import net.minecraft.world.storage.loot.LootPool;
@@ -169,6 +170,36 @@ public class ZenLootPoolWrapper
 				)
 			)
 		);
+    }
+    
+    @ZenMethod
+    public void addEmptyEntry(int weight, @Optional String name)
+    {
+	addEmptyEntryInternal(weight, 1, LootUtils.NO_CONDITIONS, name);
+    }
+    
+    @ZenMethod
+    public void addEmptyEntry(int weight, int quality, @Optional String name)
+    {
+	addEmptyEntryInternal(weight, quality, LootUtils.NO_CONDITIONS, name);
+    }
+    
+    @ZenMethod
+    public void addEmptyEntryHelper(int weight, int quality, ZenLootConditionWrapper[] conditions, @Optional String name)
+    {
+	addEmptyEntryInternal(weight, quality, LootUtils.parseConditions(conditions), name);
+    }
+    
+    @ZenMethod
+    public void addEmptyEntryJSON(int weight, int quality, String[] conditions, @Optional String name)
+    {
+	addEmptyEntryInternal(weight, quality, LootUtils.parseConditions(conditions), name);
+    }
+    
+    public void addEmptyEntryInternal(int weightIn, int qualityIn, LootCondition[] conditions, @Optional String name)
+    {
+	if(name == null) name = "empty";
+	CraftTweakerAPI.apply(new AddLootEntry(this, new LootEntryEmpty(weightIn, qualityIn, conditions, name)));
     }
 
     @ZenMethod
