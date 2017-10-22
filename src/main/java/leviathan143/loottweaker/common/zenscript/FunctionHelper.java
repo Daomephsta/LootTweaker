@@ -4,15 +4,23 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
+import crafttweaker.CraftTweakerAPI;
+import crafttweaker.annotations.ZenRegister;
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.lib.LootUtils;
-import crafttweaker.CraftTweakerAPI;
-import crafttweaker.CrafttweakerImplementationAPI;
-import crafttweaker.annotations.ZenRegister;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.storage.loot.RandomValueRange;
-import net.minecraft.world.storage.loot.functions.*;
+import net.minecraft.world.storage.loot.functions.EnchantRandomly;
+import net.minecraft.world.storage.loot.functions.EnchantWithLevels;
+import net.minecraft.world.storage.loot.functions.LootingEnchantBonus;
+import net.minecraft.world.storage.loot.functions.SetCount;
+import net.minecraft.world.storage.loot.functions.SetDamage;
+import net.minecraft.world.storage.loot.functions.SetMetadata;
+import net.minecraft.world.storage.loot.functions.SetNBT;
+import net.minecraft.world.storage.loot.functions.Smelt;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
@@ -29,45 +37,49 @@ public class FunctionHelper
 	    Enchantment ench = Enchantment.getEnchantmentByLocation(id);
 	    if(ench == null)
 	    {
-		CrafttweakerImplementationAPI.logger.logError(id + " is not a valid enchantment id");
+		CraftTweakerAPI.logError(id + " is not a valid enchantment id");
 		continue;
 	    }
 	    enchantments.add(ench);
 	}
 	return new ZenLootFunctionWrapper(new EnchantRandomly(LootUtils.NO_CONDITIONS, enchantments));
     }
-    
+
     @ZenMethod
     public static ZenLootFunctionWrapper enchantWithLevels(int min, int max, boolean isTreasure)
     {
 	return new ZenLootFunctionWrapper(new EnchantWithLevels(LootUtils.NO_CONDITIONS, new RandomValueRange(min, max), isTreasure));
     }
-    
+
     @ZenMethod
     public static ZenLootFunctionWrapper lootingEnchantBonus(int min, int max, int limit)
     {
 	return new ZenLootFunctionWrapper(new LootingEnchantBonus(LootUtils.NO_CONDITIONS, new RandomValueRange(min, max), limit));
     }
-    
+
     @ZenMethod
     public static ZenLootFunctionWrapper setCount(int min, int max)
     {
 	return new ZenLootFunctionWrapper(new SetCount(LootUtils.NO_CONDITIONS, new RandomValueRange(min, max)));
     }
-    
+
     @ZenMethod
     public static ZenLootFunctionWrapper setDamage(float min, float max)
     {
-	if(max > 1.0F) CraftTweakerAPI.logError("Items cannot recieve more than 100% damage!");
+	if(max > 1.0F) 
+	{
+	    CraftTweakerAPI.logError("Items cannot recieve more than 100% damage!");
+	    max = 1.0F;
+	}
 	return new ZenLootFunctionWrapper(new SetDamage(LootUtils.NO_CONDITIONS, new RandomValueRange(min, max)));
     }
-    
+
     @ZenMethod
     public static ZenLootFunctionWrapper setMetadata(int min, int max)
     {
 	return new ZenLootFunctionWrapper(new SetMetadata(LootUtils.NO_CONDITIONS, new RandomValueRange(min, max)));
     }
-    
+
     @ZenMethod
     public static ZenLootFunctionWrapper setNBT(String nbtAsJson)
     {
@@ -81,13 +93,13 @@ public class FunctionHelper
 	}
 	return new ZenLootFunctionWrapper(new SetNBT(LootUtils.NO_CONDITIONS, new NBTTagCompound()));
     }
-    
+
     @ZenMethod
     public static ZenLootFunctionWrapper smelt()
     {
 	return new ZenLootFunctionWrapper(new Smelt(LootUtils.NO_CONDITIONS));
     }
-    
+
     @ZenMethod
     public static ZenLootFunctionWrapper parse(String json)
     {

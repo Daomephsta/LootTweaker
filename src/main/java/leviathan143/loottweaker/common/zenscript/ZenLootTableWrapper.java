@@ -74,7 +74,21 @@ public class ZenLootTableWrapper
 	    wrapperCache.put(poolName, new ZenLootPoolWrapper(pool));
 	return wrapperCache.get(poolName);
     }
-    
+
+    private ZenLootPoolWrapper getPoolInternal(String poolName)
+    {
+	//Hopefully fix #17
+	LootPool pool = backingTable.getPool(poolName);
+	if(pool == null)
+	{
+	    pool = LootUtils.createTemporaryPool(poolName);
+	    backingTable.addPool(pool);
+	} 
+	if(!wrapperCache.containsKey(poolName))
+	    wrapperCache.put(poolName, new ZenLootPoolWrapper(pool));
+	return wrapperCache.get(poolName);
+    }
+
     public void applyLootTweaks(LootTable table)
     {
 	if(clear) CommonMethodHandles.getPoolsFromTable(table).clear();
@@ -87,19 +101,25 @@ public class ZenLootTableWrapper
     private static class TweakPool implements IDelayedTweak<LootTable, ZenLootTableWrapper>
     {
 	private String poolName;
-	
+
 	public TweakPool(String poolName)
 	{
 	    this.poolName = poolName;
 	}
-	
+
 	@Override
 	public void applyTweak(LootTable table, ZenLootTableWrapper wrapper)
 	{
-	    wrapper.wrapperCache.get(poolName).applyLootTweaks(table.getPool(poolName));
+	    LootPool pool = table.getPool(poolName);
+	    if(pool == null) 
+	    {
+		CraftTweakerAPI.logError(String.format("No loot pool with name %s exists in table %s!", poolName, wrapper.name));
+		return;
+	    }
+	    wrapper.getPoolInternal(poolName).applyLootTweaks(pool);
 	}
     }
-    
+
     private static class AddPool implements IAction, IDelayedTweak<LootTable, ZenLootTableWrapper>
     {
 	private ZenLootTableWrapper wrapper;
@@ -118,12 +138,12 @@ public class ZenLootTableWrapper
 	{
 	    wrapper.delayedTweaks.add(this);
 	}
-	
+
 	@Override
 	public void applyTweak(LootTable table, ZenLootTableWrapper wrapper)
 	{
 	    table.addPool(pool);
-	    wrapper.wrapperCache.get(pool.getName()).applyLootTweaks(pool);
+	    wrapper.getPoolInternal(pool.getName()).applyLootTweaks(pool);
 	}
 
 	@Override
