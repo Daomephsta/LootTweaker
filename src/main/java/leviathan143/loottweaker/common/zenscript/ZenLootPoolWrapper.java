@@ -181,16 +181,6 @@ public class ZenLootPoolWrapper
     @ZenMethod
     public void setBonusRolls(float minBonusRolls, float maxBonusRolls)
     {
-	if(minBonusRolls <= 0.0F)
-	{
-	    CraftTweakerAPI.logError("Minimum parameter of bonusRolls must be greater than 0.0F!");
-	    return;
-	}
-	if(maxBonusRolls <= 0.0F)
-	{
-	    CraftTweakerAPI.logError("Maximum parameter of bonusRolls must be greater than 0.0F!");
-	    return;
-	}
 	CraftTweakerAPI.apply(new SetBonusRolls(this, new RandomValueRange(minBonusRolls, maxBonusRolls)));
     }
 
