@@ -199,7 +199,7 @@ public class ZenLootPoolWrapper
     public void addEmptyEntryInternal(int weightIn, int qualityIn, LootCondition[] conditions, @Optional String name)
     {
 	if(name == null) name = "empty";
-	CraftTweakerAPI.apply(new AddLootEntry(this, new LootEntryEmpty(weightIn, qualityIn, conditions, name)));
+	MineTweakerAPI.apply(new AddLootEntry(this, new LootEntryEmpty(weightIn, qualityIn, conditions, name)));
     }
 
     @ZenMethod
