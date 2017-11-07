@@ -220,7 +220,7 @@ public class ZenLootTableWrapper
 	@Override
 	public String describe() 
 	{
-	    return String.format("Adding pool %s to table %s", poolName, tableName);
+	    return String.format("Removed pool %s from table %s", poolName, tableName);
 	}
 
 	@Override
