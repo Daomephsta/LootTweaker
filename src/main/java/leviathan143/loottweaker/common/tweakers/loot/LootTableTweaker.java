@@ -53,12 +53,6 @@ public class LootTableTweaker
     public static ZenLootTableWrapper getTable(String tableName)
     {
 	ResourceLocation tableLoc = new ResourceLocation(tableName);
-	if(!LootTableList.getAll().contains(tableLoc))
-	{
-	    CraftTweakerAPI.logError(String.format("No loot table with name %s exists!", tableName));
-	    //Returned to prevent NPEs
-	    return LootUtils.EMPTY_LOOT_TABLE;
-	}
 	if(!tweakedTableStorage.containsKey(tableLoc))
 	{
 	    tweakedTableStorage.put(tableLoc, new ZenLootTableWrapper(new LootTable(LootUtils.NO_POOLS), tableLoc));
@@ -77,6 +71,11 @@ public class LootTableTweaker
 	if(table.isFrozen()) return;
 	if(tweakedTableStorage.containsKey(tableName))
 	{
+	    if(!LootTableList.getAll().contains(tableName)) 
+	    {
+		CraftTweakerAPI.logError(String.format("No loot table with name %s exists!", tableName));
+		return;
+	    }
 	    tweakedTableStorage.get(tableName).applyLootTweaks(table);
 	}
     }
