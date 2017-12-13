@@ -59,15 +59,15 @@ public class ZenLootTableWrapper
     @ZenMethod
     public ZenLootPoolWrapper getPool(String poolName)
     {
-	LootPool pool = null;
-	//Create a temporary pool if the pool is a default pool
-	if(LootUtils.DEFAULT_POOL_REGEX.matcher(poolName).find())
+	LootPool pool = backingTable.getPool(poolName);
+	//Create a temporary pool if the pool isn't found for whatever reason
+	if(pool == null)
 	{
 	    pool = LootUtils.createTemporaryPool(poolName);
 	    backingTable.addPool(pool);
 	    //Check that an action doesn't already exist
 	    if(!wrapperCache.containsKey(poolName)) delayedTweaks.add(new TweakPool(poolName));
-	} 
+	}
 	if(!wrapperCache.containsKey(poolName))
 	    wrapperCache.put(poolName, new ZenLootPoolWrapper(pool));
 	return wrapperCache.get(poolName);
