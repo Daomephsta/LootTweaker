@@ -29,7 +29,9 @@ public class CommonProxy
 	}
 
 	public void postInit(FMLPostInitializationEvent event)
-	{}
+	{
+		DeprecationWarningManager.printDeprecationWarnings();
+	}
 
 	public void registerRenders()
 	{
