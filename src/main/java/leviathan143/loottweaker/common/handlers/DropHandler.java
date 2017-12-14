@@ -14,26 +14,28 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class DropHandler
 {
-	//A map of itemstacks that have been removed from entity drops. Present for compatibility with mods that add additional drops through events.
+	// A map of itemstacks that have been removed from entity drops. Present for
+	// compatibility with mods that add additional drops through events.
 	public static Map<Class<? extends Entity>, List<ItemStack>> removedEntityDrops = Maps.newHashMap();
-	//A map of itemstacks that have been removed from block drops. Present for compatibility with mods that add additional drops through events.
+	// A map of itemstacks that have been removed from block drops. Present for
+	// compatibility with mods that add additional drops through events.
 	public static Map<Integer, List<ItemStack>> removedBlockDrops = Maps.newHashMap();
 
-	//YOU SHALL NOT DROP
-	//Drops are cleared here in case someone uses recieveCanceled
+	// YOU SHALL NOT DROP
+	// Drops are cleared here in case someone uses recieveCanceled
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onLivingDrops(LivingDropsEvent event)
 	{
-		if(event.getEntityLiving() instanceof EntityLiving)
+		if (event.getEntityLiving() instanceof EntityLiving)
 		{
 			EntityLiving living = (EntityLiving) event.getEntityLiving();
-			for(Iterator<EntityItem> iter = event.getDrops().iterator(); iter.hasNext();)
+			for (Iterator<EntityItem> iter = event.getDrops().iterator(); iter.hasNext();)
 			{
 				ItemStack stack = iter.next().getItem();
-				if(!removedEntityDrops.containsKey(living.getClass())) continue;
-				for(ItemStack removedStack : removedEntityDrops.get(living.getClass()))
+				if (!removedEntityDrops.containsKey(living.getClass())) continue;
+				for (ItemStack removedStack : removedEntityDrops.get(living.getClass()))
 				{
-					if(ItemStack.areItemsEqual(stack, removedStack))
+					if (ItemStack.areItemsEqual(stack, removedStack))
 					{
 						iter.remove();
 						break;

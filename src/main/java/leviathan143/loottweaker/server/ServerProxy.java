@@ -12,28 +12,28 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.server.FMLServerHandler;
 
 public class ServerProxy extends CommonProxy
-{	
-    MinecraftServer mcServer = FMLServerHandler.instance().getServer();
+{
+	MinecraftServer mcServer = FMLServerHandler.instance().getServer();
 
-    @Override
-    public void postInit(FMLPostInitializationEvent event) 
-    {
-	super.postInit(event);
-    }
-
-    public World getWorld()
-    {
-	if(mcServer.worlds.length == 0)
+	@Override
+	public void postInit(FMLPostInitializationEvent event)
 	{
-	    LootTweakerMain.logger.log(Level.WARN, "World does not exist yet");
-	    return null;
+		super.postInit(event);
 	}
-	return mcServer.getEntityWorld();
-    }
 
-    @Override
-    public File getMCFolder() 
-    {
-	return mcServer.getDataDirectory();
-    }
+	public World getWorld()
+	{
+		if (mcServer.worlds.length == 0)
+		{
+			LootTweakerMain.logger.log(Level.WARN, "World does not exist yet");
+			return null;
+		}
+		return mcServer.getEntityWorld();
+	}
+
+	@Override
+	public File getMCFolder()
+	{
+		return mcServer.getDataDirectory();
+	}
 }

@@ -7,29 +7,28 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 
-public class ClientProxy extends CommonProxy 
+public class ClientProxy extends CommonProxy
 {
 	Minecraft mc = Minecraft.getMinecraft();
 
 	@Override
-	public void postInit(FMLPostInitializationEvent event) 
+	public void postInit(FMLPostInitializationEvent event)
 	{
 		super.postInit(event);
 	}
-	
+
 	@Override
-	public World getWorld() 
+	public World getWorld()
 	{
-		if(mc.isIntegratedServerRunning())
+		if (mc.isIntegratedServerRunning())
 		{
 			return mc.getIntegratedServer().getEntityWorld();
 		}
-		else
-			return mc.world;
+		else return mc.world;
 	}
-	
+
 	@Override
-	public File getMCFolder() 
+	public File getMCFolder()
 	{
 		return mc.mcDataDir;
 	}

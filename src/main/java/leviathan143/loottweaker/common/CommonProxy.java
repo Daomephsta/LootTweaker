@@ -14,8 +14,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 
-public class CommonProxy 
-{	
+public class CommonProxy
+{
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		registerRenders();
@@ -29,8 +29,7 @@ public class CommonProxy
 	}
 
 	public void postInit(FMLPostInitializationEvent event)
-	{
-	}
+	{}
 
 	public void registerRenders()
 	{
@@ -41,18 +40,17 @@ public class CommonProxy
 	{
 		return null;
 	}
-	
+
 	public File getMCFolder()
 	{
 		return null;
 	}
 
-	public void serverStarted(FMLServerStartedEvent event) 
-	{
-	}
-	
+	public void serverStarted(FMLServerStartedEvent event)
+	{}
+
 	public void serverAboutToStart(FMLServerAboutToStartEvent event)
 	{
-		
+
 	}
 }

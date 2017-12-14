@@ -21,42 +21,42 @@ import stanhebben.zenscript.annotations.ZenMethod;
 @ZenRegister
 @ZenClass(Constants.MODID + ".vanilla.loot.LootTables")
 public class LootTableTweaker
-{	
-    //Stores the added LootPools as LootTables until they can be added to the real LootTables
-    private static Map<ResourceLocation, ZenLootTableWrapper> tweakedTableStorage = Maps.newHashMap();
+{
+	// Stores the added LootPools as LootTables until they can be added to the
+	// real LootTables
+	private static Map<ResourceLocation, ZenLootTableWrapper> tweakedTableStorage = Maps.newHashMap();
 
-    @ZenMethod
-    public static ZenLootTableWrapper getTable(String tableName)
-    {
-	ResourceLocation tableLoc = new ResourceLocation(tableName);
-	if(!tweakedTableStorage.containsKey(tableLoc))
+	@ZenMethod
+	public static ZenLootTableWrapper getTable(String tableName)
 	{
-	    tweakedTableStorage.put(tableLoc, new ZenLootTableWrapper(new LootTable(LootUtils.NO_POOLS), tableLoc));
+		ResourceLocation tableLoc = new ResourceLocation(tableName);
+		if (!tweakedTableStorage.containsKey(tableLoc))
+		{
+			tweakedTableStorage.put(tableLoc, new ZenLootTableWrapper(new LootTable(LootUtils.NO_POOLS), tableLoc));
+		}
+		return tweakedTableStorage.get(tableLoc);
 	}
-	return tweakedTableStorage.get(tableLoc);
-    }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onTableLoad(LootTableLoadEvent event)
-    {
-	applyTweaks(event.getName(), event.getTable());
-    }
-
-    private static void applyTweaks(ResourceLocation tableName, LootTable table)
-    {
-	if(table.isFrozen()) return;
-	if(tweakedTableStorage.containsKey(tableName))
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public static void onTableLoad(LootTableLoadEvent event)
 	{
-	    if(!LootTableList.getAll().contains(tableName)) 
-	    {
-		CraftTweakerAPI.logError(String.format("No loot table with name %s exists!", tableName));
-		return;
-	    }
-	    tweakedTableStorage.get(tableName).applyLootTweaks(table);
+		applyTweaks(event.getName(), event.getTable());
 	}
-    }
 
-    public static void onRegister()
-    {
-    }
+	private static void applyTweaks(ResourceLocation tableName, LootTable table)
+	{
+		if (table.isFrozen()) return;
+		if (tweakedTableStorage.containsKey(tableName))
+		{
+			if (!LootTableList.getAll().contains(tableName))
+			{
+				CraftTweakerAPI.logError(String.format("No loot table with name %s exists!", tableName));
+				return;
+			}
+			tweakedTableStorage.get(tableName).applyLootTweaks(table);
+		}
+	}
+
+	public static void onRegister()
+	{}
 }

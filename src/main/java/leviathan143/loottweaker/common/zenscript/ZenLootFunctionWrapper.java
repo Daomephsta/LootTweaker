@@ -9,10 +9,10 @@ import stanhebben.zenscript.annotations.ZenClass;
 @ZenClass(Constants.MODID + ".vanilla.loot.LootFunction")
 public class ZenLootFunctionWrapper
 {
-    public final LootFunction function;
-    
-    public ZenLootFunctionWrapper(LootFunction function)
-    {
-	this.function = function;
-    }
+	public final LootFunction function;
+
+	public ZenLootFunctionWrapper(LootFunction function)
+	{
+		this.function = function;
+	}
 }
