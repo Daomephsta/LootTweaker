@@ -7,11 +7,11 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.google.common.collect.Lists;
 
-import crafttweaker.CraftTweakerAPI;
-import crafttweaker.IAction;
+import crafttweaker.*;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
+import leviathan143.loottweaker.common.DeprecationWarningManager;
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
 import leviathan143.loottweaker.common.lib.IDelayedTweak;
@@ -61,6 +61,7 @@ public class ZenLootPoolWrapper
 	{
 		Item item = CraftTweakerMC.getItemStack(stack).getItem();
 		removeEntry(item.getRegistryName().toString());
+		DeprecationWarningManager.addWarning("removeItemEntry()", "removeItemEntry() is deprecated. Use removeEntry instead(). Refer to the section on removeEntry() at https://github.com/Leviathan143/LootTweaker/wiki/Loot-Pools.");
 	}
 
 	@ZenMethod
@@ -72,6 +73,7 @@ public class ZenLootPoolWrapper
 			return;
 		}
 		removeEntry(tableName);
+		DeprecationWarningManager.addWarning("removeLootTableEntry()", "removeLootTableEntry() is deprecated. Use removeEntry instead(). Refer to the section on removeEntry() at https://github.com/Leviathan143/LootTweaker/wiki/Loot-Pools.");
 	}
 
 	@ZenMethod
