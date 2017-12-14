@@ -1,9 +1,7 @@
 package leviathan143.loottweaker.common.tweakers.loot;
 
-import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import crafttweaker.CraftTweakerAPI;
@@ -26,25 +24,6 @@ public class LootTableTweaker
 {	
     //Stores the added LootPools as LootTables until they can be added to the real LootTables
     private static Map<ResourceLocation, ZenLootTableWrapper> tweakedTableStorage = Maps.newHashMap();
-
-    @ZenMethod
-    public static String[] getAllTables()
-    {
-	List<String> tables = Lists.newArrayList();
-	for(ResourceLocation a : LootTableList.getAll()) tables.add(a.toString());
-	return tables.toArray(new String[0]);
-    }
-
-    @ZenMethod
-    public static String[] getAllTablesWithDomain(String domain)
-    {
-	List<String> tables = Lists.newArrayList();
-	for(ResourceLocation a : LootTableList.getAll())
-	{
-	    if(a.getResourceDomain().equals(domain)) tables.add(a.toString());
-	}
-	return tables.toArray(new String[0]);
-    }
 
     @ZenMethod
     public static ZenLootTableWrapper getTable(String tableName)
