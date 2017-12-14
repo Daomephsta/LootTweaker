@@ -1,9 +1,7 @@
 package leviathan143.loottweaker.common.tweakers.loot;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -28,7 +26,6 @@ public class LootTableTweaker
 {	
     //Stores the added LootPools as LootTables until they can be added to the real LootTables
     private static Map<ResourceLocation, ZenLootTableWrapper> tweakedTableStorage = Maps.newHashMap();
-    public static Set<ResourceLocation> blockLootTables = new HashSet<ResourceLocation>();
 
     @ZenMethod
     public static String[] getAllTables()
