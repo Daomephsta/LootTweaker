@@ -10,6 +10,7 @@ import com.google.common.base.Predicates;
 
 import crafttweaker.mc1120.commands.CraftTweakerCommand;
 import leviathan143.loottweaker.common.LootTweakerMain;
+import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
 import leviathan143.loottweaker.common.lib.LootUtils;
 import net.minecraft.command.ICommandSender;
@@ -17,14 +18,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EntitySelectors;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.*;
+import net.minecraft.util.math.*;
+import net.minecraft.util.text.*;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraft.world.storage.loot.ILootContainer;
 import net.minecraft.world.storage.loot.LootTableList;
 
@@ -82,9 +80,10 @@ public class CommandLootTables extends CraftTweakerCommand
 				sender.sendMessage(new TextComponentString("Invalid loot table name!"));
 				return;
 			}
-			LootUtils.writeTableToJSON(tableLoc, LootTweakerMain.proxy.getWorld().getLootTableManager(),
-					getLootTableDumpFilePath(tableLoc), true);
-			sender.sendMessage(new TextComponentString("Done!"));
+			File dumpPath1 = getLootTableDumpFilePath(tableLoc);
+			LootUtils.writeTableToJSON(tableLoc, LootTweakerMain.proxy.getWorld().getLootTableManager(), dumpPath1,
+					true);
+			linkDumpFileInChat(sender, dumpPath1, tableLoc);
 			break;
 
 		case target :
@@ -111,9 +110,10 @@ public class CommandLootTables extends CraftTweakerCommand
 					return;
 				}
 				if (tableLoc == null) return;
+				File dumpPath2 = getLootTableDumpFilePath(tableLoc);
 				LootUtils.writeTableToJSON(tableLoc, LootTweakerMain.proxy.getWorld().getLootTableManager(),
-						getLootTableDumpFilePath(tableLoc), true);
-				sender.sendMessage(new TextComponentString("Done!"));
+						dumpPath2, true);
+				linkDumpFileInChat(sender, dumpPath2, tableLoc);
 			}
 			else sender.sendMessage(new TextComponentString("This command can only be executed by entities"));
 			break;
@@ -134,6 +134,17 @@ public class CommandLootTables extends CraftTweakerCommand
 	{
 		return new File("dumps" + File.separator + "loot_tables" + File.separator + tableLoc.getResourceDomain()
 				+ File.separator + tableLoc.getResourcePath() + ".json");
+	}
+
+	private static void linkDumpFileInChat(ICommandSender sender, File dumpPath, ResourceLocation tableLoc)
+	{
+		ITextComponent message = new TextComponentTranslation(Constants.MODID + ".commands.dump.dumpLink", tableLoc);
+		ITextComponent link = new TextComponentString(dumpPath.toString());
+		link.getStyle()
+			.setClickEvent(new ClickEvent(Action.OPEN_FILE, dumpPath.toString()))
+			.setUnderlined(true)
+			.setColor(TextFormatting.AQUA);
+		sender.sendMessage(message.appendSibling(link));
 	}
 
 	// Copied from EntityRenderer#getMouseOver() and modified to work on any
