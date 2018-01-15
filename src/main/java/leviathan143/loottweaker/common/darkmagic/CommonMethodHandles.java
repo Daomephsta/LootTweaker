@@ -8,24 +8,19 @@ import java.util.List;
 
 import org.apache.logging.log4j.Level;
 
-import com.google.common.cache.LoadingCache;
 import com.google.gson.Gson;
 
 import leviathan143.loottweaker.common.LootTweakerMain;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootEntry;
-import net.minecraft.world.storage.loot.LootPool;
-import net.minecraft.world.storage.loot.LootTable;
-import net.minecraft.world.storage.loot.LootTableManager;
+import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class CommonMethodHandles
 {
-	public static MethodHandle lootTable$poolsGetter, lootPool$poolConditionsGetter, lootPool$lootEntriesGetter,
-			lootTableManager$GSON_INSTANCEGetter, lootTableManager$registeredLootTablesGetter,
-			entityLiving$getLootTable;
+	private static MethodHandle lootTable$poolsGetter, lootPool$poolConditionsGetter, lootPool$lootEntriesGetter,
+			lootTableManager$GSON_INSTANCEGetter, entityLiving$getLootTable;
 
 	static
 	{
@@ -45,10 +40,7 @@ public class CommonMethodHandles
 			f = ReflectionHelper.findField(LootTableManager.class, "b", "field_186526_b", "GSON_INSTANCE");
 			lootTableManager$GSON_INSTANCEGetter = MethodHandles.lookup().unreflectGetter(f);
 
-			f = ReflectionHelper.findField(LootTableManager.class, "c", "field_186527_c", "registeredLootTables");
-			lootTableManager$registeredLootTablesGetter = MethodHandles.lookup().unreflectGetter(f);
-
-			m = ReflectionHelper.findMethod(EntityLiving.class, "getLootTable", /* "J" */"func_184647_J");
+			m = ReflectionHelper.findMethod(EntityLiving.class, "getLootTable", "func_184647_J");
 			entityLiving$getLootTable = MethodHandles.lookup().unreflect(m);
 		}
 		catch (IllegalAccessException e)
@@ -115,20 +107,6 @@ public class CommonMethodHandles
 		try
 		{
 			return (Gson) lootTableManager$GSON_INSTANCEGetter.invokeExact();
-		}
-		catch (Throwable t)
-		{
-			t.printStackTrace();
-			throw new RuntimeException(t);
-		}
-	}
-
-	public static LoadingCache<ResourceLocation, LootTable> getRegisteredLootTables(LootTableManager manager)
-	{
-		try
-		{
-			return (LoadingCache<ResourceLocation, LootTable>) lootTableManager$registeredLootTablesGetter
-					.invoke(manager);
 		}
 		catch (Throwable t)
 		{

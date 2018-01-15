@@ -1,4 +1,4 @@
-package leviathan143.loottweaker.common.tweakers.loot;
+package leviathan143.loottweaker.common.tweakers;
 
 import java.util.Map;
 
