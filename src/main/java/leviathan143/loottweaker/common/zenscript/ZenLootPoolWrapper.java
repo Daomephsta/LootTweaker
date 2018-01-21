@@ -57,14 +57,16 @@ public class ZenLootPoolWrapper
 	}
 
 	@ZenMethod
+	@Deprecated
 	public void removeItemEntry(IItemStack stack)
 	{
 		Item item = CraftTweakerMC.getItemStack(stack).getItem();
 		removeEntry(item.getRegistryName().toString());
-		DeprecationWarningManager.addWarning("removeItemEntry()", "removeItemEntry() is deprecated. Use removeEntry instead(). Refer to the section on removeEntry() at https://github.com/Leviathan143/LootTweaker/wiki/Loot-Pools.");
+		DeprecationWarningManager.addWarning("removeItemEntry()", "removeItemEntry() is deprecated. Refer to https://github.com/Leviathan143/LootTweaker/wiki/Deprecations");
 	}
 
 	@ZenMethod
+	@Deprecated
 	public void removeLootTableEntry(String tableName)
 	{
 		if (!LootTableList.getAll().contains(new ResourceLocation(tableName)))

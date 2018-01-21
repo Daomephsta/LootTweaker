@@ -13,6 +13,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTable;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import stanhebben.zenscript.annotations.ZenClass;
@@ -20,6 +21,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenRegister
 @ZenClass(Constants.MODID + ".vanilla.loot.LootTables")
+@Mod.EventBusSubscriber(modid = Constants.MODID)
 public class LootTableTweaker
 {
 	// Stores the added LootPools as LootTables until they can be added to the
@@ -56,7 +58,4 @@ public class LootTableTweaker
 			tweakedTableStorage.get(tableName).applyLootTweaks(table);
 		}
 	}
-
-	public static void onRegister()
-	{}
 }
