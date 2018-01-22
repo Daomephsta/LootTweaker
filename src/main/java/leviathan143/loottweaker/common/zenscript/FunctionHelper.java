@@ -6,21 +6,16 @@ import com.google.common.collect.Lists;
 
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ZenRegister;
+import crafttweaker.api.data.IData;
+import crafttweaker.mc1120.data.NBTConverter;
+import leviathan143.loottweaker.common.DeprecationWarningManager;
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
+import leviathan143.loottweaker.common.lib.DataToJSONConverter;
 import leviathan143.loottweaker.common.lib.LootUtils;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.*;
 import net.minecraft.world.storage.loot.RandomValueRange;
-import net.minecraft.world.storage.loot.functions.EnchantRandomly;
-import net.minecraft.world.storage.loot.functions.EnchantWithLevels;
-import net.minecraft.world.storage.loot.functions.LootingEnchantBonus;
-import net.minecraft.world.storage.loot.functions.SetCount;
-import net.minecraft.world.storage.loot.functions.SetDamage;
-import net.minecraft.world.storage.loot.functions.SetMetadata;
-import net.minecraft.world.storage.loot.functions.SetNBT;
-import net.minecraft.world.storage.loot.functions.Smelt;
+import net.minecraft.world.storage.loot.functions.*;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
@@ -83,8 +78,22 @@ public class FunctionHelper
 	}
 
 	@ZenMethod
+	public static ZenLootFunctionWrapper setNBT(IData nbtData)
+	{
+		NBTBase nbt = NBTConverter.from(nbtData);
+		if(nbt instanceof NBTTagCompound) return new ZenLootFunctionWrapper(new SetNBT(LootUtils.NO_CONDITIONS, (NBTTagCompound) nbt));
+		else
+		{
+			CraftTweakerAPI.logError("Expected data to be compound");
+			return new ZenLootFunctionWrapper(new SetNBT(LootUtils.NO_CONDITIONS, new NBTTagCompound()));
+		}
+	}
+	
+	@ZenMethod
+	@Deprecated
 	public static ZenLootFunctionWrapper setNBT(String nbtAsJson)
 	{
+		DeprecationWarningManager.addWarning();
 		try
 		{
 			return new ZenLootFunctionWrapper(new SetNBT(LootUtils.NO_CONDITIONS, JsonToNBT.getTagFromJson(nbtAsJson)));
@@ -101,10 +110,18 @@ public class FunctionHelper
 	{
 		return new ZenLootFunctionWrapper(new Smelt(LootUtils.NO_CONDITIONS));
 	}
+	
+	@ZenMethod
+	public static ZenLootFunctionWrapper parse(IData json)
+	{
+		return new ZenLootFunctionWrapper(LootUtils.parseJSONFunction(json.convert(DataToJSONConverter.INSTANCE)));
+	}
 
 	@ZenMethod
+	@Deprecated
 	public static ZenLootFunctionWrapper parse(String json)
 	{
+		DeprecationWarningManager.addWarning();
 		return new ZenLootFunctionWrapper(LootUtils.parseJSONFunction("{" + json + "}"));
 	}
 }

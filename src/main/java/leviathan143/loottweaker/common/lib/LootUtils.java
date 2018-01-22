@@ -8,9 +8,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import com.google.common.collect.Lists;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.api.data.DataMap;
@@ -145,18 +143,25 @@ public class LootUtils
 		LootCondition[] parsedConditions = new LootCondition[conditions.length];
 		for (int c = 0; c < conditions.length; c++)
 		{
-			if (conditions[c] instanceof String) parsedConditions[c] = parseJSONCondition("{" + conditions[c] + "}");
+			if (conditions[c] instanceof JsonElement) parsedConditions[c] = parseJSONCondition((JsonElement) conditions[c]);
+			else if (conditions[c] instanceof String) parsedConditions[c] = parseJSONCondition("{" + conditions[c] + "}");
 			else if (conditions[c] instanceof ZenLootConditionWrapper)
 				parsedConditions[c] = ((ZenLootConditionWrapper) conditions[c]).condition;
 			else
-				CraftTweakerAPI.logError(conditions[c] + " is not a String or a LootCondition!");
+				CraftTweakerAPI.logError(conditions[c] + " is not a String, IData or a LootCondition!");
 		}
 		return parsedConditions;
 	}
 
-	public static LootCondition parseJSONCondition(String condition)
+	public static LootCondition parseJSONCondition(JsonElement conditionJSON)
 	{
-		return CommonMethodHandles.getLootTableGSON().fromJson(condition, LootCondition.class);
+		return CommonMethodHandles.getLootTableGSON().fromJson(conditionJSON, LootCondition.class);
+	}
+
+	@Deprecated
+	public static LootCondition parseJSONCondition(String conditionJSON)
+	{
+		return CommonMethodHandles.getLootTableGSON().fromJson(conditionJSON, LootCondition.class);
 	}
 
 	// Functions
@@ -210,17 +215,24 @@ public class LootUtils
 		LootFunction[] parsedFunctions = new LootFunction[functions.length];
 		for (int f = 0; f < functions.length; f++)
 		{
-			if (functions[f] instanceof String) parsedFunctions[f] = parseJSONFunction("{" + functions[f] + "}");
+			if (functions[f] instanceof JsonElement) parsedFunctions[f] = parseJSONFunction((JsonElement) functions[f]);
+			else if (functions[f] instanceof String) parsedFunctions[f] = parseJSONFunction("{" + functions[f] + "}");
 			else if (functions[f] instanceof ZenLootFunctionWrapper)
 				parsedFunctions[f] = ((ZenLootFunctionWrapper) functions[f]).function;
 			else
-				CraftTweakerAPI.logError(functions[f] + " is not a String or a LootFunction!");
+				CraftTweakerAPI.logError(functions[f] + " is not a String, IData or a LootFunction!");
 		}
 		return parsedFunctions;
 	}
-
-	public static LootFunction parseJSONFunction(String function)
+	
+	public static LootFunction parseJSONFunction(JsonElement functionJson)
 	{
-		return CommonMethodHandles.getLootTableGSON().fromJson(function, LootFunction.class);
+		return CommonMethodHandles.getLootTableGSON().fromJson(functionJson, LootFunction.class);
+	}
+
+	@Deprecated
+	public static LootFunction parseJSONFunction(String functionJson)
+	{
+		return CommonMethodHandles.getLootTableGSON().fromJson(functionJson, LootFunction.class);
 	}
 }

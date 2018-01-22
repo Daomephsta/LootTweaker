@@ -1,30 +1,25 @@
 package leviathan143.loottweaker.common.zenscript;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.google.common.collect.Lists;
+import com.google.gson.JsonElement;
 
-import crafttweaker.*;
+import crafttweaker.CraftTweakerAPI;
+import crafttweaker.IAction;
 import crafttweaker.annotations.ZenRegister;
+import crafttweaker.api.data.IData;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import leviathan143.loottweaker.common.DeprecationWarningManager;
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
-import leviathan143.loottweaker.common.lib.IDelayedTweak;
-import leviathan143.loottweaker.common.lib.LootUtils;
+import leviathan143.loottweaker.common.lib.*;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootEntry;
-import net.minecraft.world.storage.loot.LootEntryEmpty;
-import net.minecraft.world.storage.loot.LootEntryItem;
-import net.minecraft.world.storage.loot.LootEntryTable;
-import net.minecraft.world.storage.loot.LootPool;
-import net.minecraft.world.storage.loot.LootTableList;
-import net.minecraft.world.storage.loot.RandomValueRange;
+import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.functions.LootFunction;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -60,22 +55,22 @@ public class ZenLootPoolWrapper
 	@Deprecated
 	public void removeItemEntry(IItemStack stack)
 	{
+		DeprecationWarningManager.addWarning();
 		Item item = CraftTweakerMC.getItemStack(stack).getItem();
 		removeEntry(item.getRegistryName().toString());
-		DeprecationWarningManager.addWarning();
 	}
 
 	@ZenMethod
 	@Deprecated
 	public void removeLootTableEntry(String tableName)
 	{
+		DeprecationWarningManager.addWarning();
 		if (!LootTableList.getAll().contains(new ResourceLocation(tableName)))
 		{
 			CraftTweakerAPI.logError(tableName + " is not a loot table!");
 			return;
 		}
 		removeEntry(tableName);
-		DeprecationWarningManager.addWarning();
 	}
 
 	@ZenMethod
@@ -102,10 +97,21 @@ public class ZenLootPoolWrapper
 		addItemEntryInternal(iStack, weight, quality, LootUtils.parseFunctions(functions),
 				LootUtils.parseConditions(conditions), name);
 	}
+	
+	@ZenMethod
+	public void addItemEntryJSON(IItemStack iStack, int weight, int quality, IData[] functions, IData[] conditions, @Optional String name)
+	{
+		JsonElement[] conditionsJSON = Arrays.stream(conditions).map(data -> data.convert(DataToJSONConverter.INSTANCE)).toArray(JsonElement[]::new);
+		JsonElement[] functionsJSON = Arrays.stream(functions).map(data -> data.convert(DataToJSONConverter.INSTANCE)).toArray(JsonElement[]::new);
+		addItemEntryInternal(iStack, weight, quality, LootUtils.parseFunctions(functionsJSON),
+				LootUtils.parseConditions(conditionsJSON), name);
+	}
 
 	@ZenMethod
+	@Deprecated
 	public void addItemEntryJSON(IItemStack iStack, int weight, int quality, String[] functions, String[] conditions, @Optional String name)
 	{
+		DeprecationWarningManager.addWarning();
 		addItemEntryInternal(iStack, weight, quality, LootUtils.parseFunctions(functions),
 				LootUtils.parseConditions(conditions), name);
 	}
@@ -138,8 +144,17 @@ public class ZenLootPoolWrapper
 	}
 
 	@ZenMethod
+	public void addLootTableEntryJSON(String tableName, int weightIn, int qualityIn, IData[] conditions, @Optional String name)
+	{
+		JsonElement[] json = Arrays.stream(conditions).map(data -> data.convert(DataToJSONConverter.INSTANCE)).toArray(JsonElement[]::new);
+		addLootTableEntryInternal(tableName, weightIn, qualityIn, LootUtils.parseConditions(json), name);
+	}
+	
+	@ZenMethod
+	@Deprecated
 	public void addLootTableEntryJSON(String tableName, int weightIn, int qualityIn, String[] conditions, @Optional String name)
 	{
+		DeprecationWarningManager.addWarning();
 		addLootTableEntryInternal(tableName, weightIn, qualityIn, LootUtils.parseConditions(conditions), name);
 	}
 
@@ -169,8 +184,17 @@ public class ZenLootPoolWrapper
 	}
 
 	@ZenMethod
+	public void addEmptyEntryJSON(int weight, int quality, IData[] conditions, @Optional String name)
+	{
+		JsonElement[] json = Arrays.stream(conditions).map(data -> data.convert(DataToJSONConverter.INSTANCE)).toArray(JsonElement[]::new);
+		addEmptyEntryInternal(weight, quality, LootUtils.parseConditions(json), name);
+	}
+	
+	@ZenMethod
+	@Deprecated
 	public void addEmptyEntryJSON(int weight, int quality, String[] conditions, @Optional String name)
 	{
+		DeprecationWarningManager.addWarning();
 		addEmptyEntryInternal(weight, quality, LootUtils.parseConditions(conditions), name);
 	}
 

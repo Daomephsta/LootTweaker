@@ -6,7 +6,9 @@ import com.google.common.collect.Maps;
 
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ZenRegister;
+import crafttweaker.api.data.IData;
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
+import leviathan143.loottweaker.common.lib.DataToJSONConverter;
 import leviathan143.loottweaker.common.lib.LootUtils;
 import leviathan143.loottweaker.common.zenscript.ZenLootTableWrapper;
 import net.minecraft.util.ResourceLocation;
@@ -28,6 +30,12 @@ public class LootTableTweaker
 	// real LootTables
 	private static Map<ResourceLocation, ZenLootTableWrapper> tweakedTableStorage = Maps.newHashMap();
 
+	@ZenMethod
+	public static void test(IData data)
+	{
+		System.out.println(data.convert(DataToJSONConverter.INSTANCE));
+	}
+	
 	@ZenMethod
 	public static ZenLootTableWrapper getTable(String tableName)
 	{

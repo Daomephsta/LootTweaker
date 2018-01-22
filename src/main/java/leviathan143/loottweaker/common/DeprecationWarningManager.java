@@ -33,10 +33,11 @@ public class DeprecationWarningManager
 	
 	public static void printDeprecationWarnings()
 	{
+		CraftTweakerAPI.logWarning("One or more scripts use deprecated methods. Check crafttweaker.log for more information.");
 		for(String deprecatedObj : deprecatedObjectsUsed)
 		{
-			CraftTweakerAPI.logWarning(String.format(WARNING, deprecatedObj));
+			CraftTweakerAPI.logInfo(String.format(WARNING, deprecatedObj));
 		}
-		CraftTweakerAPI.logWarning("Refer to https://github.com/Leviathan143/LootTweaker/wiki/Deprecations for more info");
+		CraftTweakerAPI.logInfo("Refer to https://github.com/Leviathan143/LootTweaker/wiki/Deprecations for more info");
 	}
 }
