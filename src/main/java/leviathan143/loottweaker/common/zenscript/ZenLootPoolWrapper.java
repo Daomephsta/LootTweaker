@@ -46,8 +46,18 @@ public class ZenLootPoolWrapper
 		CraftTweakerAPI.apply(new AddConditions(this, LootUtils.parseConditions(conditions)));
 	}
 
+	@ZenMethod
+	public void addConditionsJson(IData[] conditions)
+	{
+		JsonElement[] conditionsJSON = Arrays.stream(conditions).map(data -> data.convert(DataToJSONConverter.INSTANCE)).toArray(JsonElement[]::new);
+		CraftTweakerAPI.apply(new AddConditions(this, LootUtils.parseConditions(conditionsJSON)));
+	}
+	
+	@ZenMethod
+	@Deprecated
 	public void addConditionsJSON(String[] conditions)
 	{
+		DeprecationWarningManager.addWarning();
 		CraftTweakerAPI.apply(new AddConditions(this, LootUtils.parseConditions(conditions)));
 	}
 
@@ -99,7 +109,7 @@ public class ZenLootPoolWrapper
 	}
 	
 	@ZenMethod
-	public void addItemEntryJSON(IItemStack iStack, int weight, int quality, IData[] functions, IData[] conditions, @Optional String name)
+	public void addItemEntryJson(IItemStack iStack, int weight, int quality, IData[] functions, IData[] conditions, @Optional String name)
 	{
 		JsonElement[] conditionsJSON = Arrays.stream(conditions).map(data -> data.convert(DataToJSONConverter.INSTANCE)).toArray(JsonElement[]::new);
 		JsonElement[] functionsJSON = Arrays.stream(functions).map(data -> data.convert(DataToJSONConverter.INSTANCE)).toArray(JsonElement[]::new);
@@ -144,7 +154,7 @@ public class ZenLootPoolWrapper
 	}
 
 	@ZenMethod
-	public void addLootTableEntryJSON(String tableName, int weightIn, int qualityIn, IData[] conditions, @Optional String name)
+	public void addLootTableEntryJson(String tableName, int weightIn, int qualityIn, IData[] conditions, @Optional String name)
 	{
 		JsonElement[] json = Arrays.stream(conditions).map(data -> data.convert(DataToJSONConverter.INSTANCE)).toArray(JsonElement[]::new);
 		addLootTableEntryInternal(tableName, weightIn, qualityIn, LootUtils.parseConditions(json), name);
@@ -184,7 +194,7 @@ public class ZenLootPoolWrapper
 	}
 
 	@ZenMethod
-	public void addEmptyEntryJSON(int weight, int quality, IData[] conditions, @Optional String name)
+	public void addEmptyEntryJson(int weight, int quality, IData[] conditions, @Optional String name)
 	{
 		JsonElement[] json = Arrays.stream(conditions).map(data -> data.convert(DataToJSONConverter.INSTANCE)).toArray(JsonElement[]::new);
 		addEmptyEntryInternal(weight, quality, LootUtils.parseConditions(json), name);
