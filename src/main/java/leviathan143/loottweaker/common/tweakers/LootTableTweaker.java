@@ -29,12 +29,6 @@ public class LootTableTweaker
 	// Stores the added LootPools as LootTables until they can be added to the
 	// real LootTables
 	private static Map<ResourceLocation, ZenLootTableWrapper> tweakedTableStorage = Maps.newHashMap();
-
-	@ZenMethod
-	public static void test(IData data)
-	{
-		System.out.println(data.convert(DataToJSONConverter.INSTANCE));
-	}
 	
 	@ZenMethod
 	public static ZenLootTableWrapper getTable(String tableName)
