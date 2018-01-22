@@ -62,7 +62,7 @@ public class ZenLootPoolWrapper
 	{
 		Item item = CraftTweakerMC.getItemStack(stack).getItem();
 		removeEntry(item.getRegistryName().toString());
-		DeprecationWarningManager.addWarning("removeItemEntry()", "removeItemEntry() is deprecated. Refer to https://github.com/Leviathan143/LootTweaker/wiki/Deprecations");
+		DeprecationWarningManager.addWarning();
 	}
 
 	@ZenMethod
@@ -75,7 +75,7 @@ public class ZenLootPoolWrapper
 			return;
 		}
 		removeEntry(tableName);
-		DeprecationWarningManager.addWarning("removeLootTableEntry()", "removeLootTableEntry() is deprecated. Use removeEntry instead(). Refer to the section on removeEntry() at https://github.com/Leviathan143/LootTweaker/wiki/Loot-Pools.");
+		DeprecationWarningManager.addWarning();
 	}
 
 	@ZenMethod
