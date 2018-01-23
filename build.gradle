@@ -20,12 +20,12 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "1.12-0.0.6.5"
+version = "1.12.2-0.0.7"
 group= "leviathan143.loottweaker" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "LootTweaker"
 
 minecraft {
-    version = "1.12-14.21.1.2443"
+    version = "1.12.2-14.23.1.2602"
     runDir = "run"
     
     // the mappings can be changed at any time, and must be in the following format.
@@ -58,7 +58,7 @@ dependencies
   // at runtime, use the full JEI jar
   runtime "mezz.jei:jei_1.12.1:4.7.5.87"
   deobfCompile "com.blamejared:MTLib:3.0.1.3"
-  deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.0.9.289"
+  deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.0.387"
 }
 
 processResources
