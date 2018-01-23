@@ -33,6 +33,7 @@ public class DeprecationWarningManager
 	
 	public static void printDeprecationWarnings()
 	{
+		if(deprecatedObjectsUsed.isEmpty()) return;
 		CraftTweakerAPI.logWarning("One or more scripts use deprecated methods. Check crafttweaker.log for more information.");
 		for(String deprecatedObj : deprecatedObjectsUsed)
 		{

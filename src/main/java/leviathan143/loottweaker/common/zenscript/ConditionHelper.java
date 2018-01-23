@@ -4,8 +4,7 @@ import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.data.IData;
 import leviathan143.loottweaker.common.DeprecationWarningManager;
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
-import leviathan143.loottweaker.common.lib.DataToJSONConverter;
-import leviathan143.loottweaker.common.lib.LootUtils;
+import leviathan143.loottweaker.common.lib.*;
 import net.minecraft.world.storage.loot.conditions.*;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -41,7 +40,8 @@ public class ConditionHelper
 	@ZenMethod
 	public static ZenLootConditionWrapper parse(IData json)
 	{
-		return new ZenLootConditionWrapper(LootUtils.parseJSONCondition(json.convert(DataToJSONConverter.INSTANCE)));
+		if(!ZenScriptUtils.checkIsMap(json)) return null;
+		return new ZenLootConditionWrapper(LootUtils.parseJSONCondition(DataToJSONConverter.from(json)));
 	}
 	
 	@ZenMethod

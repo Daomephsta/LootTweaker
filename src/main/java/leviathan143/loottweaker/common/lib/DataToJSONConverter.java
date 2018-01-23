@@ -9,7 +9,7 @@ import crafttweaker.api.data.*;
 
 public class DataToJSONConverter implements IDataConverter<JsonElement>
 {
-	public static final DataToJSONConverter INSTANCE = new DataToJSONConverter();
+	private static final DataToJSONConverter INSTANCE = new DataToJSONConverter();
 	private static final Gson SERIALISER = new GsonBuilder()
 			.registerTypeAdapter(DataBool.class, (JsonSerializer<IData>) (src, srcType, context) -> new JsonPrimitive(src.asBool()))
 			.registerTypeAdapter(DataByte.class, (JsonSerializer<IData>) (src, srcType, context) -> new JsonPrimitive(src.asByte()))
@@ -24,6 +24,11 @@ public class DataToJSONConverter implements IDataConverter<JsonElement>
 			.registerTypeAdapter(DataList.class, (JsonSerializer<IData>) (src, srcType, context) -> context.serialize(src.asList()))
 			.registerTypeAdapter(DataMap.class, (JsonSerializer<IData>) (src, srcType, context) -> context.serialize(src.asMap()))
 			.create();
+	
+	public static JsonElement from(IData data)
+	{
+		return data.convert(INSTANCE);
+	}
 	
 	@Override
 	public JsonElement fromBool(boolean bool)

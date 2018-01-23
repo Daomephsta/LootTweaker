@@ -10,8 +10,7 @@ import crafttweaker.api.data.IData;
 import crafttweaker.mc1120.data.NBTConverter;
 import leviathan143.loottweaker.common.DeprecationWarningManager;
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
-import leviathan143.loottweaker.common.lib.DataToJSONConverter;
-import leviathan143.loottweaker.common.lib.LootUtils;
+import leviathan143.loottweaker.common.lib.*;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.nbt.*;
 import net.minecraft.world.storage.loot.RandomValueRange;
@@ -80,29 +79,16 @@ public class FunctionHelper
 	@ZenMethod
 	public static ZenLootFunctionWrapper setNBT(IData nbtData)
 	{
-		NBTBase nbt = NBTConverter.from(nbtData);
-		if(nbt instanceof NBTTagCompound) return new ZenLootFunctionWrapper(new SetNBT(LootUtils.NO_CONDITIONS, (NBTTagCompound) nbt));
-		else
-		{
-			CraftTweakerAPI.logError("Expected data to be compound");
-			return new ZenLootFunctionWrapper(new SetNBT(LootUtils.NO_CONDITIONS, new NBTTagCompound()));
-		}
+		if(!ZenScriptUtils.checkIsMap(nbtData)) return null;
+		return new ZenLootFunctionWrapper(new SetNBT(LootUtils.NO_CONDITIONS, (NBTTagCompound) NBTConverter.from(nbtData)));
 	}
-	
+
 	@ZenMethod
 	@Deprecated
-	public static ZenLootFunctionWrapper setNBT(String nbtAsJson)
+	public static ZenLootFunctionWrapper setNBT(String nbtAsJson) throws NBTException
 	{
 		DeprecationWarningManager.addWarning();
-		try
-		{
-			return new ZenLootFunctionWrapper(new SetNBT(LootUtils.NO_CONDITIONS, JsonToNBT.getTagFromJson(nbtAsJson)));
-		}
-		catch (NBTException e)
-		{
-			e.printStackTrace();
-		}
-		return new ZenLootFunctionWrapper(new SetNBT(LootUtils.NO_CONDITIONS, new NBTTagCompound()));
+		return new ZenLootFunctionWrapper(new SetNBT(LootUtils.NO_CONDITIONS, JsonToNBT.getTagFromJson(nbtAsJson)));
 	}
 
 	@ZenMethod
@@ -110,11 +96,12 @@ public class FunctionHelper
 	{
 		return new ZenLootFunctionWrapper(new Smelt(LootUtils.NO_CONDITIONS));
 	}
-	
+
 	@ZenMethod
 	public static ZenLootFunctionWrapper parse(IData json)
 	{
-		return new ZenLootFunctionWrapper(LootUtils.parseJSONFunction(json.convert(DataToJSONConverter.INSTANCE)));
+		if(!ZenScriptUtils.checkIsMap(json)) return null;
+		return new ZenLootFunctionWrapper(LootUtils.parseJSONFunction(DataToJSONConverter.from(json)));
 	}
 
 	@ZenMethod

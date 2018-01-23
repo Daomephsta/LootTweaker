@@ -143,8 +143,10 @@ public class LootUtils
 		LootCondition[] parsedConditions = new LootCondition[conditions.length];
 		for (int c = 0; c < conditions.length; c++)
 		{
-			if (conditions[c] instanceof JsonElement) parsedConditions[c] = parseJSONCondition((JsonElement) conditions[c]);
-			else if (conditions[c] instanceof String) parsedConditions[c] = parseJSONCondition("{" + conditions[c] + "}");
+			if (conditions[c] instanceof JsonElement)
+				parsedConditions[c] = parseJSONCondition((JsonElement) conditions[c]);
+			else if (conditions[c] instanceof String)
+				parsedConditions[c] = parseJSONCondition("{" + conditions[c] + "}");
 			else if (conditions[c] instanceof ZenLootConditionWrapper)
 				parsedConditions[c] = ((ZenLootConditionWrapper) conditions[c]).condition;
 			else
@@ -224,7 +226,7 @@ public class LootUtils
 		}
 		return parsedFunctions;
 	}
-	
+
 	public static LootFunction parseJSONFunction(JsonElement functionJson)
 	{
 		return CommonMethodHandles.getLootTableGSON().fromJson(functionJson, LootFunction.class);
