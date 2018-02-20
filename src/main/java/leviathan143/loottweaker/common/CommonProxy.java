@@ -12,6 +12,7 @@ public class CommonProxy
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		MinecraftForge.EVENT_BUS.register(LootTableTweaker.class);
+		LTConfig.onLoad();
 	}
 
 	public void init(FMLInitializationEvent event)
@@ -21,7 +22,7 @@ public class CommonProxy
 
 	public void postInit(FMLPostInitializationEvent event)
 	{
-		DeprecationWarningManager.printDeprecationWarnings();
+		
 	}
 
 	public World getWorld()
@@ -31,7 +32,7 @@ public class CommonProxy
 
 	public void serverStarted(FMLServerStartedEvent event)
 	{
-		
+		DeprecationWarningManager.printDeprecationWarnings();
 	}
 
 	public void serverAboutToStart(FMLServerAboutToStartEvent event)
