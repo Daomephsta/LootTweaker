@@ -27,6 +27,7 @@ public class LootTableTweaker
 	// Stores the added LootPools as LootTables until they can be added to the
 	// real LootTables
 	private static Map<ResourceLocation, ZenLootTableWrapper> tweakedTableStorage = Maps.newHashMap();
+	private static boolean tableLoadingStarted = false;
 	
 	@ZenMethod
 	public static ZenLootTableWrapper getTable(String tableName)
@@ -43,19 +44,26 @@ public class LootTableTweaker
 	public static void onTableLoad(LootTableLoadEvent event)
 	{
 		applyTweaks(event.getName(), event.getTable());
+		if(!tableLoadingStarted)
+		{
+			tableLoadingStarted = true;
+			onTableLoadingStarted();
+		}
+	}
+	
+	private static void onTableLoadingStarted()
+	{
+		for(Map.Entry<ResourceLocation, ZenLootTableWrapper> entry : tweakedTableStorage.entrySet())
+		{
+			if (!LootTableList.getAll().contains(entry.getKey()))
+				CraftTweakerAPI.logError(String.format("No loot table with name %s exists!", entry.getKey()));
+		}
 	}
 
 	private static void applyTweaks(ResourceLocation tableName, LootTable table)
 	{
 		if (table.isFrozen()) return;
 		if (tweakedTableStorage.containsKey(tableName))
-		{
-			if (!LootTableList.getAll().contains(tableName))
-			{
-				CraftTweakerAPI.logError(String.format("No loot table with name %s exists!", tableName));
-				return;
-			}
 			tweakedTableStorage.get(tableName).applyLootTweaks(table);
-		}
 	}
 }
