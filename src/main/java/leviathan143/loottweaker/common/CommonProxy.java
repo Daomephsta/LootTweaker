@@ -1,17 +1,24 @@
 package leviathan143.loottweaker.common;
 
+import crafttweaker.CraftTweakerAPI;
 import crafttweaker.mc1120.commands.CTChatCommand;
 import leviathan143.loottweaker.common.commands.CommandLootTables;
-import leviathan143.loottweaker.common.tweakers.LootTableTweaker;
+import leviathan143.loottweaker.common.zenscript.ModConditionHelper;
+import leviathan143.loottweaker.common.zenscript.ModFunctionHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 
 public class CommonProxy
 {
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		MinecraftForge.EVENT_BUS.register(LootTableTweaker.class);
+		//Register global symbols
+		CraftTweakerAPI.registerGlobalSymbol("modConditions", CraftTweakerAPI.getJavaStaticFieldSymbol(ModConditionHelper.class, "INSTANCE"));
+		CraftTweakerAPI.registerGlobalSymbol("modFunctions", CraftTweakerAPI.getJavaStaticFieldSymbol(ModFunctionHelper.class, "INSTANCE"));
 	}
 
 	public void init(FMLInitializationEvent event)
