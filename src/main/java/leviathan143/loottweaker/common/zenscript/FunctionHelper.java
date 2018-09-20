@@ -8,11 +8,10 @@ import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.data.IData;
 import crafttweaker.mc1120.data.NBTConverter;
-import leviathan143.loottweaker.common.DeprecationWarningManager;
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.lib.*;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraft.world.storage.loot.functions.*;
 import stanhebben.zenscript.annotations.ZenClass;
@@ -84,14 +83,6 @@ public class FunctionHelper
 	}
 
 	@ZenMethod
-	@Deprecated
-	public static ZenLootFunctionWrapper setNBT(String nbtAsJson) throws NBTException
-	{
-		DeprecationWarningManager.addWarning();
-		return new ZenLootFunctionWrapper(new SetNBT(LootUtils.NO_CONDITIONS, JsonToNBT.getTagFromJson(nbtAsJson)));
-	}
-
-	@ZenMethod
 	public static ZenLootFunctionWrapper smelt()
 	{
 		return new ZenLootFunctionWrapper(new Smelt(LootUtils.NO_CONDITIONS));
@@ -102,13 +93,5 @@ public class FunctionHelper
 	{
 		if(!ZenScriptUtils.checkIsMap(json)) return null;
 		return new ZenLootFunctionWrapper(LootUtils.parseJSONFunction(DataToJSONConverter.from(json)));
-	}
-
-	@ZenMethod
-	@Deprecated
-	public static ZenLootFunctionWrapper parse(String json)
-	{
-		DeprecationWarningManager.addWarning();
-		return new ZenLootFunctionWrapper(LootUtils.parseJSONFunction("{" + json + "}"));
 	}
 }

@@ -13,7 +13,6 @@ import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.data.IData;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
-import leviathan143.loottweaker.common.DeprecationWarningManager;
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
 import leviathan143.loottweaker.common.lib.*;
@@ -53,36 +52,6 @@ public class ZenLootPoolWrapper
 		JsonElement[] conditionsJSON = Arrays.stream(conditions).map(DataToJSONConverter::from).toArray(JsonElement[]::new);
 		CraftTweakerAPI.apply(new AddConditions(this, LootUtils.parseConditions(conditionsJSON)));
 	}
-	
-	@ZenMethod
-	@Deprecated
-	public void addConditionsJSON(String[] conditions)
-	{
-		DeprecationWarningManager.addWarning();
-		CraftTweakerAPI.apply(new AddConditions(this, LootUtils.parseConditions(conditions)));
-	}
-
-	@ZenMethod
-	@Deprecated
-	public void removeItemEntry(IItemStack stack)
-	{
-		DeprecationWarningManager.addWarning();
-		Item item = CraftTweakerMC.getItemStack(stack).getItem();
-		removeEntry(item.getRegistryName().toString());
-	}
-
-	@ZenMethod
-	@Deprecated
-	public void removeLootTableEntry(String tableName)
-	{
-		DeprecationWarningManager.addWarning();
-		if (!LootTableList.getAll().contains(new ResourceLocation(tableName)))
-		{
-			CraftTweakerAPI.logError(tableName + " is not a loot table!");
-			return;
-		}
-		removeEntry(tableName);
-	}
 
 	@ZenMethod
 	public void removeEntry(String entryName)
@@ -120,15 +89,6 @@ public class ZenLootPoolWrapper
 				LootUtils.parseConditions(conditionsJSON), name);
 	}
 
-	@ZenMethod
-	@Deprecated
-	public void addItemEntryJSON(IItemStack iStack, int weight, int quality, String[] functions, String[] conditions, @Optional String name)
-	{
-		DeprecationWarningManager.addWarning();
-		addItemEntryInternal(iStack, weight, quality, LootUtils.parseFunctions(functions),
-				LootUtils.parseConditions(conditions), name);
-	}
-
 	private void addItemEntryInternal(IItemStack iStack, int weight, int quality, LootFunction[] functions, LootCondition[] conditions, String name)
 	{
 		Item item = CraftTweakerMC.getItemStack(iStack).getItem();
@@ -163,14 +123,6 @@ public class ZenLootPoolWrapper
 		JsonElement[] json = Arrays.stream(conditions).map(DataToJSONConverter::from).toArray(JsonElement[]::new);
 		addLootTableEntryInternal(tableName, weightIn, qualityIn, LootUtils.parseConditions(json), name);
 	}
-	
-	@ZenMethod
-	@Deprecated
-	public void addLootTableEntryJSON(String tableName, int weightIn, int qualityIn, String[] conditions, @Optional String name)
-	{
-		DeprecationWarningManager.addWarning();
-		addLootTableEntryInternal(tableName, weightIn, qualityIn, LootUtils.parseConditions(conditions), name);
-	}
 
 	private void addLootTableEntryInternal(String tableName, int weightIn, int qualityIn, LootCondition[] conditions, String name)
 	{
@@ -203,14 +155,6 @@ public class ZenLootPoolWrapper
 		if(!checkAllAreMaps(conditions)) return;
 		JsonElement[] json = Arrays.stream(conditions).map(DataToJSONConverter::from).toArray(JsonElement[]::new);
 		addEmptyEntryInternal(weight, quality, LootUtils.parseConditions(json), name);
-	}
-	
-	@ZenMethod
-	@Deprecated
-	public void addEmptyEntryJSON(int weight, int quality, String[] conditions, @Optional String name)
-	{
-		DeprecationWarningManager.addWarning();
-		addEmptyEntryInternal(weight, quality, LootUtils.parseConditions(conditions), name);
 	}
 
 	public void addEmptyEntryInternal(int weightIn, int qualityIn, LootCondition[] conditions, @Optional String name)
@@ -322,6 +266,7 @@ public class ZenLootPoolWrapper
 			this.conditions = conditions;
 		}
 
+		@Override
 		public void applyTweak(LootPool pool, ZenLootPoolWrapper zenWrapper)
 		{
 			Collections.addAll(CommonMethodHandles.getConditionsFromPool(pool), conditions);

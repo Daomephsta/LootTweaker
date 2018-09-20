@@ -2,7 +2,6 @@ package leviathan143.loottweaker.common.zenscript;
 
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.data.IData;
-import leviathan143.loottweaker.common.DeprecationWarningManager;
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.lib.*;
 import net.minecraft.world.storage.loot.conditions.*;
@@ -42,13 +41,5 @@ public class ConditionHelper
 	{
 		if(!ZenScriptUtils.checkIsMap(json)) return null;
 		return new ZenLootConditionWrapper(LootUtils.parseJSONCondition(DataToJSONConverter.from(json)));
-	}
-	
-	@ZenMethod
-	@Deprecated
-	public static ZenLootConditionWrapper parse(String json)
-	{
-		DeprecationWarningManager.addWarning();
-		return new ZenLootConditionWrapper(LootUtils.parseJSONCondition("{" + json + "}"));
 	}
 }
