@@ -21,20 +21,15 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "1.12.2-0.0.8"
+version = "${project.MCVersion}-${project.modVersion}"
 group= "leviathan143.loottweaker" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "LootTweaker"
 
 minecraft {
-    version = "1.12.2-14.23.1.2602"
+    version = "${project.MCVersion}-${project.forgeVersion}"
     runDir = "run"
-    
-    // the mappings can be changed at any time, and must be in the following format.
-    // snapshot_YYYYMMDD   snapshot are built nightly.
-    // stable_#            stables are built at the discretion of the MCP team.
-    // Use non-default mappings at your own risk. they may not allways work.
-    // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "snapshot_20170624"
+	
+    mappings = project.mappingsVersion
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
@@ -58,7 +53,7 @@ dependencies
   deobfProvided "mezz.jei:jei_1.12.1:4.7.5.87:api"
   // at runtime, use the full JEI jar
   runtime "mezz.jei:jei_1.12.1:4.7.5.87"
-  deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.9.486"
+  deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.11.494"
 }
 
 publishing {
