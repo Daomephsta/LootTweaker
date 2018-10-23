@@ -2,6 +2,9 @@ package leviathan143.loottweaker.common.tweakers;
 
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.google.common.collect.Maps;
 
 import crafttweaker.CraftTweakerAPI;
@@ -24,8 +27,8 @@ import stanhebben.zenscript.annotations.ZenMethod;
 @Mod.EventBusSubscriber(modid = Constants.MODID)
 public class LootTableTweaker
 {
-	// Stores the added LootPools as LootTables until they can be added to the
-	// real LootTables
+	private static final Logger logger = LogManager.getLogger();
+	// Stores the added LootPools as LootTables until they can be added to the real LootTables
 	private static Map<ResourceLocation, ZenLootTableWrapper> tweakedTableStorage = Maps.newHashMap();
 	private static boolean tableLoadingStarted = false;
 	
@@ -62,8 +65,14 @@ public class LootTableTweaker
 
 	private static void applyTweaks(ResourceLocation tableName, LootTable table)
 	{
-		if (table.isFrozen()) return;
 		if (tweakedTableStorage.containsKey(tableName))
+		{
+			if (table.isFrozen())
+			{
+				logger.debug("Skipped modifying loot table {} because it is frozen", tableName);
+				return;
+			}
 			tweakedTableStorage.get(tableName).applyLootTweaks(table);
+		}
 	}
 }

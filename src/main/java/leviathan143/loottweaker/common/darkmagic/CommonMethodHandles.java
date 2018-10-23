@@ -6,11 +6,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.*;
 
 import com.google.gson.Gson;
 
-import leviathan143.loottweaker.common.LootTweakerMain;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.*;
@@ -19,6 +18,7 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class CommonMethodHandles
 {
+	private static final Logger logger = LogManager.getLogger();
 	private static MethodHandle lootTable$poolsGetter, lootPool$poolConditionsGetter, lootPool$lootEntriesGetter,
 			lootTableManager$GSON_INSTANCEGetter, entityLiving$getLootTable;
 
@@ -45,7 +45,7 @@ public class CommonMethodHandles
 		}
 		catch (IllegalAccessException e)
 		{
-			LootTweakerMain.logger.log(Level.ERROR, "Failed to initialize MethodHandles!");
+			logger.log(Level.ERROR, "Failed to initialize MethodHandles!");
 			e.printStackTrace();
 		}
 	}

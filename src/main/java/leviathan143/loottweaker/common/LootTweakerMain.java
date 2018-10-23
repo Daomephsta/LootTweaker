@@ -1,5 +1,6 @@
 package leviathan143.loottweaker.common;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
@@ -24,15 +25,13 @@ public class LootTweakerMain
 		public static final String SERVER_PROXY_PATH = "leviathan143.loottweaker.server.ServerProxy";
 	}
 
-	public static Logger logger;
-
+	public static final Logger logger = LogManager.getLogger(Constants.MODID);
 	@SidedProxy(serverSide = Constants.SERVER_PROXY_PATH, clientSide = Constants.CLIENT_PROXY_PATH)
 	public static CommonProxy proxy;
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		logger = event.getModLog();
 		proxy.preInit(event);
 	}
 

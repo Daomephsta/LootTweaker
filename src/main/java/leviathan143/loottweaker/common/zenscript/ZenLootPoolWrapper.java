@@ -3,6 +3,8 @@ package leviathan143.loottweaker.common.zenscript;
 import java.util.*;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonElement;
@@ -30,6 +32,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 @ZenClass(Constants.MODID + ".vanilla.loot.LootPool")
 public class ZenLootPoolWrapper
 {
+	private static final Logger logger = LogManager.getLogger();
 	private final LootPool backingPool;
 	private final List<IDelayedTweak<LootPool, ZenLootPoolWrapper>> delayedTweaks = Lists.newArrayList();
 
@@ -177,7 +180,11 @@ public class ZenLootPoolWrapper
 
 	public void applyLootTweaks(LootPool pool)
 	{
-		if (pool.isFrozen()) return;
+		if (pool.isFrozen())
+		{
+			logger.debug("Skipped modifying pool {} because it is frozen");
+			return;
+		}
 		for (IDelayedTweak<LootPool, ZenLootPoolWrapper> tweak : delayedTweaks)
 		{
 			tweak.applyTweak(pool, this);

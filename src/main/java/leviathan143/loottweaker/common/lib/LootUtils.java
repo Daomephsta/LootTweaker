@@ -1,8 +1,6 @@
 package leviathan143.loottweaker.common.lib;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -18,32 +16,19 @@ import crafttweaker.api.minecraft.CraftTweakerMC;
 import leviathan143.loottweaker.common.LootTweakerMain;
 import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
-import leviathan143.loottweaker.common.zenscript.ZenLootConditionWrapper;
-import leviathan143.loottweaker.common.zenscript.ZenLootFunctionWrapper;
-import leviathan143.loottweaker.common.zenscript.ZenLootPoolWrapper;
-import leviathan143.loottweaker.common.zenscript.ZenLootTableWrapper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLiving;
+import leviathan143.loottweaker.common.zenscript.*;
+import net.minecraft.entity.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.LootEntry;
-import net.minecraft.world.storage.loot.LootPool;
-import net.minecraft.world.storage.loot.LootTable;
-import net.minecraft.world.storage.loot.LootTableManager;
-import net.minecraft.world.storage.loot.RandomValueRange;
+import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
-import net.minecraft.world.storage.loot.functions.LootFunction;
-import net.minecraft.world.storage.loot.functions.SetCount;
-import net.minecraft.world.storage.loot.functions.SetDamage;
-import net.minecraft.world.storage.loot.functions.SetMetadata;
-import net.minecraft.world.storage.loot.functions.SetNBT;
+import net.minecraft.world.storage.loot.functions.*;
 
 public class LootUtils
 {
-	static final Gson PRETTY_PRINTER = new GsonBuilder().setPrettyPrinting().create();
-	static final JsonParser parser = new JsonParser();
+	private static final Gson PRETTY_PRINTER = new GsonBuilder().setPrettyPrinting().create();
+	private static final JsonParser parser = new JsonParser();
 
 	// A regex that matches any vanilla pool name
 	public static final Pattern DEFAULT_POOL_REGEX = Pattern.compile("(?:^(?:main$|pool[1-9]+)$)+");
@@ -98,8 +83,7 @@ public class LootUtils
 			}
 			writer.close();
 			if (log)
-				LootTweakerMain.logger
-						.info(String.format("Loot table %s saved to %s", tableLoc, file.getCanonicalPath()));
+				LootTweakerMain.logger.info(String.format("Loot table %s saved to %s", tableLoc, file.getCanonicalPath()));
 		}
 		catch (IOException e)
 		{
