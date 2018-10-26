@@ -10,7 +10,6 @@ import com.google.common.collect.Lists;
 import com.google.gson.JsonElement;
 
 import crafttweaker.CraftTweakerAPI;
-import crafttweaker.IAction;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.data.IData;
 import crafttweaker.api.item.IItemStack;
@@ -18,13 +17,15 @@ import crafttweaker.api.minecraft.CraftTweakerMC;
 import leviathan143.loottweaker.common.LootTweakerMain;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
 import leviathan143.loottweaker.common.lib.*;
+import leviathan143.loottweaker.common.zenscript.actions.AddLootEntry;
+import leviathan143.loottweaker.common.zenscript.actions.UndoableDelayedPoolTweak;
+import leviathan143.loottweaker.common.zenscript.adders.*;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.functions.LootFunction;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -34,8 +35,8 @@ import stanhebben.zenscript.annotations.ZenMethod;
 public class ZenLootPoolWrapper
 {
 	private static final Logger logger = LogManager.getLogger();
-	private final LootPool backingPool;
-	private final List<IDelayedTweak<LootPool, ZenLootPoolWrapper>> delayedTweaks = Lists.newArrayList();
+	final LootPool backingPool;
+	final List<IDelayedTweak<LootPool, ZenLootPoolWrapper>> delayedTweaks = Lists.newArrayList();
 
 	public ZenLootPoolWrapper(LootPool pool)
 	{
@@ -61,6 +62,24 @@ public class ZenLootPoolWrapper
 	public void removeEntry(String entryName)
 	{
 		CraftTweakerAPI.apply(new RemoveLootEntry(this, entryName));
+	}
+	
+	@ZenMethod
+	public ItemEntryAdder itemEntryAdder(IItemStack stack)
+	{
+		return new ItemEntryAdder(this, stack);
+	}
+	
+	@ZenMethod
+	public LootTableEntryAdder lootTableEntryAdder(ResourceLocation table)
+	{
+		return new LootTableEntryAdder(this, table);
+	}
+	
+	@ZenMethod
+	public EmptyEntryAdder emptyEntryAdder()
+	{
+		return new EmptyEntryAdder(this);
 	}
 
 	@ZenMethod
@@ -197,43 +216,14 @@ public class ZenLootPoolWrapper
 		return backingPool;
 	}
 	
+	public void addDelayedTweak(IDelayedTweak<LootPool, ZenLootPoolWrapper> tweak)
+	{
+		delayedTweaks.add(tweak);
+	}
+	
 	private boolean checkAllAreMaps(IData[] data)
 	{
 		return Arrays.stream(data).allMatch(ZenScriptUtils::checkIsMap);
-	}
-
-	private static class AddLootEntry extends UndoableDelayedPoolTweak
-	{
-		private LootEntry entry;
-
-		public AddLootEntry(ZenLootPoolWrapper wrapper, LootEntry entry)
-		{
-			super(wrapper);
-			this.entry = entry;
-		}
-
-		@Override
-		public void applyTweak(LootPool pool, ZenLootPoolWrapper zenWrapper)
-		{
-			if (pool.getEntry(entry.getEntryName()) != null)
-			{
-				int counter = 1;
-				String baseName = entry.getEntryName();
-				String name = baseName;
-				while (pool.getEntry(name) != null)
-				{
-					name = baseName + "-lt#" + ++counter;
-				}
-				ObfuscationReflectionHelper.setPrivateValue(LootEntry.class, entry, name, "entryName");
-			}
-			pool.addEntry(entry);
-		}
-
-		@Override
-		public String describe()
-		{
-			return String.format("Adding entry %s to pool %s", entry.getEntryName(), wrapper.backingPool.getName());
-		}
 	}
 
 	private static class RemoveLootEntry extends UndoableDelayedPoolTweak
@@ -333,22 +323,6 @@ public class ZenLootPoolWrapper
 		{
 			return String.format("Setting bonusRolls for pool %s to (%f, %f)", wrapper.backingPool.getName(),
 					range.getMin(), range.getMax());
-		}
-	}
-
-	private static abstract class UndoableDelayedPoolTweak implements IAction, IDelayedTweak<LootPool, ZenLootPoolWrapper>
-	{
-		protected ZenLootPoolWrapper wrapper;
-
-		public UndoableDelayedPoolTweak(ZenLootPoolWrapper wrapper)
-		{
-			this.wrapper = wrapper;
-		}
-
-		@Override
-		public void apply()
-		{
-			wrapper.delayedTweaks.add(this);
 		}
 	}
 }
