@@ -10,6 +10,7 @@ import crafttweaker.api.data.IData;
 import crafttweaker.mc1120.data.NBTConverter;
 import leviathan143.loottweaker.common.LootTweakerMain;
 import leviathan143.loottweaker.common.lib.*;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.storage.loot.RandomValueRange;
@@ -30,7 +31,7 @@ public class FunctionHelper
 			Enchantment ench = Enchantment.getEnchantmentByLocation(id);
 			if (ench == null)
 			{
-				CraftTweakerAPI.logError(id + " is not a valid enchantment id");
+				CraftTweakerAPI.logError(I18n.format(LootTweakerMain.MODID + ".messages.error.functionhelper.invalidEnchant", id));
 				continue;
 			}
 			enchantments.add(ench);
@@ -63,7 +64,7 @@ public class FunctionHelper
 	{
 		if (max > 1.0F)
 		{
-			CraftTweakerAPI.logError("Items cannot recieve more than 100% damage!");
+			CraftTweakerAPI.logError(I18n.format(LootTweakerMain.MODID + ".messages.error.functionhelper.damageOver100"));
 			max = 1.0F;
 		}
 		return new ZenLootFunctionWrapper(new SetDamage(LootUtils.NO_CONDITIONS, new RandomValueRange(min, max)));

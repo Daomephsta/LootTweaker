@@ -6,13 +6,9 @@ import leviathan143.loottweaker.common.commands.CommandLootTables;
 import leviathan143.loottweaker.common.zenscript.ModConditionHelper;
 import leviathan143.loottweaker.common.zenscript.ModFunctionHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
+import net.minecraftforge.fml.common.event.*;
 
-public class CommonProxy
+public abstract class CommonProxy
 {
 	public void preInit(FMLPreInitializationEvent event)
 	{
@@ -32,10 +28,7 @@ public class CommonProxy
 		
 	}
 
-	public World getWorld()
-	{
-		return null;
-	}
+	public abstract World getWorld();
 
 	public void serverStarted(FMLServerStartedEvent event)
 	{

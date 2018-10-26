@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import crafttweaker.CraftTweakerAPI;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -15,7 +16,6 @@ import stanhebben.zenscript.annotations.ZenClass;
 @Mod.EventBusSubscriber(modid = LootTweakerMain.MODID)
 public class DeprecationWarningManager
 {
-	private static final String WARNING =  "%s is deprecated";
 	private static final Set<String> deprecatedObjectsUsed = new HashSet<String>();
 
 	public static void addWarning()
@@ -39,12 +39,12 @@ public class DeprecationWarningManager
 	{
 		if(deprecatedObjectsUsed.isEmpty() || !LTConfig.deprecationWarnings) return;
 		warnings = 0;
-		CraftTweakerAPI.logWarning("LootTweaker: One or more scripts use deprecated methods. Check crafttweaker.log for more information.");
+		CraftTweakerAPI.logWarning(I18n.format(LootTweakerMain.MODID + ".messages.error.deprecation.warning1"));
 		for(String deprecatedObj : deprecatedObjectsUsed)
 		{
-			CraftTweakerAPI.logInfo(String.format(WARNING, deprecatedObj));
+			CraftTweakerAPI.logInfo(I18n.format(LootTweakerMain.MODID + ".messages.error.deprecation.warning2", deprecatedObj));
 		}
-		CraftTweakerAPI.logInfo("Refer to https://github.com/Leviathan143/LootTweaker/wiki/Deprecations for more info. This warning can be disabled in the config");
+		CraftTweakerAPI.logInfo(I18n.format(LootTweakerMain.MODID + ".messages.error.deprecation.warning3"));
 	}
 
 	//Why you make me do this, CraftTweaker? :..(

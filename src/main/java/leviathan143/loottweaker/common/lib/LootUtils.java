@@ -16,6 +16,7 @@ import crafttweaker.api.minecraft.CraftTweakerMC;
 import leviathan143.loottweaker.common.LootTweakerMain;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
 import leviathan143.loottweaker.common.zenscript.*;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -133,7 +134,7 @@ public class LootUtils
 			else if (conditions[c] instanceof ZenLootConditionWrapper)
 				parsedConditions[c] = ((ZenLootConditionWrapper) conditions[c]).condition;
 			else
-				CraftTweakerAPI.logError(conditions[c] + " is not a String, IData or a LootCondition!");
+				CraftTweakerAPI.logError(I18n.format(LootTweakerMain.MODID + ".messages.error.unparseableType", conditions[c]));
 		}
 		return parsedConditions;
 	}
@@ -205,7 +206,7 @@ public class LootUtils
 			else if (functions[f] instanceof ZenLootFunctionWrapper)
 				parsedFunctions[f] = ((ZenLootFunctionWrapper) functions[f]).function;
 			else
-				CraftTweakerAPI.logError(functions[f] + " is not a String, IData or a LootFunction!");
+				CraftTweakerAPI.logError(I18n.format(LootTweakerMain.MODID + ".messages.error.unparseableType", functions[f]));
 		}
 		return parsedFunctions;
 	}

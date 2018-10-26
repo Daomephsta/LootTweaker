@@ -18,6 +18,7 @@ import crafttweaker.api.minecraft.CraftTweakerMC;
 import leviathan143.loottweaker.common.LootTweakerMain;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
 import leviathan143.loottweaker.common.lib.*;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.*;
@@ -250,7 +251,7 @@ public class ZenLootPoolWrapper
 		{
 			if (pool.removeEntry(entryName) == null)
 			{
-				CraftTweakerAPI.logError(String.format("No entry with name %s exists in pool %s", entryName,
+				CraftTweakerAPI.logError(I18n.format(LootTweakerMain.MODID + ".messages.error.invalidEntryName", entryName,
 						zenWrapper.backingPool.getName()));
 				return;
 			}

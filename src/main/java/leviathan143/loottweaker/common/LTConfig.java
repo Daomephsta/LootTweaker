@@ -3,6 +3,7 @@ package leviathan143.loottweaker.common;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.common.config.Config.Comment;
+import net.minecraftforge.common.config.Config.LangKey;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -11,9 +12,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @Mod.EventBusSubscriber(modid = LootTweakerMain.MODID)
 public class LTConfig
 {
-	@Comment("Should LootTweaker warn about deprecated methods on world load. Reset if the version of LootTweaker is changed.")
+	@Comment("Should LootTweaker warn about deprecated methods on world load? Resets if the version of LootTweaker is changed.")
+	@LangKey(LootTweakerMain.MODID + ".config.deprecationWarnings")
 	public static boolean deprecationWarnings = true;
 	@Comment("Do not touch!")
+	@LangKey(LootTweakerMain.MODID + ".config.lastCfgVersion")
 	public static String lastCfgVersion = LootTweakerMain.VERSION;
 
 	public static void onLoad()

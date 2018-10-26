@@ -13,6 +13,7 @@ import leviathan143.loottweaker.common.LootTweakerMain;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
 import leviathan143.loottweaker.common.lib.IDelayedTweak;
 import leviathan143.loottweaker.common.lib.LootUtils;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
@@ -111,8 +112,7 @@ public class ZenLootTableWrapper
 			LootPool pool = table.getPool(poolName);
 			if (pool == null)
 			{
-				CraftTweakerAPI.logError(
-						String.format("No loot pool with name %s exists in table %s!", poolName, wrapper.name));
+				CraftTweakerAPI.logError(I18n.format(LootTweakerMain.MODID + ".messages.error.invalidPoolName", poolName, wrapper.name));
 				return;
 			}
 			wrapper.getPoolInternal(poolName).applyLootTweaks(pool);
@@ -176,7 +176,7 @@ public class ZenLootTableWrapper
 		{
 			if (table.getPool(poolName) == null)
 			{
-				CraftTweakerAPI.logError(String.format("No loot pool with name %s exists!", poolName));
+				CraftTweakerAPI.logError(I18n.format(LootTweakerMain.MODID + ".messages.error.invalidPoolName", poolName, wrapper.name));
 				return;
 			}
 			table.removePool(poolName);

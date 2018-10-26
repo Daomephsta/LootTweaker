@@ -10,7 +10,6 @@ import com.google.common.base.Predicates;
 
 import crafttweaker.mc1120.commands.CraftTweakerCommand;
 import leviathan143.loottweaker.common.LootTweakerMain;
-import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
 import leviathan143.loottweaker.common.lib.LootUtils;
 import net.minecraft.command.ICommandSender;
@@ -41,8 +40,7 @@ public class CommandLootTables extends CraftTweakerCommand
 	@Override
 	protected void init()
 	{
-		setDescription(new TextComponentString("/mt loottables [mode] <args>" + System.lineSeparator()
-				+ "    Dumps the specified loottable(s)" + System.lineSeparator() + "to <minecraft folder>/dumps"));
+		setDescription(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.desc"));
 	}
 
 	@Override
@@ -50,9 +48,7 @@ public class CommandLootTables extends CraftTweakerCommand
 	{
 		if (args.length < 1)
 		{
-			sender.sendMessage(new TextComponentString("Usage: /mt loottables [mode] <args>"));
-			sender.sendMessage(new TextComponentString("Modes: all | entity | byName"));
-			sender.sendMessage(new TextComponentString("Args: none | entityName | tableName"));
+			sender.sendMessage(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.usage"));
 			return;
 		}
 		Option option = Enum.valueOf(Option.class, args[0]);
@@ -65,19 +61,19 @@ public class CommandLootTables extends CraftTweakerCommand
 				LootUtils.writeTableToJSON(table, LootTweakerMain.proxy.getWorld().getLootTableManager(),
 						getLootTableDumpFilePath(table), true);
 			}
-			sender.sendMessage(new TextComponentString("Done!"));
+			sender.sendMessage(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.all.done"));
 			break;
 
-		case byName :
+		case byName:
 			if (args.length < 2)
 			{
-				sender.sendMessage(new TextComponentString("Loot table name required!"));
+				sender.sendMessage(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.byName.missingName"));
 				return;
 			}
 			tableLoc = new ResourceLocation(args[1]);
 			if (!LootTableList.getAll().contains(tableLoc))
 			{
-				sender.sendMessage(new TextComponentString("Invalid loot table name!"));
+				sender.sendMessage(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.byName.invalidName"));
 				return;
 			}
 			File dumpPath1 = getLootTableDumpFilePath(tableLoc);
@@ -86,7 +82,7 @@ public class CommandLootTables extends CraftTweakerCommand
 			linkDumpFileInChat(sender, dumpPath1, tableLoc);
 			break;
 
-		case target :
+		case target:
 			if (sender instanceof Entity)
 			{
 				RayTraceResult target = getLookTarget((Entity) sender, 8.0D);
@@ -95,16 +91,16 @@ public class CommandLootTables extends CraftTweakerCommand
 				case BLOCK :
 					TileEntity te = sender.getEntityWorld().getTileEntity(target.getBlockPos());
 					if (te instanceof ILootContainer) tableLoc = ((ILootContainer) te).getLootTable();
-					else sender.sendMessage(new TextComponentString("The target does not have a loot table"));
+					else sender.sendMessage(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.target.noTable"));
 					break;
 				case ENTITY :
 					if (target.entityHit instanceof EntityLiving)
 						tableLoc = CommonMethodHandles.getEntityLootTable((EntityLiving) target.entityHit);
 					else
-						sender.sendMessage(new TextComponentString("The target does not have a loot table"));
+						sender.sendMessage(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.target.noTable"));
 					break;
 				case MISS :
-					sender.sendMessage(new TextComponentString("Nothing in range"));
+					sender.sendMessage(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.target.noTarget"));
 					return;
 				default :
 					return;
@@ -115,10 +111,10 @@ public class CommandLootTables extends CraftTweakerCommand
 						dumpPath2, true);
 				linkDumpFileInChat(sender, dumpPath2, tableLoc);
 			}
-			else sender.sendMessage(new TextComponentString("This command can only be executed by entities"));
+			else sender.sendMessage(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.target.senderNotEntity"));
 			break;
 
-		case list :
+		case list:
 			for (ResourceLocation table : LootTableList.getAll())
 			{
 				sender.sendMessage(new TextComponentString(table.toString()));
@@ -138,7 +134,7 @@ public class CommandLootTables extends CraftTweakerCommand
 
 	private static void linkDumpFileInChat(ICommandSender sender, File dumpPath, ResourceLocation tableLoc)
 	{
-		ITextComponent message = new TextComponentTranslation(Constants.MODID + ".commands.dump.dumpLink", tableLoc);
+		ITextComponent message = new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.dumpLink", tableLoc);
 		ITextComponent link = new TextComponentString(dumpPath.toString());
 		link.getStyle()
 			.setClickEvent(new ClickEvent(Action.OPEN_FILE, dumpPath.toString()))
@@ -173,6 +169,7 @@ public class CommandLootTables extends CraftTweakerCommand
 								.grow(1.0D, 1.0D, 1.0D),
 						Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>()
 						{
+							@Override
 							public boolean apply(@Nullable Entity p_apply_1_)
 							{
 								return p_apply_1_ != null && p_apply_1_.canBeCollidedWith();
@@ -183,7 +180,7 @@ public class CommandLootTables extends CraftTweakerCommand
 		for (Entity entity1 : list)
 		{
 			AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox()
-					.grow((double) entity1.getCollisionBorderSize());
+					.grow(entity1.getCollisionBorderSize());
 			RayTraceResult raytraceresult = axisalignedbb.calculateIntercept(eyePos, lookTarget);
 
 			if (axisalignedbb.contains(eyePos))
