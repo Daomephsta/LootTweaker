@@ -8,7 +8,7 @@ import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.data.IData;
 import crafttweaker.mc1120.data.NBTConverter;
-import leviathan143.loottweaker.common.LootTweakerMain.Constants;
+import leviathan143.loottweaker.common.LootTweakerMain;
 import leviathan143.loottweaker.common.lib.*;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,7 +18,7 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenRegister
-@ZenClass(Constants.MODID + ".vanilla.loot.Functions")
+@ZenClass(LootTweakerMain.MODID + ".vanilla.loot.Functions")
 public class FunctionHelper
 {
 	@ZenMethod

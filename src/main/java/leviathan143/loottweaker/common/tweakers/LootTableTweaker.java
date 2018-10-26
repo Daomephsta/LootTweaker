@@ -9,7 +9,7 @@ import com.google.common.collect.Maps;
 
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ZenRegister;
-import leviathan143.loottweaker.common.LootTweakerMain.Constants;
+import leviathan143.loottweaker.common.LootTweakerMain;
 import leviathan143.loottweaker.common.lib.LootUtils;
 import leviathan143.loottweaker.common.zenscript.ZenLootTableWrapper;
 import net.minecraft.util.ResourceLocation;
@@ -23,8 +23,8 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenRegister
-@ZenClass(Constants.MODID + ".vanilla.loot.LootTables")
-@Mod.EventBusSubscriber(modid = Constants.MODID)
+@ZenClass(LootTweakerMain.MODID + ".vanilla.loot.LootTables")
+@Mod.EventBusSubscriber(modid = LootTweakerMain.MODID)
 public class LootTableTweaker
 {
 	private static final Logger logger = LogManager.getLogger();

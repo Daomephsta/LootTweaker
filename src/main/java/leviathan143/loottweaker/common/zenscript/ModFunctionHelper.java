@@ -1,11 +1,11 @@
 package leviathan143.loottweaker.common.zenscript;
 
 import crafttweaker.annotations.ZenRegister;
-import leviathan143.loottweaker.common.LootTweakerMain.Constants;
+import leviathan143.loottweaker.common.LootTweakerMain;
 import stanhebben.zenscript.annotations.ZenClass;
 
 @ZenRegister
-@ZenClass(Constants.MODID + ".vanilla.loot.ModFunctions")
+@ZenClass(LootTweakerMain.MODID + ".vanilla.loot.ModFunctions")
 public class ModFunctionHelper 
 {
 	public static final ModFunctionHelper INSTANCE = new ModFunctionHelper();

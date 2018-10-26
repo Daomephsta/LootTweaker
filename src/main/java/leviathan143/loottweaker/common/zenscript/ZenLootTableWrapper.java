@@ -9,7 +9,7 @@ import com.google.common.collect.Maps;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
 import crafttweaker.annotations.ZenRegister;
-import leviathan143.loottweaker.common.LootTweakerMain.Constants;
+import leviathan143.loottweaker.common.LootTweakerMain;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
 import leviathan143.loottweaker.common.lib.IDelayedTweak;
 import leviathan143.loottweaker.common.lib.LootUtils;
@@ -20,7 +20,7 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenRegister
-@ZenClass(Constants.MODID + ".vanilla.loot.LootTable")
+@ZenClass(LootTweakerMain.MODID + ".vanilla.loot.LootTable")
 public class ZenLootTableWrapper
 {
 	private ResourceLocation name;

@@ -2,14 +2,14 @@ package leviathan143.loottweaker.common.zenscript;
 
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.data.IData;
-import leviathan143.loottweaker.common.LootTweakerMain.Constants;
+import leviathan143.loottweaker.common.LootTweakerMain;
 import leviathan143.loottweaker.common.lib.*;
 import net.minecraft.world.storage.loot.conditions.*;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenRegister
-@ZenClass(Constants.MODID + ".vanilla.loot.Conditions")
+@ZenClass(LootTweakerMain.MODID + ".vanilla.loot.Conditions")
 public class ConditionHelper
 {
 	@ZenMethod

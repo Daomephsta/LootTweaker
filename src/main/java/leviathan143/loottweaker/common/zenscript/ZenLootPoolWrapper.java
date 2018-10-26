@@ -15,7 +15,7 @@ import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.data.IData;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
-import leviathan143.loottweaker.common.LootTweakerMain.Constants;
+import leviathan143.loottweaker.common.LootTweakerMain;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
 import leviathan143.loottweaker.common.lib.*;
 import net.minecraft.item.Item;
@@ -29,7 +29,7 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenRegister
-@ZenClass(Constants.MODID + ".vanilla.loot.LootPool")
+@ZenClass(LootTweakerMain.MODID + ".vanilla.loot.LootPool")
 public class ZenLootPoolWrapper
 {
 	private static final Logger logger = LogManager.getLogger();

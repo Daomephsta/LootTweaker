@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import crafttweaker.CraftTweakerAPI;
-import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -13,7 +12,7 @@ import stanhebben.zenscript.annotations.ZenClass;
 /**
  * Handles deprecation warnings. Makes sure they're printed once for each deprecated function to avoid log spam.
  */
-@Mod.EventBusSubscriber(modid = Constants.MODID)
+@Mod.EventBusSubscriber(modid = LootTweakerMain.MODID)
 public class DeprecationWarningManager
 {
 	private static final String WARNING =  "%s is deprecated";

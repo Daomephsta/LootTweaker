@@ -14,7 +14,6 @@ import crafttweaker.api.data.IData;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import leviathan143.loottweaker.common.LootTweakerMain;
-import leviathan143.loottweaker.common.LootTweakerMain.Constants;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
 import leviathan143.loottweaker.common.zenscript.*;
 import net.minecraft.entity.*;
@@ -40,7 +39,7 @@ public class LootUtils
 	public static final ZenLootPoolWrapper EMPTY_LOOT_POOL = new ZenLootPoolWrapper(
 			new LootPool(NO_ENTRIES, NO_CONDITIONS, new RandomValueRange(0), new RandomValueRange(0), "empty"));
 	public static final ZenLootTableWrapper EMPTY_LOOT_TABLE = new ZenLootTableWrapper(new LootTable(NO_POOLS),
-			new ResourceLocation(Constants.MODID, "empty"));
+			new ResourceLocation(LootTweakerMain.MODID, "empty"));
 
 	// Tables
 
