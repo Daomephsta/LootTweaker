@@ -1,6 +1,6 @@
 package leviathan143.loottweaker.common.tweakers;
 
-import java.util.Map;
+import java.util.*;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,7 +10,6 @@ import com.google.common.collect.Maps;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ZenRegister;
 import leviathan143.loottweaker.common.LootTweakerMain;
-import leviathan143.loottweaker.common.lib.LootUtils;
 import leviathan143.loottweaker.common.zenscript.ZenLootTableWrapper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
@@ -29,17 +28,31 @@ import stanhebben.zenscript.annotations.ZenMethod;
 public class LootTableTweaker
 {
 	private static final Logger logger = LogManager.getLogger();
-	// Stores the added LootPools as LootTables until they can be added to the real LootTables
+	// Store data about added loot until it can be added to the real LootTables
 	private static Map<ResourceLocation, ZenLootTableWrapper> tweakedTableStorage = Maps.newHashMap();
+	// Tables that should not be checked for existence
+	private static Collection<ResourceLocation> uncheckedTables = new HashSet<>();
 	private static boolean tableLoadingStarted = false;
 	
 	@ZenMethod
 	public static ZenLootTableWrapper getTable(String tableName)
 	{
+		return getTableInternal(new ResourceLocation(tableName));
+	}
+
+	@ZenMethod
+	public static ZenLootTableWrapper getTableUnchecked(String tableName)
+	{
 		ResourceLocation tableLoc = new ResourceLocation(tableName);
+		uncheckedTables.add(tableLoc);
+		return getTableInternal(tableLoc);
+	}
+	
+	private static ZenLootTableWrapper getTableInternal(ResourceLocation tableLoc)
+	{
 		if (!tweakedTableStorage.containsKey(tableLoc))
 		{
-			tweakedTableStorage.put(tableLoc, new ZenLootTableWrapper(new LootTable(LootUtils.NO_POOLS), tableLoc));
+			tweakedTableStorage.put(tableLoc, new ZenLootTableWrapper(tableLoc));
 		}
 		return tweakedTableStorage.get(tableLoc);
 	}
@@ -59,7 +72,7 @@ public class LootTableTweaker
 	{
 		for(Map.Entry<ResourceLocation, ZenLootTableWrapper> entry : tweakedTableStorage.entrySet())
 		{
-			if (!LootTableList.getAll().contains(entry.getKey()))
+			if (!LootTableList.getAll().contains(entry.getKey()) && !uncheckedTables.contains(entry.getKey()))
 				CraftTweakerAPI.logError(I18n.format(LootTweakerMain.MODID + ".messages.error.invalidTableName", entry.getKey()));
 		}
 	}
