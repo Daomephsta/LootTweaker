@@ -90,11 +90,16 @@ public class ZenLootTableWrapper
 
 	public void applyLootTweaks(LootTable table)
 	{
-		if (clear) CommonMethodHandles.getPoolsFromTable(table).clear();
+		if (clear)
+		{
+			CommonMethodHandles.getPoolsFromTable(table).clear();
+			CraftTweakerAPI.logInfo("Cleared entries of table " + name);
+		}
 		for (IDelayedTweak<LootTable, ZenLootTableWrapper> tweak : delayedTweaks)
 		{
 			tweak.applyTweak(table, this);
 		}
+		CraftTweakerAPI.logInfo("Applied tweaks to table " + name);
 	}
 
 	private static class TweakPool implements IDelayedTweak<LootTable, ZenLootTableWrapper>
