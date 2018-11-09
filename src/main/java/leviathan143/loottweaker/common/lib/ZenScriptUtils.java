@@ -14,7 +14,5 @@ public class ZenScriptUtils
 			CraftTweakerAPI.logError("Expected map, recieved " + data);
 			return false;
 		}
-	}
-	
-	
+	}	
 }

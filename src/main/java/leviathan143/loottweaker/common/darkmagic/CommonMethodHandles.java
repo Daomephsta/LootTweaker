@@ -19,7 +19,7 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 public class CommonMethodHandles
 {
 	private static final Logger logger = LogManager.getLogger();
-	private static MethodHandle lootTable$poolsGetter, lootPool$poolConditionsGetter, lootPool$lootEntriesGetter,
+	private static MethodHandle lootTable$poolsGetter, lootPool$poolConditionsGetter,
 			lootTableManager$GSON_INSTANCEGetter, entityLiving$getLootTable;
 
 	static
@@ -33,9 +33,6 @@ public class CommonMethodHandles
 
 			f = ReflectionHelper.findField(LootPool.class, "b", "field_186454_b", "poolConditions");
 			lootPool$poolConditionsGetter = MethodHandles.lookup().unreflectGetter(f);
-
-			f = ReflectionHelper.findField(LootPool.class, "a", "field_186453_a", "lootEntries");
-			lootPool$lootEntriesGetter = MethodHandles.lookup().unreflectGetter(f);
 
 			f = ReflectionHelper.findField(LootTableManager.class, "b", "field_186526_b", "GSON_INSTANCE");
 			lootTableManager$GSON_INSTANCEGetter = MethodHandles.lookup().unreflectGetter(f);
@@ -68,19 +65,6 @@ public class CommonMethodHandles
 		try
 		{
 			return (List<LootCondition>) lootPool$poolConditionsGetter.invokeExact(pool);
-		}
-		catch (Throwable t)
-		{
-			t.printStackTrace();
-			throw new RuntimeException(t);
-		}
-	}
-
-	public static List<LootEntry> getEntriesFromPool(LootPool pool)
-	{
-		try
-		{
-			return (List<LootEntry>) lootPool$lootEntriesGetter.invokeExact(pool);
 		}
 		catch (Throwable t)
 		{

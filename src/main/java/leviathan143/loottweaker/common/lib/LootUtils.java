@@ -3,7 +3,6 @@ package leviathan143.loottweaker.common.lib;
 import java.io.*;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import com.google.common.collect.Lists;
 import com.google.gson.*;
@@ -15,9 +14,9 @@ import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import leviathan143.loottweaker.common.LootTweakerMain;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
-import leviathan143.loottweaker.common.zenscript.*;
+import leviathan143.loottweaker.common.zenscript.ZenLootConditionWrapper;
+import leviathan143.loottweaker.common.zenscript.ZenLootFunctionWrapper;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -28,30 +27,14 @@ import net.minecraft.world.storage.loot.functions.*;
 public class LootUtils
 {
 	private static final Gson PRETTY_PRINTER = new GsonBuilder().setPrettyPrinting().create();
-	private static final JsonParser parser = new JsonParser();
+	private static final JsonParser PARSER = new JsonParser();
 
-	// A regex that matches any vanilla pool name
-	public static final Pattern DEFAULT_POOL_REGEX = Pattern.compile("(?:^(?:main$|pool[1-9]+)$)+");
 	public static final LootCondition[] NO_CONDITIONS = new LootCondition[0];
 	public static final LootEntry[] NO_ENTRIES = new LootEntry[0];
 	public static final LootFunction[] NO_FUNCTIONS = new LootFunction[0];
 	public static final LootPool[] NO_POOLS = new LootPool[0];
-	// Used if the pool does not exist to prevent NPEs
-	public static final ZenLootPoolWrapper EMPTY_LOOT_POOL = new ZenLootPoolWrapper(
-			new LootPool(NO_ENTRIES, NO_CONDITIONS, new RandomValueRange(0), new RandomValueRange(0), "empty"));
-	public static final ZenLootTableWrapper EMPTY_LOOT_TABLE = new ZenLootTableWrapper(new LootTable(NO_POOLS),
-			new ResourceLocation(LootTweakerMain.MODID, "empty"));
 
 	// Tables
-
-	public static ResourceLocation getEntityLootTableFromName(ResourceLocation entityName)
-	{
-		Entity entity = EntityList.createEntityByIDFromName(entityName, LootTweakerMain.proxy.getWorld());
-		if (entity == null) return null;
-		if (!(entity instanceof EntityLiving)) return null;
-		return CommonMethodHandles.getEntityLootTable((EntityLiving) entity);
-	}
-
 	public static void writeTableToJSON(ResourceLocation tableLoc, LootTableManager manager, File file)
 	{
 		writeTableToJSON(tableLoc, manager, file, false);
@@ -91,9 +74,9 @@ public class LootUtils
 		}
 	}
 
-	static String prettify(String jsonBarf)
+	private static String prettify(String jsonBarf)
 	{
-		return PRETTY_PRINTER.toJson(parser.parse(jsonBarf));
+		return PRETTY_PRINTER.toJson(PARSER.parse(jsonBarf));
 	}
 
 	// Pools
@@ -114,13 +97,7 @@ public class LootUtils
 				new RandomValueRange(minBonusRolls, maxBonusRolls), name);
 	}
 
-	public static void addConditionsToPool(LootPool pool, LootCondition... newConditions)
-	{
-		Collections.addAll(CommonMethodHandles.getConditionsFromPool(pool), newConditions);
-	}
-
 	// Conditions
-
 	public static LootCondition[] parseConditions(Object[] conditions)
 	{
 		if (conditions == null) return NO_CONDITIONS;
@@ -129,8 +106,6 @@ public class LootUtils
 		{
 			if (conditions[c] instanceof JsonElement)
 				parsedConditions[c] = parseJSONCondition((JsonElement) conditions[c]);
-			else if (conditions[c] instanceof String)
-				parsedConditions[c] = parseJSONCondition("{" + conditions[c] + "}");
 			else if (conditions[c] instanceof ZenLootConditionWrapper)
 				parsedConditions[c] = ((ZenLootConditionWrapper) conditions[c]).condition;
 			else
@@ -140,12 +115,6 @@ public class LootUtils
 	}
 
 	public static LootCondition parseJSONCondition(JsonElement conditionJSON)
-	{
-		return CommonMethodHandles.getLootTableGSON().fromJson(conditionJSON, LootCondition.class);
-	}
-
-	@Deprecated
-	public static LootCondition parseJSONCondition(String conditionJSON)
 	{
 		return CommonMethodHandles.getLootTableGSON().fromJson(conditionJSON, LootCondition.class);
 	}
@@ -202,7 +171,6 @@ public class LootUtils
 		for (int f = 0; f < functions.length; f++)
 		{
 			if (functions[f] instanceof JsonElement) parsedFunctions[f] = parseJSONFunction((JsonElement) functions[f]);
-			else if (functions[f] instanceof String) parsedFunctions[f] = parseJSONFunction("{" + functions[f] + "}");
 			else if (functions[f] instanceof ZenLootFunctionWrapper)
 				parsedFunctions[f] = ((ZenLootFunctionWrapper) functions[f]).function;
 			else
@@ -212,12 +180,6 @@ public class LootUtils
 	}
 
 	public static LootFunction parseJSONFunction(JsonElement functionJson)
-	{
-		return CommonMethodHandles.getLootTableGSON().fromJson(functionJson, LootFunction.class);
-	}
-
-	@Deprecated
-	public static LootFunction parseJSONFunction(String functionJson)
 	{
 		return CommonMethodHandles.getLootTableGSON().fromJson(functionJson, LootFunction.class);
 	}

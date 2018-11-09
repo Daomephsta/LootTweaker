@@ -31,9 +31,9 @@ public class ZenLootTableWrapper
 	// If true the table is wiped
 	private boolean clear;
 
-	public ZenLootTableWrapper(LootTable table, ResourceLocation name)
+	public ZenLootTableWrapper(ResourceLocation name)
 	{
-		this.backingTable = table;
+		this.backingTable = new LootTable(LootUtils.NO_POOLS);
 		this.name = name;
 	}
 
