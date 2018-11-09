@@ -58,8 +58,7 @@ public class CommandLootTables extends CraftTweakerCommand
 		case all :
 			for (ResourceLocation table : LootTableList.getAll())
 			{
-				LootUtils.writeTableToJSON(table, LootTweakerMain.proxy.getWorld().getLootTableManager(),
-						getLootTableDumpFilePath(table), true);
+				LootUtils.dump(LootTweakerMain.proxy.getWorld(), table, getLootTableDumpFilePath(table));
 			}
 			sender.sendMessage(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.all.done"));
 			break;
@@ -76,10 +75,9 @@ public class CommandLootTables extends CraftTweakerCommand
 				sender.sendMessage(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.byName.invalidName"));
 				return;
 			}
-			File dumpPath1 = getLootTableDumpFilePath(tableLoc);
-			LootUtils.writeTableToJSON(tableLoc, LootTweakerMain.proxy.getWorld().getLootTableManager(), dumpPath1,
-					true);
-			linkDumpFileInChat(sender, dumpPath1, tableLoc);
+			File dumpPathByName = getLootTableDumpFilePath(tableLoc);
+			LootUtils.dump(LootTweakerMain.proxy.getWorld(), tableLoc, dumpPathByName);
+			linkDumpFileInChat(sender, dumpPathByName, tableLoc);
 			break;
 
 		case target:
@@ -106,10 +104,9 @@ public class CommandLootTables extends CraftTweakerCommand
 					return;
 				}
 				if (tableLoc == null) return;
-				File dumpPath2 = getLootTableDumpFilePath(tableLoc);
-				LootUtils.writeTableToJSON(tableLoc, LootTweakerMain.proxy.getWorld().getLootTableManager(),
-						dumpPath2, true);
-				linkDumpFileInChat(sender, dumpPath2, tableLoc);
+				File dumpPathTarget = getLootTableDumpFilePath(tableLoc);
+				LootUtils.dump(LootTweakerMain.proxy.getWorld(), tableLoc, dumpPathTarget);
+				linkDumpFileInChat(sender, dumpPathTarget, tableLoc);
 			}
 			else sender.sendMessage(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.target.senderNotEntity"));
 			break;

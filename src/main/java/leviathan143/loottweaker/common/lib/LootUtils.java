@@ -5,7 +5,8 @@ import java.util.Collections;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.google.gson.*;
+import com.google.gson.JsonElement;
+import com.google.gson.stream.JsonWriter;
 
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.api.data.DataMap;
@@ -26,59 +27,41 @@ import net.minecraft.world.storage.loot.functions.*;
 
 public class LootUtils
 {
-	private static final Gson PRETTY_PRINTER = new GsonBuilder().setPrettyPrinting().create();
-	private static final JsonParser PARSER = new JsonParser();
-
 	public static final LootCondition[] NO_CONDITIONS = new LootCondition[0];
 	public static final LootEntry[] NO_ENTRIES = new LootEntry[0];
 	public static final LootFunction[] NO_FUNCTIONS = new LootFunction[0];
 	public static final LootPool[] NO_POOLS = new LootPool[0];
 
-	// Tables
-	public static void writeTableToJSON(ResourceLocation tableLoc, LootTableManager manager, File file)
-	{
-		writeTableToJSON(tableLoc, manager, file, false);
-	}
 
-	public static void writeTableToJSON(ResourceLocation tableLoc, LootTableManager manager, File file, boolean log)
-	{
-		World world = LootTweakerMain.proxy.getWorld();
+	public static void dump(World world, ResourceLocation tableLoc, File dumpTarget)
+	{	
 		if (world.isRemote) return;
-		LootTable table = manager.getLootTableFromLocation(tableLoc);
-		writeTableToJSON(tableLoc, table, file, log);
-	}
-
-	public static void writeTableToJSON(ResourceLocation tableLoc, LootTable table, File file, boolean log)
-	{
+		LootTable table = world.getLootTableManager().getLootTableFromLocation(tableLoc);
 		try
 		{
-			file.getParentFile().mkdirs();
-			file.createNewFile();
-			FileWriter writer = new FileWriter(file);
+			dumpTarget.getParentFile().mkdirs();
+			dumpTarget.createNewFile();
+			FileWriter writer = new FileWriter(dumpTarget);
 			try
 			{
-				writer.write(prettify(CommonMethodHandles.getLootTableGSON().toJson(table)));
+				JsonWriter dumper = CommonMethodHandles.getLootTableGSON().newJsonWriter(writer);
+				dumper.setIndent("  ");
+				CommonMethodHandles.getLootTableGSON().toJson(table, table.getClass(), dumper);
 			}
 			catch (Throwable t)
 			{
-				LootTweakerMain.logger.warn("Failed to dump loot table %s", tableLoc.toString());
+				LootTweakerMain.logger.warn("Failed to dump loot table {}", tableLoc);
 				t.printStackTrace();
 			}
 			writer.close();
-			if (log)
-				LootTweakerMain.logger.info(String.format("Loot table %s saved to %s", tableLoc, file.getCanonicalPath()));
+			LootTweakerMain.logger.info(String.format("Loot table %s saved to %s", tableLoc, dumpTarget.getCanonicalPath()));
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
 	}
-
-	private static String prettify(String jsonBarf)
-	{
-		return PRETTY_PRINTER.toJson(PARSER.parse(jsonBarf));
-	}
-
+	
 	// Pools
 
 	/**

@@ -5,11 +5,11 @@ import leviathan143.loottweaker.common.lib.IDelayedTweak;
 import leviathan143.loottweaker.common.zenscript.ZenLootPoolWrapper;
 import net.minecraft.world.storage.loot.LootPool;
 
-public abstract class UndoableDelayedPoolTweak implements IAction, IDelayedTweak<LootPool, ZenLootPoolWrapper>
+public abstract class ActionEnqueueDelayedPoolTweak implements IAction, IDelayedTweak<LootPool, ZenLootPoolWrapper>
 {
 	protected ZenLootPoolWrapper wrapper;
 
-	public UndoableDelayedPoolTweak(ZenLootPoolWrapper wrapper)
+	public ActionEnqueueDelayedPoolTweak(ZenLootPoolWrapper wrapper)
 	{
 		this.wrapper = wrapper;
 	}

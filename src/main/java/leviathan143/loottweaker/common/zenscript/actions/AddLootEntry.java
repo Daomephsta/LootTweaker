@@ -5,7 +5,7 @@ import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
-public class AddLootEntry extends UndoableDelayedPoolTweak
+public class AddLootEntry extends ActionEnqueueDelayedPoolTweak
 {
 	private LootEntry entry;
 

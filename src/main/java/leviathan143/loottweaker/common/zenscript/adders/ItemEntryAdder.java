@@ -2,8 +2,6 @@ package leviathan143.loottweaker.common.zenscript.adders;
 
 import java.util.Arrays;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import com.google.gson.JsonElement;
 
 import crafttweaker.api.data.IData;
@@ -67,7 +65,7 @@ public class ItemEntryAdder extends AbstractEntryAdder<LootEntryItem>
 	public ItemEntryAdder functionsJson(IData[] functions)
 	{
 		JsonElement[] json = Arrays.stream(functions).map(DataToJSONConverter::from).toArray(JsonElement[]::new);
-		ArrayUtils.addAll(this.functions, LootUtils.parseFunctions(json));
+		this.functions = LootUtils.parseFunctions(json);
 		LootUtils.addStackFunctions(stack, this.functions);
 		return this;
 	}
@@ -75,7 +73,7 @@ public class ItemEntryAdder extends AbstractEntryAdder<LootEntryItem>
 	@ZenMethod
 	public ItemEntryAdder functionsHelper(ZenLootFunctionWrapper[] functions)
 	{
-		this.functions = ArrayUtils.addAll(this.functions, LootUtils.parseFunctions(functions));
+		this.functions = LootUtils.parseFunctions(functions);
 		LootUtils.addStackFunctions(stack, this.functions);
 		return this;
 	}

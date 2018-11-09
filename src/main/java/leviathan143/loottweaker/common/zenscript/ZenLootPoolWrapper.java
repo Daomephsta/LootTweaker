@@ -18,7 +18,7 @@ import leviathan143.loottweaker.common.LootTweakerMain;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
 import leviathan143.loottweaker.common.lib.*;
 import leviathan143.loottweaker.common.zenscript.actions.AddLootEntry;
-import leviathan143.loottweaker.common.zenscript.actions.UndoableDelayedPoolTweak;
+import leviathan143.loottweaker.common.zenscript.actions.ActionEnqueueDelayedPoolTweak;
 import leviathan143.loottweaker.common.zenscript.adders.*;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
@@ -226,7 +226,7 @@ public class ZenLootPoolWrapper
 		return Arrays.stream(data).allMatch(ZenScriptUtils::checkIsMap);
 	}
 
-	private static class RemoveLootEntry extends UndoableDelayedPoolTweak
+	private static class RemoveLootEntry extends ActionEnqueueDelayedPoolTweak
 	{
 		private String entryName;
 
@@ -254,7 +254,7 @@ public class ZenLootPoolWrapper
 		}
 	}
 
-	private static class AddConditions extends UndoableDelayedPoolTweak
+	private static class AddConditions extends ActionEnqueueDelayedPoolTweak
 	{
 		private LootCondition[] conditions;
 
@@ -278,7 +278,7 @@ public class ZenLootPoolWrapper
 		}
 	}
 
-	private static class SetRolls extends UndoableDelayedPoolTweak
+	private static class SetRolls extends ActionEnqueueDelayedPoolTweak
 	{
 		private RandomValueRange range;
 
@@ -302,7 +302,7 @@ public class ZenLootPoolWrapper
 		}
 	}
 
-	private static class SetBonusRolls extends UndoableDelayedPoolTweak
+	private static class SetBonusRolls extends ActionEnqueueDelayedPoolTweak
 	{
 		private RandomValueRange range;
 
