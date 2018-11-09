@@ -11,8 +11,7 @@ import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import leviathan143.loottweaker.common.lib.DataToJSONConverter;
 import leviathan143.loottweaker.common.lib.LootUtils;
-import leviathan143.loottweaker.common.zenscript.ZenLootFunctionWrapper;
-import leviathan143.loottweaker.common.zenscript.ZenLootPoolWrapper;
+import leviathan143.loottweaker.common.zenscript.*;
 import net.minecraft.item.Item;
 import net.minecraft.world.storage.loot.LootEntryItem;
 import net.minecraft.world.storage.loot.functions.LootFunction;
@@ -29,6 +28,41 @@ public class ItemEntryAdder extends AbstractEntryAdder<LootEntryItem>
 		this.stack = stack;
 	}
 	
+	@Override
+	@ZenMethod
+	public ItemEntryAdder weight(int weight)
+	{
+		return (ItemEntryAdder) super.weight(weight);
+	}
+
+	@Override
+	@ZenMethod
+	public ItemEntryAdder quality(int quality)
+	{
+		return (ItemEntryAdder) super.quality(quality);
+	}
+
+	@Override
+	@ZenMethod
+	public ItemEntryAdder conditionsJson(IData[] conditions)
+	{
+		return (ItemEntryAdder) super.conditionsJson(conditions);
+	}
+
+	@Override
+	@ZenMethod
+	public ItemEntryAdder conditionsHelper(ZenLootConditionWrapper[] conditions)
+	{
+		return (ItemEntryAdder) super.conditionsHelper(conditions);
+	}
+
+	@Override
+	@ZenMethod
+	public ItemEntryAdder name(String name)
+	{
+		return (ItemEntryAdder) super.name(name);
+	}
+
 	@ZenMethod
 	public ItemEntryAdder functionsJson(IData[] functions)
 	{
