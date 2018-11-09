@@ -35,8 +35,8 @@ import stanhebben.zenscript.annotations.ZenMethod;
 public class ZenLootPoolWrapper
 {
 	private static final Logger logger = LogManager.getLogger();
-	final LootPool backingPool;
-	final List<IDelayedTweak<LootPool, ZenLootPoolWrapper>> delayedTweaks = Lists.newArrayList();
+	private final LootPool backingPool;
+	private final List<IDelayedTweak<LootPool, ZenLootPoolWrapper>> delayedTweaks = Lists.newArrayList();
 
 	public ZenLootPoolWrapper(LootPool pool)
 	{
