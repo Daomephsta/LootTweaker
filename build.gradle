@@ -30,7 +30,7 @@ minecraft {
     runDir = "run"
 	
     mappings = project.mappingsVersion
-    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+    makeObfSourceJar = false
 }
 
 repositories 
