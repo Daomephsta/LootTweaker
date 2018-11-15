@@ -36,12 +36,14 @@ public class ZenLootPoolWrapper
 {
 	private static final Logger logger = LogManager.getLogger();
 	private final LootPool backingPool;
+	private final ResourceLocation parentTable;
 	private final List<IDelayedTweak<LootPool, ZenLootPoolWrapper>> delayedTweaks = Lists.newArrayList();
 
-	public ZenLootPoolWrapper(LootPool pool)
+	public ZenLootPoolWrapper(LootPool pool, ResourceLocation parentTable)
 	{
 		if (pool == null) throw new IllegalArgumentException("Backing pool cannot be null!");
-		backingPool = pool;
+		this.backingPool = pool;
+		this.parentTable = parentTable;
 	}
 
 	@ZenMethod
@@ -216,6 +218,11 @@ public class ZenLootPoolWrapper
 		return backingPool;
 	}
 	
+	public ResourceLocation getParentTable()
+	{
+		return parentTable;
+	}
+	
 	public void addDelayedTweak(IDelayedTweak<LootPool, ZenLootPoolWrapper> tweak)
 	{
 		delayedTweaks.add(tweak);
@@ -250,7 +257,8 @@ public class ZenLootPoolWrapper
 		@Override
 		public String describe()
 		{
-			return String.format("Removing entry %s from pool %s", entryName, wrapper.backingPool.getName());
+			return String.format("Queuing entry %s for removal from pool %s of table", entryName, 
+				wrapper.backingPool.getName(), wrapper.getParentTable());
 		}
 	}
 
@@ -273,8 +281,8 @@ public class ZenLootPoolWrapper
 		@Override
 		public String describe()
 		{
-			return String.format("Adding conditions %s to pool %s", ArrayUtils.toString(conditions),
-					wrapper.backingPool.getName());
+			return String.format("Queuing conditions %s for addition to pool %s of table %s", ArrayUtils.toString(conditions),
+					wrapper.backingPool.getName(), wrapper.parentTable);
 		}
 	}
 
@@ -297,8 +305,8 @@ public class ZenLootPoolWrapper
 		@Override
 		public String describe()
 		{
-			return String.format("Setting rolls for pool %s to (%f, %f)", wrapper.backingPool.getName(), range.getMin(),
-					range.getMax());
+			return String.format("Queuing setting rolls of pool %s of table %s to (%f, %f)", wrapper.backingPool.getName(), wrapper.parentTable, 
+				range.getMin(),range.getMax());
 		}
 	}
 
@@ -321,8 +329,8 @@ public class ZenLootPoolWrapper
 		@Override
 		public String describe()
 		{
-			return String.format("Setting bonusRolls for pool %s to (%f, %f)", wrapper.backingPool.getName(),
-					range.getMin(), range.getMax());
+			return String.format("Queuing setting of bonus rolls of pool %s of table %s to (%f, %f)", wrapper.backingPool.getName(), wrapper.parentTable, 
+				range.getMin(),range.getMax());
 		}
 	}
 }

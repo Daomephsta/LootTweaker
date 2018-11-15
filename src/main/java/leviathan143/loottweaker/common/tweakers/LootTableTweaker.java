@@ -27,7 +27,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 @Mod.EventBusSubscriber(modid = LootTweakerMain.MODID)
 public class LootTableTweaker
 {
-	private static final Logger logger = LogManager.getLogger();
+	public static final Logger LOGGER = LogManager.getLogger();
 	// Store data about added loot until it can be added to the real LootTables
 	private static Map<ResourceLocation, ZenLootTableWrapper> tweakedTableStorage = Maps.newHashMap();
 	// Tables that should not be checked for existence
@@ -83,7 +83,7 @@ public class LootTableTweaker
 		{
 			if (table.isFrozen())
 			{
-				logger.debug("Skipped modifying loot table {} because it is frozen", tableName);
+				LOGGER.debug("Skipped modifying loot table {} because it is frozen", tableName);
 				return;
 			}
 			tweakedTableStorage.get(tableName).applyLootTweaks(table);

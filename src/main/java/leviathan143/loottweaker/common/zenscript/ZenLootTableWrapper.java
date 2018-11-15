@@ -13,6 +13,7 @@ import leviathan143.loottweaker.common.LootTweakerMain;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
 import leviathan143.loottweaker.common.lib.IDelayedTweak;
 import leviathan143.loottweaker.common.lib.LootUtils;
+import leviathan143.loottweaker.common.tweakers.LootTableTweaker;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
@@ -48,7 +49,7 @@ public class ZenLootTableWrapper
 	{
 		LootPool pool = LootUtils.createPool(poolName, minRolls, maxRolls, minBonusRolls, maxBonusRolls);
 		CraftTweakerAPI.apply(new AddPool(this, name, pool));
-		ZenLootPoolWrapper wrapper = new ZenLootPoolWrapper(pool);
+		ZenLootPoolWrapper wrapper = new ZenLootPoolWrapper(pool, name);
 		wrapperCache.put(poolName, wrapper);
 		return wrapper;
 	}
@@ -71,7 +72,7 @@ public class ZenLootTableWrapper
 			// Check that an action doesn't already exist
 			if (!wrapperCache.containsKey(poolName)) delayedTweaks.add(new TweakPool(poolName));
 		}
-		if (!wrapperCache.containsKey(poolName)) wrapperCache.put(poolName, new ZenLootPoolWrapper(pool));
+		if (!wrapperCache.containsKey(poolName)) wrapperCache.put(poolName, new ZenLootPoolWrapper(pool, this.name));
 		return wrapperCache.get(poolName);
 	}
 
@@ -84,7 +85,7 @@ public class ZenLootTableWrapper
 			pool = LootUtils.createTemporaryPool(poolName);
 			backingTable.addPool(pool);
 		}
-		if (!wrapperCache.containsKey(poolName)) wrapperCache.put(poolName, new ZenLootPoolWrapper(pool));
+		if (!wrapperCache.containsKey(poolName)) wrapperCache.put(poolName, new ZenLootPoolWrapper(pool, this.name));
 		return wrapperCache.get(poolName);
 	}
 
@@ -120,6 +121,11 @@ public class ZenLootTableWrapper
 				CraftTweakerAPI.logError(I18n.format(LootTweakerMain.MODID + ".messages.error.invalidPoolName", poolName, wrapper.name));
 				return;
 			}
+			if (pool.isFrozen())
+			{
+				LootTableTweaker.LOGGER.debug("Skipped modifying pool {} of table {} because it is frozen", poolName, wrapper.name);
+				return;
+			}
 			wrapper.getPoolInternal(poolName).applyLootTweaks(pool);
 		}
 	}
@@ -153,7 +159,7 @@ public class ZenLootTableWrapper
 		@Override
 		public String describe()
 		{
-			return String.format("Adding pool %s to table %s", pool.getName(), tableName);
+			return String.format("Queuing pool %s for addition to table %s", pool.getName(), tableName);
 		}
 	}
 
@@ -190,7 +196,7 @@ public class ZenLootTableWrapper
 		@Override
 		public String describe()
 		{
-			return String.format("Removed pool %s from table %s", poolName, tableName);
+			return String.format("Queuing pool %s for removal from table %s", poolName, tableName);
 		}
 	}
 }

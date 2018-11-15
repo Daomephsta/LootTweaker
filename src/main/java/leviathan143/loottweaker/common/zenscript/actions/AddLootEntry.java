@@ -35,6 +35,7 @@ public class AddLootEntry extends ActionEnqueueDelayedPoolTweak
 	@Override
 	public String describe()
 	{
-		return String.format("Adding entry %s to pool %s", entry.getEntryName(), wrapper.getPool().getName());
+		return String.format("Queuing entry %s for addition to pool %s of table %s", entry.getEntryName(), 
+			wrapper.getPool().getName(), wrapper.getParentTable());
 	}
 }
