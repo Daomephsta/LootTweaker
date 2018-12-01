@@ -87,13 +87,13 @@ public class ZenLootPoolWrapper
 	@ZenMethod
 	public void addItemEntry(IItemStack stack, int weightIn, @Optional String name)
 	{
-		addItemEntry(stack, weightIn, 1, name);
+		addItemEntry(stack, weightIn, 0, name);
 	}
 
 	@ZenMethod
-	public void addItemEntry(IItemStack stack, int weightIn, int qualityIn, @Optional String name)
+	public void addItemEntry(IItemStack stack, int weightIn, int quality, @Optional String name)
 	{
-		addItemEntryHelper(stack, weightIn, qualityIn, null, null, name);
+		addItemEntryHelper(stack, weightIn, quality, null, null, name);
 	}
 
 	@ZenMethod
@@ -126,7 +126,7 @@ public class ZenLootPoolWrapper
 	@ZenMethod
 	public void addLootTableEntry(String tableName, int weightIn, @Optional String name)
 	{
-		addLootTableEntry(tableName, weightIn, 1, name);
+		addLootTableEntry(tableName, weightIn, 0, name);
 	}
 
 	@ZenMethod
@@ -159,7 +159,7 @@ public class ZenLootPoolWrapper
 	@ZenMethod
 	public void addEmptyEntry(int weight, @Optional String name)
 	{
-		addEmptyEntryInternal(weight, 1, LootUtils.NO_CONDITIONS, name);
+		addEmptyEntryInternal(weight, 0, LootUtils.NO_CONDITIONS, name);
 	}
 
 	@ZenMethod
