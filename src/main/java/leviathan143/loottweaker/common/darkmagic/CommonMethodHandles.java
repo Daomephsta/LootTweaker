@@ -47,8 +47,7 @@ public class CommonMethodHandles
 		}
 		catch (Throwable t)
 		{
-			t.printStackTrace();
-			throw new RuntimeException(t);
+			throw new RuntimeException("Could not invoke loot table pool getter method handle", t);
 		}
 	}
 
@@ -60,8 +59,7 @@ public class CommonMethodHandles
 		}
 		catch (Throwable t)
 		{
-			t.printStackTrace();
-			throw new RuntimeException(t);
+			throw new RuntimeException("Could not invoke loot table pool conditions getter method handle", t);
 		}
 	}
 
@@ -73,8 +71,7 @@ public class CommonMethodHandles
 		}
 		catch (Throwable t)
 		{
-			t.printStackTrace();
-			throw new RuntimeException(t);
+			throw new RuntimeException("Could not invoke entity loot table getter method handle", t);
 		}
 	}
 
@@ -86,8 +83,7 @@ public class CommonMethodHandles
 		}
 		catch (Throwable t)
 		{
-			t.printStackTrace();
-			throw new RuntimeException(t);
+			throw new RuntimeException("Could not invoke loot table serialiser getter method handle", t);
 		}
 	}
 }
