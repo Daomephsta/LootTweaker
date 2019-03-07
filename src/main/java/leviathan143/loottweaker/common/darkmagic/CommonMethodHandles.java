@@ -2,11 +2,7 @@ package leviathan143.loottweaker.common.darkmagic;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.List;
-
-import org.apache.logging.log4j.*;
 
 import com.google.gson.Gson;
 
@@ -14,36 +10,32 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 public class CommonMethodHandles
 {
-	private static final Logger logger = LogManager.getLogger();
-	private static MethodHandle lootTable$poolsGetter, lootPool$poolConditionsGetter,
+	private static final MethodHandle lootTable$poolsGetter, lootPool$poolConditionsGetter,
 			lootTableManager$GSON_INSTANCEGetter, entityLiving$getLootTable;
 
 	static
 	{
 		try
 		{
-			Field f;
-			Method m;
-			f = ReflectionHelper.findField(LootTable.class, "c", "field_186466_c", "pools");
-			lootTable$poolsGetter = MethodHandles.lookup().unreflectGetter(f);
+		    lootTable$poolsGetter = MethodHandles.lookup().unreflectGetter(
+		        ObfuscationReflectionHelper.findField(LootTable.class, "field_186466_c"));
 
-			f = ReflectionHelper.findField(LootPool.class, "b", "field_186454_b", "poolConditions");
-			lootPool$poolConditionsGetter = MethodHandles.lookup().unreflectGetter(f);
+			lootPool$poolConditionsGetter = MethodHandles.lookup().unreflectGetter(
+			    ObfuscationReflectionHelper.findField(LootPool.class, "field_186454_b"));
 
-			f = ReflectionHelper.findField(LootTableManager.class, "b", "field_186526_b", "GSON_INSTANCE");
-			lootTableManager$GSON_INSTANCEGetter = MethodHandles.lookup().unreflectGetter(f);
+			lootTableManager$GSON_INSTANCEGetter = MethodHandles.lookup().unreflectGetter(
+			    ObfuscationReflectionHelper.findField(LootTableManager.class, "field_186526_b"));
 
-			m = ReflectionHelper.findMethod(EntityLiving.class, "getLootTable", "func_184647_J");
-			entityLiving$getLootTable = MethodHandles.lookup().unreflect(m);
+			entityLiving$getLootTable = MethodHandles.lookup().unreflect(
+			    ObfuscationReflectionHelper.findMethod(EntityLiving.class, "func_184647_J", ResourceLocation.class));
 		}
 		catch (IllegalAccessException e)
 		{
-			logger.log(Level.ERROR, "Failed to initialize MethodHandles!");
-			e.printStackTrace();
+			throw new RuntimeException("Failed to initialize MethodHandles!", e);
 		}
 	}
 
