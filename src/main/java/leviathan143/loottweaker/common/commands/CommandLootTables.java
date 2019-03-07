@@ -125,8 +125,8 @@ public class CommandLootTables extends CraftTweakerCommand
 
 	private static File getLootTableDumpFilePath(ResourceLocation tableLoc)
 	{
-		return new File("dumps" + File.separator + "loot_tables" + File.separator + tableLoc.getResourceDomain()
-				+ File.separator + tableLoc.getResourcePath() + ".json");
+		return new File("dumps" + File.separator + "loot_tables" + File.separator + tableLoc.getNamespace()
+				+ File.separator + tableLoc.getPath() + ".json");
 	}
 
 	private static void linkDumpFileInChat(ICommandSender sender, File dumpPath, ResourceLocation tableLoc)
@@ -149,7 +149,7 @@ public class CommandLootTables extends CraftTweakerCommand
 
 		Vec3d eyePos = entity.getPositionEyes(1.0F);
 		Vec3d look = entity.getLook(1.0F);
-		Vec3d lookTarget = eyePos.addVector(look.x * distance, look.y * distance, look.z * distance);
+		Vec3d lookTarget = eyePos.add(look.x * distance, look.y * distance, look.z * distance);
 		result = entity.getEntityWorld().rayTraceBlocks(eyePos, lookTarget, false, false, true);
 		boolean flag = false;
 		double d1 = distance;
