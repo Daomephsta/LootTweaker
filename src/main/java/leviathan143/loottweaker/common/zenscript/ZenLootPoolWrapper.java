@@ -17,9 +17,8 @@ import crafttweaker.api.minecraft.CraftTweakerMC;
 import leviathan143.loottweaker.common.LootTweakerMain;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
 import leviathan143.loottweaker.common.lib.*;
-import leviathan143.loottweaker.common.zenscript.actions.AddLootEntry;
 import leviathan143.loottweaker.common.zenscript.actions.ActionEnqueueDelayedPoolTweak;
-import leviathan143.loottweaker.common.zenscript.adders.*;
+import leviathan143.loottweaker.common.zenscript.actions.AddLootEntry;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
@@ -64,24 +63,6 @@ public class ZenLootPoolWrapper
 	public void removeEntry(String entryName)
 	{
 		CraftTweakerAPI.apply(new RemoveLootEntry(this, entryName));
-	}
-	
-	@ZenMethod
-	public ItemEntryAdder itemEntryAdder(IItemStack stack)
-	{
-		return new ItemEntryAdder(this, stack);
-	}
-	
-	@ZenMethod
-	public LootTableEntryAdder lootTableEntryAdder(ResourceLocation table)
-	{
-		return new LootTableEntryAdder(this, table);
-	}
-	
-	@ZenMethod
-	public EmptyEntryAdder emptyEntryAdder()
-	{
-		return new EmptyEntryAdder(this);
 	}
 
 	@ZenMethod
