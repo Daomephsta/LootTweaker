@@ -1,6 +1,8 @@
 package leviathan143.loottweaker.common.tweakers;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,7 +13,6 @@ import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ZenRegister;
 import leviathan143.loottweaker.common.LootTweakerMain;
 import leviathan143.loottweaker.common.zenscript.ZenLootTableWrapper;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTable;
 import net.minecraft.world.storage.loot.LootTableList;
@@ -73,7 +74,7 @@ public class LootTableTweaker
 		for(Map.Entry<ResourceLocation, ZenLootTableWrapper> entry : tweakedTableStorage.entrySet())
 		{
 			if (!LootTableList.getAll().contains(entry.getKey()) && !uncheckedTables.contains(entry.getKey()))
-				CraftTweakerAPI.logError(I18n.format(LootTweakerMain.MODID + ".messages.error.invalidTableName", entry.getKey()));
+				CraftTweakerAPI.logError(String.format("No loot table with name %s exists!", entry.getKey()));
 		}
 	}
 

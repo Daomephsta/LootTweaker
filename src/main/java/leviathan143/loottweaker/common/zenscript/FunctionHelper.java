@@ -9,12 +9,20 @@ import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.data.IData;
 import crafttweaker.mc1120.data.NBTConverter;
 import leviathan143.loottweaker.common.LootTweakerMain;
-import leviathan143.loottweaker.common.lib.*;
-import net.minecraft.client.resources.I18n;
+import leviathan143.loottweaker.common.lib.DataToJSONConverter;
+import leviathan143.loottweaker.common.lib.LootUtils;
+import leviathan143.loottweaker.common.lib.ZenScriptUtils;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.storage.loot.RandomValueRange;
-import net.minecraft.world.storage.loot.functions.*;
+import net.minecraft.world.storage.loot.functions.EnchantRandomly;
+import net.minecraft.world.storage.loot.functions.EnchantWithLevels;
+import net.minecraft.world.storage.loot.functions.LootingEnchantBonus;
+import net.minecraft.world.storage.loot.functions.SetCount;
+import net.minecraft.world.storage.loot.functions.SetDamage;
+import net.minecraft.world.storage.loot.functions.SetMetadata;
+import net.minecraft.world.storage.loot.functions.SetNBT;
+import net.minecraft.world.storage.loot.functions.Smelt;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
@@ -31,7 +39,7 @@ public class FunctionHelper
 			Enchantment ench = Enchantment.getEnchantmentByLocation(id);
 			if (ench == null)
 			{
-				CraftTweakerAPI.logError(I18n.format(LootTweakerMain.MODID + ".messages.error.functionhelper.invalidEnchant", id));
+				CraftTweakerAPI.logError(String.format("%s is not a valid enchantment id", id));
 				continue;
 			}
 			enchantments.add(ench);
@@ -64,7 +72,7 @@ public class FunctionHelper
 	{
 		if (max > 1.0F)
 		{
-			CraftTweakerAPI.logError(I18n.format(LootTweakerMain.MODID + ".messages.error.functionhelper.damageOver100"));
+			CraftTweakerAPI.logError("Items cannot recieve more than 100% damage!");
 			max = 1.0F;
 		}
 		return new ZenLootFunctionWrapper(new SetDamage(LootUtils.NO_CONDITIONS, new RandomValueRange(min, max)));

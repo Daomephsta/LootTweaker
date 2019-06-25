@@ -1,6 +1,8 @@
 package leviathan143.loottweaker.common.lib;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,13 +19,19 @@ import leviathan143.loottweaker.common.LootTweakerMain;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
 import leviathan143.loottweaker.common.zenscript.ZenLootConditionWrapper;
 import leviathan143.loottweaker.common.zenscript.ZenLootFunctionWrapper;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.*;
+import net.minecraft.world.storage.loot.LootEntry;
+import net.minecraft.world.storage.loot.LootPool;
+import net.minecraft.world.storage.loot.LootTable;
+import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
-import net.minecraft.world.storage.loot.functions.*;
+import net.minecraft.world.storage.loot.functions.LootFunction;
+import net.minecraft.world.storage.loot.functions.SetCount;
+import net.minecraft.world.storage.loot.functions.SetDamage;
+import net.minecraft.world.storage.loot.functions.SetMetadata;
+import net.minecraft.world.storage.loot.functions.SetNBT;
 
 public class LootUtils
 {
@@ -92,7 +100,7 @@ public class LootUtils
 			else if (conditions[c] instanceof ZenLootConditionWrapper)
 				parsedConditions[c] = ((ZenLootConditionWrapper) conditions[c]).condition;
 			else
-				CraftTweakerAPI.logError(I18n.format(LootTweakerMain.MODID + ".messages.error.unparseableType", conditions[c]));
+				CraftTweakerAPI.logError(String.format("%s is not an instance of IData or LootCondition!", conditions[c]));
 		}
 		return parsedConditions;
 	}
@@ -157,7 +165,7 @@ public class LootUtils
 			else if (functions[f] instanceof ZenLootFunctionWrapper)
 				parsedFunctions[f] = ((ZenLootFunctionWrapper) functions[f]).function;
 			else
-				CraftTweakerAPI.logError(I18n.format(LootTweakerMain.MODID + ".messages.error.unparseableType", functions[f]));
+				CraftTweakerAPI.logError(String.format("%s is not an instance of IData or LootFunction!", functions[f]));
 		}
 		return parsedFunctions;
 	}

@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import crafttweaker.CraftTweakerAPI;
-import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -35,16 +34,17 @@ public class DeprecationWarningManager
 			e.printStackTrace();
 		}
 	}
+	
 	public static void printDeprecationWarnings()
 	{
 		if(deprecatedObjectsUsed.isEmpty() || !LTConfig.deprecationWarnings) return;
 		warnings = 0;
-		CraftTweakerAPI.logWarning(I18n.format(LootTweakerMain.MODID + ".messages.error.deprecation.warning1"));
+		CraftTweakerAPI.logWarning("LootTweaker: One or more scripts use deprecated methods. Check crafttweaker.log for more information.");
 		for(String deprecatedObj : deprecatedObjectsUsed)
 		{
-			CraftTweakerAPI.logInfo(I18n.format(LootTweakerMain.MODID + ".messages.error.deprecation.warning2", deprecatedObj));
+			CraftTweakerAPI.logInfo(String.format("%s is deprecated", deprecatedObj));
 		}
-		CraftTweakerAPI.logInfo(I18n.format(LootTweakerMain.MODID + ".messages.error.deprecation.warning3"));
+		CraftTweakerAPI.logInfo("Refer to https://github.com/Leviathan143/LootTweaker/wiki/Deprecations for more info. This warning can be disabled in the config.");
 	}
 
 	//Why you make me do this, CraftTweaker? :..(

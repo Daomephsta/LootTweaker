@@ -1,6 +1,8 @@
 package leviathan143.loottweaker.common.zenscript;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
@@ -16,13 +18,19 @@ import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import leviathan143.loottweaker.common.LootTweakerMain;
 import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
-import leviathan143.loottweaker.common.lib.*;
+import leviathan143.loottweaker.common.lib.DataToJSONConverter;
+import leviathan143.loottweaker.common.lib.IDelayedTweak;
+import leviathan143.loottweaker.common.lib.LootUtils;
+import leviathan143.loottweaker.common.lib.ZenScriptUtils;
 import leviathan143.loottweaker.common.zenscript.actions.ActionEnqueueDelayedPoolTweak;
 import leviathan143.loottweaker.common.zenscript.actions.AddLootEntry;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.*;
+import net.minecraft.world.storage.loot.LootEntryEmpty;
+import net.minecraft.world.storage.loot.LootEntryItem;
+import net.minecraft.world.storage.loot.LootEntryTable;
+import net.minecraft.world.storage.loot.LootPool;
+import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.functions.LootFunction;
 import stanhebben.zenscript.annotations.Optional;
@@ -229,7 +237,7 @@ public class ZenLootPoolWrapper
 		{
 			if (pool.removeEntry(entryName) == null)
 			{
-				CraftTweakerAPI.logError(I18n.format(LootTweakerMain.MODID + ".messages.error.invalidEntryName", entryName,
+				CraftTweakerAPI.logError(String.format("No entry with name %s exists in pool %s", entryName,
 						zenWrapper.backingPool.getName()));
 				return;
 			}

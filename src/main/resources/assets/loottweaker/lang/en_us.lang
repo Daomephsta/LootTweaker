@@ -9,6 +9,7 @@ loottweaker.commands.dump.target.noTarget=Nothing in range
 loottweaker.commands.dump.target.senderNotEntity=This command can only be executed by entities
 loottweaker.commands.dump.dumpLink=Dumped loot table %s to 
 
+//Deliberately left in for future implementation in a side safe manner
 loottweaker.messages.error.invalidTableName=No loot table with name %s exists!
 loottweaker.messages.error.invalidPoolName=No loot pool with name %s exists in table %s!
 loottweaker.messages.error.invalidEntryName=No entry with name %s exists in pool %s
@@ -18,7 +19,7 @@ loottweaker.messages.error.functionhelper.invalidEnchant=%s is not a valid encha
 loottweaker.messages.error.functionhelper.damageOver100=Items cannot recieve more than 100% damage!
 loottweaker.messages.error.deprecation.warning1=LootTweaker: One or more scripts use deprecated methods. Check crafttweaker.log for more information.
 loottweaker.messages.error.deprecation.warning2=%s is deprecated
-loottweaker.messages.error.deprecation.warning3=Refer to https://github.com/Leviathan143/LootTweaker/wiki/Deprecations for more info. This warning can be disabled in the config
+loottweaker.messages.error.deprecation.warning3=Refer to https://github.com/Leviathan143/LootTweaker/wiki/Deprecations for more info. This warning can be disabled in the config.
 
 loottweaker.config.deprecationWarnings=Should LootTweaker warn about deprecated methods on world load? Resets if the version of LootTweaker is changed.
 loottweaker.config.lastCfgVersion=Do not touch!
