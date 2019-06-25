@@ -17,7 +17,7 @@ public class LootTweakerMain
 	public static final String MODNAME = "LootTweaker";
 	public static final String MODID = "loottweaker";
 	public static final String VERSION = "0.0.9";
-	public static final String DEPENDENCIES = "required-after:crafttweaker; before:jeresources";
+	public static final String DEPENDENCIES = "required-after:crafttweaker; before:jeresources; required:forge@[14.23.5.2779,);";
 	public static final String CLIENT_PROXY_PATH = "leviathan143.loottweaker.client.ClientProxy";
 	public static final String SERVER_PROXY_PATH = "leviathan143.loottweaker.server.ServerProxy";
 
