@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Enums;
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 
@@ -32,7 +34,7 @@ public class CommandLootTables extends CraftTweakerCommand
 		super("loottables");
 	}
 
-	private static enum Option
+	private static enum Subcommand
 	{
 		all, target, byName, list;
 	}
@@ -51,76 +53,80 @@ public class CommandLootTables extends CraftTweakerCommand
 			sender.sendMessage(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.usage"));
 			return;
 		}
-		Option option = Enum.valueOf(Option.class, args[0]);
-		ResourceLocation tableLoc = null;
-		switch (option)
+		Optional<Subcommand> subcommand = Enums.getIfPresent(Subcommand.class, args[0]);
+		if (subcommand.isPresent())
 		{
-		case all :
-			for (ResourceLocation table : LootTableList.getAll())
+			ResourceLocation tableLoc = null;
+			switch (subcommand.get())
 			{
-				LootUtils.dump(LootTweakerMain.proxy.getWorld(), table, getLootTableDumpFilePath(table));
-			}
-			sender.sendMessage(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.all.done"));
-			break;
-
-		case byName:
-			if (args.length < 2)
-			{
-				sender.sendMessage(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.byName.missingName"));
-				return;
-			}
-			tableLoc = new ResourceLocation(args[1]);
-			if (!LootTableList.getAll().contains(tableLoc))
-			{
-				sender.sendMessage(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.byName.invalidName"));
-				return;
-			}
-			File dumpPathByName = getLootTableDumpFilePath(tableLoc);
-			LootUtils.dump(LootTweakerMain.proxy.getWorld(), tableLoc, dumpPathByName);
-			linkDumpFileInChat(sender, dumpPathByName, tableLoc);
-			break;
-
-		case target:
-			if (sender instanceof Entity)
-			{
-				RayTraceResult target = getLookTarget((Entity) sender, 8.0D);
-				switch (target.typeOfHit)
+			case all:
+				for (ResourceLocation table : LootTableList.getAll())
 				{
-				case BLOCK :
-					TileEntity te = sender.getEntityWorld().getTileEntity(target.getBlockPos());
-					if (te instanceof ILootContainer) tableLoc = ((ILootContainer) te).getLootTable();
-					else sender.sendMessage(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.target.noTable"));
-					break;
-				case ENTITY :
-					if (target.entityHit instanceof EntityLiving)
-						tableLoc = CommonMethodHandles.getEntityLootTable((EntityLiving) target.entityHit);
-					else
-						sender.sendMessage(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.target.noTable"));
-					break;
-				case MISS :
-					sender.sendMessage(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.target.noTarget"));
-					return;
-				default :
+					LootUtils.dump(LootTweakerMain.proxy.getWorld(), table, getLootTableDumpFilePath(table));
+				}
+				sender.sendMessage(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.all.done"));
+				break;
+			
+			case byName:
+				if (args.length < 2)
+				{
+					sender.sendMessage(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.byName.missingName"));
 					return;
 				}
-				if (tableLoc == null) return;
-				File dumpPathTarget = getLootTableDumpFilePath(tableLoc);
-				LootUtils.dump(LootTweakerMain.proxy.getWorld(), tableLoc, dumpPathTarget);
-				linkDumpFileInChat(sender, dumpPathTarget, tableLoc);
+				tableLoc = new ResourceLocation(args[1]);
+				if (!LootTableList.getAll().contains(tableLoc))
+				{
+					sender.sendMessage(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.byName.invalidName"));
+					return;
+				}
+				File dumpPathByName = getLootTableDumpFilePath(tableLoc);
+				LootUtils.dump(LootTweakerMain.proxy.getWorld(), tableLoc, dumpPathByName);
+				linkDumpFileInChat(sender, dumpPathByName, tableLoc);
+				break;
+			
+			case target:
+				if (sender instanceof Entity)
+				{
+					RayTraceResult target = getLookTarget((Entity) sender, 8.0D);
+					switch (target.typeOfHit)
+					{
+					case BLOCK :
+						TileEntity te = sender.getEntityWorld().getTileEntity(target.getBlockPos());
+						if (te instanceof ILootContainer) tableLoc = ((ILootContainer) te).getLootTable();
+						else sender.sendMessage(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.target.noTable"));
+						break;
+					case ENTITY :
+						if (target.entityHit instanceof EntityLiving)
+							tableLoc = CommonMethodHandles.getEntityLootTable((EntityLiving) target.entityHit);
+						else
+							sender.sendMessage(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.target.noTable"));
+						break;
+					case MISS :
+						sender.sendMessage(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.target.noTarget"));
+						return;
+					default :
+						return;
+					}
+					if (tableLoc == null) return;
+					File dumpPathTarget = getLootTableDumpFilePath(tableLoc);
+					LootUtils.dump(LootTweakerMain.proxy.getWorld(), tableLoc, dumpPathTarget);
+					linkDumpFileInChat(sender, dumpPathTarget, tableLoc);
+				}
+				else sender.sendMessage(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.target.senderNotEntity"));
+				break;
+			
+			case list:
+				for (ResourceLocation table : LootTableList.getAll())
+				{
+					sender.sendMessage(new TextComponentString(table.toString()));
+				}
+				break;
+			default:
+				break;
 			}
-			else sender.sendMessage(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.target.senderNotEntity"));
-			break;
-
-		case list:
-			for (ResourceLocation table : LootTableList.getAll())
-			{
-				sender.sendMessage(new TextComponentString(table.toString()));
-			}
-			break;
-
-		default :
-			break;
 		}
+		else
+			sender.sendMessage(new TextComponentTranslation(LootTweakerMain.MODID + ".commands.dump.unknownSubcommand", args[0]));
 	}
 
 	private static File getLootTableDumpFilePath(ResourceLocation tableLoc)
