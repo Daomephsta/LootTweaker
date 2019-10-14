@@ -17,7 +17,7 @@ import crafttweaker.api.data.IData;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import leviathan143.loottweaker.common.LootTweakerMain;
-import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
+import leviathan143.loottweaker.common.darkmagic.LootPoolAccessors;
 import leviathan143.loottweaker.common.lib.DataToJSONConverter;
 import leviathan143.loottweaker.common.lib.IDelayedTweak;
 import leviathan143.loottweaker.common.lib.LootUtils;
@@ -264,7 +264,7 @@ public class ZenLootPoolWrapper
 		@Override
 		public void applyTweak(LootPool pool, ZenLootPoolWrapper zenWrapper)
 		{
-			Collections.addAll(CommonMethodHandles.getConditionsFromPool(pool), conditions);
+			Collections.addAll(LootPoolAccessors.getConditions(pool), conditions);
 		}
 
 		@Override

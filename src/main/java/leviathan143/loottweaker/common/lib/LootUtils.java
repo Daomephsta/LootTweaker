@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.stream.JsonWriter;
 
@@ -16,7 +17,7 @@ import crafttweaker.api.data.IData;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import leviathan143.loottweaker.common.LootTweakerMain;
-import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
+import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
 import leviathan143.loottweaker.common.zenscript.ZenLootConditionWrapper;
 import leviathan143.loottweaker.common.zenscript.ZenLootFunctionWrapper;
 import net.minecraft.item.ItemStack;
@@ -52,9 +53,10 @@ public class LootUtils
 			FileWriter writer = new FileWriter(dumpTarget);
 			try
 			{
-				JsonWriter dumper = CommonMethodHandles.getLootTableGSON().newJsonWriter(writer);
+				Gson gsonInstance = LootTableManagerAccessors.getGSONInstance();
+				JsonWriter dumper = gsonInstance.newJsonWriter(writer);
 				dumper.setIndent("  ");
-				CommonMethodHandles.getLootTableGSON().toJson(table, table.getClass(), dumper);
+				gsonInstance.toJson(table, table.getClass(), dumper);
 			}
 			catch (Throwable t)
 			{
@@ -107,7 +109,7 @@ public class LootUtils
 
 	public static LootCondition parseJSONCondition(JsonElement conditionJSON)
 	{
-		return CommonMethodHandles.getLootTableGSON().fromJson(conditionJSON, LootCondition.class);
+		return LootTableManagerAccessors.getGSONInstance().fromJson(conditionJSON, LootCondition.class);
 	}
 
 	// Functions
@@ -172,6 +174,6 @@ public class LootUtils
 
 	public static LootFunction parseJSONFunction(JsonElement functionJson)
 	{
-		return CommonMethodHandles.getLootTableGSON().fromJson(functionJson, LootFunction.class);
+		return LootTableManagerAccessors.getGSONInstance().fromJson(functionJson, LootFunction.class);
 	}
 }

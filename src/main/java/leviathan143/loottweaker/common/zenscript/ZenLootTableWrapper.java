@@ -10,7 +10,7 @@ import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
 import crafttweaker.annotations.ZenRegister;
 import leviathan143.loottweaker.common.LootTweakerMain;
-import leviathan143.loottweaker.common.darkmagic.CommonMethodHandles;
+import leviathan143.loottweaker.common.darkmagic.LootTableAccessors;
 import leviathan143.loottweaker.common.lib.IDelayedTweak;
 import leviathan143.loottweaker.common.lib.LootUtils;
 import leviathan143.loottweaker.common.tweakers.LootTableTweaker;
@@ -92,7 +92,7 @@ public class ZenLootTableWrapper
 	{
 		if (clear)
 		{
-			CommonMethodHandles.getPoolsFromTable(table).clear();
+			LootTableAccessors.getPools(table).clear();
 			CraftTweakerAPI.logInfo("Cleared entries of table " + name);
 		}
 		for (IDelayedTweak<LootTable, ZenLootTableWrapper> tweak : delayedTweaks)
