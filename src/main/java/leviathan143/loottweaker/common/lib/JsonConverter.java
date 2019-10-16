@@ -7,9 +7,9 @@ import com.google.gson.*;
 
 import crafttweaker.api.data.*;
 
-public class DataToJSONConverter implements IDataConverter<JsonElement>
+public class JsonConverter implements IDataConverter<JsonElement>
 {
-	private static final DataToJSONConverter INSTANCE = new DataToJSONConverter();
+	private static final JsonConverter INSTANCE = new JsonConverter();
 	private static final Gson SERIALISER = new GsonBuilder()
 			.registerTypeAdapter(DataBool.class, (JsonSerializer<IData>) (src, srcType, context) -> new JsonPrimitive(src.asBool()))
 			.registerTypeAdapter(DataByte.class, (JsonSerializer<IData>) (src, srcType, context) -> new JsonPrimitive(src.asByte()))

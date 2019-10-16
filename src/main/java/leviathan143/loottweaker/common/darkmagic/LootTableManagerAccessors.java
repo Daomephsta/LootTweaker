@@ -22,7 +22,7 @@ public class LootTableManagerAccessors extends AbstractAccessors
 		}
 	}
 	
-	public static Gson getGSONInstance()
+	public static Gson getGsonInstance()
 	{
 		try
 		{

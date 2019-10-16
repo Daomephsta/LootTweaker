@@ -8,30 +8,30 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Config(modid = LootTweakerMain.MODID)
-@Mod.EventBusSubscriber(modid = LootTweakerMain.MODID)
+@Config(modid = LootTweaker.MODID)
+@Mod.EventBusSubscriber(modid = LootTweaker.MODID)
 public class LTConfig
 {
 	@Comment("Should LootTweaker warn about deprecated methods on world load? Resets if the version of LootTweaker is changed.")
-	@LangKey(LootTweakerMain.MODID + ".config.deprecationWarnings")
+	@LangKey(LootTweaker.MODID + ".config.deprecationWarnings")
 	public static boolean deprecationWarnings = true;
 	@Comment("Do not touch!")
-	@LangKey(LootTweakerMain.MODID + ".config.lastCfgVersion")
-	public static String lastCfgVersion = LootTweakerMain.VERSION;
+	@LangKey(LootTweaker.MODID + ".config.lastCfgVersion")
+	public static String lastCfgVersion = LootTweaker.VERSION;
 
 	public static void onLoad()
 	{
-		if(!lastCfgVersion.equals(LootTweakerMain.VERSION))
+		if(!lastCfgVersion.equals(LootTweaker.VERSION))
 		{
-			lastCfgVersion = LootTweakerMain.VERSION;
+			lastCfgVersion = LootTweaker.VERSION;
 			deprecationWarnings = true;
 		}
-		ConfigManager.sync(LootTweakerMain.MODID, Config.Type.INSTANCE);
+		ConfigManager.sync(LootTweaker.MODID, Config.Type.INSTANCE);
 	}
 	
 	@SubscribeEvent
 	public static void syncConfig(ConfigChangedEvent e)
 	{
-		if (e.getModID().equals(LootTweakerMain.MODID)) ConfigManager.sync(LootTweakerMain.MODID, Config.Type.INSTANCE);
+		if (e.getModID().equals(LootTweaker.MODID)) ConfigManager.sync(LootTweaker.MODID, Config.Type.INSTANCE);
 	}
 }

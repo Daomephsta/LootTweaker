@@ -10,7 +10,7 @@ import stanhebben.zenscript.annotations.ZenClass;
 /**
  * Handles deprecation warnings. Makes sure they're printed once for each deprecated function to avoid log spam.
  */
-@Mod.EventBusSubscriber(modid = LootTweakerMain.MODID)
+@Mod.EventBusSubscriber(modid = LootTweaker.MODID)
 public class DeprecationWarningManager
 {
 	private static final Set<String> deprecatedObjectsUsed = new HashSet<String>();
