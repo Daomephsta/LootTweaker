@@ -78,7 +78,10 @@ public class ZenLootPoolWrapper implements LootTableTweak
 	public void addConditionsHelper(ZenLootConditionWrapper[] conditionWrappers)
 	{
         for (ZenLootConditionWrapper conditionWrapper : conditionWrappers)
-            this.conditions.add(conditionWrapper.condition);
+        {
+            if (conditionWrapper.isValid()) 
+                this.conditions.add(conditionWrapper.condition);
+        }
 	}
 
 	@ZenMethod
@@ -236,14 +239,14 @@ public class ZenLootPoolWrapper implements LootTableTweak
 	public void setRolls(float minRolls, float maxRolls)
 	{
 	    this.rolls = java.util.Optional.of(new RandomValueRange(minRolls, maxRolls));
-	    CraftTweakerAPI.logInfo(String.format("Rolls of pool %s in table %s will be set to (%d, %d)", id, parentTableId, minRolls, maxRolls));
+	    CraftTweakerAPI.logInfo(String.format("Rolls of pool %s in table %s will be set to (%f, %f)", id, parentTableId, minRolls, maxRolls));
 	}
 
 	@ZenMethod
 	public void setBonusRolls(float minBonusRolls, float maxBonusRolls)
 	{
 	    this.bonusRolls = java.util.Optional.of(new RandomValueRange(minBonusRolls, maxBonusRolls));
-	    CraftTweakerAPI.logInfo(String.format("Bonus rolls of pool %s in table %s will be set to (%d, %d)", id, parentTableId, minBonusRolls, maxBonusRolls));
+	    CraftTweakerAPI.logInfo(String.format("Bonus rolls of pool %s in table %s will be set to (%f, %f)", id, parentTableId, minBonusRolls, maxBonusRolls));
 	}
     
     private void enqueueTweak(LootPoolTweak tweak, String description)
