@@ -90,6 +90,20 @@ public class ZenLootPoolWrapper implements LootTableTweak
 		for (IData conditionData : conditionsJson)
 		    LOGGING_PARSER.parse(conditionData, LootCondition.class).ifPresent(this.conditions::add);
 	}
+	
+	@ZenMethod
+	public void clearConditions()
+	{
+	    enqueueTweak(pool -> LootPoolAccessors.getConditions(pool).clear(), 
+	        "Queuing all conditions of pool %s in table %s for removal", id, parentTableId);
+	}
+	
+	@ZenMethod
+    public void clearEntries()
+    {
+        enqueueTweak(pool -> LootPoolAccessors.getEntries(pool).clear(), 
+            "Queuing all entries of pool %s in table %s for removal", id, parentTableId);
+    }
 
 	@ZenMethod
 	public void removeEntry(String entryName)
@@ -249,6 +263,12 @@ public class ZenLootPoolWrapper implements LootTableTweak
 	    CraftTweakerAPI.logInfo(String.format("Bonus rolls of pool %s in table %s will be set to (%f, %f)", id, parentTableId, minBonusRolls, maxBonusRolls));
 	}
     
+	private void enqueueTweak(LootPoolTweak tweak, String format, Object... args)
+    {
+        tweaks.add(tweak);
+        CraftTweakerAPI.logInfo(String.format(format, args));
+    }
+	
     private void enqueueTweak(LootPoolTweak tweak, String description)
     {
         tweaks.add(tweak);

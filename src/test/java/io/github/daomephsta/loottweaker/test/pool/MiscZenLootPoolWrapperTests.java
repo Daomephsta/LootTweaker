@@ -3,6 +3,8 @@ package io.github.daomephsta.loottweaker.test.pool;
 import static io.github.daomephsta.loottweaker.test.TestLootConditionAccessors.isInverted;
 import static io.github.daomephsta.loottweaker.test.TestUtils.loadTable;
 import static io.github.daomephsta.loottweaker.test.assertion.LootTweakerAssertions.assertThat;
+import static leviathan143.loottweaker.common.darkmagic.LootPoolAccessors.getConditions;
+import static leviathan143.loottweaker.common.darkmagic.LootPoolAccessors.getEntries;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.github.daomephsta.saddle.engine.SaddleTest;
@@ -45,6 +47,32 @@ public class MiscZenLootPoolWrapperTests
         bazTweaks.removeEntry("qux");
         bazTweaks.tweak(baz);
         assertThat(baz.getEntry("qux")).isNull();
+    }
+    
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    public void clearConditions()
+    {
+        ResourceLocation barId = new ResourceLocation("loottweaker", "bar");
+        LootTable bar = loadTable(barId);
+        LootPool baz = bar.getPool("baz");
+        assertThat(getConditions(baz)).isNotEmpty();
+        ZenLootPoolWrapper bazTweaks = new ZenLootPoolWrapper("baz", barId);
+        bazTweaks.clearConditions();
+        bazTweaks.tweak(baz);
+        assertThat(getConditions(baz)).isEmpty();
+    }
+    
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    public void clearEntries()
+    {
+        ResourceLocation barId = new ResourceLocation("loottweaker", "bar");
+        LootTable bar = loadTable(barId);
+        LootPool baz = bar.getPool("baz");
+        assertThat(getEntries(baz)).isNotEmpty();
+        ZenLootPoolWrapper bazTweaks = new ZenLootPoolWrapper("baz", barId);
+        bazTweaks.clearEntries();
+        bazTweaks.tweak(baz);
+        assertThat(getEntries(baz)).isEmpty();
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)

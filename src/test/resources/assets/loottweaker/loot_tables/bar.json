@@ -3,6 +3,10 @@
 	[
 		{
 			"name": "baz",
+			"conditions":
+			[
+				{"condition": "killed_by_player"}
+			],
 			"entries": 
 			[
 				{
