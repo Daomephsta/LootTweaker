@@ -1,0 +1,9 @@
+{
+	"pre_init":
+	{
+		"include":
+		[
+			{"package": "io.github.daomephsta.loottweaker.test"}
+		]
+	}
+}

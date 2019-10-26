@@ -1,0 +1,17 @@
+{
+	"pools":
+	[
+		{
+			"name": "baz",
+			"entries": 
+			[
+				{
+					"type": "item",
+					"entryName": "qux",
+					"name": "minecraft:apple"
+				}
+			],
+			"rolls": 1
+		}
+	]
+}

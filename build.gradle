@@ -37,16 +37,33 @@ minecraft {
 
 repositories 
 {
+    mavenCentral()
     maven
     {
     	name "Jared"
     	url "http://maven.blamejared.com"
     }
+    maven 
+    { 
+    	name 'JitPack'
+    	url 'https://jitpack.io' 
+    }
 }
 
 dependencies 
 {
-  deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:${project.crafttweakerVersion}"
+ 	deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:${project.crafttweakerVersion}"
+ 	
+ 	testImplementation 'com.github.Daomephsta:Saddle:0.0.3'
+ 	testImplementation 'org.assertj:assertj-core:3.13.2'
+ 	// Use JUnit test framework
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
+	testImplementation 'org.junit.platform:junit-platform-launcher:1.5.2'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
+}
+
+test {
+	useJUnitPlatform()
 }
 
 publishing {
