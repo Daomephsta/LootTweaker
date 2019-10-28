@@ -15,31 +15,32 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.LootTable;
 
-public class LootTableDumper 
+public class LootTableDumper
 {
 	public static final LootTableDumper DEFAULT = new LootTableDumper(new File("dumps/loot_tables"));
 	private static final Logger LOGGER = LogManager.getLogger();
-	
+
 	private final File dumpFolder;
 
-	public LootTableDumper(File dumpFolder) 
+	public LootTableDumper(File dumpFolder)
 	{
 		assert dumpFolder.isDirectory(): "Dump folder must be a directory";
 		this.dumpFolder = dumpFolder;
 		this.dumpFolder.mkdirs();
 	}
 
-	public File dump(World world, ResourceLocation tableId) 
+	public File dump(World world, ResourceLocation tableId)
 	{
 		return dump(world.getLootTableManager().getLootTableFromLocation(tableId), tableId);
 	}
 
-	public File dump(LootTable lootTable, ResourceLocation tableId) 
+	public File dump(LootTable lootTable, ResourceLocation tableId)
 	{
 		Preconditions.checkNotNull(lootTable);
-		File dump = new File(dumpFolder, tableId + ".json");
+		File dump = new File(dumpFolder, tableId.getNamespace() + '/' + tableId.getPath() + ".json");
 		try
 		{
+		    dump.getParentFile().mkdirs();
 			dump.createNewFile();
 			try(FileWriter writer = new FileWriter(dump))
 			{
