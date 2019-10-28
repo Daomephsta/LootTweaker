@@ -13,6 +13,7 @@ import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTable;
 import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import stanhebben.zenscript.annotations.ZenClass;
@@ -20,17 +21,18 @@ import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenRegister
 @ZenClass(LootTweaker.MODID + ".vanilla.loot.LootTables")
+@Mod.EventBusSubscriber(modid = LootTweaker.MODID)
 public class LootTableTweakManager
-{	
+{
     private static final Logger LOGGER = LogManager.getLogger();
     private static final Map<ResourceLocation, ZenLootTableWrapper> tweakedTables = new HashMap<>();
-    
+
     private static Phase phase = Phase.GATHER;
     public static enum Phase
     {
         GATHER, APPLY
     }
-    
+
 	@ZenMethod
 	public static ZenLootTableWrapper getTable(String tableName)
 	{
@@ -42,13 +44,13 @@ public class LootTableTweakManager
 	{
 	    return getTableInternal(tableName, false);
 	}
-	
+
 	private static ZenLootTableWrapper getTableInternal(String tableName, boolean checkRegistered)
     {
         ResourceLocation tableId = new ResourceLocation(tableName);
         return tweakedTables.computeIfAbsent(tableId, id -> new ZenLootTableWrapper(id, checkRegistered));
     }
-	
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onTableLoad(LootTableLoadEvent event)
     {
@@ -57,7 +59,7 @@ public class LootTableTweakManager
         {
             phase = Phase.APPLY;
             //Remove invalid tables, logging an error
-            tweakedTables.values().removeIf(table -> 
+            tweakedTables.values().removeIf(table ->
             {
                 if (!table.isValid())
                 {
@@ -68,7 +70,7 @@ public class LootTableTweakManager
             });
         }
     }
-    
+
     private static void applyTweaks(ResourceLocation tableName, LootTable table)
     {
         if (tweakedTables.containsKey(tableName))
@@ -81,7 +83,7 @@ public class LootTableTweakManager
             tweakedTables.get(tableName).applyTweaks(table);
         }
     }
-	
+
 	public Phase getPhase()
     {
         return phase;
