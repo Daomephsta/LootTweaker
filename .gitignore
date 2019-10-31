@@ -19,6 +19,7 @@
 *.launch
 *.classpath
 *.project
+.factorypath
 *.launch
 *.xcf
 /bin/
@@ -26,3 +27,4 @@
 /build/
 /tutorials/
 /wiki/*
+/.apt_generated/

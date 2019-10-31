@@ -2,6 +2,7 @@ package leviathan143.loottweaker.common.zenscript;
 
 import crafttweaker.annotations.ZenRegister;
 import leviathan143.loottweaker.common.LootTweaker;
+import leviathan143.loottweaker.common.dagger.DaggerLootTableTweakManagerProvider;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -15,7 +16,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 @Mod.EventBusSubscriber(modid = LootTweaker.MODID)
 public class ZenLootTableTweakManager
 {
-    private static final LootTableTweakManager TWEAK_MANAGER = new LootTableTweakManager();
+    private static final LootTableTweakManager TWEAK_MANAGER = DaggerLootTableTweakManagerProvider.create().provide();
 
     @ZenMethod
     public static ZenLootTableWrapper getTable(String tableName)

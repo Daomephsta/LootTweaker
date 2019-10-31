@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
 
+import javax.inject.Inject;
+
 import com.google.common.collect.Lists;
 
 import crafttweaker.CraftTweakerAPI;
@@ -15,10 +17,11 @@ import crafttweaker.api.data.DataMap;
 import crafttweaker.api.data.IData;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
+import leviathan143.loottweaker.common.ErrorHandler;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.darkmagic.LootPoolAccessors;
 import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
-import leviathan143.loottweaker.common.lib.IDataParser;
+import leviathan143.loottweaker.common.lib.DataParser;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper.LootTableTweak;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -47,8 +50,10 @@ public class ZenLootPoolWrapper implements LootTableTweak
     private static final int DEFAULT_QUALITY = 0;
     private static final LootCondition[] NO_CONDITIONS = new LootCondition[0];
     private static final LootFunction[] NO_FUNCTIONS = new LootFunction[0];
-    private static final IDataParser LOGGING_PARSER = new IDataParser(LootTableManagerAccessors.getGsonInstance(), e -> CraftTweakerAPI.logError(e.getMessage()));
     //Other state
+    @Inject
+    ErrorHandler errorHandler;
+    private final DataParser LOGGING_PARSER = new DataParser(LootTableManagerAccessors.getGsonInstance(), e -> errorHandler.handle(e.getMessage()));
     private final Queue<LootPoolTweak> tweaks = new ArrayDeque<>();
     private final ResourceLocation parentTableId;
     //LootPool state
@@ -65,7 +70,7 @@ public class ZenLootPoolWrapper implements LootTableTweak
         this.rolls = java.util.Optional.empty();
         this.bonusRolls = java.util.Optional.empty();
     }
-    
+
 	public ZenLootPoolWrapper(String id, ResourceLocation parentTableId, int minRolls, int maxRolls, int minBonusRolls, int maxBonusRolls)
     {
 	    this.id = id;
@@ -79,7 +84,7 @@ public class ZenLootPoolWrapper implements LootTableTweak
 	{
         for (ZenLootConditionWrapper conditionWrapper : conditionWrappers)
         {
-            if (conditionWrapper.isValid()) 
+            if (conditionWrapper.isValid())
                 this.conditions.add(conditionWrapper.condition);
         }
 	}
@@ -90,28 +95,28 @@ public class ZenLootPoolWrapper implements LootTableTweak
 		for (IData conditionData : conditionsJson)
 		    LOGGING_PARSER.parse(conditionData, LootCondition.class).ifPresent(this.conditions::add);
 	}
-	
+
 	@ZenMethod
 	public void clearConditions()
 	{
-	    enqueueTweak(pool -> LootPoolAccessors.getConditions(pool).clear(), 
+	    enqueueTweak(pool -> LootPoolAccessors.getConditions(pool).clear(),
 	        "Queuing all conditions of pool %s in table %s for removal", id, parentTableId);
 	}
-	
+
 	@ZenMethod
     public void clearEntries()
     {
-        enqueueTweak(pool -> LootPoolAccessors.getEntries(pool).clear(), 
+        enqueueTweak(pool -> LootPoolAccessors.getEntries(pool).clear(),
             "Queuing all entries of pool %s in table %s for removal", id, parentTableId);
     }
 
 	@ZenMethod
 	public void removeEntry(String entryName)
 	{
-		enqueueTweak(pool -> 
+		enqueueTweak(pool ->
 		{
 		    if (pool.removeEntry(entryName) == null)
-                CraftTweakerAPI.logError(String.format("No entry with name %s exists in pool %s", entryName, id));
+                errorHandler.handle(String.format("No entry with name %s exists in pool %s", entryName, id));
 		}, String.format("Queueing entry %s of pool %s for removal", entryName, id));
 	}
 
@@ -130,20 +135,20 @@ public class ZenLootPoolWrapper implements LootTableTweak
 	@ZenMethod
 	public void addItemEntryHelper(IItemStack stack, int weight, int quality, ZenLootFunctionWrapper[] functions, ZenLootConditionWrapper[] conditions, @Optional String name)
 	{
-		addItemEntryInternal(stack, weight, quality,  
-            Arrays.stream(functions).filter(ZenLootFunctionWrapper::isValid).map(ZenLootFunctionWrapper::unwrap).toArray(LootFunction[]::new), 
-            Arrays.stream(conditions).filter(ZenLootConditionWrapper::isValid).map(ZenLootConditionWrapper::unwrap).toArray(LootCondition[]::new), 
+		addItemEntryInternal(stack, weight, quality,
+            Arrays.stream(functions).filter(ZenLootFunctionWrapper::isValid).map(ZenLootFunctionWrapper::unwrap).toArray(LootFunction[]::new),
+            Arrays.stream(conditions).filter(ZenLootConditionWrapper::isValid).map(ZenLootConditionWrapper::unwrap).toArray(LootCondition[]::new),
             name);
 	}
-	
+
 	@ZenMethod
 	public void addItemEntryJson(IItemStack stack, int weight, int quality, IData[] functions, IData[] conditions, @Optional String name)
 	{
-		addItemEntryInternal(stack, weight, quality, 
-		    Arrays.stream(functions).map(c -> LOGGING_PARSER.parse(c, LootFunction.class)).toArray(LootFunction[]::new), 
+		addItemEntryInternal(stack, weight, quality,
+		    Arrays.stream(functions).map(c -> LOGGING_PARSER.parse(c, LootFunction.class)).toArray(LootFunction[]::new),
 		    Arrays.stream(conditions).map(c -> LOGGING_PARSER.parse(c, LootCondition.class)).toArray(LootCondition[]::new), name);
 	}
-	
+
     private void addItemEntryInternal(IItemStack stack, int weight, int quality, LootFunction[] functions, LootCondition[] conditions, @Optional String name)
     {
 	    Item item = CraftTweakerMC.getItemStack(stack).getItem();
@@ -151,7 +156,7 @@ public class ZenLootPoolWrapper implements LootTableTweak
         entries.add(new LootEntryItem(item, weight, quality, addStackFunctions(stack, functions), conditions, name));
         CraftTweakerAPI.logInfo(String.format("Queued item entry '%s' for addition to pool %s of table %s", name, id, parentTableId));
     }
-    
+
     /* Adds loot functions equivalent to the damage, stacksize and NBT of the
      * input stack to the passed in array, if loot functions of the same type
      * are not present. */
@@ -196,18 +201,18 @@ public class ZenLootPoolWrapper implements LootTableTweak
 	@ZenMethod
 	public void addLootTableEntryHelper(String tableName, int weight, int quality, ZenLootConditionWrapper[] conditions, @Optional String name)
 	{
-	    addLootTableEntryInternal(tableName, weight, quality, 
-	        Arrays.stream(conditions).filter(ZenLootConditionWrapper::isValid).map(ZenLootConditionWrapper::unwrap).toArray(LootCondition[]::new), 
+	    addLootTableEntryInternal(tableName, weight, quality,
+	        Arrays.stream(conditions).filter(ZenLootConditionWrapper::isValid).map(ZenLootConditionWrapper::unwrap).toArray(LootCondition[]::new),
 	        name);
 	}
 
 	@ZenMethod
 	public void addLootTableEntryJson(String tableName, int weight, int quality, IData[] conditions, @Optional String name)
 	{
-		addLootTableEntryInternal(tableName, weight, quality, 
+		addLootTableEntryInternal(tableName, weight, quality,
 		    Arrays.stream(conditions).map(c -> LOGGING_PARSER.parse(c, LootCondition.class)).toArray(LootCondition[]::new), name);
 	}
-	
+
 	private void addLootTableEntryInternal(String tableName, int weight, int quality, LootCondition[] conditions, @Optional String name)
     {
 	    if (name == null) name = tableName;
@@ -230,15 +235,15 @@ public class ZenLootPoolWrapper implements LootTableTweak
 	@ZenMethod
 	public void addEmptyEntryHelper(int weight, int quality, ZenLootConditionWrapper[] conditions, @Optional String name)
 	{
-	    addEmptyEntryInternal(weight, quality, 
-            Arrays.stream(conditions).filter(ZenLootConditionWrapper::isValid).map(ZenLootConditionWrapper::unwrap).toArray(LootCondition[]::new), 
+	    addEmptyEntryInternal(weight, quality,
+            Arrays.stream(conditions).filter(ZenLootConditionWrapper::isValid).map(ZenLootConditionWrapper::unwrap).toArray(LootCondition[]::new),
             name);
 	}
 
 	@ZenMethod
 	public void addEmptyEntryJson(int weight, int quality, IData[] conditions, @Optional String name)
 	{
-		addEmptyEntryInternal(weight, quality, 
+		addEmptyEntryInternal(weight, quality,
 		    Arrays.stream(conditions).map(c -> LOGGING_PARSER.parse(c, LootCondition.class)).toArray(LootCondition[]::new), name);
 	}
 
@@ -262,19 +267,19 @@ public class ZenLootPoolWrapper implements LootTableTweak
 	    this.bonusRolls = java.util.Optional.of(new RandomValueRange(minBonusRolls, maxBonusRolls));
 	    CraftTweakerAPI.logInfo(String.format("Bonus rolls of pool %s in table %s will be set to (%f, %f)", id, parentTableId, minBonusRolls, maxBonusRolls));
 	}
-    
+
 	private void enqueueTweak(LootPoolTweak tweak, String format, Object... args)
     {
         tweaks.add(tweak);
         CraftTweakerAPI.logInfo(String.format(format, args));
     }
-	
+
     private void enqueueTweak(LootPoolTweak tweak, String description)
     {
         tweaks.add(tweak);
         CraftTweakerAPI.logInfo(description);
     }
-	
+
 	@Override
 	public void tweak(LootTable table)
 	{
@@ -283,7 +288,7 @@ public class ZenLootPoolWrapper implements LootTableTweak
         table.addPool(new LootPool(lootEntriesArray, poolConditionsArray, rolls.get(), bonusRolls.get(), id));
         CraftTweakerAPI.logInfo(String.format("Added new pool %s to table %s", id, parentTableId));
 	}
-	
+
     public void tweak(LootPool pool)
     {
         for (LootEntry entry : entries)
@@ -294,7 +299,7 @@ public class ZenLootPoolWrapper implements LootTableTweak
         while (!tweaks.isEmpty())
             tweaks.poll().tweak(pool);
     }
-    
+
     @FunctionalInterface
     public interface LootPoolTweak
     {

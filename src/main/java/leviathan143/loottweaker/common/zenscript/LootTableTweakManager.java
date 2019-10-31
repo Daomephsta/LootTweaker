@@ -3,10 +3,12 @@ package leviathan143.loottweaker.common.zenscript;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import crafttweaker.CraftTweakerAPI;
+import leviathan143.loottweaker.common.ErrorHandler;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTable;
@@ -14,13 +16,16 @@ import stanhebben.zenscript.annotations.ZenMethod;
 
 public class LootTableTweakManager
 {
-    private final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
     private final Map<ResourceLocation, ZenLootTableWrapper> tweakedTables = new HashMap<>();
-
+    private final ErrorHandler errorHandler;
     private Phase phase = Phase.GATHER;
-    public enum Phase
+    public enum Phase { GATHER, APPLY }
+
+    @Inject
+    LootTableTweakManager(ErrorHandler errorHandler)
     {
-        GATHER, APPLY
+        this.errorHandler = errorHandler;
     }
 
 	@ZenMethod
@@ -52,7 +57,7 @@ public class LootTableTweakManager
             {
                 if (!t.isValid())
                 {
-                    CraftTweakerAPI.logError(String.format("No loot table with name %s exists!", t.getId()));
+                    errorHandler.handle("No loot table with name %s exists!", t.getId());
                     return true;
                 }
                 return false;
