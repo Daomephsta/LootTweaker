@@ -58,9 +58,11 @@ repositories
 
 dependencies 
 {
+	def daggerVersion = '2.25.2'
+	
  	deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:${project.crafttweakerVersion}"
- 	implementation 'com.google.dagger:dagger:2.25.2'
-  	annotationProcessor 'com.google.dagger:dagger-compiler:2.25.2'
+ 	implementation "com.google.dagger:dagger:$daggerVersion"
+  	annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
  	
  	testImplementation 'com.github.Daomephsta:Saddle:0.0.3'
  	testImplementation 'org.assertj:assertj-core:3.13.2'
@@ -68,6 +70,9 @@ dependencies
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
 	testImplementation 'org.junit.platform:junit-platform-launcher:1.5.2'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
+	//Tests need dagger too
+ 	testImplementation "com.google.dagger:dagger:$daggerVersion" 	
+  	testAnnotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
 }
 
 test {
