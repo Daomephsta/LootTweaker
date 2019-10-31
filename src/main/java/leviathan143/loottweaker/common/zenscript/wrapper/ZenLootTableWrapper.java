@@ -107,7 +107,7 @@ public class ZenLootTableWrapper
 
 	public boolean isValid()
 	{
-	    return checkRegistered && LootTableList.getAll().contains(id);
+	    return !checkRegistered || LootTableList.getAll().contains(id);
 	}
 
 	@FunctionalInterface
