@@ -35,9 +35,9 @@ import net.minecraft.world.storage.loot.functions.SetNBT;
 
 
 public class ItemEntryAdditionTests
-{   
+{
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void addItemEntry() 
+    public void addItemEntry()
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
@@ -45,7 +45,7 @@ public class ItemEntryAdditionTests
         ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper(bar.getName(), fooId);
         barTweaks.addItemEntry(iitemstack(Items.APPLE), 2, "qux");
         barTweaks.tweak(bar);
-        
+
         assertThat(bar)
             .extractEntry("qux")
             .hasWeight(2)
@@ -54,9 +54,9 @@ public class ItemEntryAdditionTests
             .spawnsItem(Items.APPLE)
             .hasNoLootFunctions();
     }
-    
+
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void addItemEntryWithQuality() 
+    public void addItemEntryWithQuality()
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
@@ -64,7 +64,7 @@ public class ItemEntryAdditionTests
         ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper(bar.getName(), fooId);
         barTweaks.addItemEntry(iitemstack(Items.APPLE), 2, 3, "qux");
         barTweaks.tweak(bar);
-        
+
         assertThat(bar)
             .extractEntry("qux")
             .hasWeight(2)
@@ -74,34 +74,34 @@ public class ItemEntryAdditionTests
             .spawnsItem(Items.APPLE)
             .hasNoLootFunctions();
     }
-    
+
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void addItemEntryWithCondition() 
+    public void addItemEntryWithCondition()
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
         LootPool bar = foo.getPool("bar");
         ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper(bar.getName(), fooId);
-        barTweaks.addItemEntryHelper(iitemstack(Items.BAKED_POTATO), 2, 3, 
-            new ZenLootFunctionWrapper[0], 
-            new ZenLootConditionWrapper[] {LootConditionFactory.killedByPlayer()}, 
+        barTweaks.addItemEntryHelper(iitemstack(Items.BAKED_POTATO), 2, 3,
+            new ZenLootFunctionWrapper[0],
+            new ZenLootConditionWrapper[] {LootConditionFactory.killedByPlayer()},
             "qux");
         barTweaks.tweak(bar);
-        
+
         assertThat(bar)
             .extractEntry("qux")
             .hasWeight(2)
             .hasQuality(3)
-            .hasMatchingCondition(condition -> 
-                condition instanceof KilledByPlayer && !isInverted((KilledByPlayer) condition), 
+            .hasMatchingCondition(condition ->
+                condition instanceof KilledByPlayer && !isInverted((KilledByPlayer) condition),
             "KilledByPlayer()")
             .asItemEntry()
             .spawnsItem(Items.BAKED_POTATO)
             .hasNoLootFunctions();
     }
-    
+
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void addItemEntryWithImplicitSetCount() 
+    public void addItemEntryWithImplicitSetCount()
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
@@ -117,7 +117,7 @@ public class ItemEntryAdditionTests
             .hasNoLootConditions()
             .asItemEntry()
             .spawnsItem(Items.ARROW)
-            .hasMatchingFunction(function -> 
+            .hasMatchingFunction(function ->
             {
                 if (function instanceof SetCount)
                 {
@@ -127,20 +127,20 @@ public class ItemEntryAdditionTests
                 return false;
             }, "SetCount(%d)", expectedCount);
     }
-    
+
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void addItemEntryWithExplicitSetCount() 
+    public void addItemEntryWithExplicitSetCount()
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
         LootPool bar = foo.getPool("bar");
         ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper(bar.getName(), fooId);
-        barTweaks.addItemEntryHelper(iitemstack(Items.ARROW), 2, 1, 
-            new ZenLootFunctionWrapper[] {LootFunctionFactory.setCount(3, 3)}, 
-            new ZenLootConditionWrapper[0], 
+        barTweaks.addItemEntryHelper(iitemstack(Items.ARROW), 2, 1,
+            new ZenLootFunctionWrapper[] {LootFunctionFactory.setCount(3, 3)},
+            new ZenLootConditionWrapper[0],
             "qux");
         barTweaks.tweak(bar);
-        
+
         int expectedCount = 3;
         assertThat(bar)
             .extractEntry("qux")
@@ -149,7 +149,7 @@ public class ItemEntryAdditionTests
             .hasNoLootConditions()
             .asItemEntry()
             .spawnsItem(Items.ARROW)
-            .hasMatchingFunction(function -> 
+            .hasMatchingFunction(function ->
             {
                 if (function instanceof SetCount)
                 {
@@ -159,9 +159,9 @@ public class ItemEntryAdditionTests
                 return false;
             }, "SetCount(%d)", expectedCount);
     }
-    
+
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void addItemEntryWithImplicitSetDamage() 
+    public void addItemEntryWithImplicitSetDamage()
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
@@ -172,7 +172,7 @@ public class ItemEntryAdditionTests
         //set empty tag to work around weird Mojang code where items without NBT are undamageable
         barTweaks.addItemEntry(iitemstack(Items.BOW, 1, damage).withTag(DataMap.EMPTY, true), 2, "qux");
         barTweaks.tweak(bar);
-        
+
         float expectedDamage = 0.5F;
         assertThat(bar)
             .extractEntry("qux")
@@ -180,7 +180,7 @@ public class ItemEntryAdditionTests
             .hasNoLootConditions()
             .asItemEntry()
             .spawnsItem(Items.BOW)
-            .hasMatchingFunction(function -> 
+            .hasMatchingFunction(function ->
             {
                 if (function instanceof SetDamage)
                 {
@@ -190,9 +190,9 @@ public class ItemEntryAdditionTests
                 return false;
             }, "SetDamage(%f)", expectedDamage);
     }
-    
+
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void addItemEntryWithExplicitSetDamage() 
+    public void addItemEntryWithExplicitSetDamage()
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
@@ -200,11 +200,11 @@ public class ItemEntryAdditionTests
         ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper(bar.getName(), fooId);
         //set empty tag to work around weird Mojang code where items without NBT are undamageable
         barTweaks.addItemEntryHelper(iitemstack(Items.BOW), 2, 1,
-            new ZenLootFunctionWrapper[] {LootFunctionFactory.setDamage(0.5F, 0.5F)}, 
-            new ZenLootConditionWrapper[0], 
+            new ZenLootFunctionWrapper[] {LootFunctionFactory.setDamage(0.5F, 0.5F)},
+            new ZenLootConditionWrapper[0],
             "qux");
         barTweaks.tweak(bar);
-        
+
         float expectedDamage = 0.5F;
         assertThat(bar)
             .extractEntry("qux")
@@ -213,7 +213,7 @@ public class ItemEntryAdditionTests
             .hasNoLootConditions()
             .asItemEntry()
             .spawnsItem(Items.BOW)
-            .hasMatchingFunction(function -> 
+            .hasMatchingFunction(function ->
             {
                 if (function instanceof SetDamage)
                 {
@@ -223,9 +223,9 @@ public class ItemEntryAdditionTests
                 return false;
             }, "SetDamage(%f)", expectedDamage);
     }
-    
+
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void addItemEntryWithImplicitSetMetadata() 
+    public void addItemEntryWithImplicitSetMetadata()
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
@@ -233,7 +233,7 @@ public class ItemEntryAdditionTests
         ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper(bar.getName(), fooId);
         barTweaks.addItemEntry(iitemstack(Items.DYE, 1, 8), 2, "qux");
         barTweaks.tweak(bar);
-        
+
         int expectedMetadata = 8;
         assertThat(bar)
             .extractEntry("qux")
@@ -241,7 +241,7 @@ public class ItemEntryAdditionTests
             .hasNoLootConditions()
             .asItemEntry()
             .spawnsItem(Items.DYE)
-            .hasMatchingFunction(function -> 
+            .hasMatchingFunction(function ->
             {
                 if (function instanceof SetMetadata)
                 {
@@ -251,20 +251,20 @@ public class ItemEntryAdditionTests
                 return false;
             }, "SetMetadata(%d)", expectedMetadata);
     }
-    
+
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void addItemEntryWithExplicitSetMetadata() 
+    public void addItemEntryWithExplicitSetMetadata()
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
         LootPool bar = foo.getPool("bar");
         ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper(bar.getName(), fooId);
         barTweaks.addItemEntryHelper(iitemstack(Items.DYE), 2, 1,
-            new ZenLootFunctionWrapper[] {LootFunctionFactory.setMetadata(8, 8)}, 
-            new ZenLootConditionWrapper[0], 
+            new ZenLootFunctionWrapper[] {LootFunctionFactory.setMetadata(8, 8)},
+            new ZenLootConditionWrapper[0],
             "qux");
         barTweaks.tweak(bar);
-        
+
         int expectedMetadata = 8;
         assertThat(bar)
             .extractEntry("qux")
@@ -273,7 +273,7 @@ public class ItemEntryAdditionTests
             .hasNoLootConditions()
             .asItemEntry()
             .spawnsItem(Items.DYE)
-            .hasMatchingFunction(function -> 
+            .hasMatchingFunction(function ->
             {
                 if (function instanceof SetMetadata)
                 {
@@ -283,9 +283,9 @@ public class ItemEntryAdditionTests
                 return false;
             }, "SetMetadata(%d)", expectedMetadata);
     }
-    
+
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void addItemEntryWithImplicitSetNBT() 
+    public void addItemEntryWithImplicitSetNBT()
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
@@ -293,7 +293,7 @@ public class ItemEntryAdditionTests
         ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper(bar.getName(), fooId);
         barTweaks.addItemEntry(iitemstack(Items.BREAD).withDisplayName("Super Bread"), 2, "qux");
         barTweaks.tweak(bar);
-        
+
         NBTTagCompound expectedTag = new NBTTagCompound();
         {
             NBTTagCompound display = new NBTTagCompound();
@@ -306,16 +306,16 @@ public class ItemEntryAdditionTests
             .hasNoLootConditions()
             .asItemEntry()
             .spawnsItem(Items.BREAD)
-            .hasMatchingFunction(function -> 
+            .hasMatchingFunction(function ->
             {
                 if (function instanceof SetNBT)
                     return expectedTag.equals(getTag((SetNBT) function));
                 return false;
             }, "SetNBT(%s)", expectedTag);
     }
-    
+
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void addItemEntryWithExplicitSetNBT() 
+    public void addItemEntryWithExplicitSetNBT()
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
@@ -326,8 +326,8 @@ public class ItemEntryAdditionTests
         IData nbtData = new DataMap(ImmutableMap.<String, IData>builder()
             .put("display", displayData).build(), true);
         barTweaks.addItemEntryHelper(iitemstack(Items.BREAD), 2, 1,
-            new ZenLootFunctionWrapper[] {LootFunctionFactory.setNBT(nbtData)}, 
-            new ZenLootConditionWrapper[0], 
+            new ZenLootFunctionWrapper[] {LootFunctionFactory.setNBT(nbtData)},
+            new ZenLootConditionWrapper[0],
             "qux");
         barTweaks.tweak(bar);
 
@@ -344,7 +344,7 @@ public class ItemEntryAdditionTests
             .hasNoLootConditions()
             .asItemEntry()
             .spawnsItem(Items.BREAD)
-            .hasMatchingFunction(function -> 
+            .hasMatchingFunction(function ->
             {
                 if (function instanceof SetNBT)
                     return expectedTag.equals(getTag((SetNBT) function));

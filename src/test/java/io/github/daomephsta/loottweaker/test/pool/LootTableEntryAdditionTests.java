@@ -18,7 +18,7 @@ import net.minecraft.world.storage.loot.conditions.KilledByPlayer;
 public class LootTableEntryAdditionTests
 {
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void addLootTableEntry() 
+    public void addLootTableEntry()
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
@@ -26,7 +26,7 @@ public class LootTableEntryAdditionTests
         ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper(bar.getName(), fooId);
         barTweaks.addLootTableEntry("loottweaker:qux", 2, "corge");
         barTweaks.tweak(bar);
-        
+
         assertThat(bar)
             .extractEntry("corge")
             .hasWeight(2)
@@ -34,9 +34,9 @@ public class LootTableEntryAdditionTests
             .asLootTableEntry()
             .spawnsFromTable("loottweaker:qux");
     }
-    
+
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void addLootTableEntryWithQuality() 
+    public void addLootTableEntryWithQuality()
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
@@ -44,7 +44,7 @@ public class LootTableEntryAdditionTests
         ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper(bar.getName(), fooId);
         barTweaks.addLootTableEntry("loottweaker:qux", 2, 3, "corge");
         barTweaks.tweak(bar);
-        
+
         assertThat(bar)
             .extractEntry("corge")
             .hasWeight(2)
@@ -53,25 +53,25 @@ public class LootTableEntryAdditionTests
             .asLootTableEntry()
             .spawnsFromTable("loottweaker:qux");
     }
-    
+
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void addLootTableEntryWithCondition() 
+    public void addLootTableEntryWithCondition()
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
         LootPool bar = foo.getPool("bar");
         ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper(bar.getName(), fooId);
-        barTweaks.addLootTableEntryHelper("loottweaker:qux", 2, 3, 
-            new ZenLootConditionWrapper[] {LootConditionFactory.killedByPlayer()}, 
+        barTweaks.addLootTableEntryHelper("loottweaker:qux", 2, 3,
+            new ZenLootConditionWrapper[] {LootConditionFactory.killedByPlayer()},
             "corge");
         barTweaks.tweak(bar);
-        
+
         assertThat(bar)
             .extractEntry("corge")
             .hasWeight(2)
             .hasQuality(3)
-            .hasMatchingCondition(condition -> 
-                condition instanceof KilledByPlayer && !isInverted((KilledByPlayer) condition), 
+            .hasMatchingCondition(condition ->
+                condition instanceof KilledByPlayer && !isInverted((KilledByPlayer) condition),
             "KilledByPlayer()")
             .asLootTableEntry()
             .spawnsFromTable("loottweaker:qux");

@@ -8,12 +8,12 @@ import com.google.gson.JsonSyntaxException;
 
 import crafttweaker.api.data.IData;
 
-public class IDataParser
+public class DataParser
 {
     private final Gson gsonInstance;
     private final Consumer<JsonSyntaxException> errorHandler;
 
-    public IDataParser(Gson gsonInstance, Consumer<JsonSyntaxException> errorHandler)
+    public DataParser(Gson gsonInstance, Consumer<JsonSyntaxException> errorHandler)
     {
         this.gsonInstance = gsonInstance;
         this.errorHandler = errorHandler;

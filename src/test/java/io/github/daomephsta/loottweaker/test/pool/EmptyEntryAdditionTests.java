@@ -18,7 +18,7 @@ import net.minecraft.world.storage.loot.conditions.KilledByPlayer;
 public class EmptyEntryAdditionTests
 {
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void addEmptyEntry() 
+    public void addEmptyEntry()
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
@@ -26,16 +26,16 @@ public class EmptyEntryAdditionTests
         ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper(bar.getName(), fooId);
         barTweaks.addEmptyEntry(2, "corge");
         barTweaks.tweak(bar);
-        
+
         assertThat(bar)
             .extractEntry("corge")
             .hasWeight(2)
             .hasNoLootConditions()
             .isEmptyEntry();
     }
-    
+
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void addEmptyEntryWithQuality() 
+    public void addEmptyEntryWithQuality()
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
@@ -43,7 +43,7 @@ public class EmptyEntryAdditionTests
         ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper(bar.getName(), fooId);
         barTweaks.addEmptyEntry(2, 3, "corge");
         barTweaks.tweak(bar);
-        
+
         assertThat(bar)
             .extractEntry("corge")
             .hasWeight(2)
@@ -51,25 +51,25 @@ public class EmptyEntryAdditionTests
             .hasNoLootConditions()
             .isEmptyEntry();
     }
-    
+
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void addEmptyEntryWithCondition() 
+    public void addEmptyEntryWithCondition()
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
         LootPool bar = foo.getPool("bar");
         ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper(bar.getName(), fooId);
-        barTweaks.addEmptyEntryHelper(2, 3, 
-            new ZenLootConditionWrapper[] {LootConditionFactory.killedByPlayer()}, 
+        barTweaks.addEmptyEntryHelper(2, 3,
+            new ZenLootConditionWrapper[] {LootConditionFactory.killedByPlayer()},
             "corge");
         barTweaks.tweak(bar);
-        
+
         assertThat(bar)
             .extractEntry("corge")
             .hasWeight(2)
             .hasQuality(3)
-            .hasMatchingCondition(condition -> 
-                condition instanceof KilledByPlayer && !isInverted((KilledByPlayer) condition), 
+            .hasMatchingCondition(condition ->
+                condition instanceof KilledByPlayer && !isInverted((KilledByPlayer) condition),
             "KilledByPlayer()")
             .isEmptyEntry();
     }

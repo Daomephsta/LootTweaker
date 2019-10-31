@@ -16,27 +16,27 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 public class TestUtils
 {
     private TestUtils() {}
-    
+
     public static IItemStack iitemstack(Item item)
     {
         return iitemstack(item, 1);
     }
-    
+
     public static IItemStack iitemstack(Item item, int amount)
     {
         return iitemstack(item, amount, 0);
     }
-    
+
     public static IItemStack iitemstack(Item item, int amount, int damage)
     {
         return CraftTweakerMC.getItemStack(item, amount, damage);
     }
-    
+
     public static LootTable loadTable(String namespace, String path)
     {
         return loadTable(new ResourceLocation(namespace, path));
     }
-    
+
     public static LootTable loadTable(ResourceLocation name)
     {
         String location = "assets/" + name.getNamespace() + "/loot_tables/" + name.getPath() + ".json";
