@@ -1,0 +1,10 @@
+{
+	"pools":
+	[
+		{
+			"name": "bar",
+			"entries": [],
+			"rolls": 1
+		}
+	]
+}
