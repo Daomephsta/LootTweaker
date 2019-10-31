@@ -7,63 +7,52 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import crafttweaker.CraftTweakerAPI;
-import crafttweaker.annotations.ZenRegister;
-import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTable;
-import net.minecraftforge.event.LootTableLoadEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
-@ZenRegister
-@ZenClass(LootTweaker.MODID + ".vanilla.loot.LootTables")
-@Mod.EventBusSubscriber(modid = LootTweaker.MODID)
 public class LootTableTweakManager
 {
-    private static final Logger LOGGER = LogManager.getLogger();
-    private static final Map<ResourceLocation, ZenLootTableWrapper> tweakedTables = new HashMap<>();
+    private final Logger LOGGER = LogManager.getLogger();
+    private final Map<ResourceLocation, ZenLootTableWrapper> tweakedTables = new HashMap<>();
 
-    private static Phase phase = Phase.GATHER;
-    public static enum Phase
+    private Phase phase = Phase.GATHER;
+    public enum Phase
     {
         GATHER, APPLY
     }
 
 	@ZenMethod
-	public static ZenLootTableWrapper getTable(String tableName)
+	public ZenLootTableWrapper getTable(String tableName)
 	{
 	    return getTableInternal(tableName, true);
 	}
 
 	@ZenMethod
-	public static ZenLootTableWrapper getTableUnchecked(String tableName)
+	public ZenLootTableWrapper getTableUnchecked(String tableName)
 	{
 	    return getTableInternal(tableName, false);
 	}
 
-	private static ZenLootTableWrapper getTableInternal(String tableName, boolean checkRegistered)
+	private ZenLootTableWrapper getTableInternal(String tableName, boolean checkRegistered)
     {
         ResourceLocation tableId = new ResourceLocation(tableName);
         return tweakedTables.computeIfAbsent(tableId, id -> new ZenLootTableWrapper(id, checkRegistered));
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onTableLoad(LootTableLoadEvent event)
+    public void tweakTable(ResourceLocation tableId, LootTable table)
     {
-        applyTweaks(event.getName(), event.getTable());
+        applyTweaks(tableId, table);
         if(phase != Phase.APPLY)
         {
             phase = Phase.APPLY;
             //Remove invalid tables, logging an error
-            tweakedTables.values().removeIf(table ->
+            tweakedTables.values().removeIf(t ->
             {
-                if (!table.isValid())
+                if (!t.isValid())
                 {
-                    CraftTweakerAPI.logError(String.format("No loot table with name %s exists!", table.getId()));
+                    CraftTweakerAPI.logError(String.format("No loot table with name %s exists!", t.getId()));
                     return true;
                 }
                 return false;
@@ -71,7 +60,7 @@ public class LootTableTweakManager
         }
     }
 
-    private static void applyTweaks(ResourceLocation tableName, LootTable table)
+    private void applyTweaks(ResourceLocation tableName, LootTable table)
     {
         if (tweakedTables.containsKey(tableName))
         {
@@ -82,10 +71,5 @@ public class LootTableTweakManager
             }
             tweakedTables.get(tableName).applyTweaks(table);
         }
-    }
-
-	public Phase getPhase()
-    {
-        return phase;
     }
 }
