@@ -1,7 +1,6 @@
 package io.github.daomephsta.loottweaker.test;
 
 import static io.github.daomephsta.loottweaker.test.TestUtils.loadTable;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.github.daomephsta.loottweaker.test.TestErrorHandler.LootTweakerException;
@@ -11,69 +10,30 @@ import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
 import leviathan143.loottweaker.common.zenscript.LootTableTweakManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootTableList;
+import net.minecraft.world.storage.loot.LootTable;
 
 public class LootTableTweakManagerTests
 {
     private final TestLootTableTweakManagerProvider dagger = DaggerTestLootTableTweakManagerProvider.create();
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void getTableCheckRegistered()
+    public void getTableCheckExisting()
     {
-        ResourceLocation registeredTableId =
-            ensureRegistered(new ResourceLocation("loottweaker", "registered_table"));
-        assertThat(registeredTableId)
-            .withFailMessage("Expected %s to be registered", registeredTableId)
-            .isIn(LootTableList.getAll());
+        ResourceLocation existingTableId = new ResourceLocation("loottweaker", "bar");
         LootTableTweakManager tableTweakManager = dagger.provide();
-        tableTweakManager.getTable(registeredTableId.toString());
-        tableTweakManager.tweakTable(registeredTableId, loadTable(registeredTableId));
+        tableTweakManager.getTable(existingTableId.toString());
+        tableTweakManager.tweakTable(existingTableId, loadTable(existingTableId));
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void getTableCheckUnregistered()
+    public void getTableCheckNonExistent()
     {
-        ResourceLocation unregisteredTableId = new ResourceLocation("loottweaker", "unregistered_table");
-        assertThat(unregisteredTableId)
-            .withFailMessage("Expected %s to be unregistered", unregisteredTableId)
-            .isNotIn(LootTableList.getAll());
+        ResourceLocation nonExistentTableId = new ResourceLocation("loottweaker", "non_existent_table");
         LootTableTweakManager tableTweakManager = dagger.provide();
-        tableTweakManager.getTable(unregisteredTableId.toString());
-        assertThatThrownBy(() -> tableTweakManager.tweakTable(unregisteredTableId, loadTable(unregisteredTableId)))
+        tableTweakManager.getTable(nonExistentTableId.toString());
+        assertThatThrownBy(() -> tableTweakManager.tweakTable(nonExistentTableId, LootTable.EMPTY_LOOT_TABLE))
             .isInstanceOf(LootTweakerException.class)
             .extracting(Throwable::getMessage)
-            .isEqualTo("No loot table with name " + unregisteredTableId + " exists!");
-    }
-
-    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void getTableUncheckedRegistered()
-    {
-        ResourceLocation registeredTableId =
-            ensureRegistered(new ResourceLocation("loottweaker", "registered_table"));
-        assertThat(registeredTableId)
-            .withFailMessage("Expected %s to be registered", registeredTableId)
-            .isIn(LootTableList.getAll());
-        LootTableTweakManager tableTweakManager = dagger.provide();
-        tableTweakManager.getTableUnchecked(registeredTableId.toString());
-        tableTweakManager.tweakTable(registeredTableId, loadTable(registeredTableId));
-    }
-
-    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void getTableUncheckedUnregistered()
-    {
-        ResourceLocation unregisteredTableId = new ResourceLocation("loottweaker", "unregistered_table");
-        assertThat(unregisteredTableId)
-            .withFailMessage("Expected %s to be unregistered", unregisteredTableId)
-            .isNotIn(LootTableList.getAll());
-        LootTableTweakManager tableTweakManager = dagger.provide();
-        tableTweakManager.getTableUnchecked(unregisteredTableId.toString());
-        tableTweakManager.tweakTable(unregisteredTableId, loadTable(unregisteredTableId));
-    }
-
-    private static ResourceLocation ensureRegistered(ResourceLocation id)
-    {
-        if (!LootTableList.getAll().contains(id))
-            LootTableList.register(id);
-        return id;
+            .isEqualTo("No loot table with name " + nonExistentTableId + " exists!");
     }
 }

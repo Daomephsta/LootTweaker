@@ -19,8 +19,6 @@ public class LootTableTweakManager
     private static final Logger LOGGER = LogManager.getLogger();
     private final Map<ResourceLocation, ZenLootTableWrapper> tweakedTables = new HashMap<>();
     private final ErrorHandler errorHandler;
-    private Phase phase = Phase.GATHER;
-    public enum Phase { GATHER, APPLY }
 
     @Inject
     LootTableTweakManager(ErrorHandler errorHandler)
@@ -31,50 +29,35 @@ public class LootTableTweakManager
 	@ZenMethod
 	public ZenLootTableWrapper getTable(String tableName)
 	{
-	    return getTableInternal(tableName, true);
+	    return getTableInternal(tableName);
 	}
 
 	@ZenMethod
 	public ZenLootTableWrapper getTableUnchecked(String tableName)
 	{
-	    return getTableInternal(tableName, false);
+	    return getTable(tableName);
 	}
 
-	private ZenLootTableWrapper getTableInternal(String tableName, boolean checkRegistered)
+	private ZenLootTableWrapper getTableInternal(String tableName)
     {
         ResourceLocation tableId = new ResourceLocation(tableName);
-        return tweakedTables.computeIfAbsent(tableId, id -> new ZenLootTableWrapper(id, checkRegistered));
+        return tweakedTables.computeIfAbsent(tableId, id -> new ZenLootTableWrapper(id));
     }
 
     public void tweakTable(ResourceLocation tableId, LootTable table)
     {
-        applyTweaks(tableId, table);
-        if(phase != Phase.APPLY)
-        {
-            phase = Phase.APPLY;
-            //Remove invalid tables, logging an error
-            tweakedTables.values().removeIf(t ->
-            {
-                if (!t.isValid())
-                {
-                    errorHandler.handle("No loot table with name %s exists!", t.getId());
-                    return true;
-                }
-                return false;
-            });
-        }
-    }
-
-    private void applyTweaks(ResourceLocation tableName, LootTable table)
-    {
-        if (tweakedTables.containsKey(tableName))
+        if (tweakedTables.containsKey(tableId))
         {
             if (table.isFrozen())
             {
-                LOGGER.debug("Skipped modifying loot table {} because it is frozen", tableName);
+                LOGGER.debug("Skipped modifying loot table {} because it is frozen", tableId);
                 return;
             }
-            tweakedTables.get(tableName).applyTweaks(table);
+            ZenLootTableWrapper wrapper = tweakedTables.get(tableId);
+            if (wrapper.isValid())
+                wrapper.applyTweaks(table);
+            else
+                errorHandler.handle("No loot table with name %s exists!", tableId);
         }
     }
 }

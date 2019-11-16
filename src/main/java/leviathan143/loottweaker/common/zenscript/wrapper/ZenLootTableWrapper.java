@@ -24,16 +24,14 @@ import stanhebben.zenscript.annotations.ZenMethod;
 public class ZenLootTableWrapper
 {
 	private final ResourceLocation id;
-	private final boolean checkRegistered;
 	private final Queue<LootTableTweak> tweaks = new ArrayDeque<>();
 	private final Map<String, ZenLootPoolWrapper> tweakedPools = new HashMap<>();
 	@Inject
 	ErrorHandler errorHandler;
 
-    public ZenLootTableWrapper(ResourceLocation id, boolean checkRegistered)
+    public ZenLootTableWrapper(ResourceLocation id)
     {
         this.id = id;
-        this.checkRegistered = checkRegistered;
     }
 
     @ZenMethod
@@ -107,7 +105,10 @@ public class ZenLootTableWrapper
 
 	public boolean isValid()
 	{
-	    return !checkRegistered || LootTableList.getAll().contains(id);
+	    //Use LootTableList as backup, just in case
+	    return getClass().getClassLoader()
+            .getResource("assets/" + id.getNamespace() + "/loot_tables/" + id.getPath() + ".json") != null
+            || LootTableList.getAll().contains(id);
 	}
 
 	@FunctionalInterface
