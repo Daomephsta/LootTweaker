@@ -1,6 +1,7 @@
 package leviathan143.loottweaker.common.zenscript;
 
 import crafttweaker.annotations.ZenRegister;
+import leviathan143.loottweaker.common.DeprecationWarningManager;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.dagger.DaggerLootTableTweakManagerProvider;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
@@ -27,6 +28,7 @@ public class ZenLootTableTweakManager
     @ZenMethod
     public static ZenLootTableWrapper getTableUnchecked(String tableName)
     {
+        DeprecationWarningManager.addWarning();
         return TWEAK_MANAGER.getTableUnchecked(tableName);
     }
 
