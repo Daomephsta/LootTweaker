@@ -24,6 +24,8 @@ public class DeprecationWarningManager
 			StackTraceElement caller = stackTrace[2];
 			Class<?> clazz = Class.forName(caller.getClassName());
 			ZenClass zenClass = clazz.getAnnotation(ZenClass.class);
+			if (zenClass == null)
+			    throw new IllegalArgumentException(clazz.getName() + " is not a ZenClass");
 			String zenName = zenClass.value();
 			deprecatedObjectsUsed.add(zenName + "." + caller.getMethodName());
 		}
@@ -32,7 +34,7 @@ public class DeprecationWarningManager
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void printDeprecationWarnings()
 	{
 		if(deprecatedObjectsUsed.isEmpty() || !LTConfig.deprecationWarnings) return;
