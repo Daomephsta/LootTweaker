@@ -12,7 +12,6 @@ import leviathan143.loottweaker.common.ErrorHandler;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTable;
-import stanhebben.zenscript.annotations.ZenMethod;
 
 public class LootTableTweakManager
 {
@@ -26,13 +25,11 @@ public class LootTableTweakManager
         this.errorHandler = errorHandler;
     }
 
-	@ZenMethod
 	public ZenLootTableWrapper getTable(String tableName)
 	{
 	    return getTableInternal(tableName);
 	}
 
-	@ZenMethod
 	public ZenLootTableWrapper getTableUnchecked(String tableName)
 	{
 	    return getTable(tableName);
