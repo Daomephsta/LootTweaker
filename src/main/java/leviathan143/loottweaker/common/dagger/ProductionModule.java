@@ -1,7 +1,5 @@
 package leviathan143.loottweaker.common.dagger;
 
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
 import leviathan143.loottweaker.common.CTLoggingErrorHandler;
@@ -11,8 +9,7 @@ import leviathan143.loottweaker.common.ErrorHandler;
 public class ProductionModule
 {
     @Provides
-    @Singleton
-    static ErrorHandler provideErrorHandler()
+    static ErrorHandler errorHandler()
     {
         return new CTLoggingErrorHandler();
     }
