@@ -14,12 +14,16 @@ buildscript {
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
 		classpath 'net.ltgt.gradle:gradle-apt-plugin:0.18'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.2'
+        classpath 'de.undercouch:gradle-download-task:4.0.1'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'maven-publish'
 apply plugin: 'net.ltgt.apt'
 apply plugin: 'net.ltgt.apt-eclipse'
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'de.undercouch.download'
 
 /*
 // for people who want stable - not yet functional for MC 1.8.8 - we require the forgegradle 2.1 snapshot
@@ -56,12 +60,17 @@ repositories
     }
 }
 
+configurations {
+    shadow
+}
+
 dependencies 
 {
 	def daggerVersion = '2.25.2'
 	
  	deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:${project.crafttweakerVersion}"
  	implementation "com.google.dagger:dagger:$daggerVersion"
+    shadow "com.google.dagger:dagger:$daggerVersion"
   	annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
  	
  	testImplementation 'com.github.Daomephsta:Saddle:0.0.3'
@@ -75,6 +84,29 @@ dependencies
   	testAnnotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
 }
 
+task includeDaggerLicense(type: Download) {
+    src 'https://raw.githubusercontent.com/google/dagger/master/LICENSE.txt'
+    dest "${sourceSets.main.output.resourcesDir.path}/leviathan143/loottweaker/shadow/dagger/LICENSE.txt"
+}
+
+task includeJavaXInjectLicense(type: Download) {
+    src 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+    dest "${sourceSets.main.output.resourcesDir.path}/leviathan143/loottweaker/shadow/javax/inject/LICENSE.txt"
+}
+
+shadowJar {
+    dependsOn includeDaggerLicense, includeJavaXInjectLicense
+	classifier = null
+    configurations = [project.configurations.shadow]
+	relocate 'dagger', 'leviathan143.loottweaker.shadow.dagger'
+    relocate 'javax.inject', 'leviathan143.loottweaker.shadow.javax.inject'
+	minimize()
+}
+
+reobf {
+    shadowJar { mappingType = 'SEARGE' }
+}
+
 test {
 	useJUnitPlatform()
 }
@@ -86,6 +118,10 @@ publishing {
 			artifact sourceJar
 		}
 	}
+}
+
+artifacts {
+    archives shadowJar
 }
 
 processResources
