@@ -25,12 +25,11 @@ public class MiscZenLootPoolWrapperTests
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
-        LootPool bar = foo.getPool("bar");
-        ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper(bar.getName(), fooId);
+        ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper("bar", fooId);
         barTweaks.addConditionsHelper(new ZenLootConditionWrapper[] {LootConditionFactory.killedByPlayer()});
-        barTweaks.tweak(bar);
+        barTweaks.tweak(foo);
 
-        assertThat(bar).hasMatchingCondition(condition ->
+        assertThat(foo.getPool("bar")).hasMatchingCondition(condition ->
             condition instanceof KilledByPlayer && !isInverted((KilledByPlayer) condition),
         "KilledByPlayer()");
     }
@@ -43,9 +42,9 @@ public class MiscZenLootPoolWrapperTests
         LootPool baz = bar.getPool("baz");
 
         assertThat(baz.getEntry("qux")).isNotNull();
-        ZenLootPoolWrapper bazTweaks = new ZenLootPoolWrapper(baz.getName(), barId);
+        ZenLootPoolWrapper bazTweaks = new ZenLootPoolWrapper("baz", barId);
         bazTweaks.removeEntry("qux");
-        bazTweaks.tweak(baz);
+        bazTweaks.tweak(bar);
         assertThat(baz.getEntry("qux")).isNull();
     }
 
@@ -56,9 +55,9 @@ public class MiscZenLootPoolWrapperTests
         LootTable bar = loadTable(barId);
         LootPool baz = bar.getPool("baz");
         assertThat(getConditions(baz)).isNotEmpty();
-        ZenLootPoolWrapper bazTweaks = new ZenLootPoolWrapper(baz.getName(), barId);
+        ZenLootPoolWrapper bazTweaks = new ZenLootPoolWrapper("baz", barId);
         bazTweaks.clearConditions();
-        bazTweaks.tweak(baz);
+        bazTweaks.tweak(bar);
         assertThat(getConditions(baz)).isEmpty();
     }
 
@@ -69,9 +68,9 @@ public class MiscZenLootPoolWrapperTests
         LootTable bar = loadTable(barId);
         LootPool baz = bar.getPool("baz");
         assertThat(getEntries(baz)).isNotEmpty();
-        ZenLootPoolWrapper bazTweaks = new ZenLootPoolWrapper(baz.getName(), barId);
+        ZenLootPoolWrapper bazTweaks = new ZenLootPoolWrapper("baz", barId);
         bazTweaks.clearEntries();
-        bazTweaks.tweak(baz);
+        bazTweaks.tweak(bar);
         assertThat(getEntries(baz)).isEmpty();
     }
 
@@ -81,9 +80,9 @@ public class MiscZenLootPoolWrapperTests
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
         LootPool bar = foo.getPool("bar");
-        ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper(bar.getName(), fooId);
+        ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper("bar", fooId);
         barTweaks.setRolls(2.0F, 5.0F);
-        barTweaks.tweak(bar);
+        barTweaks.tweak(foo);
 
         assertThat(bar.getRolls()).extracting(RandomValueRange::getMin).isEqualTo(2.0F);
         assertThat(bar.getRolls()).extracting(RandomValueRange::getMax).isEqualTo(5.0F);
@@ -95,9 +94,9 @@ public class MiscZenLootPoolWrapperTests
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
         LootPool bar = foo.getPool("bar");
-        ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper(bar.getName(), fooId);
+        ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper("bar", fooId);
         barTweaks.setBonusRolls(1.0F, 3.0F);
-        barTweaks.tweak(bar);
+        barTweaks.tweak(foo);
 
         assertThat(bar.getBonusRolls()).extracting(RandomValueRange::getMin).isEqualTo(1.0F);
         assertThat(bar.getBonusRolls()).extracting(RandomValueRange::getMax).isEqualTo(3.0F);

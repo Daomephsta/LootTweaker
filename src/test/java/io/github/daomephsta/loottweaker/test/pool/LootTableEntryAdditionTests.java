@@ -10,7 +10,6 @@ import leviathan143.loottweaker.common.zenscript.factory.LootConditionFactory;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootConditionWrapper;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootPoolWrapper;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
 import net.minecraft.world.storage.loot.conditions.KilledByPlayer;
 
@@ -22,12 +21,11 @@ public class LootTableEntryAdditionTests
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
-        LootPool bar = foo.getPool("bar");
-        ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper(bar.getName(), fooId);
+        ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper("bar", fooId);
         barTweaks.addLootTableEntry("loottweaker:qux", 2, "corge");
-        barTweaks.tweak(bar);
+        barTweaks.tweak(foo);
 
-        assertThat(bar)
+        assertThat(foo.getPool("bar"))
             .extractEntry("corge")
             .hasWeight(2)
             .hasNoLootConditions()
@@ -40,12 +38,11 @@ public class LootTableEntryAdditionTests
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
-        LootPool bar = foo.getPool("bar");
-        ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper(bar.getName(), fooId);
+        ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper("bar", fooId);
         barTweaks.addLootTableEntry("loottweaker:qux", 2, 3, "corge");
-        barTweaks.tweak(bar);
+        barTweaks.tweak(foo);
 
-        assertThat(bar)
+        assertThat(foo.getPool("bar"))
             .extractEntry("corge")
             .hasWeight(2)
             .hasQuality(3)
@@ -59,14 +56,13 @@ public class LootTableEntryAdditionTests
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
-        LootPool bar = foo.getPool("bar");
-        ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper(bar.getName(), fooId);
+        ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper("bar", fooId);
         barTweaks.addLootTableEntryHelper("loottweaker:qux", 2, 3,
             new ZenLootConditionWrapper[] {LootConditionFactory.killedByPlayer()},
             "corge");
-        barTweaks.tweak(bar);
+        barTweaks.tweak(foo);
 
-        assertThat(bar)
+        assertThat(foo.getPool("bar"))
             .extractEntry("corge")
             .hasWeight(2)
             .hasQuality(3)
