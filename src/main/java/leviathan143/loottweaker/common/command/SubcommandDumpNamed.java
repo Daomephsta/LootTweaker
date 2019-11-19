@@ -4,6 +4,7 @@ import java.io.File;
 
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.lib.LootTableDumper;
+import leviathan143.loottweaker.common.lib.LootTableFinder;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
@@ -13,7 +14,6 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.ClickEvent.Action;
-import net.minecraft.world.storage.loot.LootTableList;
 
 
 public class SubcommandDumpNamed implements Subcommand
@@ -27,7 +27,7 @@ public class SubcommandDumpNamed implements Subcommand
             return;
         }
         ResourceLocation tableId = new ResourceLocation(args[1]);
-        if (!LootTableList.getAll().contains(tableId))
+        if (!LootTableFinder.DEFAULT.exists(tableId))
         {
             sender.sendMessage(new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.byName.invalidName"));
             return;

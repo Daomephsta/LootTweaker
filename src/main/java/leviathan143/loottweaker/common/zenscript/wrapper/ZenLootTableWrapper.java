@@ -12,6 +12,7 @@ import crafttweaker.annotations.ZenRegister;
 import leviathan143.loottweaker.common.ErrorHandler;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.darkmagic.LootTableAccessors;
+import leviathan143.loottweaker.common.lib.LootTableFinder;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
@@ -106,9 +107,7 @@ public class ZenLootTableWrapper
 	public boolean isValid()
 	{
 	    //Use LootTableList as backup, just in case
-	    return getClass().getClassLoader()
-            .getResource("assets/" + id.getNamespace() + "/loot_tables/" + id.getPath() + ".json") != null
-            || LootTableList.getAll().contains(id);
+	    return LootTableFinder.DEFAULT.exists(id) || LootTableList.getAll().contains(id);
 	}
 
 	@FunctionalInterface
