@@ -61,9 +61,22 @@ public class LootTableFinder
             Set<Path> visitedSources = new HashSet<>();
             for (ModContainer mod : Loader.instance().getActiveModList())
             {
-                //Skip builtin mods with bogus JAR locations
-                if (mod.getModId().equals("minecraft") || mod.getModId().equals("mcp"))
+                //Skip mods with bogus JAR locations
+                if (mod.getSource() == null)
+                {
+                    LOGGER.info("Skipped {} ({}) as it reported a null source", mod.getModId(), mod.getName());
                     continue;
+                }
+                if (!mod.getSource().exists())
+                {
+                    //Don't log when it's MCP or Minecraft, to avoid user confusion
+                    if (!mod.getModId().equals("minecraft") && !mod.getModId().equals("mcp"))
+                    {
+                        LOGGER.info("Skipped {} ({}) as it reported a nonexistent source {}",
+                            mod.getModId(), mod.getName(), mod.getSource().getAbsolutePath());
+                    }
+                    continue;
+                }
                 Path sourcePath = mod.getSource().toPath();
                 //Skip already visited sources
                 if (visitedSources.contains(sourcePath))
