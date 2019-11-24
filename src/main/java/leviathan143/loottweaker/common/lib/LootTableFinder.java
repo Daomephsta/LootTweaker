@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -69,18 +70,19 @@ public class LootTableFinder
                 }
                 if (!mod.getSource().exists())
                 {
-                    //Don't log when it's MCP or Minecraft, to avoid user confusion
-                    if (!mod.getModId().equals("minecraft") && !mod.getModId().equals("mcp"))
-                    {
-                        LOGGER.info("Skipped {} ({}) as it reported a nonexistent source {}",
-                            mod.getModId(), mod.getName(), mod.getSource().getAbsolutePath());
-                    }
+                    //Log at debug level instead of info when it's MCP or Minecraft, to avoid user confusion
+                    Level level = mod.getModId().equals("minecraft") || mod.getModId().equals("mcp")
+                        ? Level.DEBUG
+                        : Level.INFO;
+                    LOGGER.log(level, "Skipped {} ({}) as it reported a nonexistent source {}",
+                        mod.getModId(), mod.getName(), mod.getSource().getAbsolutePath());
                     continue;
                 }
                 Path sourcePath = mod.getSource().toPath();
                 //Skip already visited sources
                 if (visitedSources.contains(sourcePath))
                     continue;
+                LOGGER.debug("Visiting source of {} at {}", mod.getModId(), mod.getSource());
                 visitSource(modClassLoader, sourcePath, this::add);
                 visitedSources.add(sourcePath);
             }
