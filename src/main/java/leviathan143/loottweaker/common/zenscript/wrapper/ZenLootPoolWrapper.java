@@ -1,11 +1,6 @@
 package leviathan143.loottweaker.common.zenscript.wrapper;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 import javax.inject.Inject;
 
@@ -26,19 +21,9 @@ import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper.Loo
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootEntry;
-import net.minecraft.world.storage.loot.LootEntryEmpty;
-import net.minecraft.world.storage.loot.LootEntryItem;
-import net.minecraft.world.storage.loot.LootEntryTable;
-import net.minecraft.world.storage.loot.LootPool;
-import net.minecraft.world.storage.loot.LootTable;
-import net.minecraft.world.storage.loot.RandomValueRange;
+import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
-import net.minecraft.world.storage.loot.functions.LootFunction;
-import net.minecraft.world.storage.loot.functions.SetCount;
-import net.minecraft.world.storage.loot.functions.SetDamage;
-import net.minecraft.world.storage.loot.functions.SetMetadata;
-import net.minecraft.world.storage.loot.functions.SetNBT;
+import net.minecraft.world.storage.loot.functions.*;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -285,8 +270,14 @@ public class ZenLootPoolWrapper implements LootTableTweak
 	{
 	    LootEntry[] lootEntriesArray = entries.toArray(new LootEntry[0]);
         LootCondition[] poolConditionsArray = conditions.toArray(NO_CONDITIONS);
-        table.addPool(new LootPool(lootEntriesArray, poolConditionsArray, rolls.get(), bonusRolls.get(), id));
-        CraftTweakerAPI.logInfo(String.format("Added new pool %s to table %s", id, parentTableId));
+        LootPool existing = table.getPool(id);
+        if (existing != null)
+            tweak(existing);
+        else
+        {
+            table.addPool(new LootPool(lootEntriesArray, poolConditionsArray, rolls.get(), bonusRolls.get(), id));
+            CraftTweakerAPI.logInfo(String.format("Added new pool %s to table %s", id, parentTableId));
+        }
 	}
 
     public void tweak(LootPool pool)
