@@ -17,6 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 
@@ -24,7 +25,8 @@ public class LootTableFinder
 {
     public static final LootTableFinder DEFAULT = new LootTableFinder();
     private static final Logger LOGGER = LogManager.getLogger();
-    private Set<ResourceLocation> validIds = new HashSet<>();
+    //Initialise with vanilla loot tables, plus whatever other tables are registered whenever the class is initialised
+    private final Set<ResourceLocation> validIds = new HashSet<>(LootTableList.getAll());
     private boolean fullScanPerformed = false;
 
     public boolean exists(ResourceLocation tableId)
