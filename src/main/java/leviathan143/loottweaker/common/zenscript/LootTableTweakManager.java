@@ -52,7 +52,7 @@ public class LootTableTweakManager
             }
             ZenLootTableWrapper wrapper = tweakedTables.get(tableId);
             if (wrapper.isValid())
-                wrapper.applyTweaks(table);
+                wrapper.applyTweakers(table);
             else
                 errorHandler.handle("No loot table with name %s exists!", tableId);
         }

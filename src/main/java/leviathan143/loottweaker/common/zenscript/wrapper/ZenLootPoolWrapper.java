@@ -1,6 +1,9 @@
 package leviathan143.loottweaker.common.zenscript.wrapper;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -17,7 +20,7 @@ import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.darkmagic.LootPoolAccessors;
 import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
 import leviathan143.loottweaker.common.lib.DataParser;
-import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper.LootTableTweak;
+import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper.LootTableTweaker;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -30,7 +33,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenRegister
 @ZenClass(LootTweaker.MODID + ".vanilla.loot.LootPool")
-public class ZenLootPoolWrapper implements LootTableTweak
+public class ZenLootPoolWrapper implements LootTableTweaker
 {
     private static final String ENTRY_NAME_PREFIX = "loottweaker#";
     private static final int DEFAULT_QUALITY = 0;
@@ -40,7 +43,7 @@ public class ZenLootPoolWrapper implements LootTableTweak
     @Inject
     ErrorHandler errorHandler;
     private final DataParser LOGGING_PARSER = new DataParser(LootTableManagerAccessors.getGsonInstance(), e -> errorHandler.handle(e.getMessage()));
-    private final Queue<LootPoolTweak> tweaks = new ArrayDeque<>();
+    private final List<LootPoolTweaker> tweakers = new ArrayList<>();
     private final ResourceLocation parentTableId;
     //LootPool state
     private final String id;
@@ -86,21 +89,21 @@ public class ZenLootPoolWrapper implements LootTableTweak
 	@ZenMethod
 	public void clearConditions()
 	{
-	    enqueueTweak(pool -> LootPoolAccessors.getConditions(pool).clear(),
+	    enqueueTweaker(pool -> LootPoolAccessors.getConditions(pool).clear(),
 	        "Queuing all conditions of pool %s in table %s for removal", id, parentTableId);
 	}
 
 	@ZenMethod
     public void clearEntries()
     {
-        enqueueTweak(pool -> LootPoolAccessors.getEntries(pool).clear(),
+        enqueueTweaker(pool -> LootPoolAccessors.getEntries(pool).clear(),
             "Queuing all entries of pool %s in table %s for removal", id, parentTableId);
     }
 
 	@ZenMethod
 	public void removeEntry(String entryName)
 	{
-		enqueueTweak(pool ->
+		enqueueTweaker(pool ->
 		{
 		    if (pool.removeEntry(entryName) == null)
                 errorHandler.handle(String.format("No entry with name %s exists in pool %s", entryName, id));
@@ -263,15 +266,15 @@ public class ZenLootPoolWrapper implements LootTableTweak
 	    CraftTweakerAPI.logInfo(String.format("Bonus rolls of pool %s in table %s will be set to (%f, %f)", id, parentTableId, minBonusRolls, maxBonusRolls));
 	}
 
-	private void enqueueTweak(LootPoolTweak tweak, String format, Object... args)
+	private void enqueueTweaker(LootPoolTweaker tweaker, String format, Object... args)
     {
-        tweaks.add(tweak);
+        tweakers.add(tweaker);
         CraftTweakerAPI.logInfo(String.format(format, args));
     }
 
-    private void enqueueTweak(LootPoolTweak tweak, String description)
+    private void enqueueTweaker(LootPoolTweaker tweaker, String description)
     {
-        tweaks.add(tweak);
+        tweakers.add(tweaker);
         CraftTweakerAPI.logInfo(description);
     }
 
@@ -297,12 +300,12 @@ public class ZenLootPoolWrapper implements LootTableTweak
         LootPoolAccessors.getConditions(pool).addAll(conditions);
         rolls.ifPresent(pool::setRolls);
         bonusRolls.ifPresent(pool::setBonusRolls);
-        while (!tweaks.isEmpty())
-            tweaks.poll().tweak(pool);
+        for (LootPoolTweaker tweaker : tweakers)
+            tweaker.tweak(pool);
     }
 
     @FunctionalInterface
-    public interface LootPoolTweak
+    public interface LootPoolTweaker
     {
         public void tweak(LootPool pool);
     }

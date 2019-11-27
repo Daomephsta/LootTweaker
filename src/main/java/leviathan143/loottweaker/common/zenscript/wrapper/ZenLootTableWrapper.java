@@ -1,9 +1,9 @@
 package leviathan143.loottweaker.common.zenscript.wrapper;
 
-import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 
 import javax.inject.Inject;
 
@@ -25,7 +25,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 public class ZenLootTableWrapper
 {
 	private final ResourceLocation id;
-	private final Queue<LootTableTweak> tweaks = new ArrayDeque<>();
+	private final List<LootTableTweaker> tweaks = new ArrayList<>();
 	private final Map<String, ZenLootPoolWrapper> tweakedPools = new HashMap<>();
 	@Inject
 	ErrorHandler errorHandler;
@@ -42,7 +42,7 @@ public class ZenLootTableWrapper
             return tweakedPools.get(poolName);
 
         ZenLootPoolWrapper pool = new ZenLootPoolWrapper(poolName, id);
-        enqueueTweak((table) ->
+        enqueueTweaker((table) ->
         {
             LootPool targetPool = table.getPool(poolName);
             if (targetPool != null)
@@ -62,14 +62,14 @@ public class ZenLootTableWrapper
 	public ZenLootPoolWrapper addPool(String poolName, int minRolls, int maxRolls, int minBonusRolls, int maxBonusRolls)
 	{
 	    ZenLootPoolWrapper pool = new ZenLootPoolWrapper(poolName, id, minRolls, maxRolls, minBonusRolls, maxBonusRolls);
-	    enqueueTweak(pool, String.format("Queued pool %s for addition to table %s", poolName, id));
+	    enqueueTweaker(pool, String.format("Queued pool %s for addition to table %s", poolName, id));
         return pool;
 	}
 
 	@ZenMethod
 	public void removePool(String poolName)
 	{
-        enqueueTweak((table) ->
+        enqueueTweaker((table) ->
         {
             if (table.getPool(poolName) == null)
             {
@@ -83,20 +83,20 @@ public class ZenLootTableWrapper
     @ZenMethod
     public void clear()
     {
-        enqueueTweak((table) -> LootTableAccessors.getPools(table).clear(),
+        enqueueTweaker((table) -> LootTableAccessors.getPools(table).clear(),
             String.format("Queued all pools of table %s for removal", id));
     }
 
-    private void enqueueTweak(LootTableTweak tweak, String description)
+    private void enqueueTweaker(LootTableTweaker tweaker, String description)
     {
-        tweaks.add(tweak);
+        tweaks.add(tweaker);
         CraftTweakerAPI.logInfo(description);
     }
 
-    public void applyTweaks(LootTable table)
+    public void applyTweakers(LootTable table)
     {
-        while(!tweaks.isEmpty())
-            tweaks.poll().tweak(table);
+        for (LootTableTweaker tweaker : tweaks)
+            tweaker.tweak(table);
     }
 
 	public ResourceLocation getId()
@@ -111,7 +111,7 @@ public class ZenLootTableWrapper
 	}
 
 	@FunctionalInterface
-	public interface LootTableTweak
+	public interface LootTableTweaker
 	{
 	    public void tweak(LootTable table);
 	}
