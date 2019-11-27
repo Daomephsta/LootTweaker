@@ -14,7 +14,6 @@ import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import leviathan143.loottweaker.common.ErrorHandler;
 import leviathan143.loottweaker.common.LootTweaker;
-import leviathan143.loottweaker.common.darkmagic.LootEntryAccessors;
 import leviathan143.loottweaker.common.darkmagic.LootPoolAccessors;
 import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
 import leviathan143.loottweaker.common.lib.DataParser;
@@ -33,7 +32,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 @ZenClass(LootTweaker.MODID + ".vanilla.loot.LootPool")
 public class ZenLootPoolWrapper implements LootTableTweak
 {
-    private static final String ENTRY_DISCRIMINATOR = "-loottweaker#";
+    private static final String ENTRY_NAME_PREFIX = "loottweaker#";
     private static final int DEFAULT_QUALITY = 0;
     private static final LootCondition[] NO_CONDITIONS = new LootCondition[0];
     private static final LootFunction[] NO_FUNCTIONS = new LootFunction[0];
@@ -49,6 +48,7 @@ public class ZenLootPoolWrapper implements LootTableTweak
     private final List<LootCondition> conditions = new ArrayList<>();
     private java.util.Optional<RandomValueRange> rolls;
     private java.util.Optional<RandomValueRange> bonusRolls;
+    private int nextEntryNameId = 1;
 
     public ZenLootPoolWrapper(String id, ResourceLocation parentTableId)
     {
@@ -139,7 +139,8 @@ public class ZenLootPoolWrapper implements LootTableTweak
     private void addItemEntryInternal(IItemStack stack, int weight, int quality, LootFunction[] functions, LootCondition[] conditions, @Optional String name)
     {
 	    Item item = CraftTweakerMC.getItemStack(stack).getItem();
-        if (name == null) name = item.getRegistryName().toString();
+        if (name == null)
+            name = generateName();
         entries.add(new LootEntryItem(item, weight, quality, addStackFunctions(stack, functions), conditions, name));
         CraftTweakerAPI.logInfo(String.format("Queued item entry '%s' for addition to pool %s of table %s", name, id, parentTableId));
     }
@@ -202,7 +203,8 @@ public class ZenLootPoolWrapper implements LootTableTweak
 
 	private void addLootTableEntryInternal(String tableName, int weight, int quality, LootCondition[] conditions, @Optional String name)
     {
-	    if (name == null) name = tableName;
+        if (name == null)
+            name = generateName();
 	    entries.add(new LootEntryTable(new ResourceLocation(tableName), weight, quality, conditions, name));
 	    CraftTweakerAPI.logInfo(String.format("Queued loot table entry '%s' for addition to pool %s of table %s", name, id, parentTableId));
     }
@@ -236,9 +238,15 @@ public class ZenLootPoolWrapper implements LootTableTweak
 
 	public void addEmptyEntryInternal(int weight, int quality, LootCondition[] conditions, @Optional String name)
 	{
-	    if (name == null) name = "empty";
+	    if (name == null)
+	        name = generateName();
 	    entries.add(new LootEntryEmpty(weight, quality, conditions, name));
 	    CraftTweakerAPI.logInfo(String.format("Queued empty entry '%s' for addition to pool %s of table %s", name, id, parentTableId));
+	}
+
+	private String generateName()
+	{
+	    return ENTRY_NAME_PREFIX + nextEntryNameId++;
 	}
 
 	@ZenMethod
@@ -285,16 +293,7 @@ public class ZenLootPoolWrapper implements LootTableTweak
     public void tweak(LootPool pool)
     {
         for (LootEntry entry : entries)
-        {
-            int id = 2;
-            String name = entry.getEntryName();
-            while (pool.getEntry(name) != null)
-            {
-                name = entry.getEntryName() + ENTRY_DISCRIMINATOR + id++;
-            }
-            LootEntryAccessors.setEntryName(entry, name);
             pool.addEntry(entry);
-        }
         LootPoolAccessors.getConditions(pool).addAll(conditions);
         rolls.ifPresent(pool::setRolls);
         bonusRolls.ifPresent(pool::setBonusRolls);
