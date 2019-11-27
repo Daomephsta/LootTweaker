@@ -14,6 +14,7 @@ import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import leviathan143.loottweaker.common.ErrorHandler;
 import leviathan143.loottweaker.common.LootTweaker;
+import leviathan143.loottweaker.common.darkmagic.LootEntryAccessors;
 import leviathan143.loottweaker.common.darkmagic.LootPoolAccessors;
 import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
 import leviathan143.loottweaker.common.lib.DataParser;
@@ -32,6 +33,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 @ZenClass(LootTweaker.MODID + ".vanilla.loot.LootPool")
 public class ZenLootPoolWrapper implements LootTableTweak
 {
+    private static final String ENTRY_DISCRIMINATOR = "-loottweaker#";
     private static final int DEFAULT_QUALITY = 0;
     private static final LootCondition[] NO_CONDITIONS = new LootCondition[0];
     private static final LootFunction[] NO_FUNCTIONS = new LootFunction[0];
@@ -283,7 +285,16 @@ public class ZenLootPoolWrapper implements LootTableTweak
     public void tweak(LootPool pool)
     {
         for (LootEntry entry : entries)
+        {
+            int id = 2;
+            String name = entry.getEntryName();
+            while (pool.getEntry(name) != null)
+            {
+                name = entry.getEntryName() + ENTRY_DISCRIMINATOR + id++;
+            }
+            LootEntryAccessors.setEntryName(entry, name);
             pool.addEntry(entry);
+        }
         LootPoolAccessors.getConditions(pool).addAll(conditions);
         rolls.ifPresent(pool::setRolls);
         bonusRolls.ifPresent(pool::setBonusRolls);

@@ -18,11 +18,11 @@ public class LootPoolAssert extends AbstractObjectAssert<LootPoolAssert, LootPoo
     {
         super(pool, LootPoolAssert.class);
     }
-    
+
     public LootEntryAssert extractEntry(String entryName)
     {
         isNotNull();
-        
+
         LootEntry lootEntry = actual.getEntry(entryName);
         assertEntryExists(entryName, lootEntry);
         return new LootEntryAssert(lootEntry);
@@ -37,16 +37,26 @@ public class LootPoolAssert extends AbstractObjectAssert<LootPoolAssert, LootPoo
     public LootPoolAssert hasEntry(String entryName)
     {
         isNotNull();
-        
+
         LootEntry lootEntry = actual.getEntry(entryName);
         assertEntryExists(entryName, lootEntry);
+        return this;
+    }
+
+    public LootPoolAssert doesNotHaveEntry(String entryName)
+    {
+        isNotNull();
+
+        LootEntry lootEntry = actual.getEntry(entryName);
+        if (lootEntry != null)
+            failWithMessage("%nExpected pool <%s> not to contain entry named <%s>", actual.getName(), entryName);
         return this;
     }
 
     public LootPoolAssert hasNoLootConditions()
     {
         isNotNull();
-        
+
         List<LootCondition> actualConditions = LootPoolAccessors.getConditions(actual);
         if (!actualConditions.isEmpty())
             failWithMessage("Expected '%s' to have no loot conditions, has %s", actual.getName(), ArrayUtils.toString(actualConditions));
@@ -64,17 +74,17 @@ public class LootPoolAssert extends AbstractObjectAssert<LootPoolAssert, LootPoo
         }
         if (matches == 0)
         {
-            failWithMessage("Expected exactly one condition in %s to match %s, but none matched", 
+            failWithMessage("Expected exactly one condition in %s to match %s, but none matched",
                 ArrayUtils.toString(actualConditions), descriptor);
         }
         else if (matches > 1)
         {
-            failWithMessage("Expected exactly one condition in %s to match %s, but %d matched", 
+            failWithMessage("Expected exactly one condition in %s to match %s, but %d matched",
                 ArrayUtils.toString(actualConditions), descriptor, matches);
         }
         return this;
     }
-    
+
     public LootPoolAssert hasMatchingCondition(Predicate<LootCondition> matcher, String format, Object... args)
     {
         return hasMatchingCondition(matcher, String.format(format, args));
