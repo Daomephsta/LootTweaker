@@ -24,10 +24,10 @@ public class TestLootConditionAccessors extends AbstractAccessors
         }
         catch (IllegalAccessException e)
         {
-            throw new RuntimeException("Failed to initialize test LootCondition accessor method handles", e);
+            throw new RuntimeException("Failed to initialize test loot condition accessor method handles", e);
         }
     }
-    
+
     public static boolean isInverted(KilledByPlayer killedByPlayer)
     {
         try
@@ -39,10 +39,10 @@ public class TestLootConditionAccessors extends AbstractAccessors
             throw new RuntimeException("Could not invoke KilledByPlayer inverse getter method handle", e);
         }
     }
-    
+
     public static float getChance(RandomChance randomChance)
     {
-        try 
+        try
         {
             return (float) RandomChance$chanceGetter.invokeExact(randomChance);
         }
@@ -51,10 +51,10 @@ public class TestLootConditionAccessors extends AbstractAccessors
             throw new RuntimeException("Could not invoke RandomChance chance getter method handle", e);
         }
     }
-    
+
     public static float getChance(RandomChanceWithLooting randomChance)
     {
-        try 
+        try
         {
             return (float) RandomChanceWithLooting$chanceGetter.invokeExact(randomChance);
         }
@@ -63,10 +63,10 @@ public class TestLootConditionAccessors extends AbstractAccessors
             throw new RuntimeException("Could not invoke RandomChanceWithLooting chance getter method handle", e);
         }
     }
-    
+
     public static float getLootingMultiplier(RandomChanceWithLooting randomChance)
     {
-        try 
+        try
         {
             return (float) RandomChanceWithLooting$lootingMultiplierGetter.invokeExact(randomChance);
         }

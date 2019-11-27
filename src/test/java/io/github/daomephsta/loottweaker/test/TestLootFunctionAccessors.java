@@ -7,13 +7,7 @@ import leviathan143.loottweaker.common.darkmagic.AbstractAccessors;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.storage.loot.RandomValueRange;
-import net.minecraft.world.storage.loot.functions.EnchantRandomly;
-import net.minecraft.world.storage.loot.functions.EnchantWithLevels;
-import net.minecraft.world.storage.loot.functions.LootingEnchantBonus;
-import net.minecraft.world.storage.loot.functions.SetCount;
-import net.minecraft.world.storage.loot.functions.SetDamage;
-import net.minecraft.world.storage.loot.functions.SetMetadata;
-import net.minecraft.world.storage.loot.functions.SetNBT;
+import net.minecraft.world.storage.loot.functions.*;
 
 public class TestLootFunctionAccessors extends AbstractAccessors
 {
@@ -42,10 +36,10 @@ public class TestLootFunctionAccessors extends AbstractAccessors
         }
         catch (IllegalAccessException e)
         {
-            throw new RuntimeException("Failed to initialize miscellaneous test accessor method handles", e);
+            throw new RuntimeException("Failed to initialize loot function test accessor method handles", e);
         }
     }
-    
+
     public static RandomValueRange getCountRange(SetCount setCount)
     {
         try
@@ -57,7 +51,7 @@ public class TestLootFunctionAccessors extends AbstractAccessors
             throw new RuntimeException("Could not invoke SetCount countRange getter method handle", e);
         }
     }
-    
+
     public static RandomValueRange getDamageRange(SetDamage setDamage)
     {
         try
@@ -69,7 +63,7 @@ public class TestLootFunctionAccessors extends AbstractAccessors
             throw new RuntimeException("Could not invoke SetDamage damageRange getter method handle", e);
         }
     }
-    
+
     public static RandomValueRange getMetaRange(SetMetadata setMetadata)
     {
         try
@@ -81,7 +75,7 @@ public class TestLootFunctionAccessors extends AbstractAccessors
             throw new RuntimeException("Could not invoke SetMetadata metaRange getter method handle", e);
         }
     }
-    
+
     public static NBTTagCompound getTag(SetNBT setNbt)
     {
         try
@@ -93,7 +87,7 @@ public class TestLootFunctionAccessors extends AbstractAccessors
             throw new RuntimeException("Could not invoke SetNBT tag getter method handle", e);
         }
     }
-    
+
     public static List<Enchantment> getEnchantments(EnchantRandomly enchantRandomly)
     {
         try
@@ -122,7 +116,7 @@ public class TestLootFunctionAccessors extends AbstractAccessors
     {
         try
         {
-            return (boolean) EnchantWithLevels$isTreasureGetter.invokeExact(enchantWithLevels);    
+            return (boolean) EnchantWithLevels$isTreasureGetter.invokeExact(enchantWithLevels);
         }
         catch (Throwable e)
         {
