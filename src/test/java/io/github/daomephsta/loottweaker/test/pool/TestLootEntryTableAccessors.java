@@ -8,24 +8,24 @@ import net.minecraft.world.storage.loot.LootEntryTable;
 
 public class TestLootEntryTableAccessors extends AbstractAccessors
 {
-    private static final MethodHandle LootEntryTable$itemGetter;
+    private static final MethodHandle LootEntryTable$tableGetter;
     static
     {
         try
         {
-            LootEntryTable$itemGetter = createFieldGetter(LootEntryTable.class, "table");
+            LootEntryTable$tableGetter = createFieldGetter(LootEntryTable.class, "table");
         }
-        catch (IllegalAccessException e)
+        catch (Throwable t)
         {
-            throw new RuntimeException("Failed to initialize test LootEntryTable accessor method handles", e);
+            throw new RuntimeException("Failed to initialize test LootEntryTable accessor method handles", t);
         }
     }
-    
+
     public static ResourceLocation getTable(LootEntryTable entry)
     {
         try
         {
-            return (ResourceLocation) LootEntryTable$itemGetter.invokeExact(entry);
+            return (ResourceLocation) LootEntryTable$tableGetter.invokeExact(entry);
         }
         catch (Throwable e)
         {

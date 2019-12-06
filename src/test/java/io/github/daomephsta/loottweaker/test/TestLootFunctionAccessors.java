@@ -34,9 +34,9 @@ public class TestLootFunctionAccessors extends AbstractAccessors
             LootingEnchantBonus$countGetter = createFieldGetter(LootingEnchantBonus.class, "count");
             LootingEnchantBonus$limitGetter = createFieldGetter(LootingEnchantBonus.class, "limit");
         }
-        catch (IllegalAccessException e)
+        catch (Throwable t)
         {
-            throw new RuntimeException("Failed to initialize loot function test accessor method handles", e);
+            throw new RuntimeException("Failed to initialize loot function test accessor method handles", t);
         }
     }
 

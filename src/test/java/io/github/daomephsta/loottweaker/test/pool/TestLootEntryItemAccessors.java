@@ -18,12 +18,12 @@ public class TestLootEntryItemAccessors extends AbstractAccessors
             LootEntryItem$itemGetter = createFieldGetter(LootEntryItem.class, "item");
             LootEntryItem$functionsGetter = createFieldGetter(LootEntryItem.class, "functions");
         }
-        catch (IllegalAccessException e)
+        catch (Throwable t)
         {
-            throw new RuntimeException("Failed to initialize test LootEntryItem accessor method handles", e);
+            throw new RuntimeException("Failed to initialize test LootEntryItem accessor method handles", t);
         }
     }
-    
+
     public static Item getItem(LootEntryItem entry)
     {
         try
@@ -35,7 +35,7 @@ public class TestLootEntryItemAccessors extends AbstractAccessors
             throw new RuntimeException("Could not invoke LootEntryItem item getter method handle", e);
         }
     }
-    
+
     public static LootFunction[] getFunctions(LootEntryItem entry)
     {
         try

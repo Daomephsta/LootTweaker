@@ -19,12 +19,12 @@ public class TestLootEntryAccessors extends AbstractAccessors
             LootEntry$qualityGetter = createFieldGetter(LootEntry.class, "quality");
             LootEntry$conditionsGetter = createFieldGetter(LootEntry.class, "conditions");
         }
-        catch (IllegalAccessException e)
+        catch (Throwable t)
         {
-            throw new RuntimeException("Failed to initialize test LootEntry accessor method handles", e);
+            throw new RuntimeException("Failed to initialize test LootEntry accessor method handles", t);
         }
     }
-    
+
     public static int getWeight(LootEntry entry)
     {
         try
@@ -36,7 +36,7 @@ public class TestLootEntryAccessors extends AbstractAccessors
             throw new RuntimeException("Could not invoke LootEntry weight getter method handle", e);
         }
     }
-    
+
     public static int getQuality(LootEntry entry)
     {
         try
@@ -48,7 +48,7 @@ public class TestLootEntryAccessors extends AbstractAccessors
             throw new RuntimeException("Could not invoke LootEntry quality getter method handle", e);
         }
     }
-    
+
     public static LootCondition[] getConditions(LootEntry entry)
     {
         try

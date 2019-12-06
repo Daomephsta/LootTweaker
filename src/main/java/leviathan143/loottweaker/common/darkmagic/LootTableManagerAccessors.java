@@ -14,14 +14,14 @@ public class LootTableManagerAccessors extends AbstractAccessors
 	{
 		try
 		{
-			lootTableManager$GSON_INSTANCEGetter = createFieldGetter(LootTableManager.class, "field_186526_b");
+			lootTableManager$GSON_INSTANCEGetter = createFieldGetter(LootTableManager.class, "field_186526_b", "GSON_INSTANCE");
 		}
-		catch (IllegalAccessException e)
+		catch (Throwable t)
 		{
-			throw new RuntimeException("Failed to initialize LootTableManager accessor method handles", e);
+			throw new RuntimeException("Failed to initialize LootTableManager accessor method handles", t);
 		}
 	}
-	
+
 	public static Gson getGsonInstance()
 	{
 		try

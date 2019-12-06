@@ -16,15 +16,15 @@ public class LootPoolAccessors extends AbstractAccessors
 	{
 		try
 		{
-			lootPool$poolConditionsGetter = createFieldGetter(LootPool.class, "field_186454_b");
-			LootPool$lootEntriesGetter = createFieldGetter(LootPool.class, "field_186453_a");
+			lootPool$poolConditionsGetter = createFieldGetter(LootPool.class, "field_186454_b", "poolConditions");
+			LootPool$lootEntriesGetter = createFieldGetter(LootPool.class, "field_186453_a", "lootEntries");
 		}
-		catch (IllegalAccessException e)
+		catch (Throwable t)
 		{
-			throw new RuntimeException("Failed to initialize LootPool accessor method handles", e);
+			throw new RuntimeException("Failed to initialize LootPool accessor method handles", t);
 		}
 	}
-	
+
 	public static List<LootCondition> getConditions(LootPool pool)
 	{
 		try
@@ -36,7 +36,7 @@ public class LootPoolAccessors extends AbstractAccessors
 			throw new RuntimeException("Could not invoke loot table pool conditions getter method handle", t);
 		}
 	}
-	
+
 	public static List<LootEntry> getEntries(LootPool lootPool)
 	{
 	    try

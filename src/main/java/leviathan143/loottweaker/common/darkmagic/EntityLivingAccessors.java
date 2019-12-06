@@ -13,11 +13,11 @@ public class EntityLivingAccessors extends AbstractAccessors
 	{
 		try
 		{
-			entityLiving$getLootTable = createMethodInvoker(EntityLiving.class, "func_184647_J", ResourceLocation.class);
+			entityLiving$getLootTable = createMethodInvoker(EntityLiving.class, "func_184647_J", "getLootTable");
 		}
-		catch (IllegalAccessException e)
+		catch (Throwable t)
 		{
-			throw new RuntimeException("Failed to initialize EntityLiving accessor method handles", e);
+			throw new RuntimeException("Failed to initialize EntityLiving accessor method handles", t);
 		}
 	}
 

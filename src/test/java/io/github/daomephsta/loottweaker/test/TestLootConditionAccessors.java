@@ -22,9 +22,9 @@ public class TestLootConditionAccessors extends AbstractAccessors
             RandomChanceWithLooting$chanceGetter = createFieldGetter(RandomChanceWithLooting.class, "chance");
             RandomChanceWithLooting$lootingMultiplierGetter = createFieldGetter(RandomChanceWithLooting.class, "lootingMultiplier");
         }
-        catch (IllegalAccessException e)
+        catch (Throwable t)
         {
-            throw new RuntimeException("Failed to initialize test loot condition accessor method handles", e);
+            throw new RuntimeException("Failed to initialize test loot condition accessor method handles", t);
         }
     }
 

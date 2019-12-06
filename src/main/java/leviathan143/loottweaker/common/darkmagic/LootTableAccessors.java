@@ -14,14 +14,14 @@ public class LootTableAccessors extends AbstractAccessors
 	{
 		try
 		{
-			lootTable$poolsGetter = createFieldGetter(LootTable.class, "field_186466_c");
+			lootTable$poolsGetter = createFieldGetter(LootTable.class, "field_186466_c", "pools");
 		}
-		catch (IllegalAccessException e)
+		catch (Throwable t)
 		{
-			throw new RuntimeException("Failed to initialize LootTable accessor method handles", e);
+			throw new RuntimeException("Failed to initialize LootTable accessor method handles", t);
 		}
 	}
-	
+
 	public static List<LootPool> getPools(LootTable table)
 	{
 		try
