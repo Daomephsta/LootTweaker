@@ -11,7 +11,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 @ZenClass(LootTweaker.MODID + ".vanilla.loot.Functions")
 public class LootFunctionFactory
 {
-    private static final LootFunctionFactoryImpl IMPLEMENTATION = new LootFunctionFactoryImpl();
+    private static final LootFunctionFactoryImpl IMPLEMENTATION = LootTweaker.CONTEXT.createLootFunctionFactory();
 
     public static ZenLootFunctionWrapper enchantRandomly(String[] enchantIDList)
     {

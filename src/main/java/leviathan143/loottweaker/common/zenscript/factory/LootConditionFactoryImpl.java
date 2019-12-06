@@ -1,7 +1,5 @@
 package leviathan143.loottweaker.common.zenscript.factory;
 
-import javax.inject.Inject;
-
 import crafttweaker.api.data.IData;
 import leviathan143.loottweaker.common.ErrorHandler;
 import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
@@ -14,11 +12,14 @@ import net.minecraft.world.storage.loot.conditions.RandomChanceWithLooting;
 
 public class LootConditionFactoryImpl
 {
-    @Inject
-    ErrorHandler errorHandler;
-    private final DataParser loggingParser = new DataParser(LootTableManagerAccessors.getGsonInstance(), e -> errorHandler.handle(e.getMessage()));
+    private final DataParser loggingParser;
 
-	public ZenLootConditionWrapper randomChance(float chance)
+	public LootConditionFactoryImpl(ErrorHandler errorHandler)
+    {
+        this.loggingParser = new DataParser(LootTableManagerAccessors.getGsonInstance(), e -> errorHandler.handle(e.getMessage()));
+    }
+
+    public ZenLootConditionWrapper randomChance(float chance)
 	{
 	    return new ZenLootConditionWrapper(new RandomChance(chance));
 	}

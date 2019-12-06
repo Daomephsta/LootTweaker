@@ -3,12 +3,9 @@ package leviathan143.loottweaker.common.zenscript;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import leviathan143.loottweaker.common.ErrorHandler;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTable;
@@ -17,12 +14,11 @@ public class LootTableTweakManager
 {
     private static final Logger LOGGER = LogManager.getLogger();
     private final Map<ResourceLocation, ZenLootTableWrapper> tweakedTables = new HashMap<>();
-    private final ErrorHandler errorHandler;
+    private final LootTweakerContext context;
 
-    @Inject
-    LootTableTweakManager(ErrorHandler errorHandler)
+    LootTableTweakManager(LootTweakerContext context)
     {
-        this.errorHandler = errorHandler;
+        this.context = context;
     }
 
 	public ZenLootTableWrapper getTable(String tableName)
@@ -38,7 +34,7 @@ public class LootTableTweakManager
 	private ZenLootTableWrapper getTableInternal(String tableName)
     {
         ResourceLocation tableId = new ResourceLocation(tableName);
-        return tweakedTables.computeIfAbsent(tableId, id -> new ZenLootTableWrapper(id));
+        return tweakedTables.computeIfAbsent(tableId, id -> context.wrapLootTable(id));
     }
 
     public void tweakTable(ResourceLocation tableId, LootTable table)
@@ -54,7 +50,7 @@ public class LootTableTweakManager
             if (wrapper.isValid())
                 wrapper.applyTweakers(table);
             else
-                errorHandler.handle("No loot table with name %s exists!", tableId);
+                context.getErrorHandler().handle("No loot table with name %s exists!", tableId);
         }
     }
 }

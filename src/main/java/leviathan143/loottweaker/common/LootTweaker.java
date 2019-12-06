@@ -2,6 +2,7 @@ package leviathan143.loottweaker.common;
 
 import crafttweaker.mc1120.commands.CTChatCommand;
 import leviathan143.loottweaker.common.command.CommandLootTables;
+import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -14,6 +15,7 @@ public class LootTweaker
 	public static final String MODID = "loottweaker";
 	public static final String VERSION = "GRADLE:VERSION";
 	public static final String DEPENDENCIES = "required-after:crafttweaker; before:jeresources; required:forge@[14.23.5.2779,);";
+	public static final LootTweakerContext CONTEXT = new LootTweakerContext(new CTLoggingErrorHandler());
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event)

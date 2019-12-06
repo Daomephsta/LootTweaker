@@ -6,6 +6,7 @@ import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import leviathan143.loottweaker.common.darkmagic.LootTableAccessors;
 import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
+import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
@@ -16,6 +17,11 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 public class TestUtils
 {
     private TestUtils() {}
+
+    public static LootTweakerContext context()
+    {
+        return new LootTweakerContext(new TestErrorHandler());
+    }
 
     public static IItemStack iitemstack(Item item)
     {

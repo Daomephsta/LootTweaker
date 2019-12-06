@@ -14,8 +14,10 @@ import com.google.common.collect.ImmutableMap;
 import crafttweaker.api.data.DataMap;
 import crafttweaker.api.data.DataString;
 import crafttweaker.api.data.IData;
+import io.github.daomephsta.loottweaker.test.TestUtils;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
+import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.factory.LootConditionFactory;
 import leviathan143.loottweaker.common.zenscript.factory.LootFunctionFactory;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootConditionWrapper;
@@ -35,12 +37,14 @@ import net.minecraft.world.storage.loot.functions.SetNBT;
 
 public class ItemEntryAdditionTests
 {
+    private final LootTweakerContext context = TestUtils.context();
+
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void addItemEntry()
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
-        ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper("bar", fooId);
+        ZenLootPoolWrapper barTweaks = context.wrapPool("bar", fooId);
         barTweaks.addItemEntry(iitemstack(Items.APPLE), 2, "qux");
         barTweaks.tweak(foo);
 
@@ -58,7 +62,7 @@ public class ItemEntryAdditionTests
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
-        ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper("bar", fooId);
+        ZenLootPoolWrapper barTweaks = context.wrapPool("bar", fooId);
         barTweaks.addItemEntry(iitemstack(Items.APPLE), 2, 3, "qux");
         barTweaks.tweak(foo);
 
@@ -77,7 +81,7 @@ public class ItemEntryAdditionTests
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
-        ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper("bar", fooId);
+        ZenLootPoolWrapper barTweaks = context.wrapPool("bar", fooId);
         barTweaks.addItemEntryHelper(iitemstack(Items.BAKED_POTATO), 2, 3,
             new ZenLootFunctionWrapper[0],
             new ZenLootConditionWrapper[] {LootConditionFactory.killedByPlayer()},
@@ -101,7 +105,7 @@ public class ItemEntryAdditionTests
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
-        ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper("bar", fooId);
+        ZenLootPoolWrapper barTweaks = context.wrapPool("bar", fooId);
         barTweaks.addItemEntry(iitemstack(Items.ARROW, 3), 2, "qux");
         barTweaks.tweak(foo);
 
@@ -128,7 +132,7 @@ public class ItemEntryAdditionTests
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
-        ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper("bar", fooId);
+        ZenLootPoolWrapper barTweaks = context.wrapPool("bar", fooId);
         barTweaks.addItemEntryHelper(iitemstack(Items.ARROW), 2, 1,
             new ZenLootFunctionWrapper[] {LootFunctionFactory.setCount(3, 3)},
             new ZenLootConditionWrapper[0],
@@ -159,7 +163,7 @@ public class ItemEntryAdditionTests
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
-        ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper("bar", fooId);
+        ZenLootPoolWrapper barTweaks = context.wrapPool("bar", fooId);
         @SuppressWarnings("deprecation")
         int damage = Items.BOW.getMaxDamage() / 2;
         //set empty tag to work around weird Mojang code where items without NBT are undamageable
@@ -189,7 +193,7 @@ public class ItemEntryAdditionTests
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
-        ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper("bar", fooId);
+        ZenLootPoolWrapper barTweaks = context.wrapPool("bar", fooId);
         //set empty tag to work around weird Mojang code where items without NBT are undamageable
         barTweaks.addItemEntryHelper(iitemstack(Items.BOW), 2, 1,
             new ZenLootFunctionWrapper[] {LootFunctionFactory.setDamage(0.5F, 0.5F)},
@@ -221,7 +225,7 @@ public class ItemEntryAdditionTests
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
-        ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper("bar", fooId);
+        ZenLootPoolWrapper barTweaks = context.wrapPool("bar", fooId);
         barTweaks.addItemEntry(iitemstack(Items.DYE, 1, 8), 2, "qux");
         barTweaks.tweak(foo);
 
@@ -248,7 +252,7 @@ public class ItemEntryAdditionTests
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
-        ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper("bar", fooId);
+        ZenLootPoolWrapper barTweaks = context.wrapPool("bar", fooId);
         barTweaks.addItemEntryHelper(iitemstack(Items.DYE), 2, 1,
             new ZenLootFunctionWrapper[] {LootFunctionFactory.setMetadata(8, 8)},
             new ZenLootConditionWrapper[0],
@@ -279,7 +283,7 @@ public class ItemEntryAdditionTests
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
-        ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper("bar", fooId);
+        ZenLootPoolWrapper barTweaks = context.wrapPool("bar", fooId);
         barTweaks.addItemEntry(iitemstack(Items.BREAD).withDisplayName("Super Bread"), 2, "qux");
         barTweaks.tweak(foo);
 
@@ -308,7 +312,7 @@ public class ItemEntryAdditionTests
     {
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootTable foo = loadTable(fooId);
-        ZenLootPoolWrapper barTweaks = new ZenLootPoolWrapper("bar", fooId);
+        ZenLootPoolWrapper barTweaks = context.wrapPool("bar", fooId);
         IData displayData = new DataMap(ImmutableMap.<String, IData>builder()
             .put("Name", new DataString("Super Bread")).build(), true);
         IData nbtData = new DataMap(ImmutableMap.<String, IData>builder()

@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import com.google.common.collect.Lists;
 
 import crafttweaker.CraftTweakerAPI;
@@ -40,9 +38,8 @@ public class ZenLootPoolWrapper implements LootTableTweaker
     private static final LootCondition[] NO_CONDITIONS = new LootCondition[0];
     private static final LootFunction[] NO_FUNCTIONS = new LootFunction[0];
     //Other state
-    @Inject
-    ErrorHandler errorHandler;
-    private final DataParser LOGGING_PARSER = new DataParser(LootTableManagerAccessors.getGsonInstance(), e -> errorHandler.handle(e.getMessage()));
+    private final ErrorHandler errorHandler;
+    private final DataParser loggingParser;
     private final List<LootPoolTweaker> tweakers = new ArrayList<>();
     private final ResourceLocation parentTableId;
     //LootPool state
@@ -53,20 +50,29 @@ public class ZenLootPoolWrapper implements LootTableTweaker
     private java.util.Optional<RandomValueRange> bonusRolls;
     private int nextEntryNameId = 1;
 
-    public ZenLootPoolWrapper(String id, ResourceLocation parentTableId)
+    public ZenLootPoolWrapper(ErrorHandler errorHandler, String id, ResourceLocation parentTableId)
     {
+        this.errorHandler = errorHandler;
+        this.loggingParser = createDataParser(errorHandler);
         this.id = id;
         this.parentTableId = parentTableId;
         this.rolls = java.util.Optional.empty();
         this.bonusRolls = java.util.Optional.empty();
     }
 
-	public ZenLootPoolWrapper(String id, ResourceLocation parentTableId, int minRolls, int maxRolls, int minBonusRolls, int maxBonusRolls)
+    public ZenLootPoolWrapper(ErrorHandler errorHandler, String id, ResourceLocation parentTableId, int minRolls, int maxRolls, int minBonusRolls, int maxBonusRolls)
     {
+	    this.errorHandler = errorHandler;
+        this.loggingParser = createDataParser(errorHandler);
 	    this.id = id;
         this.parentTableId = parentTableId;
 	    this.rolls = java.util.Optional.of(new RandomValueRange(minRolls, maxRolls));
 	    this.bonusRolls = java.util.Optional.of(new RandomValueRange(minBonusRolls, maxBonusRolls));
+    }
+
+    private DataParser createDataParser(ErrorHandler errorHandler)
+    {
+        return new DataParser(LootTableManagerAccessors.getGsonInstance(), e -> errorHandler.handle(e.getMessage()));
     }
 
     @ZenMethod
@@ -83,7 +89,7 @@ public class ZenLootPoolWrapper implements LootTableTweaker
 	public void addConditionsJson(IData[] conditionsJson)
 	{
 		for (IData conditionData : conditionsJson)
-		    LOGGING_PARSER.parse(conditionData, LootCondition.class).ifPresent(this.conditions::add);
+		    loggingParser.parse(conditionData, LootCondition.class).ifPresent(this.conditions::add);
 	}
 
 	@ZenMethod
@@ -135,8 +141,8 @@ public class ZenLootPoolWrapper implements LootTableTweaker
 	public void addItemEntryJson(IItemStack stack, int weight, int quality, IData[] functions, IData[] conditions, @Optional String name)
 	{
 		addItemEntryInternal(stack, weight, quality,
-		    Arrays.stream(functions).map(c -> LOGGING_PARSER.parse(c, LootFunction.class)).toArray(LootFunction[]::new),
-		    Arrays.stream(conditions).map(c -> LOGGING_PARSER.parse(c, LootCondition.class)).toArray(LootCondition[]::new), name);
+		    Arrays.stream(functions).map(c -> loggingParser.parse(c, LootFunction.class)).toArray(LootFunction[]::new),
+		    Arrays.stream(conditions).map(c -> loggingParser.parse(c, LootCondition.class)).toArray(LootCondition[]::new), name);
 	}
 
     private void addItemEntryInternal(IItemStack stack, int weight, int quality, LootFunction[] functions, LootCondition[] conditions, @Optional String name)
@@ -201,7 +207,7 @@ public class ZenLootPoolWrapper implements LootTableTweaker
 	public void addLootTableEntryJson(String tableName, int weight, int quality, IData[] conditions, @Optional String name)
 	{
 		addLootTableEntryInternal(tableName, weight, quality,
-		    Arrays.stream(conditions).map(c -> LOGGING_PARSER.parse(c, LootCondition.class)).toArray(LootCondition[]::new), name);
+		    Arrays.stream(conditions).map(c -> loggingParser.parse(c, LootCondition.class)).toArray(LootCondition[]::new), name);
 	}
 
 	private void addLootTableEntryInternal(String tableName, int weight, int quality, LootCondition[] conditions, @Optional String name)
@@ -236,7 +242,7 @@ public class ZenLootPoolWrapper implements LootTableTweaker
 	public void addEmptyEntryJson(int weight, int quality, IData[] conditions, @Optional String name)
 	{
 		addEmptyEntryInternal(weight, quality,
-		    Arrays.stream(conditions).map(c -> LOGGING_PARSER.parse(c, LootCondition.class)).toArray(LootCondition[]::new), name);
+		    Arrays.stream(conditions).map(c -> loggingParser.parse(c, LootCondition.class)).toArray(LootCondition[]::new), name);
 	}
 
 	public void addEmptyEntryInternal(int weight, int quality, LootCondition[] conditions, @Optional String name)

@@ -2,8 +2,6 @@ package leviathan143.loottweaker.common.zenscript.factory;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import com.google.common.collect.Lists;
 
 import crafttweaker.api.data.IData;
@@ -17,22 +15,19 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
-import net.minecraft.world.storage.loot.functions.EnchantRandomly;
-import net.minecraft.world.storage.loot.functions.EnchantWithLevels;
-import net.minecraft.world.storage.loot.functions.LootFunction;
-import net.minecraft.world.storage.loot.functions.LootingEnchantBonus;
-import net.minecraft.world.storage.loot.functions.SetCount;
-import net.minecraft.world.storage.loot.functions.SetDamage;
-import net.minecraft.world.storage.loot.functions.SetMetadata;
-import net.minecraft.world.storage.loot.functions.SetNBT;
-import net.minecraft.world.storage.loot.functions.Smelt;
+import net.minecraft.world.storage.loot.functions.*;
 
 public class LootFunctionFactoryImpl
 {
     private static final LootCondition[] NO_CONDITIONS = new LootCondition[0];
-    @Inject
-    ErrorHandler errorHandler;
-    private final DataParser loggingParser = new DataParser(LootTableManagerAccessors.getGsonInstance(), e -> errorHandler.handle(e.getMessage()));
+    private final ErrorHandler errorHandler;
+    private final DataParser loggingParser;
+
+    public LootFunctionFactoryImpl(ErrorHandler errorHandler)
+    {
+        this.errorHandler = errorHandler;
+        this.loggingParser = new DataParser(LootTableManagerAccessors.getGsonInstance(), e -> errorHandler.handle(e.getMessage()));
+    }
 
     public ZenLootFunctionWrapper enchantRandomly(String[] enchantIDList)
     {
@@ -69,7 +64,7 @@ public class LootFunctionFactoryImpl
     {
         if (max > 1.0F)
         {
-            errorHandler.handle("Items cannot recieve more than 100% damage!");
+            errorHandler.handle("Items cannot recieve more than 100%% damage!");
             return ZenLootFunctionWrapper.INVALID;
         }
         return new ZenLootFunctionWrapper(new SetDamage(NO_CONDITIONS, new RandomValueRange(min, max)));

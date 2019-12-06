@@ -11,7 +11,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 @ZenClass(LootTweaker.MODID + ".vanilla.loot.Conditions")
 public class LootConditionFactory
 {
-    private static final LootConditionFactoryImpl IMPLEMENTATION = new LootConditionFactoryImpl();
+    private static final LootConditionFactoryImpl IMPLEMENTATION = LootTweaker.CONTEXT.createLootConditionFactory();
 
     @ZenMethod
     public static ZenLootConditionWrapper randomChance(float chance)

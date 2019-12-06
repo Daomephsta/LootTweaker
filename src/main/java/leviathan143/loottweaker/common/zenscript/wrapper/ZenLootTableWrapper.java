@@ -5,14 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ZenRegister;
-import leviathan143.loottweaker.common.ErrorHandler;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.darkmagic.LootTableAccessors;
 import leviathan143.loottweaker.common.lib.LootTableFinder;
+import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
@@ -27,11 +25,11 @@ public class ZenLootTableWrapper
 	private final ResourceLocation id;
 	private final List<LootTableTweaker> tweaks = new ArrayList<>();
 	private final Map<String, ZenLootPoolWrapper> tweakedPools = new HashMap<>();
-	@Inject
-	ErrorHandler errorHandler;
+	private final LootTweakerContext context;
 
-    public ZenLootTableWrapper(ResourceLocation id)
+    public ZenLootTableWrapper(LootTweakerContext context, ResourceLocation id)
     {
+        this.context = context;
         this.id = id;
     }
 
@@ -41,7 +39,7 @@ public class ZenLootTableWrapper
         if (tweakedPools.containsKey(poolName))
             return tweakedPools.get(poolName);
 
-        ZenLootPoolWrapper pool = new ZenLootPoolWrapper(poolName, id);
+        ZenLootPoolWrapper pool = context.wrapPool(poolName, id);
         enqueueTweaker((table) ->
         {
             LootPool targetPool = table.getPool(poolName);
@@ -53,7 +51,7 @@ public class ZenLootTableWrapper
                     CraftTweakerAPI.logInfo(String.format("Skipped modifying pool %s of table %s because it is frozen", poolName, id));
             }
             else
-                errorHandler.handle(String.format("No loot pool with name %s exists in table %s!", poolName, id));
+                context.getErrorHandler().handle(String.format("No loot pool with name %s exists in table %s!", poolName, id));
         }, String.format("Retrieved pool %s from table %s", poolName, id));
         return pool;
     }
@@ -61,7 +59,7 @@ public class ZenLootTableWrapper
 	@ZenMethod
 	public ZenLootPoolWrapper addPool(String poolName, int minRolls, int maxRolls, int minBonusRolls, int maxBonusRolls)
 	{
-	    ZenLootPoolWrapper pool = new ZenLootPoolWrapper(poolName, id, minRolls, maxRolls, minBonusRolls, maxBonusRolls);
+	    ZenLootPoolWrapper pool = context.createPoolWrapper(poolName, id, minRolls, maxRolls, minBonusRolls, maxBonusRolls);
 	    enqueueTweaker(pool, String.format("Queued pool %s for addition to table %s", poolName, id));
         return pool;
 	}
@@ -73,7 +71,7 @@ public class ZenLootTableWrapper
         {
             if (table.getPool(poolName) == null)
             {
-                errorHandler.handle(String.format("No loot pool with name %s exists in table %s!", poolName, id));
+                context.getErrorHandler().handle(String.format("No loot pool with name %s exists in table %s!", poolName, id));
                 return;
             }
             table.removePool(poolName);
