@@ -140,9 +140,19 @@ public class ZenLootPoolWrapper implements LootTableTweaker
 	@ZenMethod
 	public void addItemEntryJson(IItemStack stack, int weight, int quality, IData[] functions, IData[] conditions, @Optional String name)
 	{
-		addItemEntryInternal(stack, weight, quality,
-		    Arrays.stream(functions).map(c -> loggingParser.parse(c, LootFunction.class)).toArray(LootFunction[]::new),
-		    Arrays.stream(conditions).map(c -> loggingParser.parse(c, LootCondition.class)).toArray(LootCondition[]::new), name);
+	    LootFunction[] parsedFunctions = Arrays.stream(functions)
+	        .map(c -> loggingParser.parse(c, LootFunction.class))
+	        .filter(java.util.Optional::isPresent)
+	        .map(java.util.Optional::get)
+	        .toArray(LootFunction[]::new);
+	    LootCondition[] parsedConditions = Arrays.stream(conditions)
+	        .map(c -> loggingParser.parse(c, LootCondition.class))
+	        .filter(java.util.Optional::isPresent)
+	        .map(java.util.Optional::get)
+	        .toArray(LootCondition[]::new);
+	    addItemEntryInternal(stack, weight, quality,
+	        parsedFunctions,
+	        parsedConditions, name);
 	}
 
     private void addItemEntryInternal(IItemStack stack, int weight, int quality, LootFunction[] functions, LootCondition[] conditions, @Optional String name)
@@ -206,8 +216,13 @@ public class ZenLootPoolWrapper implements LootTableTweaker
 	@ZenMethod
 	public void addLootTableEntryJson(String tableName, int weight, int quality, IData[] conditions, @Optional String name)
 	{
-		addLootTableEntryInternal(tableName, weight, quality,
-		    Arrays.stream(conditions).map(c -> loggingParser.parse(c, LootCondition.class)).toArray(LootCondition[]::new), name);
+		LootCondition[] parsedConditions = Arrays.stream(conditions)
+		    .map(c -> loggingParser.parse(c, LootCondition.class))
+            .filter(java.util.Optional::isPresent)
+            .map(java.util.Optional::get)
+		    .toArray(LootCondition[]::new);
+        addLootTableEntryInternal(tableName, weight, quality,
+		    parsedConditions, name);
 	}
 
 	private void addLootTableEntryInternal(String tableName, int weight, int quality, LootCondition[] conditions, @Optional String name)
@@ -241,8 +256,13 @@ public class ZenLootPoolWrapper implements LootTableTweaker
 	@ZenMethod
 	public void addEmptyEntryJson(int weight, int quality, IData[] conditions, @Optional String name)
 	{
-		addEmptyEntryInternal(weight, quality,
-		    Arrays.stream(conditions).map(c -> loggingParser.parse(c, LootCondition.class)).toArray(LootCondition[]::new), name);
+		LootCondition[] parsedConditions = Arrays.stream(conditions)
+		    .map(c -> loggingParser.parse(c, LootCondition.class))
+            .filter(java.util.Optional::isPresent)
+            .map(java.util.Optional::get)
+		    .toArray(LootCondition[]::new);
+        addEmptyEntryInternal(weight, quality,
+		    parsedConditions, name);
 	}
 
 	public void addEmptyEntryInternal(int weight, int quality, LootCondition[] conditions, @Optional String name)
