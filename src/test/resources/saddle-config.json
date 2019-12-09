@@ -5,5 +5,12 @@
 		[
 			{"package": "io.github.daomephsta.loottweaker.test"}
 		]
+	},
+    "init":
+	{
+		"include":
+		[
+			{"package": "io.github.daomephsta.loottweaker.test.integration"}
+		]
 	}
 }
