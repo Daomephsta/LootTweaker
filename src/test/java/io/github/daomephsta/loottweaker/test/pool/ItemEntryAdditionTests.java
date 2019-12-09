@@ -15,6 +15,7 @@ import crafttweaker.api.data.DataMap;
 import crafttweaker.api.data.DataString;
 import crafttweaker.api.data.IData;
 import io.github.daomephsta.loottweaker.test.TestUtils;
+import io.github.daomephsta.loottweaker.test.util.DataMapBuilder;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
@@ -86,6 +87,34 @@ public class ItemEntryAdditionTests
             new ZenLootFunctionWrapper[0],
             new ZenLootConditionWrapper[] {LootConditionFactory.killedByPlayer()},
             "qux");
+        barTweaks.tweak(foo);
+
+        assertThat(foo.getPool("bar"))
+            .extractEntry("qux")
+            .hasWeight(2)
+            .hasQuality(3)
+            .hasMatchingCondition(condition ->
+                condition instanceof KilledByPlayer && !isInverted((KilledByPlayer) condition),
+            "KilledByPlayer()")
+            .asItemEntry()
+            .spawnsItem(Items.BAKED_POTATO)
+            .hasNoLootFunctions();
+    }
+
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    public void addItemEntryJson()
+    {
+        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        LootTable foo = loadTable(fooId);
+        ZenLootPoolWrapper barTweaks = context.wrapPool("bar", fooId);
+        barTweaks.addItemEntryJson(iitemstack(Items.BAKED_POTATO), 2, 3,
+            new IData[0],
+            new IData[]
+            {
+                new DataMapBuilder()
+                    .putString("condition", "minecraft:killed_by_player")
+                    .build()
+            }, "qux");
         barTweaks.tweak(foo);
 
         assertThat(foo.getPool("bar"))
