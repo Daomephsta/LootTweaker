@@ -1,5 +1,6 @@
 package io.github.daomephsta.loottweaker.test;
 
+import java.io.InputStream;
 import java.util.Scanner;
 
 import crafttweaker.api.item.IItemStack;
@@ -47,7 +48,10 @@ public class TestUtils
     {
         String location = "assets/" + name.getNamespace() + "/loot_tables/" + name.getPath() + ".json";
         StringBuilder dataBuilder = new StringBuilder();
-        try(Scanner tableSource = new Scanner(ClassLoader.getSystemClassLoader().getResourceAsStream(location)))
+        InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream(location);
+        if (stream == null)
+            throw new IllegalArgumentException("No such loot table " + name);
+        try(Scanner tableSource = new Scanner(stream))
         {
             while(tableSource.hasNextLine())
                 dataBuilder.append(tableSource.nextLine());
