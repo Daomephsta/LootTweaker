@@ -60,6 +60,20 @@ public class ZenscriptTests
         loadTweakedTables();
     }
 
+    @SaddleTest(loadPhase = LoadPhase.INIT)
+    public void lootConditionFactory()
+    {
+        ScriptRunner.run("scripts/loot-condition-factory.zs");
+        loadTweakedTables();
+    }
+
+    @SaddleTest(loadPhase = LoadPhase.INIT)
+    public void lootFunctionFactory()
+    {
+        ScriptRunner.run("scripts/loot-function-factory.zs");
+        loadTweakedTables();
+    }
+
     private void loadTweakedTables()
     {
         LootTableTweakManager tweakManager = ObfuscationReflectionHelper.getPrivateValue(ZenLootTableTweakManager.class, null, "TWEAK_MANAGER");
