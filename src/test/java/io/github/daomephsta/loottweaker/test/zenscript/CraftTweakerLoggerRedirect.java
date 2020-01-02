@@ -1,4 +1,4 @@
-package io.github.daomephsta.loottweaker.test.integration;
+package io.github.daomephsta.loottweaker.test.zenscript;
 
 import java.util.regex.Pattern;
 

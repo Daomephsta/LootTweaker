@@ -1,4 +1,4 @@
-package io.github.daomephsta.loottweaker.test.integration;
+package io.github.daomephsta.loottweaker.test.zenscript;
 
 import java.util.Map;
 
@@ -14,7 +14,13 @@ import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
-public class IntegrationTests
+/**
+ * Checks that all classes and methods are registered with and callable by Zenscript.
+ * Functionality is tested elsewhere using the backing Java methods directly.
+ * @author Daomephsta
+ *
+ */
+public class ZenscriptTests
 {
     @RegisterExtension
     public static final CraftTweakerLoggerRedirect redirect = new CraftTweakerLoggerRedirect(LogManager.getFormatterLogger("Saddle.LootTweaker"));
