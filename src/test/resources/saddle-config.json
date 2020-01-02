@@ -10,7 +10,7 @@
 	{
 		"include":
 		[
-			{"package": "io.github.daomephsta.loottweaker.test.integration"}
+			{"package": "io.github.daomephsta.loottweaker.test.zenscript"}
 		]
 	}
 }
