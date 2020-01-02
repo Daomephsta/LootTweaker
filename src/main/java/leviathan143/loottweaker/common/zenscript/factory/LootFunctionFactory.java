@@ -13,6 +13,7 @@ public class LootFunctionFactory
 {
     private static final LootFunctionFactoryImpl IMPLEMENTATION = LootTweaker.CONTEXT.createLootFunctionFactory();
 
+    @ZenMethod
     public static ZenLootFunctionWrapper enchantRandomly(String[] enchantIDList)
     {
         return IMPLEMENTATION.enchantRandomly(enchantIDList);
