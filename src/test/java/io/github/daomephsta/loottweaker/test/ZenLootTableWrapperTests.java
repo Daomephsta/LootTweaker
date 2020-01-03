@@ -11,6 +11,7 @@ import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTable;
+import net.minecraft.world.storage.loot.RandomValueRange;
 
 public class ZenLootTableWrapperTests
 {
@@ -62,5 +63,21 @@ public class ZenLootTableWrapperTests
         assertThatThrownBy(() -> fooTweaks.applyTweakers(foo))
             .isInstanceOf(LootTweakerException.class)
             .hasMessage("No loot pool with name quuz exists in table %s!", fooId);
+    }
+
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    public void addPool()
+    {
+        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        LootTable foo = loadTable(fooId);
+        ZenLootTableWrapper fooTweaks = context.wrapLootTable(fooId);
+        assertThat(foo.getPool("qux")).isNull();
+        fooTweaks.addPool("qux", 1, 2, 3, 4);
+        fooTweaks.applyTweakers(foo);
+        assertThat(foo.getPool("qux")).isNotNull();
+        assertThat(foo.getPool("qux").getRolls()).extracting(RandomValueRange::getMin).isEqualTo(1.0F);
+        assertThat(foo.getPool("qux").getRolls()).extracting(RandomValueRange::getMax).isEqualTo(2.0F);
+        assertThat(foo.getPool("qux").getBonusRolls()).extracting(RandomValueRange::getMin).isEqualTo(3.0F);
+        assertThat(foo.getPool("qux").getBonusRolls()).extracting(RandomValueRange::getMax).isEqualTo(4.0F);
     }
 }
