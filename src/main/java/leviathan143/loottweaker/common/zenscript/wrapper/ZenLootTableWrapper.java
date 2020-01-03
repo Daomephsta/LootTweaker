@@ -59,8 +59,10 @@ public class ZenLootTableWrapper
 	@ZenMethod
 	public ZenLootPoolWrapper addPool(String poolName, int minRolls, int maxRolls, int minBonusRolls, int maxBonusRolls)
 	{
-	    ZenLootPoolWrapper pool = context.createPoolWrapper(poolName, id, minRolls, maxRolls, minBonusRolls, maxBonusRolls);
+	    ZenLootPoolWrapper pool = context.createPoolWrapper(poolName, id);
 	    enqueueTweaker(pool, String.format("Queued pool %s for addition to table %s", poolName, id));
+	    pool.setRolls(minRolls, maxRolls);
+	    pool.setBonusRolls(minBonusRolls, maxBonusRolls);
         return pool;
 	}
 

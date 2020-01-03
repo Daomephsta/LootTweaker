@@ -46,8 +46,8 @@ public class LootTweakerContext
         return new ZenLootPoolWrapper(errorHandler, poolName, parentId);
     }
 
-    public ZenLootPoolWrapper createPoolWrapper(String poolName, ResourceLocation parentId, int minRolls, int maxRolls, int minBonusRolls, int maxBonusRolls)
+    public ZenLootPoolWrapper createPoolWrapper(String poolName, ResourceLocation parentId)
     {
-        return new ZenLootPoolWrapper(errorHandler, poolName, parentId, minRolls, maxRolls, minBonusRolls, maxBonusRolls);
+        return new ZenLootPoolWrapper(errorHandler, poolName, parentId);
     }
 }

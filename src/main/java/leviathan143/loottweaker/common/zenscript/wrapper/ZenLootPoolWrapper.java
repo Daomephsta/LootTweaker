@@ -1,5 +1,7 @@
 package leviathan143.loottweaker.common.zenscript.wrapper;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,7 +21,6 @@ import leviathan143.loottweaker.common.darkmagic.LootPoolAccessors;
 import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
 import leviathan143.loottweaker.common.lib.DataParser;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper.LootTableTweaker;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.*;
@@ -35,6 +36,7 @@ public class ZenLootPoolWrapper implements LootTableTweaker
 {
     private static final String ENTRY_NAME_PREFIX = "loottweaker#";
     private static final int DEFAULT_QUALITY = 0;
+    private static final LootEntry[] NO_ENTRIES = new LootEntry[0];
     private static final LootCondition[] NO_CONDITIONS = new LootCondition[0];
     private static final LootFunction[] NO_FUNCTIONS = new LootFunction[0];
     //Other state
@@ -44,10 +46,6 @@ public class ZenLootPoolWrapper implements LootTableTweaker
     private final ResourceLocation parentTableId;
     //LootPool state
     private final String id;
-    private final List<LootEntry> entries = new ArrayList<>();
-    private final List<LootCondition> conditions = new ArrayList<>();
-    private java.util.Optional<RandomValueRange> rolls;
-    private java.util.Optional<RandomValueRange> bonusRolls;
     private int nextEntryNameId = 1;
 
     public ZenLootPoolWrapper(ErrorHandler errorHandler, String id, ResourceLocation parentTableId)
@@ -56,18 +54,6 @@ public class ZenLootPoolWrapper implements LootTableTweaker
         this.loggingParser = createDataParser(errorHandler);
         this.id = id;
         this.parentTableId = parentTableId;
-        this.rolls = java.util.Optional.empty();
-        this.bonusRolls = java.util.Optional.empty();
-    }
-
-    public ZenLootPoolWrapper(ErrorHandler errorHandler, String id, ResourceLocation parentTableId, int minRolls, int maxRolls, int minBonusRolls, int maxBonusRolls)
-    {
-	    this.errorHandler = errorHandler;
-        this.loggingParser = createDataParser(errorHandler);
-	    this.id = id;
-        this.parentTableId = parentTableId;
-	    this.rolls = java.util.Optional.of(new RandomValueRange(minRolls, maxRolls));
-	    this.bonusRolls = java.util.Optional.of(new RandomValueRange(minBonusRolls, maxBonusRolls));
     }
 
     private DataParser createDataParser(ErrorHandler errorHandler)
@@ -78,19 +64,25 @@ public class ZenLootPoolWrapper implements LootTableTweaker
     @ZenMethod
 	public void addConditionsHelper(ZenLootConditionWrapper[] conditionWrappers)
 	{
-        for (ZenLootConditionWrapper conditionWrapper : conditionWrappers)
-        {
-            if (conditionWrapper.isValid())
-                this.conditions.add(conditionWrapper.condition);
-        }
+        List<LootCondition> parsedConditions = Arrays.stream(conditionWrappers)
+            .filter(ZenLootConditionWrapper::isValid)
+            .map(ZenLootConditionWrapper::unwrap)
+            .collect(toList());
+        enqueueTweaker(pool -> LootPoolAccessors.getConditions(pool).addAll(parsedConditions),
+            "Added %d conditions to pool '%s' of table '%s'", parsedConditions.size(), id, parentTableId);
 	}
 
-	@ZenMethod
-	public void addConditionsJson(IData[] conditionsJson)
-	{
-		for (IData conditionData : conditionsJson)
-		    loggingParser.parse(conditionData, LootCondition.class).ifPresent(this.conditions::add);
-	}
+    @ZenMethod
+    public void addConditionsJson(IData[] conditionsJson)
+    {
+        List<LootCondition> parsedConditions = Arrays.stream(conditionsJson)
+            .map(c -> loggingParser.parse(c, LootCondition.class))
+            .filter(java.util.Optional::isPresent)
+            .map(java.util.Optional::get)
+            .collect(toList());
+        enqueueTweaker(pool -> LootPoolAccessors.getConditions(pool).addAll(parsedConditions),
+            "Added %d conditions to pool '%s' of table '%s'", parsedConditions.size(), id, parentTableId);
+    }
 
 	@ZenMethod
 	public void clearConditions()
@@ -157,11 +149,13 @@ public class ZenLootPoolWrapper implements LootTableTweaker
 
     private void addItemEntryInternal(IItemStack stack, int weight, int quality, LootFunction[] functions, LootCondition[] conditions, @Optional String name)
     {
-	    Item item = CraftTweakerMC.getItemStack(stack).getItem();
-        if (name == null)
-            name = generateName();
-        entries.add(new LootEntryItem(item, weight, quality, addStackFunctions(stack, functions), conditions, name));
-        CraftTweakerAPI.logInfo(String.format("Queued item entry '%s' for addition to pool %s of table %s", name, id, parentTableId));
+        String entryName = name != null ? name : generateName();
+        enqueueTweaker(pool ->
+        {
+            pool.addEntry(new LootEntryItem(CraftTweakerMC.getItemStack(stack).getItem(), weight, quality,
+                addStackFunctions(stack, functions), conditions, entryName));
+        },
+        "Queued item entry '%s' for addition to pool %s of table %s", entryName, id, parentTableId);
     }
 
     /* Adds loot functions equivalent to the damage, stacksize and NBT of the
@@ -227,10 +221,12 @@ public class ZenLootPoolWrapper implements LootTableTweaker
 
 	private void addLootTableEntryInternal(String tableName, int weight, int quality, LootCondition[] conditions, @Optional String name)
     {
-        if (name == null)
-            name = generateName();
-	    entries.add(new LootEntryTable(new ResourceLocation(tableName), weight, quality, conditions, name));
-	    CraftTweakerAPI.logInfo(String.format("Queued loot table entry '%s' for addition to pool %s of table %s", name, id, parentTableId));
+        String entryName = name != null ? name : generateName();
+        enqueueTweaker(pool ->
+        {
+            pool.addEntry(new LootEntryTable(new ResourceLocation(tableName), weight, quality, conditions, entryName));
+        },
+        "Queued loot table entry '%s' for addition to pool %s of table %s", entryName, id, parentTableId);
     }
 
 	@ZenMethod
@@ -265,12 +261,14 @@ public class ZenLootPoolWrapper implements LootTableTweaker
 		    parsedConditions, name);
 	}
 
-	public void addEmptyEntryInternal(int weight, int quality, LootCondition[] conditions, @Optional String name)
+	private void addEmptyEntryInternal(int weight, int quality, LootCondition[] conditions, @Optional String name)
 	{
-	    if (name == null)
-	        name = generateName();
-	    entries.add(new LootEntryEmpty(weight, quality, conditions, name));
-	    CraftTweakerAPI.logInfo(String.format("Queued empty entry '%s' for addition to pool %s of table %s", name, id, parentTableId));
+        String entryName = name != null ? name : generateName();
+        enqueueTweaker(pool ->
+        {
+            pool.addEntry(new LootEntryEmpty(weight, quality, conditions, entryName));
+        },
+        "Queued empty entry '%s' for addition to pool %s of table %s", entryName, id, parentTableId);
 	}
 
 	private String generateName()
@@ -281,15 +279,15 @@ public class ZenLootPoolWrapper implements LootTableTweaker
 	@ZenMethod
 	public void setRolls(float minRolls, float maxRolls)
 	{
-	    this.rolls = java.util.Optional.of(new RandomValueRange(minRolls, maxRolls));
-	    CraftTweakerAPI.logInfo(String.format("Rolls of pool %s in table %s will be set to (%f, %f)", id, parentTableId, minRolls, maxRolls));
+	    enqueueTweaker(pool -> pool.setRolls(new RandomValueRange(minRolls, maxRolls)),
+	        "Rolls of pool %s in table %s will be set to (%f, %f)", id, parentTableId, minRolls, maxRolls);
 	}
 
 	@ZenMethod
 	public void setBonusRolls(float minBonusRolls, float maxBonusRolls)
 	{
-	    this.bonusRolls = java.util.Optional.of(new RandomValueRange(minBonusRolls, maxBonusRolls));
-	    CraftTweakerAPI.logInfo(String.format("Bonus rolls of pool %s in table %s will be set to (%f, %f)", id, parentTableId, minBonusRolls, maxBonusRolls));
+	    enqueueTweaker(pool -> pool.setBonusRolls(new RandomValueRange(minBonusRolls, maxBonusRolls)),
+	        "Bonus rolls of pool %s in table %s will be set to (%f, %f)", id, parentTableId, minBonusRolls, maxBonusRolls);
 	}
 
 	private void enqueueTweaker(LootPoolTweaker tweaker, String format, Object... args)
@@ -307,25 +305,22 @@ public class ZenLootPoolWrapper implements LootTableTweaker
 	@Override
 	public void tweak(LootTable table)
 	{
-	    LootEntry[] lootEntriesArray = entries.toArray(new LootEntry[0]);
-        LootCondition[] poolConditionsArray = conditions.toArray(NO_CONDITIONS);
         LootPool existing = table.getPool(id);
         if (existing != null)
             tweak(existing);
         else
         {
-            table.addPool(new LootPool(lootEntriesArray, poolConditionsArray, rolls.get(), bonusRolls.get(), id));
+            RandomValueRange dummyRange = new RandomValueRange(1.0F);
+            LootPool newPool = new LootPool(NO_ENTRIES, NO_CONDITIONS, dummyRange, dummyRange, id);
+            tweak(newPool);
+            table.addPool(newPool);
             CraftTweakerAPI.logInfo(String.format("Added new pool %s to table %s", id, parentTableId));
         }
 	}
 
     public void tweak(LootPool pool)
     {
-        for (LootEntry entry : entries)
-            pool.addEntry(entry);
-        LootPoolAccessors.getConditions(pool).addAll(conditions);
-        rolls.ifPresent(pool::setRolls);
-        bonusRolls.ifPresent(pool::setBonusRolls);
+        //Note: Tweaks MUST be applied in declaration order, see https://github.com/Daomephsta/LootTweaker/issues/65
         for (LootPoolTweaker tweaker : tweakers)
             tweaker.tweak(pool);
     }
