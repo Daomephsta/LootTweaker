@@ -69,6 +69,7 @@ public abstract class AbstractAccessors
 	    {
 	        m = clazz.getDeclaredMethod(mappedName, parameterTypes);
 	    }
+	    m.setAccessible(true);
 	    return m;
 	}
 }
