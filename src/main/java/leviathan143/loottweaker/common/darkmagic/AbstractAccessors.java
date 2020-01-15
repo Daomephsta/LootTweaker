@@ -14,10 +14,10 @@ public abstract class AbstractAccessors
         return MethodHandles.lookup().unreflectGetter(f);
     }
 
-	protected static MethodHandle createFieldGetter(Class<?> clazz, String fieldSrgName, String fieldMappedName) throws IllegalAccessException, NoSuchFieldException, SecurityException
-	{
-		return MethodHandles.lookup().unreflectGetter(findField(clazz, fieldSrgName, fieldMappedName));
-	}
+    protected static MethodHandle createFieldGetter(Class<?> clazz, String fieldSrgName, String fieldMappedName) throws IllegalAccessException, NoSuchFieldException, SecurityException
+    {
+        return MethodHandles.lookup().unreflectGetter(findField(clazz, fieldSrgName, fieldMappedName));
+    }
 
     protected static MethodHandle createFieldSetter(Class<?> clazz, String fieldMappedName) throws IllegalAccessException, NoSuchFieldException, SecurityException
     {
@@ -27,9 +27,9 @@ public abstract class AbstractAccessors
     }
 
     protected static MethodHandle createFieldSetter(Class<?> clazz, String fieldSrgName, String fieldMappedName) throws IllegalAccessException, NoSuchFieldException, SecurityException
-	{
-		return MethodHandles.lookup().unreflectSetter(findField(clazz, fieldSrgName, fieldMappedName));
-	}
+    {
+        return MethodHandles.lookup().unreflectSetter(findField(clazz, fieldSrgName, fieldMappedName));
+    }
 
     private static Field findField(Class<?> clazz, String fieldSrgName, String fieldMappedName) throws NoSuchFieldException, SecurityException
     {
@@ -53,23 +53,23 @@ public abstract class AbstractAccessors
         return MethodHandles.lookup().unreflect(m);
     }
 
-	protected static MethodHandle createMethodInvoker(Class<?> clazz, String srgName, String mappedName, Class<?>... parameterTypes) throws IllegalAccessException, NoSuchMethodException, SecurityException
-	{
-		return MethodHandles.lookup().unreflect(findMethod(clazz, srgName, mappedName, parameterTypes));
-	}
+    protected static MethodHandle createMethodInvoker(Class<?> clazz, String srgName, String mappedName, Class<?>... parameterTypes) throws IllegalAccessException, NoSuchMethodException, SecurityException
+    {
+        return MethodHandles.lookup().unreflect(findMethod(clazz, srgName, mappedName, parameterTypes));
+    }
 
-	private static Method findMethod(Class<?> clazz, String srgName, String mappedName, Class<?>[] parameterTypes) throws NoSuchMethodException, SecurityException
-	{
-	    Method m;
-	    try
-	    {
-	        m = clazz.getDeclaredMethod(srgName, parameterTypes);
-	    }
-	    catch (NoSuchMethodException e)
-	    {
-	        m = clazz.getDeclaredMethod(mappedName, parameterTypes);
-	    }
-	    m.setAccessible(true);
-	    return m;
-	}
+    private static Method findMethod(Class<?> clazz, String srgName, String mappedName, Class<?>[] parameterTypes) throws NoSuchMethodException, SecurityException
+    {
+        Method m;
+        try
+        {
+            m = clazz.getDeclaredMethod(srgName, parameterTypes);
+        }
+        catch (NoSuchMethodException e)
+        {
+            m = clazz.getDeclaredMethod(mappedName, parameterTypes);
+        }
+        m.setAccessible(true);
+        return m;
+    }
 }
