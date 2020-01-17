@@ -52,7 +52,7 @@ public class ZenLootTableWrapper
             }
             else
                 context.getErrorHandler().error("No loot pool with name %s exists in table %s!", poolName, id);
-        }, String.format("Retrieved pool %s from table %s", poolName, id));
+        }, "Retrieved pool %s from table %s", poolName, id);
         return pool;
     }
 
@@ -60,7 +60,7 @@ public class ZenLootTableWrapper
 	public ZenLootPoolWrapper addPool(String poolName, int minRolls, int maxRolls, int minBonusRolls, int maxBonusRolls)
 	{
 	    ZenLootPoolWrapper pool = context.createPoolWrapper(poolName, id);
-	    enqueueTweaker(pool, String.format("Queued pool %s for addition to table %s", poolName, id));
+	    enqueueTweaker(pool, "Queued pool %s for addition to table %s", poolName, id);
 	    pool.setRolls(minRolls, maxRolls);
 	    pool.setBonusRolls(minBonusRolls, maxBonusRolls);
         return pool;
@@ -77,20 +77,20 @@ public class ZenLootTableWrapper
                 return;
             }
             table.removePool(poolName);
-        }, String.format("Queued pool %s of table %s for removal", poolName, id));
+        }, "Queued pool %s of table %s for removal", poolName, id);
 	}
 
     @ZenMethod
     public void clear()
     {
         enqueueTweaker((table) -> LootTableAccessors.getPools(table).clear(),
-            String.format("Queued all pools of table %s for removal", id));
+            "Queued all pools of table %s for removal", id);
     }
 
-    private void enqueueTweaker(LootTableTweaker tweaker, String description)
+    private void enqueueTweaker(LootTableTweaker tweaker, String format, Object... args)
     {
         tweaks.add(tweaker);
-        CraftTweakerAPI.logInfo(description);
+        CraftTweakerAPI.logInfo(String.format(format, args));
     }
 
     public void applyTweakers(LootTable table)

@@ -105,7 +105,7 @@ public class ZenLootPoolWrapper implements LootTableTweaker
 		{
 		    if (pool.removeEntry(entryName) == null)
                 errorHandler.error("No entry with name %s exists in pool %s", entryName, id);
-		}, String.format("Queueing entry %s of pool %s for removal", entryName, id));
+		}, "Queueing entry %s of pool %s for removal", entryName, id);
 	}
 
 	@ZenMethod
@@ -296,13 +296,7 @@ public class ZenLootPoolWrapper implements LootTableTweaker
         CraftTweakerAPI.logInfo(String.format(format, args));
     }
 
-    private void enqueueTweaker(LootPoolTweaker tweaker, String description)
-    {
-        tweakers.add(tweaker);
-        CraftTweakerAPI.logInfo(description);
-    }
-
-	@Override
+    @Override
 	public void tweak(LootTable table)
 	{
         LootPool existing = table.getPool(id);
