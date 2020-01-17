@@ -50,7 +50,7 @@ public class LootTableTweakManager
             if (wrapper.isValid())
                 wrapper.applyTweakers(table);
             else
-                context.getErrorHandler().handle("No loot table with name %s exists!", tableId);
+                context.getErrorHandler().error("No loot table with name %s exists!", tableId);
         }
     }
 }

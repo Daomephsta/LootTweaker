@@ -26,7 +26,7 @@ public class LootFunctionFactoryImpl
     public LootFunctionFactoryImpl(ErrorHandler errorHandler)
     {
         this.errorHandler = errorHandler;
-        this.loggingParser = new DataParser(LootTableManagerAccessors.getGsonInstance(), e -> errorHandler.handle(e.getMessage()));
+        this.loggingParser = new DataParser(LootTableManagerAccessors.getGsonInstance(), e -> errorHandler.error(e.getMessage()));
     }
 
     public ZenLootFunctionWrapper enchantRandomly(String[] enchantIDList)
@@ -37,7 +37,7 @@ public class LootFunctionFactoryImpl
             Enchantment ench = Enchantment.getEnchantmentByLocation(id);
             if (ench == null)
             {
-                errorHandler.handle(String.format("%s is not a valid enchantment id", id));
+                errorHandler.error("%s is not a valid enchantment id", id);
                 continue;
             }
             enchantments.add(ench);
@@ -64,7 +64,7 @@ public class LootFunctionFactoryImpl
     {
         if (max > 1.0F)
         {
-            errorHandler.handle("Items cannot recieve more than 100%% damage!");
+            errorHandler.error("Items cannot recieve more than 100%% damage!");
             return ZenLootFunctionWrapper.INVALID;
         }
         return new ZenLootFunctionWrapper(new SetDamage(NO_CONDITIONS, new RandomValueRange(min, max)));
@@ -80,7 +80,7 @@ public class LootFunctionFactoryImpl
         NBTBase nbt = NBTConverter.from(nbtData);
         if (!(nbt instanceof NBTTagCompound))
         {
-            errorHandler.handle("Expected compound nbt tag, got " + nbtData);
+            errorHandler.error("Expected compound nbt tag, got %s", nbtData);
             return ZenLootFunctionWrapper.INVALID;
         }
         return new ZenLootFunctionWrapper(new SetNBT(NO_CONDITIONS, (NBTTagCompound) nbt));

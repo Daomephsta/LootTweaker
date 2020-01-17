@@ -58,7 +58,7 @@ public class ZenLootPoolWrapper implements LootTableTweaker
 
     private DataParser createDataParser(ErrorHandler errorHandler)
     {
-        return new DataParser(LootTableManagerAccessors.getGsonInstance(), e -> errorHandler.handle(e.getMessage()));
+        return new DataParser(LootTableManagerAccessors.getGsonInstance(), e -> errorHandler.error(e.getMessage()));
     }
 
     @ZenMethod
@@ -104,7 +104,7 @@ public class ZenLootPoolWrapper implements LootTableTweaker
 		enqueueTweaker(pool ->
 		{
 		    if (pool.removeEntry(entryName) == null)
-                errorHandler.handle(String.format("No entry with name %s exists in pool %s", entryName, id));
+                errorHandler.error("No entry with name %s exists in pool %s", entryName, id);
 		}, String.format("Queueing entry %s of pool %s for removal", entryName, id));
 	}
 

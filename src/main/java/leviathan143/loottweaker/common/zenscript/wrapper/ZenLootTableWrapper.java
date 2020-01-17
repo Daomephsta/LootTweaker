@@ -51,7 +51,7 @@ public class ZenLootTableWrapper
                     CraftTweakerAPI.logInfo(String.format("Skipped modifying pool %s of table %s because it is frozen", poolName, id));
             }
             else
-                context.getErrorHandler().handle(String.format("No loot pool with name %s exists in table %s!", poolName, id));
+                context.getErrorHandler().error("No loot pool with name %s exists in table %s!", poolName, id);
         }, String.format("Retrieved pool %s from table %s", poolName, id));
         return pool;
     }
@@ -73,7 +73,7 @@ public class ZenLootTableWrapper
         {
             if (table.getPool(poolName) == null)
             {
-                context.getErrorHandler().handle(String.format("No loot pool with name %s exists in table %s!", poolName, id));
+                context.getErrorHandler().error("No loot pool with name %s exists in table %s!", poolName, id);
                 return;
             }
             table.removePool(poolName);

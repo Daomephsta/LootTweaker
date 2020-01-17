@@ -13,8 +13,26 @@ public class TestErrorHandler implements ErrorHandler
     }
 
     @Override
-    public void handle(String errorMessageFormat, Object... args)
+    public void error(String format, Object... args)
     {
-        throw new LootTweakerException(String.format(errorMessageFormat, args));
+        throw new LootTweakerException(String.format(format, args));
+    }
+
+    @Override
+    public void error(String message)
+    {
+        throw new LootTweakerException(message);
+    }
+
+    @Override
+    public void warn(String format, Object... args)
+    {
+        throw new LootTweakerException(String.format(format, args));
+    }
+
+    @Override
+    public void warn(String message)
+    {
+        throw new LootTweakerException(message);
     }
 }

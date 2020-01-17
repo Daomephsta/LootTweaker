@@ -16,7 +16,7 @@ public class LootConditionFactoryImpl
 
 	public LootConditionFactoryImpl(ErrorHandler errorHandler)
     {
-        this.loggingParser = new DataParser(LootTableManagerAccessors.getGsonInstance(), e -> errorHandler.handle(e.getMessage()));
+        this.loggingParser = new DataParser(LootTableManagerAccessors.getGsonInstance(), e -> errorHandler.error(e.getMessage()));
     }
 
     public ZenLootConditionWrapper randomChance(float chance)
