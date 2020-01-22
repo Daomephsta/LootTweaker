@@ -64,7 +64,7 @@ public class LootFunctionFactoryImpl
     {
         if (max > 1.0F)
         {
-            errorHandler.error("Items cannot recieve more than 100%% damage!");
+            errorHandler.error("Items cannot recieve more than 100% damage!");
             return ZenLootFunctionWrapper.INVALID;
         }
         return new ZenLootFunctionWrapper(new SetDamage(NO_CONDITIONS, new RandomValueRange(min, max)));
