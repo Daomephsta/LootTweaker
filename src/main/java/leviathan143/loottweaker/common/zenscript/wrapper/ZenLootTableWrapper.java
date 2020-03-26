@@ -40,6 +40,7 @@ public class ZenLootTableWrapper
             return tweakedPools.get(poolName);
 
         ZenLootPoolWrapper pool = context.wrapPool(poolName, id);
+        tweakedPools.put(poolName, pool);
         enqueueTweaker((table) ->
         {
             LootPool targetPool = table.getPool(poolName);

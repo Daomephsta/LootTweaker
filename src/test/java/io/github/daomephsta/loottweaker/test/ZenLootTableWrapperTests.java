@@ -80,4 +80,13 @@ public class ZenLootTableWrapperTests
         assertThat(foo.getPool("qux").getBonusRolls()).extracting(RandomValueRange::getMin).isEqualTo(3.0F);
         assertThat(foo.getPool("qux").getBonusRolls()).extracting(RandomValueRange::getMax).isEqualTo(4.0F);
     }
+
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    public void poolWrapperCaching()
+    {
+        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ZenLootTableWrapper fooTweaks = context.wrapLootTable(fooId);
+        assertThat(fooTweaks.getPool("bar")).isNotNull();
+        assertThat(fooTweaks.getPool("bar")).isEqualTo(fooTweaks.getPool("bar"));
+    }
 }
