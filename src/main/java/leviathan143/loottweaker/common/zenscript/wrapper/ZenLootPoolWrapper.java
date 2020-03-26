@@ -152,12 +152,9 @@ public class ZenLootPoolWrapper implements LootTableTweaker
         if (stack == null)
             return;
         String entryName = name != null ? name : generateName();
-        enqueueTweaker(pool ->
-        {
-            pool.addEntry(new LootEntryItem(CraftTweakerMC.getItemStack(stack).getItem(), weight, quality,
-                addStackFunctions(stack, functions), conditions, entryName));
-        },
-        "Queued item entry '%s' for addition to pool %s of table %s", entryName, id, parentTableId);
+        LootEntryItem entry = new LootEntryItem(CraftTweakerMC.getItemStack(stack).getItem(), weight, quality,
+            addStackFunctions(stack, functions), conditions, entryName);
+        addEntry(entry, "Queued item entry '%s' for addition to pool %s of table %s", entryName, id, parentTableId);
     }
 
     /* Adds loot functions equivalent to the damage, stacksize and NBT of the
@@ -224,11 +221,8 @@ public class ZenLootPoolWrapper implements LootTableTweaker
 	private void addLootTableEntryInternal(String tableName, int weight, int quality, LootCondition[] conditions, @Optional String name)
     {
         String entryName = name != null ? name : generateName();
-        enqueueTweaker(pool ->
-        {
-            pool.addEntry(new LootEntryTable(new ResourceLocation(tableName), weight, quality, conditions, entryName));
-        },
-        "Queued loot table entry '%s' for addition to pool %s of table %s", entryName, id, parentTableId);
+        addEntry(new LootEntryTable(new ResourceLocation(tableName), weight, quality, conditions, entryName),
+            "Queued loot table entry '%s' for addition to pool %s of table %s", entryName, id, parentTableId);
     }
 
 	@ZenMethod
@@ -266,11 +260,8 @@ public class ZenLootPoolWrapper implements LootTableTweaker
 	private void addEmptyEntryInternal(int weight, int quality, LootCondition[] conditions, @Optional String name)
 	{
         String entryName = name != null ? name : generateName();
-        enqueueTweaker(pool ->
-        {
-            pool.addEntry(new LootEntryEmpty(weight, quality, conditions, entryName));
-        },
-        "Queued empty entry '%s' for addition to pool %s of table %s", entryName, id, parentTableId);
+        addEntry(new LootEntryEmpty(weight, quality, conditions, entryName),
+            "Queued empty entry '%s' for addition to pool %s of table %s", entryName, id, parentTableId);
 	}
 
 	private String generateName()
@@ -290,6 +281,24 @@ public class ZenLootPoolWrapper implements LootTableTweaker
 	{
 	    enqueueTweaker(pool -> pool.setBonusRolls(new RandomValueRange(minBonusRolls, maxBonusRolls)),
 	        "Bonus rolls of pool %s in table %s will be set to (%f, %f)", id, parentTableId, minBonusRolls, maxBonusRolls);
+	}
+
+	private void addEntry(LootEntry entry, String format, Object... args)
+	{
+	    enqueueTweaker(pool ->
+	    {
+	        try
+            {
+	            pool.addEntry(entry);
+            }
+            catch (RuntimeException e)
+            {
+                if (e.getMessage().contains("duplicate"))
+                    errorHandler.error("Cannot add entry '%s' to pool '%s' of table '%s'. Entry names must be unique within their pool.", entry.getEntryName(), pool.getName(), parentTableId);
+                else
+                    throw e;
+            }
+	    }, format, args);
 	}
 
 	private void enqueueTweaker(LootPoolTweaker tweaker, String format, Object... args)
