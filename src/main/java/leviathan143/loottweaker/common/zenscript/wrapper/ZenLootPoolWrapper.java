@@ -149,6 +149,8 @@ public class ZenLootPoolWrapper implements LootTableTweaker
 
     private void addItemEntryInternal(IItemStack stack, int weight, int quality, LootFunction[] functions, LootCondition[] conditions, @Optional String name)
     {
+        if (stack == null)
+            return;
         String entryName = name != null ? name : generateName();
         enqueueTweaker(pool ->
         {
