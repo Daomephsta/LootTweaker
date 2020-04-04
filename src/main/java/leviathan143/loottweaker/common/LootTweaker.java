@@ -8,13 +8,14 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 
-@Mod(modid = LootTweaker.MODID, name = LootTweaker.MODNAME, version = LootTweaker.VERSION, dependencies = LootTweaker.DEPENDENCIES)
+@Mod(modid = LootTweaker.MODID, name = LootTweaker.MODNAME, version = LootTweaker.VERSION, dependencies = LootTweaker.DEPENDENCIES, acceptableRemoteVersions = LootTweaker.REMOTE_VERSIONS)
 public class LootTweaker
 {
 	public static final String MODNAME = "LootTweaker";
 	public static final String MODID = "loottweaker";
 	public static final String VERSION = "GRADLE:VERSION";
 	public static final String DEPENDENCIES = "required-after:crafttweaker; before:jeresources; required:forge@[14.23.5.2779,);";
+	public static final String REMOTE_VERSIONS = "*";
 	public static final LootTweakerContext CONTEXT = new LootTweakerContext(new CTLoggingErrorHandler());
 
 	@Mod.EventHandler
