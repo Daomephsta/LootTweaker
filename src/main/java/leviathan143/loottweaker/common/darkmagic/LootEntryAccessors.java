@@ -15,8 +15,8 @@ public class LootEntryAccessors extends AbstractAccessors
         try
         {
             LootEntry$weightGetter = createFieldGetter(LootEntry.class, "field_186364_c", "weight");
-            LootEntry$qualityGetter = createFieldGetter(LootEntry.class, "field_186365_d ", "quality");
-            LootEntry$conditionsGetter = createFieldGetter(LootEntry.class, "field_186366_e ", "conditions");
+            LootEntry$qualityGetter = createFieldGetter(LootEntry.class, "field_186365_d", "quality");
+            LootEntry$conditionsGetter = createFieldGetter(LootEntry.class, "field_186366_e", "conditions");
         }
         catch (Throwable t)
         {
