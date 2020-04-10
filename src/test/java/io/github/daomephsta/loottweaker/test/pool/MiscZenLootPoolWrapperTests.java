@@ -12,10 +12,12 @@ import io.github.daomephsta.loottweaker.test.TestErrorHandler.LootTweakerExcepti
 import io.github.daomephsta.loottweaker.test.TestUtils;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
+import leviathan143.loottweaker.common.zenscript.LootTableTweakManager;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.factory.LootConditionFactory;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootConditionWrapper;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootPoolWrapper;
+import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
@@ -29,12 +31,13 @@ public class MiscZenLootPoolWrapperTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void addConditions()
     {
+        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
-        LootTable foo = loadTable(fooId);
-        ZenLootPoolWrapper barTweaks = context.wrapPool("bar", fooId);
+        ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
+        ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addConditionsHelper(new ZenLootConditionWrapper[] {LootConditionFactory.killedByPlayer()});
-        barTweaks.tweak(foo);
 
+        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
         assertThat(foo.getPool("bar")).hasMatchingCondition(condition ->
             condition instanceof KilledByPlayer && !isInverted((KilledByPlayer) condition),
         "KilledByPlayer()");
@@ -43,28 +46,28 @@ public class MiscZenLootPoolWrapperTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void removeExistingEntry()
     {
+        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
         ResourceLocation barId = new ResourceLocation("loottweaker", "bar");
-        LootTable bar = loadTable(barId);
-        LootPool baz = bar.getPool("baz");
-
-        assertThat(baz.getEntry("qux")).isNotNull();
-        ZenLootPoolWrapper bazTweaks = context.wrapPool("baz", barId);
+        ZenLootTableWrapper barTweaks = tweakManager.getTable(barId.toString());
+        LootTable barOriginal = loadTable(barId);
+        assertThat(barOriginal.getPool("baz").getEntry("qux")).isNotNull();
+        ZenLootPoolWrapper bazTweaks = barTweaks.getPool("baz");
         bazTweaks.removeEntry("qux");
-        bazTweaks.tweak(bar);
-        assertThat(baz.getEntry("qux")).isNull();
+        LootTable barNew = tweakManager.tweakTable(barId, barOriginal);
+        assertThat(barNew.getPool("baz").getEntry("qux")).isNull();
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void removeNonExistentEntry()
     {
+        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
         ResourceLocation barId = new ResourceLocation("loottweaker", "bar");
-        LootTable bar = loadTable(barId);
-        LootPool baz = bar.getPool("baz");
-
-        assertThat(baz.getEntry("quuz")).isNull();
-        ZenLootPoolWrapper bazTweaks = context.wrapPool("baz", barId);
+        ZenLootTableWrapper barTweaks = tweakManager.getTable(barId.toString());
+        LootTable barOriginal = loadTable(barId);
+        assertThat(barOriginal.getPool("baz").getEntry("quuz")).isNull();
+        ZenLootPoolWrapper bazTweaks = barTweaks.getPool("baz");
         bazTweaks.removeEntry("quuz");
-        assertThatThrownBy(() -> bazTweaks.tweak(bar))
+        assertThatThrownBy(() -> tweakManager.tweakTable(barId, barOriginal))
             .isInstanceOf(LootTweakerException.class)
             .hasMessage("No entry with name quuz exists in pool baz");
     }
@@ -72,39 +75,42 @@ public class MiscZenLootPoolWrapperTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void clearConditions()
     {
+        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
         ResourceLocation barId = new ResourceLocation("loottweaker", "bar");
-        LootTable bar = loadTable(barId);
-        LootPool baz = bar.getPool("baz");
-        assertThat(getConditions(baz)).isNotEmpty();
-        ZenLootPoolWrapper bazTweaks = context.wrapPool("baz", barId);
+        ZenLootTableWrapper barTweaks = tweakManager.getTable(barId.toString());
+        LootTable barOriginal = loadTable(barId);
+        assertThat(getConditions(barOriginal.getPool("baz"))).isNotEmpty();
+        ZenLootPoolWrapper bazTweaks = barTweaks.getPool("baz");
         bazTweaks.clearConditions();
-        bazTweaks.tweak(bar);
-        assertThat(getConditions(baz)).isEmpty();
+        LootTable barNew = tweakManager.tweakTable(barId, barOriginal);
+        assertThat(getConditions(barNew.getPool("baz"))).isEmpty();
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void clearEntries()
     {
+        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
         ResourceLocation barId = new ResourceLocation("loottweaker", "bar");
-        LootTable bar = loadTable(barId);
-        LootPool baz = bar.getPool("baz");
-        assertThat(getEntries(baz)).isNotEmpty();
-        ZenLootPoolWrapper bazTweaks = context.wrapPool("baz", barId);
+        ZenLootTableWrapper barTweaks = tweakManager.getTable(barId.toString());
+        LootTable barOriginal = loadTable(barId);
+        assertThat(getEntries(barOriginal.getPool("baz"))).isNotEmpty();
+        ZenLootPoolWrapper bazTweaks = barTweaks.getPool("baz");
         bazTweaks.clearEntries();
-        bazTweaks.tweak(bar);
-        assertThat(getEntries(baz)).isEmpty();
+        LootTable barNew = tweakManager.tweakTable(barId, barOriginal);
+        assertThat(getEntries(barNew.getPool("baz"))).isEmpty();
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void setRolls()
     {
+        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
-        LootTable foo = loadTable(fooId);
-        LootPool bar = foo.getPool("bar");
-        ZenLootPoolWrapper barTweaks = context.wrapPool("bar", fooId);
+        ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
+        ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.setRolls(2.0F, 5.0F);
-        barTweaks.tweak(foo);
 
+        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootPool bar = foo.getPool("bar");
         assertThat(bar.getRolls()).extracting(RandomValueRange::getMin).isEqualTo(2.0F);
         assertThat(bar.getRolls()).extracting(RandomValueRange::getMax).isEqualTo(5.0F);
     }
@@ -112,13 +118,14 @@ public class MiscZenLootPoolWrapperTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void setBonusRolls()
     {
+        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
-        LootTable foo = loadTable(fooId);
-        LootPool bar = foo.getPool("bar");
-        ZenLootPoolWrapper barTweaks = context.wrapPool("bar", fooId);
+        ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
+        ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.setBonusRolls(1.0F, 3.0F);
-        barTweaks.tweak(foo);
 
+        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootPool bar = foo.getPool("bar");
         assertThat(bar.getBonusRolls()).extracting(RandomValueRange::getMin).isEqualTo(1.0F);
         assertThat(bar.getBonusRolls()).extracting(RandomValueRange::getMax).isEqualTo(3.0F);
     }

@@ -9,10 +9,12 @@ import io.github.daomephsta.loottweaker.test.TestUtils;
 import io.github.daomephsta.loottweaker.test.util.DataMapBuilder;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
+import leviathan143.loottweaker.common.zenscript.LootTableTweakManager;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.factory.LootConditionFactory;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootConditionWrapper;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootPoolWrapper;
+import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTable;
 import net.minecraft.world.storage.loot.conditions.KilledByPlayer;
@@ -25,12 +27,13 @@ public class EmptyEntryAdditionTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void addEmptyEntry()
     {
+        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
-        LootTable foo = loadTable(fooId);
-        ZenLootPoolWrapper barTweaks = context.wrapPool("bar", fooId);
+        ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
+        ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addEmptyEntry(2, "corge");
-        barTweaks.tweak(foo);
 
+        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
         assertThat(foo.getPool("bar"))
             .extractEntry("corge")
             .hasWeight(2)
@@ -41,12 +44,13 @@ public class EmptyEntryAdditionTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void addEmptyEntryWithQuality()
     {
+        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
-        LootTable foo = loadTable(fooId);
-        ZenLootPoolWrapper barTweaks = context.wrapPool("bar", fooId);
+        ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
+        ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addEmptyEntry(2, 3, "corge");
-        barTweaks.tweak(foo);
 
+        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
         assertThat(foo.getPool("bar"))
             .extractEntry("corge")
             .hasWeight(2)
@@ -58,14 +62,15 @@ public class EmptyEntryAdditionTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void addEmptyEntryWithCondition()
     {
+        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
-        LootTable foo = loadTable(fooId);
-        ZenLootPoolWrapper barTweaks = context.wrapPool("bar", fooId);
+        ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
+        ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addEmptyEntryHelper(2, 3,
             new ZenLootConditionWrapper[] {LootConditionFactory.killedByPlayer()},
             "corge");
-        barTweaks.tweak(foo);
 
+        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
         assertThat(foo.getPool("bar"))
             .extractEntry("corge")
             .hasWeight(2)
@@ -79,9 +84,10 @@ public class EmptyEntryAdditionTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void addEmptyEntryJson()
     {
+        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
-        LootTable foo = loadTable(fooId);
-        ZenLootPoolWrapper barTweaks = context.wrapPool("bar", fooId);
+        ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
+        ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addEmptyEntryJson(2, 3,
             new IData[]
             {
@@ -90,8 +96,8 @@ public class EmptyEntryAdditionTests
                     .build()
             },
             "corge");
-        barTweaks.tweak(foo);
 
+        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
         assertThat(foo.getPool("bar"))
             .extractEntry("corge")
             .hasWeight(2)
