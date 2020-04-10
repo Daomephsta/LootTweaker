@@ -12,7 +12,12 @@ public class MutableLootEntryEmpty extends MutableLootEntry<MutableLootEntryEmpt
         super(entry);
     }
 
-    private MutableLootEntryEmpty(String name, int weight, int quality, List<LootCondition> conditions)
+    public MutableLootEntryEmpty(String name, int weight, int quality, LootCondition[] conditions)
+    {
+        super(name, weight, quality, conditions);
+    }
+
+    public MutableLootEntryEmpty(String name, int weight, int quality, List<LootCondition> conditions)
     {
         super(name, weight, quality, conditions);
     }

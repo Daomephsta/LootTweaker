@@ -1,9 +1,9 @@
 package leviathan143.loottweaker.common.mutable_loot.entry;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
@@ -23,10 +23,10 @@ public class MutableLootEntryItem extends MutableLootEntry<MutableLootEntryItem,
     {
         super(entry);
         this.item = LootEntryItemAccessors.getItem(entry);
-        this.functions = Arrays.asList(LootEntryItemAccessors.getFunctions(entry));
+        this.functions = Lists.newArrayList(LootEntryItemAccessors.getFunctions(entry));
     }
 
-    private MutableLootEntryItem(String name, int weight, int quality, List<LootCondition> conditions, Item item, List<LootFunction> functions)
+    public MutableLootEntryItem(String name, int weight, int quality, List<LootCondition> conditions, Item item, List<LootFunction> functions)
     {
         super(name, weight, quality, conditions);
         this.item = item;

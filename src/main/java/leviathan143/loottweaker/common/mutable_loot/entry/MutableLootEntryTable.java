@@ -17,7 +17,13 @@ public class MutableLootEntryTable extends MutableLootEntry<MutableLootEntryTabl
         this.delegateTableId = LootEntryTableAccessors.getTable(entry);
     }
 
-    private MutableLootEntryTable(String name, int weight, int quality, List<LootCondition> conditions, ResourceLocation delegateTableId)
+    public MutableLootEntryTable(String name, int weight, int quality, LootCondition[] conditions, ResourceLocation delegateTableId)
+    {
+        super(name, weight, quality, conditions);
+        this.delegateTableId = delegateTableId;
+    }
+
+    public MutableLootEntryTable(String name, int weight, int quality, List<LootCondition> conditions, ResourceLocation delegateTableId)
     {
         super(name, weight, quality, conditions);
         this.delegateTableId = delegateTableId;

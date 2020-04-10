@@ -1,9 +1,9 @@
 package leviathan143.loottweaker.common.mutable_loot.entry;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
@@ -27,7 +27,12 @@ public abstract class MutableLootEntry<Self extends MutableLootEntry<Self, Immut
         this.name = entry.getEntryName();
         this.weight = LootEntryAccessors.getWeight(entry);
         this.quality = LootEntryAccessors.getQuality(entry);
-        this.conditions = Arrays.asList(LootEntryAccessors.getConditions(entry));
+        this.conditions = Lists.newArrayList(LootEntryAccessors.getConditions(entry));
+    }
+
+    protected MutableLootEntry(String name, int weight, int quality, LootCondition[] conditions)
+    {
+        this(name, weight, quality, Lists.newArrayList(conditions));
     }
 
     protected MutableLootEntry(String name, int weight, int quality, List<LootCondition> conditions)

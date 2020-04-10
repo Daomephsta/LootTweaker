@@ -1,10 +1,12 @@
 package leviathan143.loottweaker.common.mutable_loot;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import com.google.common.base.Functions;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
@@ -20,8 +22,8 @@ import net.minecraft.world.storage.loot.conditions.LootCondition;
 public class MutableLootPool implements DeepClone<MutableLootPool>
 {
     private final String name;
-    private List<MutableLootEntry<?, ?>> entries = new ArrayList<>();
-    private List<LootCondition> conditions = new ArrayList<>();
+    private Map<String, MutableLootEntry<?, ?>> entries;
+    private List<LootCondition> conditions;
     private RandomValueRange rolls, bonusRolls;
 
     MutableLootPool(LootPool pool)
@@ -29,13 +31,13 @@ public class MutableLootPool implements DeepClone<MutableLootPool>
         this.name = pool.getName();
         this.entries = LootPoolAccessors.getEntries(pool).stream()
             .map(MutableLootEntry::from)
-            .collect(toList());
+            .collect(toMap(MutableLootEntry::getName, Functions.identity()));
         this.conditions = LootPoolAccessors.getConditions(pool);
         this.rolls = pool.getRolls();
         this.bonusRolls = pool.getBonusRolls();
     }
 
-    private MutableLootPool(String name, List<MutableLootEntry<?, ?>> entries, List<LootCondition> conditions, RandomValueRange rolls, RandomValueRange bonusRolls)
+    public MutableLootPool(String name, Map<String, MutableLootEntry<?, ?>> entries, List<LootCondition> conditions, RandomValueRange rolls, RandomValueRange bonusRolls)
     {
         this.name = name;
         this.entries = entries;
@@ -47,9 +49,8 @@ public class MutableLootPool implements DeepClone<MutableLootPool>
     @Override
     public MutableLootPool deepClone()
     {
-        List<MutableLootEntry<?, ?>> entriesDeepClone = entries.stream()
-            .map(DeepClone::deepClone)
-            .collect(toList());
+        Map<String, MutableLootEntry<?, ?>> entriesDeepClone = entries.entrySet().stream()
+            .collect(toMap(Map.Entry::getKey, e -> e.getValue().deepClone()));
         return new MutableLootPool(name, entriesDeepClone, deepCloneConditions(), rolls, bonusRolls);
     }
 
@@ -70,7 +71,7 @@ public class MutableLootPool implements DeepClone<MutableLootPool>
 
     public LootPool toImmutable()
     {
-        LootEntry[] entriesArray = entries.stream()
+        LootEntry[] entriesArray = entries.values().stream()
             .map(MutableLootEntry::toImmutable)
             .toArray(LootEntry[]::new);
         return new LootPool(entriesArray, conditions.toArray(new LootCondition[0]), rolls, bonusRolls, name);
@@ -89,6 +90,11 @@ public class MutableLootPool implements DeepClone<MutableLootPool>
     public void addCondition(LootCondition condition)
     {
         conditions.add(condition);
+    }
+
+    public void addConditions(List<LootCondition> newConditions)
+    {
+        conditions.addAll(newConditions);
     }
 
     public void clearConditions()
@@ -121,14 +127,24 @@ public class MutableLootPool implements DeepClone<MutableLootPool>
         return name;
     }
 
-    public List<MutableLootEntry<?, ?>> getEntries()
+    public Map<String, MutableLootEntry<?, ?>> getEntries()
     {
         return entries;
     }
 
+    public MutableLootEntry<?, ?> getEntry(String name)
+    {
+        return entries.get(name);
+    }
+
     public void addEntry(MutableLootEntry<?, ?> entry)
     {
-        entries.add(entry);
+        entries.put(entry.getName(), entry);
+    }
+
+    public MutableLootEntry<?, ?> removeEntry(String name)
+    {
+        return entries.remove(name);
     }
 
     public void clearEntries()
