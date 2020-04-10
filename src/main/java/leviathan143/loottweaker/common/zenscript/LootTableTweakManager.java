@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import leviathan143.loottweaker.common.mutable_loot.MutableLootTable;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTable;
@@ -37,20 +38,25 @@ public class LootTableTweakManager
         return tweakedTables.computeIfAbsent(tableId, id -> context.wrapLootTable(id));
     }
 
-    public void tweakTable(ResourceLocation tableId, LootTable table)
+    public LootTable tweakTable(ResourceLocation tableId, LootTable table)
     {
         if (tweakedTables.containsKey(tableId))
         {
             if (table.isFrozen())
             {
                 LOGGER.debug("Skipped modifying loot table {} because it is frozen", tableId);
-                return;
+                return table;
             }
             ZenLootTableWrapper wrapper = tweakedTables.get(tableId);
             if (wrapper.isValid())
-                wrapper.applyTweakers(table);
+            {
+                MutableLootTable mutableTable = new MutableLootTable(table, tableId);
+                wrapper.applyTweakers(mutableTable);
+                return mutableTable.toImmutable();
+            }
             else
                 context.getErrorHandler().error("No loot table with name %s exists!", tableId);
         }
+        return table;
     }
 }

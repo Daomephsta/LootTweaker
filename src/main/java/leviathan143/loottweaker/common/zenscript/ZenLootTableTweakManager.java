@@ -34,6 +34,6 @@ public class ZenLootTableTweakManager
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onTableLoad(LootTableLoadEvent event)
     {
-        TWEAK_MANAGER.tweakTable(event.getName(), event.getTable());
+        event.setTable(TWEAK_MANAGER.tweakTable(event.getName(), event.getTable()));
     }
 }

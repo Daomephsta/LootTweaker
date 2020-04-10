@@ -17,13 +17,19 @@ import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import leviathan143.loottweaker.common.ErrorHandler;
 import leviathan143.loottweaker.common.LootTweaker;
-import leviathan143.loottweaker.common.darkmagic.LootPoolAccessors;
 import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
 import leviathan143.loottweaker.common.lib.DataParser;
+import leviathan143.loottweaker.common.mutable_loot.MutableLootPool;
+import leviathan143.loottweaker.common.mutable_loot.MutableLootTable;
+import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntry;
+import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntryEmpty;
+import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntryItem;
+import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntryTable;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper.LootTableTweaker;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.*;
+import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.functions.*;
 import stanhebben.zenscript.annotations.Optional;
@@ -36,7 +42,6 @@ public class ZenLootPoolWrapper implements LootTableTweaker
 {
     private static final String ENTRY_NAME_PREFIX = "loottweaker#";
     private static final int DEFAULT_QUALITY = 0;
-    private static final LootEntry[] NO_ENTRIES = new LootEntry[0];
     private static final LootCondition[] NO_CONDITIONS = new LootCondition[0];
     private static final LootFunction[] NO_FUNCTIONS = new LootFunction[0];
     //Other state
@@ -68,7 +73,7 @@ public class ZenLootPoolWrapper implements LootTableTweaker
             .filter(ZenLootConditionWrapper::isValid)
             .map(ZenLootConditionWrapper::unwrap)
             .collect(toList());
-        enqueueTweaker(pool -> LootPoolAccessors.getConditions(pool).addAll(parsedConditions),
+        enqueueTweaker(pool -> pool.addConditions(parsedConditions),
             "Added %d conditions to pool '%s' of table '%s'", parsedConditions.size(), id, parentTableId);
 	}
 
@@ -80,21 +85,21 @@ public class ZenLootPoolWrapper implements LootTableTweaker
             .filter(java.util.Optional::isPresent)
             .map(java.util.Optional::get)
             .collect(toList());
-        enqueueTweaker(pool -> LootPoolAccessors.getConditions(pool).addAll(parsedConditions),
+        enqueueTweaker(pool -> pool.addConditions(parsedConditions),
             "Added %d conditions to pool '%s' of table '%s'", parsedConditions.size(), id, parentTableId);
     }
 
 	@ZenMethod
 	public void clearConditions()
 	{
-	    enqueueTweaker(pool -> LootPoolAccessors.getConditions(pool).clear(),
+	    enqueueTweaker(MutableLootPool::clearConditions,
 	        "Queuing all conditions of pool %s in table %s for removal", id, parentTableId);
 	}
 
 	@ZenMethod
     public void clearEntries()
     {
-        enqueueTweaker(pool -> LootPoolAccessors.getEntries(pool).clear(),
+        enqueueTweaker(MutableLootPool::clearEntries,
             "Queuing all entries of pool %s in table %s for removal", id, parentTableId);
     }
 
@@ -152,15 +157,16 @@ public class ZenLootPoolWrapper implements LootTableTweaker
         if (stack == null)
             return;
         String entryName = name != null ? name : generateName();
-        LootEntryItem entry = new LootEntryItem(CraftTweakerMC.getItemStack(stack).getItem(), weight, quality,
-            addStackFunctions(stack, functions), conditions, entryName);
+        Item item = CraftTweakerMC.getItemStack(stack).getItem();
+        MutableLootEntryItem entry = new MutableLootEntryItem(entryName, weight, quality, Lists.newArrayList(conditions),
+            item, withStackFunctions(stack, functions));
         addEntry(entry, "Queued item entry '%s' for addition to pool %s of table %s", entryName, id, parentTableId);
     }
 
     /* Adds loot functions equivalent to the damage, stacksize and NBT of the
      * input stack to the passed in array, if loot functions of the same type
      * are not present. */
-    private LootFunction[] addStackFunctions(IItemStack iStack, LootFunction[] existingFunctions)
+    private List<LootFunction> withStackFunctions(IItemStack iStack, LootFunction[] existingFunctions)
     {
         ItemStack stack = CraftTweakerMC.getItemStack(iStack);
         boolean sizeFuncExists = false, damageFuncExists = false, nbtFuncExists = false;
@@ -183,7 +189,7 @@ public class ZenLootPoolWrapper implements LootTableTweaker
         }
         if (iStack.getTag() != DataMap.EMPTY && !nbtFuncExists)
             functionsOut.add(new SetNBT(NO_CONDITIONS, CraftTweakerMC.getNBTCompound(iStack.getTag())));
-        return functionsOut.toArray(NO_FUNCTIONS);
+        return functionsOut;
     }
 
 	@ZenMethod
@@ -221,7 +227,7 @@ public class ZenLootPoolWrapper implements LootTableTweaker
 	private void addLootTableEntryInternal(String tableName, int weight, int quality, LootCondition[] conditions, @Optional String name)
     {
         String entryName = name != null ? name : generateName();
-        addEntry(new LootEntryTable(new ResourceLocation(tableName), weight, quality, conditions, entryName),
+        addEntry(new MutableLootEntryTable(entryName, weight, quality, conditions, new ResourceLocation(tableName)),
             "Queued loot table entry '%s' for addition to pool %s of table %s", entryName, id, parentTableId);
     }
 
@@ -260,7 +266,7 @@ public class ZenLootPoolWrapper implements LootTableTweaker
 	private void addEmptyEntryInternal(int weight, int quality, LootCondition[] conditions, @Optional String name)
 	{
         String entryName = name != null ? name : generateName();
-        addEntry(new LootEntryEmpty(weight, quality, conditions, entryName),
+        addEntry(new MutableLootEntryEmpty(entryName, weight, quality, conditions),
             "Queued empty entry '%s' for addition to pool %s of table %s", entryName, id, parentTableId);
 	}
 
@@ -283,7 +289,7 @@ public class ZenLootPoolWrapper implements LootTableTweaker
 	        "Bonus rolls of pool %s in table %s will be set to (%f, %f)", id, parentTableId, minBonusRolls, maxBonusRolls);
 	}
 
-	private void addEntry(LootEntry entry, String format, Object... args)
+	private void addEntry(MutableLootEntry<?, ?> entry, String format, Object... args)
 	{
 	    enqueueTweaker(pool ->
 	    {
@@ -294,7 +300,7 @@ public class ZenLootPoolWrapper implements LootTableTweaker
             catch (RuntimeException e)
             {
                 if (e.getMessage().contains("duplicate"))
-                    errorHandler.error("Cannot add entry '%s' to pool '%s' of table '%s'. Entry names must be unique within their pool.", entry.getEntryName(), pool.getName(), parentTableId);
+                    errorHandler.error("Cannot add entry '%s' to pool '%s' of table '%s'. Entry names must be unique within their pool.", entry.getName(), pool.getName(), parentTableId);
                 else
                     throw e;
             }
@@ -308,22 +314,22 @@ public class ZenLootPoolWrapper implements LootTableTweaker
     }
 
     @Override
-	public void tweak(LootTable table)
+	public void tweak(MutableLootTable table)
 	{
-        LootPool existing = table.getPool(id);
+        MutableLootPool existing = table.getPool(id);
         if (existing != null)
             tweak(existing);
         else
         {
             RandomValueRange dummyRange = new RandomValueRange(1.0F);
-            LootPool newPool = new LootPool(NO_ENTRIES, NO_CONDITIONS, dummyRange, dummyRange, id);
+            MutableLootPool newPool = new MutableLootPool(id, Collections.emptyMap(), Collections.emptyList(), dummyRange, dummyRange);
             tweak(newPool);
             table.addPool(newPool);
             CraftTweakerAPI.logInfo(String.format("Added new pool %s to table %s", id, parentTableId));
         }
 	}
 
-    public void tweak(LootPool pool)
+    public void tweak(MutableLootPool pool)
     {
         //Note: Tweaks MUST be applied in declaration order, see https://github.com/Daomephsta/LootTweaker/issues/65
         for (LootPoolTweaker tweaker : tweakers)
@@ -333,6 +339,6 @@ public class ZenLootPoolWrapper implements LootTableTweaker
     @FunctionalInterface
     public interface LootPoolTweaker
     {
-        public void tweak(LootPool pool);
+        public void tweak(MutableLootPool pool);
     }
 }

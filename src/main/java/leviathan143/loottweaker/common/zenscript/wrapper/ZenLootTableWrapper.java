@@ -8,12 +8,11 @@ import java.util.Map;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ZenRegister;
 import leviathan143.loottweaker.common.LootTweaker;
-import leviathan143.loottweaker.common.darkmagic.LootTableAccessors;
 import leviathan143.loottweaker.common.lib.LootTableFinder;
+import leviathan143.loottweaker.common.mutable_loot.MutableLootPool;
+import leviathan143.loottweaker.common.mutable_loot.MutableLootTable;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootPool;
-import net.minecraft.world.storage.loot.LootTable;
 import net.minecraft.world.storage.loot.LootTableList;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -43,14 +42,9 @@ public class ZenLootTableWrapper
         tweakedPools.put(poolName, pool);
         enqueueTweaker((table) ->
         {
-            LootPool targetPool = table.getPool(poolName);
+            MutableLootPool targetPool = table.getPool(poolName);
             if (targetPool != null)
-            {
-                if (!targetPool.isFrozen())
-                    pool.tweak(targetPool);
-                else
-                    CraftTweakerAPI.logInfo(String.format("Skipped modifying pool %s of table %s because it is frozen", poolName, id));
-            }
+                pool.tweak(targetPool);
             else
                 context.getErrorHandler().error("No loot pool with name %s exists in table %s!", poolName, id);
         }, "Retrieved pool %s from table %s", poolName, id);
@@ -84,8 +78,7 @@ public class ZenLootTableWrapper
     @ZenMethod
     public void clear()
     {
-        enqueueTweaker((table) -> LootTableAccessors.getPools(table).clear(),
-            "Queued all pools of table %s for removal", id);
+        enqueueTweaker(MutableLootTable::clearPools, "Queued all pools of table %s for removal", id);
     }
 
     private void enqueueTweaker(LootTableTweaker tweaker, String format, Object... args)
@@ -94,10 +87,10 @@ public class ZenLootTableWrapper
         CraftTweakerAPI.logInfo(String.format(format, args));
     }
 
-    public void applyTweakers(LootTable table)
+    public void applyTweakers(MutableLootTable mutableTable)
     {
         for (LootTableTweaker tweaker : tweaks)
-            tweaker.tweak(table);
+            tweaker.tweak(mutableTable);
     }
 
 	public ResourceLocation getId()
@@ -114,6 +107,6 @@ public class ZenLootTableWrapper
 	@FunctionalInterface
 	public interface LootTableTweaker
 	{
-	    public void tweak(LootTable table);
+	    public void tweak(MutableLootTable mutableTable);
 	}
 }
