@@ -2,7 +2,9 @@ package leviathan143.loottweaker.common.mutable_loot;
 
 import static java.util.stream.Collectors.toMap;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BinaryOperator;
 
 import javax.annotation.Nullable;
 
@@ -22,12 +24,19 @@ public class MutableLootTable implements DeepClone<MutableLootTable>
     public MutableLootTable(LootTable table, ResourceLocation id)
     {
         this.id = id;
+        //Can never be duplicate entries when pulling from an existing table, but be informative just in case
+        BinaryOperator<MutableLootPool> mergeFunction = (a, b) ->
+        {
+            throw new IllegalStateException(String.format(
+                "Unexpected duplicate pool '%s' while creating mutable table '%s' from immutable table. Report this to the mod author",
+                a.getName(), id));
+        };
         this.pools = LootTableAccessors.getPools(table).stream()
             .map(MutableLootPool::new)
-            .collect(toMap(MutableLootPool::getName, Functions.identity()));
+            .collect(toMap(MutableLootPool::getName, Functions.identity(), mergeFunction, HashMap::new));
     }
 
-    private MutableLootTable(ResourceLocation id, Map<String, MutableLootPool> pools)
+    public MutableLootTable(ResourceLocation id, Map<String, MutableLootPool> pools)
     {
         this.id = id;
         this.pools = pools;
@@ -36,8 +45,15 @@ public class MutableLootTable implements DeepClone<MutableLootTable>
     @Override
     public MutableLootTable deepClone()
     {
+        //Can never be duplicate entries when deep cloning, but be informative just in case
+        BinaryOperator<MutableLootPool> mergeFunction = (a, b) ->
+        {
+            throw new IllegalStateException(String.format(
+                "Unexpected duplicate pool '%s' while deep cloning mutable table '%s'. Report this to the mod author",
+                a.getName(), id));
+        };
         Map<String, MutableLootPool> poolsDeepClone = pools.entrySet().stream()
-            .collect(toMap(Map.Entry::getKey, e -> e.getValue().deepClone()));
+            .collect(toMap(Map.Entry::getKey, e -> e.getValue().deepClone(), mergeFunction, HashMap::new));
         return new MutableLootTable(id, poolsDeepClone);
     }
 
@@ -67,7 +83,10 @@ public class MutableLootTable implements DeepClone<MutableLootTable>
 
     public void addPool(MutableLootPool pool)
     {
-        pools.put(pool.getName(), pool);
+        if (pools.putIfAbsent(pool.getName(), pool) != null)
+        {
+
+        }
     }
 
     public MutableLootPool removePool(String name)

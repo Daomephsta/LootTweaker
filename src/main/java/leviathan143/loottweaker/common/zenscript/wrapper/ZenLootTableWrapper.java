@@ -14,6 +14,7 @@ import leviathan143.loottweaker.common.mutable_loot.MutableLootTable;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTableList;
+import net.minecraft.world.storage.loot.RandomValueRange;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
@@ -55,7 +56,21 @@ public class ZenLootTableWrapper
     public ZenLootPoolWrapper addPool(String poolName, float minRolls, float maxRolls, float minBonusRolls, float maxBonusRolls)
     {
         ZenLootPoolWrapper pool = context.createPoolWrapper(poolName, id);
-        enqueueTweaker(pool, "Queued pool %s for addition to table %s", poolName, id);
+        enqueueTweaker(table ->
+        {
+            MutableLootPool existing = table.getPool(poolName);
+            if (existing != null)
+            {
+                context.getErrorHandler().error("Cannot add pool '%s' to table '%s'. Pool names must be unique within their table.",
+                    poolName, id);
+                return;
+            }
+            RandomValueRange dummyRange = new RandomValueRange(1.0F);
+            MutableLootPool newPool = new MutableLootPool(poolName, new HashMap<>(), new ArrayList<>(), dummyRange, dummyRange);
+            pool.tweak(newPool);
+            table.addPool(newPool);
+            CraftTweakerAPI.logInfo(String.format("Added new pool %s to table %s", poolName, id));
+        }, "Queued pool %s for addition to table %s", poolName, id);
         pool.setRolls(minRolls, maxRolls);
         pool.setBonusRolls(minBonusRolls, maxBonusRolls);
         return pool;

@@ -20,12 +20,10 @@ import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
 import leviathan143.loottweaker.common.lib.DataParser;
 import leviathan143.loottweaker.common.mutable_loot.MutableLootPool;
-import leviathan143.loottweaker.common.mutable_loot.MutableLootTable;
 import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntry;
 import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntryEmpty;
 import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntryItem;
 import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntryTable;
-import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper.LootTableTweaker;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -38,7 +36,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenRegister
 @ZenClass(LootTweaker.MODID + ".vanilla.loot.LootPool")
-public class ZenLootPoolWrapper implements LootTableTweaker
+public class ZenLootPoolWrapper// implements LootTableTweaker
 {
     private static final String ENTRY_NAME_PREFIX = "loottweaker#";
     private static final int DEFAULT_QUALITY = 0;
@@ -293,17 +291,13 @@ public class ZenLootPoolWrapper implements LootTableTweaker
 	{
 	    enqueueTweaker(pool ->
 	    {
-	        try
-            {
-	            pool.addEntry(entry);
-            }
-            catch (RuntimeException e)
-            {
-                if (e.getMessage().contains("duplicate"))
-                    errorHandler.error("Cannot add entry '%s' to pool '%s' of table '%s'. Entry names must be unique within their pool.", entry.getName(), pool.getName(), parentTableId);
-                else
-                    throw e;
-            }
+	        if (pool.getEntry(entry.getName()) != null)
+	        {
+	            errorHandler.error("Cannot add entry '%s' to pool '%s' of table '%s'. Entry names must be unique within their pool.",
+	                entry.getName(), pool.getName(), parentTableId);
+	            return;
+	        }
+	        pool.addEntry(entry);
 	    }, format, args);
 	}
 
@@ -312,22 +306,6 @@ public class ZenLootPoolWrapper implements LootTableTweaker
         tweakers.add(tweaker);
         CraftTweakerAPI.logInfo(String.format(format, args));
     }
-
-    @Override
-	public void tweak(MutableLootTable table)
-	{
-        MutableLootPool existing = table.getPool(id);
-        if (existing != null)
-            tweak(existing);
-        else
-        {
-            RandomValueRange dummyRange = new RandomValueRange(1.0F);
-            MutableLootPool newPool = new MutableLootPool(id, Collections.emptyMap(), Collections.emptyList(), dummyRange, dummyRange);
-            tweak(newPool);
-            table.addPool(newPool);
-            CraftTweakerAPI.logInfo(String.format("Added new pool %s to table %s", id, parentTableId));
-        }
-	}
 
     public void tweak(MutableLootPool pool)
     {
