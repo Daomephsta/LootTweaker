@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import leviathan143.loottweaker.common.lib.LootTableDumper;
+import leviathan143.loottweaker.common.lib.LootTableFinder;
 import leviathan143.loottweaker.common.mutable_loot.MutableLootTable;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
 import net.minecraft.util.ResourceLocation;
@@ -44,7 +45,14 @@ public class LootTableTweakManager
 
     public ZenLootTableWrapper newTable(String id)
     {
-        ZenLootTableWrapper builder = context.wrapLootTable(new ResourceLocation(id));
+        ResourceLocation tableId = new ResourceLocation(id);
+        if (LootTableFinder.DEFAULT.exists(tableId))
+        {
+            context.getErrorHandler().error("Table id '%s' already in use", id);
+            //Gotta return something non-null. This won't do anything because it'll never be applied.
+            return context.wrapLootTable(tableId);
+        }
+        ZenLootTableWrapper builder = context.wrapLootTable(tableId);
         tableBuilders.add(builder);
         return builder;
     }
