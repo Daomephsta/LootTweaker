@@ -10,8 +10,8 @@ import leviathan143.loottweaker.common.lib.LootTableDumper;
 import leviathan143.loottweaker.common.lib.LootTableFinder;
 import leviathan143.loottweaker.common.mutable_loot.MutableLootTable;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.LootTable;
 
 public class LootTableTweakManager
@@ -20,7 +20,6 @@ public class LootTableTweakManager
     private final Map<ResourceLocation, ZenLootTableWrapper> tweakedTables = new HashMap<>();
     private final Collection<ZenLootTableWrapper> tableBuilders = new HashSet<>();
     private final LootTweakerContext context;
-    private File lastWorldDirectory;
 
     LootTableTweakManager(LootTweakerContext context)
     {
@@ -57,19 +56,16 @@ public class LootTableTweakManager
         return builder;
     }
 
-    public void onWorldLoad(World world)
+    public void onServerStart(MinecraftServer server)
     {
-        //Only dump once per save
-        if (Objects.equals(lastWorldDirectory, world.getSaveHandler().getWorldDirectory()))
-            return;
-        LootTableDumper dumper = new LootTableDumper(new File(world.getSaveHandler().getWorldDirectory(), "data/loot_tables"));
+        File worldLootTables = server.getActiveAnvilConverter().getFile(server.getFolderName(), "data/loot_tables");
+        LootTableDumper dumper = new LootTableDumper(worldLootTables);
         for (ZenLootTableWrapper builder : tableBuilders)
         {
             MutableLootTable mutableTable = new MutableLootTable(builder.getId(), new HashMap<>());
             builder.applyTweakers(mutableTable);
             dumper.dump(mutableTable.toImmutable(), builder.getId());
         }
-        lastWorldDirectory = world.getSaveHandler().getWorldDirectory();
     }
 
     public LootTable tweakTable(ResourceLocation tableId, LootTable table)

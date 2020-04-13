@@ -3,10 +3,12 @@ package leviathan143.loottweaker.common;
 import crafttweaker.mc1120.commands.CTChatCommand;
 import leviathan143.loottweaker.common.command.CommandLootTables;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
+import leviathan143.loottweaker.common.zenscript.ZenLootTableTweakManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 @Mod(modid = LootTweaker.MODID, name = LootTweaker.MODNAME, version = LootTweaker.VERSION, dependencies = LootTweaker.DEPENDENCIES)
 public class LootTweaker
@@ -27,6 +29,12 @@ public class LootTweaker
 	public void init(FMLInitializationEvent event)
 	{
 		CTChatCommand.registerCommand(new CommandLootTables());
+	}
+
+	@Mod.EventHandler
+	public void serverStarting(FMLServerStartingEvent event)
+	{
+	    ZenLootTableTweakManager.onServerStarting(event);
 	}
 
 	@Mod.EventHandler
