@@ -51,15 +51,15 @@ public class ZenLootTableWrapper
         return pool;
     }
 
-	@ZenMethod
-	public ZenLootPoolWrapper addPool(String poolName, int minRolls, int maxRolls, int minBonusRolls, int maxBonusRolls)
-	{
-	    ZenLootPoolWrapper pool = context.createPoolWrapper(poolName, id);
-	    enqueueTweaker(pool, "Queued pool %s for addition to table %s", poolName, id);
-	    pool.setRolls(minRolls, maxRolls);
-	    pool.setBonusRolls(minBonusRolls, maxBonusRolls);
+    @ZenMethod
+    public ZenLootPoolWrapper addPool(String poolName, float minRolls, float maxRolls, float minBonusRolls, float maxBonusRolls)
+    {
+        ZenLootPoolWrapper pool = context.createPoolWrapper(poolName, id);
+        enqueueTweaker(pool, "Queued pool %s for addition to table %s", poolName, id);
+        pool.setRolls(minRolls, maxRolls);
+        pool.setBonusRolls(minBonusRolls, maxBonusRolls);
         return pool;
-	}
+    }
 
 	@ZenMethod
 	public void removePool(String poolName)
