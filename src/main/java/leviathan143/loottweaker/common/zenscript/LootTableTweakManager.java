@@ -35,7 +35,16 @@ public class LootTableTweakManager
 	private ZenLootTableWrapper getTableInternal(String tableName)
     {
         ResourceLocation tableId = new ResourceLocation(tableName);
-        return tweakedTables.computeIfAbsent(tableId, id -> context.wrapLootTable(id));
+        ZenLootTableWrapper wrapper = tweakedTables.get(tableId);
+        if (wrapper == null)
+        {
+            wrapper = context.wrapLootTable(tableId);
+            if (!wrapper.isValid())
+                context.getErrorHandler().error("No loot table with name %s exists!", tableName);
+            else
+                tweakedTables.put(tableId, wrapper);
+        }
+        return wrapper;
     }
 
     public LootTable tweakTable(ResourceLocation tableId, LootTable table)
@@ -47,15 +56,9 @@ public class LootTableTweakManager
                 LOGGER.debug("Skipped modifying loot table {} because it is frozen", tableId);
                 return table;
             }
-            ZenLootTableWrapper wrapper = tweakedTables.get(tableId);
-            if (wrapper.isValid())
-            {
-                MutableLootTable mutableTable = new MutableLootTable(table, tableId);
-                wrapper.applyTweakers(mutableTable);
-                return mutableTable.toImmutable();
-            }
-            else
-                context.getErrorHandler().error("No loot table with name %s exists!", tableId);
+            MutableLootTable mutableTable = new MutableLootTable(table, tableId);
+            tweakedTables.get(tableId).applyTweakers(mutableTable);
+            return mutableTable.toImmutable();
         }
         return table;
     }
