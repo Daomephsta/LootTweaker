@@ -1,6 +1,7 @@
 package io.github.daomephsta.loottweaker.test;
 
 import static io.github.daomephsta.loottweaker.test.TestUtils.loadTable;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.github.daomephsta.loottweaker.test.TestErrorHandler.LootTweakerException;
@@ -33,5 +34,23 @@ public class LootTableTweakManagerTests
         assertThatThrownBy(() -> tableTweakManager.tweakTable(nonExistentTableId, LootTable.EMPTY_LOOT_TABLE))
             .isInstanceOf(LootTweakerException.class)
             .hasMessage("No loot table with name %s exists!", nonExistentTableId);
+    }
+
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    public void newTable()
+    {
+        LootTableTweakManager tableTweakManager = context.createLootTableTweakManager();
+        assertThat(tableTweakManager.newTable("loottweaker:qux"))
+            .isNotNull();
+    }
+
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    public void newTableCollision()
+    {
+        String existingTableId = "loottweaker:foo";
+        LootTableTweakManager tableTweakManager = context.createLootTableTweakManager();
+        assertThatThrownBy(() -> tableTweakManager.newTable(existingTableId))
+            .isInstanceOf(LootTweakerException.class)
+            .hasMessage("Table id '%s' already in use", existingTableId);
     }
 }
