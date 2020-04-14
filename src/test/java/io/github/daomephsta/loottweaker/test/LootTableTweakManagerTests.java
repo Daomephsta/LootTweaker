@@ -1,5 +1,6 @@
 package io.github.daomephsta.loottweaker.test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.github.daomephsta.loottweaker.test.TestErrorHandler.LootTweakerException;
@@ -29,5 +30,13 @@ public class LootTableTweakManagerTests
         assertThatThrownBy(() -> tableTweakManager.getTable(nonExistentTableId.toString()))
             .isInstanceOf(LootTweakerException.class)
             .hasMessage("No loot table with name %s exists!", nonExistentTableId);
+    }
+
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    public void tableWrapperCaching()
+    {
+        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
+        assertThat(tweakManager.getTable("loottweaker:foo")).isNotNull();
+        assertThat(tweakManager.getTable("loottweaker:foo")).isEqualTo(tweakManager.getTable("loottweaker:foo"));
     }
 }
