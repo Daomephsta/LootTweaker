@@ -6,6 +6,7 @@ import java.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import crafttweaker.CraftTweakerAPI;
 import leviathan143.loottweaker.common.lib.LootTableDumper;
 import leviathan143.loottweaker.common.lib.LootTableFinder;
 import leviathan143.loottweaker.common.mutable_loot.MutableLootTable;
@@ -53,6 +54,7 @@ public class LootTableTweakManager
         }
         ZenLootTableWrapper builder = context.wrapLootTable(tableId);
         tableBuilders.add(builder);
+        CraftTweakerAPI.logInfo("Created new table '" + id + "'");
         return builder;
     }
 
