@@ -39,4 +39,21 @@ public class LootTableTweakManagerTests
         assertThat(tweakManager.getTable("loottweaker:foo")).isNotNull();
         assertThat(tweakManager.getTable("loottweaker:foo")).isEqualTo(tweakManager.getTable("loottweaker:foo"));
     }
+
+    public void newTable()
+    {
+        LootTableTweakManager tableTweakManager = context.createLootTableTweakManager();
+        assertThat(tableTweakManager.newTable("loottweaker:qux"))
+            .isNotNull();
+    }
+
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    public void newTableCollision()
+    {
+        String existingTableId = "loottweaker:foo";
+        LootTableTweakManager tableTweakManager = context.createLootTableTweakManager();
+        assertThatThrownBy(() -> tableTweakManager.newTable(existingTableId))
+            .isInstanceOf(LootTweakerException.class)
+            .hasMessage("Table id '%s' already in use", existingTableId);
+    }
 }
