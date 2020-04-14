@@ -277,14 +277,14 @@ public class ZenLootPoolWrapper// implements LootTableTweaker
 	public void setRolls(float minRolls, float maxRolls)
 	{
 	    enqueueTweaker(pool -> pool.setRolls(new RandomValueRange(minRolls, maxRolls)),
-	        "Rolls of pool %s in table %s will be set to (%f, %f)", id, parentTableId, minRolls, maxRolls);
+	        "Rolls of pool %s in table %s will be set to (%.0f, %.0f)", id, parentTableId, minRolls, maxRolls);
 	}
 
 	@ZenMethod
 	public void setBonusRolls(float minBonusRolls, float maxBonusRolls)
 	{
 	    enqueueTweaker(pool -> pool.setBonusRolls(new RandomValueRange(minBonusRolls, maxBonusRolls)),
-	        "Bonus rolls of pool %s in table %s will be set to (%f, %f)", id, parentTableId, minBonusRolls, maxBonusRolls);
+	        "Bonus rolls of pool %s in table %s will be set to (%.0f, %.0f)", id, parentTableId, minBonusRolls, maxBonusRolls);
 	}
 
 	private void addEntry(MutableLootEntry<?, ?> entry, String format, Object... args)
