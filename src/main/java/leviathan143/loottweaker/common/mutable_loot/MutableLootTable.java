@@ -84,9 +84,7 @@ public class MutableLootTable implements DeepClone<MutableLootTable>
     public void addPool(MutableLootPool pool)
     {
         if (pools.putIfAbsent(pool.getName(), pool) != null)
-        {
-
-        }
+            throw new IllegalArgumentException(String.format("Duplicate pool name '%s' in table '%s'", pool.getName(), id));
     }
 
     public MutableLootPool removePool(String name)
