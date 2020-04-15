@@ -55,7 +55,7 @@ public class ZenLootTableWrapper
     @ZenMethod
     public ZenLootPoolWrapper addPool(String poolName, float minRolls, float maxRolls, float minBonusRolls, float maxBonusRolls)
     {
-        ZenLootPoolWrapper pool = context.createPoolWrapper(poolName, id);
+        ZenLootPoolWrapper pool = context.wrapPool(poolName, id);
         enqueueTweaker(table ->
         {
             MutableLootPool existing = table.getPool(poolName);
@@ -65,14 +65,12 @@ public class ZenLootTableWrapper
                     poolName, id);
                 return;
             }
-            RandomValueRange dummyRange = new RandomValueRange(1.0F);
-            MutableLootPool newPool = new MutableLootPool(poolName, new HashMap<>(), new ArrayList<>(), dummyRange, dummyRange);
+            MutableLootPool newPool = new MutableLootPool(poolName, new HashMap<>(), new ArrayList<>(),
+                new RandomValueRange(minRolls, maxRolls), new RandomValueRange(minBonusRolls, maxBonusRolls));
             pool.tweak(newPool);
             table.addPool(newPool);
             CraftTweakerAPI.logInfo(String.format("Added new pool %s to table %s", poolName, id));
         }, "Queued pool %s for addition to table %s", poolName, id);
-        pool.setRolls(minRolls, maxRolls);
-        pool.setBonusRolls(minBonusRolls, maxBonusRolls);
         return pool;
     }
 

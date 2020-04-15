@@ -24,6 +24,7 @@ import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntry;
 import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntryEmpty;
 import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntryItem;
 import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntryTable;
+import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -36,14 +37,14 @@ import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenRegister
 @ZenClass(LootTweaker.MODID + ".vanilla.loot.LootPool")
-public class ZenLootPoolWrapper// implements LootTableTweaker
+public class ZenLootPoolWrapper
 {
     private static final String ENTRY_NAME_PREFIX = "loottweaker#";
     private static final int DEFAULT_QUALITY = 0;
     private static final LootCondition[] NO_CONDITIONS = new LootCondition[0];
     private static final LootFunction[] NO_FUNCTIONS = new LootFunction[0];
     //Other state
-    private final ErrorHandler errorHandler;
+    private final LootTweakerContext context;
     private final DataParser loggingParser;
     private final List<LootPoolTweaker> tweakers = new ArrayList<>();
     private final ResourceLocation parentTableId;
@@ -51,10 +52,10 @@ public class ZenLootPoolWrapper// implements LootTableTweaker
     private final String id;
     private int nextEntryNameId = 1;
 
-    public ZenLootPoolWrapper(ErrorHandler errorHandler, String id, ResourceLocation parentTableId)
+    public ZenLootPoolWrapper(LootTweakerContext context, String id, ResourceLocation parentTableId)
     {
-        this.errorHandler = errorHandler;
-        this.loggingParser = createDataParser(errorHandler);
+        this.context = context;
+        this.loggingParser = createDataParser(context.getErrorHandler());
         this.id = id;
         this.parentTableId = parentTableId;
     }
@@ -107,7 +108,7 @@ public class ZenLootPoolWrapper// implements LootTableTweaker
 		enqueueTweaker(pool ->
 		{
 		    if (pool.removeEntry(entryName) == null)
-                errorHandler.error("No entry with name %s exists in pool %s", entryName, id);
+                context.getErrorHandler().error("No entry with name %s exists in pool %s", entryName, id);
 		}, "Queueing entry %s of pool %s for removal", entryName, id);
 	}
 
@@ -293,7 +294,7 @@ public class ZenLootPoolWrapper// implements LootTableTweaker
 	    {
 	        if (pool.getEntry(entry.getName()) != null)
 	        {
-	            errorHandler.error("Cannot add entry '%s' to pool '%s' of table '%s'. Entry names must be unique within their pool.",
+	            context.getErrorHandler().error("Cannot add entry '%s' to pool '%s' of table '%s'. Entry names must be unique within their pool.",
 	                entry.getName(), pool.getName(), parentTableId);
 	            return;
 	        }

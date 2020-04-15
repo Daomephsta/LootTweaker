@@ -43,11 +43,6 @@ public class LootTweakerContext
 
     public ZenLootPoolWrapper wrapPool(String poolName, ResourceLocation parentId)
     {
-        return new ZenLootPoolWrapper(errorHandler, poolName, parentId);
-    }
-
-    public ZenLootPoolWrapper createPoolWrapper(String poolName, ResourceLocation parentId)
-    {
-        return new ZenLootPoolWrapper(errorHandler, poolName, parentId);
+        return new ZenLootPoolWrapper(this, poolName, parentId);
     }
 }
