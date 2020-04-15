@@ -43,7 +43,7 @@ public class MutableLootEntryItem extends MutableLootEntry<MutableLootEntryItem,
     {
         List<LootFunction> clone = new ArrayList<>(functions.size());
         for (int i = 0; i < functions.size(); i++)
-            clone.set(i, deepCloneFunction(functions.get(i)));
+            clone.add(deepCloneFunction(functions.get(i)));
         return clone;
     }
 

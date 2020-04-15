@@ -59,7 +59,7 @@ public abstract class MutableLootEntry<Self extends MutableLootEntry<Self, Immut
     {
         List<LootCondition> clone = new ArrayList<>(conditions.size());
         for (int i = 0; i < conditions.size(); i++)
-            clone.set(i, deepCloneCondition(conditions.get(i)));
+            clone.add(deepCloneCondition(conditions.get(i)));
         return clone;
     }
 
