@@ -19,7 +19,7 @@ public class LootTableTweakManager
 {
     private static final Logger LOGGER = LogManager.getLogger();
     private final Map<ResourceLocation, ZenLootTableWrapper> tweakedTables = new HashMap<>();
-    private final Collection<ZenLootTableWrapper> tableBuilders = new HashSet<>();
+    private final Map<ResourceLocation, ZenLootTableWrapper> tableBuilders = new HashMap<>();
     private final LootTweakerContext context;
 
     LootTableTweakManager(LootTweakerContext context)
@@ -40,6 +40,8 @@ public class LootTableTweakManager
 	private ZenLootTableWrapper getTableInternal(String tableName)
     {
         ResourceLocation tableId = new ResourceLocation(tableName);
+        if (tableBuilders.containsKey(tableId))
+            return tableBuilders.get(tableId);
         ZenLootTableWrapper wrapper = tweakedTables.get(tableId);
         if (wrapper == null)
         {
@@ -62,7 +64,7 @@ public class LootTableTweakManager
             return context.wrapLootTable(tableId);
         }
         ZenLootTableWrapper builder = context.wrapLootTable(tableId);
-        tableBuilders.add(builder);
+        tableBuilders.put(tableId, builder);
         CraftTweakerAPI.logInfo("Created new table '" + id + "'");
         return builder;
     }
@@ -71,7 +73,7 @@ public class LootTableTweakManager
     {
         File worldLootTables = server.getActiveAnvilConverter().getFile(server.getFolderName(), "data/loot_tables");
         LootTableDumper dumper = new LootTableDumper(worldLootTables);
-        for (ZenLootTableWrapper builder : tableBuilders)
+        for (ZenLootTableWrapper builder : tableBuilders.values())
         {
             MutableLootTable mutableTable = new MutableLootTable(builder.getId(), new HashMap<>());
             builder.applyTweakers(mutableTable);
