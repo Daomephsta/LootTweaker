@@ -48,6 +48,19 @@ public class LootTableTweakManager
     public ZenLootTableWrapper newTable(String id)
     {
         ResourceLocation tableId = new ResourceLocation(id);
+        if (tableId.getNamespace().equals("minecraft"))
+        {
+            if (id.startsWith("minecraft"))
+            {
+                context.getErrorHandler().warn(
+                    "Table id '%s' explicitly uses the minecraft namespace, this is discouraged", id);
+            }
+            else
+            {
+                context.getErrorHandler().warn(
+                    "Table id '%s' implicitly uses the minecraft namespace, this is discouraged", id);
+            }
+        }
         if (LootTableFinder.DEFAULT.exists(tableId))
         {
             context.getErrorHandler().error("Table id '%s' already in use", id);

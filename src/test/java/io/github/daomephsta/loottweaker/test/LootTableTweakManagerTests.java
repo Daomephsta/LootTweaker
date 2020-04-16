@@ -62,4 +62,20 @@ public class LootTableTweakManagerTests
         tableTweakManager.newTable(tableName);
         tableTweakManager.getTable(tableName);
     }
+
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    public void newTableWarnMinecraftNamespace()
+    {
+        LootTableTweakManager tableTweakManager = context.createLootTableTweakManager();
+        String implicitMinecraftNamespace = "qux";
+        String explicitMinecraftNamespace = "minecraft:quuz";
+        assertThatThrownBy(() -> tableTweakManager.newTable(implicitMinecraftNamespace))
+            .isInstanceOf(LootTweakerException.class)
+            .hasMessage("Table id '%s' implicitly uses the minecraft namespace, this is discouraged",
+                implicitMinecraftNamespace);
+        assertThatThrownBy(() -> tableTweakManager.newTable(explicitMinecraftNamespace))
+            .isInstanceOf(LootTweakerException.class)
+            .hasMessage("Table id '%s' explicitly uses the minecraft namespace, this is discouraged",
+                explicitMinecraftNamespace);
+    }
 }
