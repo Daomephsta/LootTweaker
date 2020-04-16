@@ -53,4 +53,13 @@ public class LootTableTweakManagerTests
             .isInstanceOf(LootTweakerException.class)
             .hasMessage("Table id '%s' already in use", existingTableId);
     }
+
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    public void newTableGettable()
+    {
+        LootTableTweakManager tableTweakManager = context.createLootTableTweakManager();
+        String tableName = "loottweaker:qux";
+        tableTweakManager.newTable(tableName);
+        tableTweakManager.getTable(tableName);
+    }
 }
