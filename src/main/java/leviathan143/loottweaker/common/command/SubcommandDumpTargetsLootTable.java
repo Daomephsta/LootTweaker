@@ -13,7 +13,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -24,7 +26,7 @@ import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.ILootContainer;
 
-public class SubcommandDumpTargetsLootTable implements Subcommand 
+public class SubcommandDumpTargetsLootTable implements Subcommand
 {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args)
@@ -62,7 +64,7 @@ public class SubcommandDumpTargetsLootTable implements Subcommand
         else
             sender.sendMessage(new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.target.senderNotEntity"));
     }
-    
+
     private static RayTraceResult getLookTarget(Entity observer, double distance)
     {
         Vec3d eyePos = observer.getPositionEyes(1.0F);
@@ -73,7 +75,7 @@ public class SubcommandDumpTargetsLootTable implements Subcommand
         double blockHitDistance = 0.0D; // The distance to the block that was
                                         // hit
         if (result != null) blockHitDistance = result.hitVec.distanceTo(eyePos);
-        
+
         // Encloses the entire area where entities that could collide with this
         // ray exist
         AxisAlignedBB entitySearchArea = new AxisAlignedBB(eyePos.x, eyePos.y, eyePos.z,
@@ -90,7 +92,7 @@ public class SubcommandDumpTargetsLootTable implements Subcommand
             if (intercept != null)
             {
                 double distance1 = eyePos.distanceTo(intercept.hitVec);
-        
+
                 if ((distance1 < blockHitDistance || blockHitDistance == 0)
                         && (distance1 < entityHitDistance || entityHitDistance == 0.0D))
                 {
@@ -99,9 +101,10 @@ public class SubcommandDumpTargetsLootTable implements Subcommand
                 }
             }
         }
-        
+
         if (hitEntity != null) result = new RayTraceResult(hitEntity, hitEntity.getPositionVector());
-        
+
+        if (result == null) result = new RayTraceResult(Type.MISS, lookTarget, null, new BlockPos(lookTarget));
         return result;
     }
 
