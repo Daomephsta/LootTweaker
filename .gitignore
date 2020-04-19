@@ -28,3 +28,5 @@
 /tutorials/
 /wiki/*
 /.apt_generated/
+#Test logs
+/logs/
