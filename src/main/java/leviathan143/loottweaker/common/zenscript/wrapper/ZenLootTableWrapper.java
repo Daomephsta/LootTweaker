@@ -71,6 +71,12 @@ public class ZenLootTableWrapper
             table.addPool(newPool);
             CraftTweakerAPI.logInfo(String.format("Added new pool %s to table %s", poolName, id));
         }, "Queued pool %s for addition to table %s", poolName, id);
+        if (tweakedPools.putIfAbsent(poolName, pool) != null)
+        {
+            context.getErrorHandler().error("Cannot add pool '%s' to table '%s'. Pool names must be unique within their table.",
+                poolName, id);
+            return pool;
+        }
         return pool;
     }
 

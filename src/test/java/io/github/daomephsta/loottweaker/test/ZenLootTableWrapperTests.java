@@ -9,6 +9,7 @@ import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
 import leviathan143.loottweaker.common.zenscript.LootTableTweakManager;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
+import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootPoolWrapper;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
@@ -95,6 +96,12 @@ public class ZenLootTableWrapperTests
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
         ZenLootTableWrapper fooTweaks = tweakManager.getTable("loottweaker:foo");
         assertThat(fooTweaks.getPool("bar")).isNotNull();
-        assertThat(fooTweaks.getPool("bar")).isEqualTo(fooTweaks.getPool("bar"));
+        assertThat(fooTweaks.getPool("bar"))
+            .withFailMessage("Different invocations of getPool() returned different objects for the pool named 'bar'")
+            .isEqualTo(fooTweaks.getPool("bar"));
+        ZenLootPoolWrapper qux = fooTweaks.addPool("qux", 1, 1, 0, 0);
+        assertThat(fooTweaks.getPool("qux"))
+            .withFailMessage("Wrapper returned by addPool() for added pool 'qux' was not returned by subsequent invocation of getPool()")
+            .isEqualTo(qux);
     }
 }
