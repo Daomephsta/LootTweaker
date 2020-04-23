@@ -14,17 +14,16 @@ import com.google.gson.JsonElement;
 
 import leviathan143.loottweaker.common.darkmagic.LootPoolAccessors;
 import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
-import leviathan143.loottweaker.common.lib.DeepClone;
 import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntry;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
-public class MutableLootPool implements DeepClone<MutableLootPool>
+public class MutableLootPool
 {
     private final String name;
-    private Map<String, MutableLootEntry<?, ?>> entries;
+    private Map<String, MutableLootEntry> entries;
     private List<LootCondition> conditions;
     private RandomValueRange rolls, bonusRolls;
 
@@ -32,7 +31,7 @@ public class MutableLootPool implements DeepClone<MutableLootPool>
     {
         this.name = pool.getName();
         //Should never be duplicate entries when pulling from an existing pool, but be informative just in case
-        BinaryOperator<MutableLootEntry<?, ?>> mergeFunction = (a, b) ->
+        BinaryOperator<MutableLootEntry> mergeFunction = (a, b) ->
         {
             throw new IllegalStateException(String.format(
                 "Unexpected duplicate entry '%s' while creating mutable pool '%s' from immutable pool. Report this to the mod author",
@@ -46,7 +45,7 @@ public class MutableLootPool implements DeepClone<MutableLootPool>
         this.bonusRolls = pool.getBonusRolls();
     }
 
-    public MutableLootPool(String name, Map<String, MutableLootEntry<?, ?>> entries, List<LootCondition> conditions, RandomValueRange rolls, RandomValueRange bonusRolls)
+    public MutableLootPool(String name, Map<String, MutableLootEntry> entries, List<LootCondition> conditions, RandomValueRange rolls, RandomValueRange bonusRolls)
     {
         this.name = name;
         this.entries = entries;
@@ -55,17 +54,16 @@ public class MutableLootPool implements DeepClone<MutableLootPool>
         this.bonusRolls = bonusRolls;
     }
 
-    @Override
     public MutableLootPool deepClone()
     {
         //Can never be duplicate entries when deep cloning, but be informative just in case
-        BinaryOperator<MutableLootEntry<?, ?>> mergeFunction = (a, b) ->
+        BinaryOperator<MutableLootEntry> mergeFunction = (a, b) ->
         {
             throw new IllegalStateException(String.format(
                 "Unexpected duplicate entry '%s' while deep cloning mutable pool '%s'. Report this to the mod author",
                 a.getName(), getName()));
         };
-        Map<String, MutableLootEntry<?, ?>> entriesDeepClone = entries.entrySet().stream()
+        Map<String, MutableLootEntry> entriesDeepClone = entries.entrySet().stream()
             .collect(toMap(Map.Entry::getKey, e -> e.getValue().deepClone(), mergeFunction, HashMap::new));
         return new MutableLootPool(name, entriesDeepClone, deepCloneConditions(), rolls, bonusRolls);
     }
@@ -143,23 +141,23 @@ public class MutableLootPool implements DeepClone<MutableLootPool>
         return name;
     }
 
-    public Map<String, MutableLootEntry<?, ?>> getEntries()
+    public Map<String, MutableLootEntry> getEntries()
     {
         return entries;
     }
 
-    public MutableLootEntry<?, ?> getEntry(String name)
+    public MutableLootEntry getEntry(String name)
     {
         return entries.get(name);
     }
 
-    public void addEntry(MutableLootEntry<?, ?> entry)
+    public void addEntry(MutableLootEntry entry)
     {
         if (entries.putIfAbsent(entry.getName(), entry) != null)
             throw new IllegalArgumentException(String.format("Duplicate entry name '%s' in pool '%s'", entry.getName(), this.getName()));
     }
 
-    public MutableLootEntry<?, ?> removeEntry(String name)
+    public MutableLootEntry removeEntry(String name)
     {
         return entries.remove(name);
     }

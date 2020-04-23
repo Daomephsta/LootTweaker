@@ -11,12 +11,11 @@ import javax.annotation.Nullable;
 import com.google.common.base.Functions;
 
 import leviathan143.loottweaker.common.darkmagic.LootTableAccessors;
-import leviathan143.loottweaker.common.lib.DeepClone;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
 
-public class MutableLootTable implements DeepClone<MutableLootTable>
+public class MutableLootTable
 {
     private final ResourceLocation id;
     private Map<String, MutableLootPool> pools;
@@ -42,7 +41,6 @@ public class MutableLootTable implements DeepClone<MutableLootTable>
         this.pools = pools;
     }
 
-    @Override
     public MutableLootTable deepClone()
     {
         //Can never be duplicate entries when deep cloning, but be informative just in case

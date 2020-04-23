@@ -5,7 +5,7 @@ import java.util.List;
 import net.minecraft.world.storage.loot.LootEntryEmpty;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
-public class MutableLootEntryEmpty extends MutableLootEntry<MutableLootEntryEmpty, LootEntryEmpty>
+public class MutableLootEntryEmpty extends MutableLootEntry
 {
     MutableLootEntryEmpty(LootEntryEmpty entry)
     {

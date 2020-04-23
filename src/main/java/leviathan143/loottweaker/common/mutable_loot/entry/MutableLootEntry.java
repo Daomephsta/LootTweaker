@@ -9,14 +9,13 @@ import com.google.gson.JsonElement;
 
 import leviathan143.loottweaker.common.darkmagic.LootEntryAccessors;
 import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
-import leviathan143.loottweaker.common.lib.DeepClone;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootEntryEmpty;
 import net.minecraft.world.storage.loot.LootEntryItem;
 import net.minecraft.world.storage.loot.LootEntryTable;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
-public abstract class MutableLootEntry<Self extends MutableLootEntry<Self, Immutable>, Immutable extends LootEntry> implements DeepClone<Self>
+public abstract class MutableLootEntry
 {
     private final String name;
     private int weight, quality;
@@ -43,7 +42,7 @@ public abstract class MutableLootEntry<Self extends MutableLootEntry<Self, Immut
         this.conditions = conditions;
     }
 
-    public static MutableLootEntry<?, ?> from(LootEntry entry)
+    public static MutableLootEntry from(LootEntry entry)
     {
         if (entry instanceof LootEntryItem)
             return new MutableLootEntryItem((LootEntryItem) entry);
@@ -54,6 +53,8 @@ public abstract class MutableLootEntry<Self extends MutableLootEntry<Self, Immut
         else
             throw new IllegalArgumentException("Unknown loot entry type " + entry.getClass().getName());
     }
+
+    public abstract MutableLootEntry deepClone();
 
     protected List<LootCondition> deepCloneConditions()
     {
@@ -70,7 +71,7 @@ public abstract class MutableLootEntry<Self extends MutableLootEntry<Self, Immut
         return lootTableGson.fromJson(json, LootCondition.class);
     }
 
-    public abstract Immutable toImmutable();
+    public abstract LootEntry toImmutable();
 
     public int getWeight()
     {

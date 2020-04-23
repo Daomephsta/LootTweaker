@@ -288,7 +288,7 @@ public class ZenLootPoolWrapper
 	        "Bonus rolls of pool %s in table %s will be set to (%.0f, %.0f)", id, parentTableId, minBonusRolls, maxBonusRolls);
 	}
 
-	private void addEntry(MutableLootEntry<?, ?> entry, String format, Object... args)
+	private void addEntry(MutableLootEntry entry, String format, Object... args)
 	{
 	    enqueueTweaker(pool ->
 	    {

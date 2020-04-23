@@ -14,7 +14,7 @@ import net.minecraft.world.storage.loot.LootEntryItem;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.functions.LootFunction;
 
-public class MutableLootEntryItem extends MutableLootEntry<MutableLootEntryItem, LootEntryItem>
+public class MutableLootEntryItem extends MutableLootEntry
 {
     private Item item;
     private List<LootFunction> functions;
