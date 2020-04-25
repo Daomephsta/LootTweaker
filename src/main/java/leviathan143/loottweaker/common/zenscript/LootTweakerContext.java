@@ -41,8 +41,8 @@ public class LootTweakerContext
         return new ZenLootTableWrapper(this, id);
     }
 
-    public ZenLootPoolWrapper wrapPool(String poolName, ResourceLocation parentId)
+    public ZenLootPoolWrapper wrapPool(ResourceLocation parentId, String poolName)
     {
-        return new ZenLootPoolWrapper(this, poolName, parentId);
+        return new ZenLootPoolWrapper(this, parentId, poolName);
     }
 }

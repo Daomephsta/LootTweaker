@@ -19,6 +19,7 @@ import leviathan143.loottweaker.common.ErrorHandler;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
 import leviathan143.loottweaker.common.lib.DataParser;
+import leviathan143.loottweaker.common.lib.QualifiedPoolIdentifier;
 import leviathan143.loottweaker.common.mutable_loot.MutableLootPool;
 import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntry;
 import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntryEmpty;
@@ -47,17 +48,15 @@ public class ZenLootPoolWrapper
     private final LootTweakerContext context;
     private final DataParser loggingParser;
     private final List<LootPoolTweaker> tweakers = new ArrayList<>();
-    private final ResourceLocation parentTableId;
     //LootPool state
-    private final String id;
+    private final QualifiedPoolIdentifier qualifiedId;
     private int nextEntryNameId = 1;
 
-    public ZenLootPoolWrapper(LootTweakerContext context, String id, ResourceLocation parentTableId)
+    public ZenLootPoolWrapper(LootTweakerContext context, ResourceLocation parentTableId, String id)
     {
         this.context = context;
         this.loggingParser = createDataParser(context.getErrorHandler());
-        this.id = id;
-        this.parentTableId = parentTableId;
+        this.qualifiedId = new QualifiedPoolIdentifier(parentTableId, id);
     }
 
     private DataParser createDataParser(ErrorHandler errorHandler)
@@ -73,7 +72,7 @@ public class ZenLootPoolWrapper
             .map(ZenLootConditionWrapper::unwrap)
             .collect(toList());
         enqueueTweaker(pool -> pool.addConditions(parsedConditions),
-            "Added %d conditions to pool '%s' of table '%s'", parsedConditions.size(), id, parentTableId);
+            "Added %d conditions to %s", parsedConditions.size(), qualifiedId);
 	}
 
     @ZenMethod
@@ -85,21 +84,21 @@ public class ZenLootPoolWrapper
             .map(java.util.Optional::get)
             .collect(toList());
         enqueueTweaker(pool -> pool.addConditions(parsedConditions),
-            "Added %d conditions to pool '%s' of table '%s'", parsedConditions.size(), id, parentTableId);
+            "Added %d conditions to %s", parsedConditions.size(), qualifiedId);
     }
 
 	@ZenMethod
 	public void clearConditions()
 	{
 	    enqueueTweaker(MutableLootPool::clearConditions,
-	        "Queuing all conditions of pool %s in table %s for removal", id, parentTableId);
+	        "Queuing all conditions of %s for removal", qualifiedId);
 	}
 
 	@ZenMethod
     public void clearEntries()
     {
         enqueueTweaker(MutableLootPool::clearEntries,
-            "Queuing all entries of pool %s in table %s for removal", id, parentTableId);
+            "Queuing all entries of %s for removal", qualifiedId);
     }
 
 	@ZenMethod
@@ -108,8 +107,8 @@ public class ZenLootPoolWrapper
 		enqueueTweaker(pool ->
 		{
 		    if (pool.removeEntry(entryName) == null)
-                context.getErrorHandler().error("No entry with name %s exists in pool %s", entryName, id);
-		}, "Queueing entry %s of pool %s for removal", entryName, id);
+                context.getErrorHandler().error("No entry with name %s exists in %s", entryName, qualifiedId);
+		}, "Queueing entry %s of %s for removal", entryName, qualifiedId);
 	}
 
 	@ZenMethod
@@ -159,7 +158,7 @@ public class ZenLootPoolWrapper
         Item item = CraftTweakerMC.getItemStack(stack).getItem();
         MutableLootEntryItem entry = new MutableLootEntryItem(entryName, weight, quality, Lists.newArrayList(conditions),
             item, withStackFunctions(stack, functions));
-        addEntry(entry, "Queued item entry '%s' for addition to pool %s of table %s", entryName, id, parentTableId);
+        addEntry(entry, "Queued item entry '%s' for addition to %s", entryName, qualifiedId);
     }
 
     /* Adds loot functions equivalent to the damage, stacksize and NBT of the
@@ -227,7 +226,7 @@ public class ZenLootPoolWrapper
     {
         String entryName = name != null ? name : generateName();
         addEntry(new MutableLootEntryTable(entryName, weight, quality, conditions, new ResourceLocation(tableName)),
-            "Queued loot table entry '%s' for addition to pool %s of table %s", entryName, id, parentTableId);
+            "Queued loot table entry '%s' for addition to %s", entryName, qualifiedId);
     }
 
 	@ZenMethod
@@ -266,7 +265,7 @@ public class ZenLootPoolWrapper
 	{
         String entryName = name != null ? name : generateName();
         addEntry(new MutableLootEntryEmpty(entryName, weight, quality, conditions),
-            "Queued empty entry '%s' for addition to pool %s of table %s", entryName, id, parentTableId);
+            "Queued empty entry '%s' for addition to %s", entryName, qualifiedId);
 	}
 
 	private String generateName()
@@ -278,14 +277,14 @@ public class ZenLootPoolWrapper
 	public void setRolls(float minRolls, float maxRolls)
 	{
 	    enqueueTweaker(pool -> pool.setRolls(new RandomValueRange(minRolls, maxRolls)),
-	        "Rolls of pool %s in table %s will be set to (%.0f, %.0f)", id, parentTableId, minRolls, maxRolls);
+	        "Rolls of %s will be set to (%.0f, %.0f)", qualifiedId, minRolls, maxRolls);
 	}
 
 	@ZenMethod
 	public void setBonusRolls(float minBonusRolls, float maxBonusRolls)
 	{
 	    enqueueTweaker(pool -> pool.setBonusRolls(new RandomValueRange(minBonusRolls, maxBonusRolls)),
-	        "Bonus rolls of pool %s in table %s will be set to (%.0f, %.0f)", id, parentTableId, minBonusRolls, maxBonusRolls);
+	        "Bonus rolls of %s will be set to (%.0f, %.0f)", qualifiedId, minBonusRolls, maxBonusRolls);
 	}
 
 	private void addEntry(MutableLootEntry entry, String format, Object... args)
@@ -294,8 +293,8 @@ public class ZenLootPoolWrapper
 	    {
 	        if (pool.getEntry(entry.getName()) != null)
 	        {
-	            context.getErrorHandler().error("Cannot add entry '%s' to pool '%s' of table '%s'. Entry names must be unique within their pool.",
-	                entry.getName(), pool.getName(), parentTableId);
+	            context.getErrorHandler().error("Cannot add entry '%s' to %s. Entry names must be unique within their pool.",
+	                entry.getName(), pool.getName());
 	            return;
 	        }
 	        pool.addEntry(entry);
@@ -319,5 +318,10 @@ public class ZenLootPoolWrapper
     public interface LootPoolTweaker
     {
         public void tweak(MutableLootPool pool);
+    }
+
+    public QualifiedPoolIdentifier getQualifiedId()
+    {
+        return qualifiedId;
     }
 }

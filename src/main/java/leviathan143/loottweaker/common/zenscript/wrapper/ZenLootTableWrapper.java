@@ -39,7 +39,7 @@ public class ZenLootTableWrapper
         if (tweakedPools.containsKey(poolName))
             return tweakedPools.get(poolName);
 
-        ZenLootPoolWrapper pool = context.wrapPool(poolName, id);
+        ZenLootPoolWrapper pool = context.wrapPool(id, poolName);
         tweakedPools.put(poolName, pool);
         enqueueTweaker((table) ->
         {
@@ -55,7 +55,7 @@ public class ZenLootTableWrapper
     @ZenMethod
     public ZenLootPoolWrapper addPool(String poolName, float minRolls, float maxRolls, float minBonusRolls, float maxBonusRolls)
     {
-        ZenLootPoolWrapper pool = context.wrapPool(poolName, id);
+        ZenLootPoolWrapper pool = context.wrapPool(id, poolName);
         enqueueTweaker(table ->
         {
             MutableLootPool existing = table.getPool(poolName);
