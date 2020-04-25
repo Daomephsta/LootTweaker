@@ -1,8 +1,10 @@
 package leviathan143.loottweaker.common.zenscript;
 
 import leviathan143.loottweaker.common.ErrorHandler;
+import leviathan143.loottweaker.common.lib.QualifiedEntryIdentifier;
 import leviathan143.loottweaker.common.zenscript.factory.LootConditionFactoryImpl;
 import leviathan143.loottweaker.common.zenscript.factory.LootFunctionFactoryImpl;
+import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootEntryWrapper;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootPoolWrapper;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
 import net.minecraft.util.ResourceLocation;
@@ -44,5 +46,15 @@ public class LootTweakerContext
     public ZenLootPoolWrapper wrapPool(ResourceLocation parentId, String poolName)
     {
         return new ZenLootPoolWrapper(this, parentId, poolName);
+    }
+
+    public ZenLootEntryWrapper wrapEntry(ZenLootPoolWrapper parent, String entryId)
+    {
+        return new ZenLootEntryWrapper(this, new QualifiedEntryIdentifier(parent.getQualifiedId(), entryId));
+    }
+
+    public ZenLootEntryWrapper wrapEntry(ResourceLocation tableId, String poolId, String entryId)
+    {
+        return new ZenLootEntryWrapper(this, new QualifiedEntryIdentifier(tableId, poolId, entryId));
     }
 }

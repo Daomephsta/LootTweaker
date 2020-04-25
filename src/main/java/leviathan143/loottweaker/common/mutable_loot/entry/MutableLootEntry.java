@@ -1,6 +1,7 @@
 package leviathan143.loottweaker.common.mutable_loot.entry;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -101,6 +102,11 @@ public abstract class MutableLootEntry
     public void setConditions(List<LootCondition> conditions)
     {
         this.conditions = conditions;
+    }
+
+    public void addConditions(Collection<? extends LootCondition> newConditions)
+    {
+        conditions.addAll(newConditions);
     }
 
     public void addCondition(LootCondition condition)
