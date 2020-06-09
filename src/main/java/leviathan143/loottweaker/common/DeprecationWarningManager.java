@@ -43,6 +43,6 @@ public class DeprecationWarningManager
 		{
 			CraftTweakerAPI.logInfo(String.format("%s is deprecated", deprecatedObj));
 		}
-		CraftTweakerAPI.logInfo("Refer to https://github.com/Leviathan143/LootTweaker/wiki/Deprecations for more info. This warning can be disabled in the config.");
+		CraftTweakerAPI.logInfo("Refer to https://loottweaker-docs.readthedocs.io/en/latest/reference/deprecations.html for more info. This warning can be disabled in the config.");
 	}
 }
