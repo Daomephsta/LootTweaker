@@ -1,8 +1,8 @@
-import loottweaker.vanilla.loot.LootTables;
+import loottweaker.LootTweaker;
 import loottweaker.vanilla.loot.Conditions;
 import loottweaker.vanilla.loot.Functions;
 
-val foo = LootTables.getTable("loottweaker:foo");
+val foo = LootTweaker.getTable("loottweaker:foo");
 val foo_bar = foo.getPool("bar");
 //addItemEntry
 foo_bar.addItemEntry(<minecraft:apple>, 2, "qux");

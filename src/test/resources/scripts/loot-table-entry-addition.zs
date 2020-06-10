@@ -1,7 +1,7 @@
-import loottweaker.vanilla.loot.LootTables;
+import loottweaker.LootTweaker;
 import loottweaker.vanilla.loot.Conditions;
 
-val foo = LootTables.getTable("loottweaker:foo");
+val foo = LootTweaker.getTable("loottweaker:foo");
 val foo_bar = foo.getPool("bar");
 foo_bar.addLootTableEntry("loottweaker:qux", 2, "corge_table");
 //addLootTableEntryWithQuality

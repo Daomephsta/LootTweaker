@@ -12,7 +12,7 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenRegister
-@ZenClass(LootTweaker.MODID + ".vanilla.loot.LootTables")
+@ZenClass(LootTweaker.MODID + ".LootTweaker")
 @Mod.EventBusSubscriber(modid = LootTweaker.MODID)
 public class ZenLootTableTweakManager
 {

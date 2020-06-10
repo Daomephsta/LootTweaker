@@ -1,9 +1,9 @@
-import loottweaker.vanilla.loot.LootTables;
+import loottweaker.LootTweaker;
 import loottweaker.vanilla.loot.Conditions;
 
-val foo = LootTables.getTable("loottweaker:foo");
+val foo = LootTweaker.getTable("loottweaker:foo");
 val foo_bar = foo.getPool("bar");
-val bar = LootTables.getTable("loottweaker:bar");
+val bar = LootTweaker.getTable("loottweaker:bar");
 val bar_baz = bar.getPool("baz");
 //addConditions
 foo_bar.addConditionsHelper([Conditions.killedByPlayer()]);
