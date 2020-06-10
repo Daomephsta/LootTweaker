@@ -74,6 +74,13 @@ public class ZenscriptTests
         loadTweakedTables();
     }
 
+    @SaddleTest(loadPhase = LoadPhase.INIT)
+    public void createTable()
+    {
+        ScriptRunner.run("scripts/create-table.zs");
+        loadTweakedTables();
+    }
+
     private void loadTweakedTables()
     {
         LootTableTweakManager tweakManager = ObfuscationReflectionHelper.getPrivateValue(ZenLootTableTweakManager.class, null, "TWEAK_MANAGER");

@@ -6,6 +6,7 @@ import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import stanhebben.zenscript.annotations.ZenClass;
@@ -29,6 +30,18 @@ public class ZenLootTableTweakManager
     {
         DeprecationWarningManager.addWarning();
         return TWEAK_MANAGER.getTableUnchecked(tableName);
+    }
+
+    @ZenMethod
+    public static ZenLootTableWrapper newTable(String id)
+    {
+        return TWEAK_MANAGER.newTable(id);
+    }
+
+    @Mod.EventHandler
+    public static void onServerStarting(FMLServerStartingEvent event)
+    {
+        TWEAK_MANAGER.onServerStart(event.getServer());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

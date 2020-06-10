@@ -39,4 +39,46 @@ public class LootTableTweakManagerTests
         assertThat(tweakManager.getTable("loottweaker:foo")).isNotNull();
         assertThat(tweakManager.getTable("loottweaker:foo")).isEqualTo(tweakManager.getTable("loottweaker:foo"));
     }
+
+    public void newTable()
+    {
+        LootTableTweakManager tableTweakManager = context.createLootTableTweakManager();
+        assertThat(tableTweakManager.newTable("loottweaker:qux"))
+            .isNotNull();
+    }
+
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    public void newTableCollision()
+    {
+        String existingTableId = "loottweaker:foo";
+        LootTableTweakManager tableTweakManager = context.createLootTableTweakManager();
+        assertThatThrownBy(() -> tableTweakManager.newTable(existingTableId))
+            .isInstanceOf(LootTweakerException.class)
+            .hasMessage("Table id '%s' already in use", existingTableId);
+    }
+
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    public void newTableGettable()
+    {
+        LootTableTweakManager tableTweakManager = context.createLootTableTweakManager();
+        String tableName = "loottweaker:qux";
+        tableTweakManager.newTable(tableName);
+        tableTweakManager.getTable(tableName);
+    }
+
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    public void newTableWarnMinecraftNamespace()
+    {
+        LootTableTweakManager tableTweakManager = context.createLootTableTweakManager();
+        String implicitMinecraftNamespace = "qux";
+        String explicitMinecraftNamespace = "minecraft:quuz";
+        assertThatThrownBy(() -> tableTweakManager.newTable(implicitMinecraftNamespace))
+            .isInstanceOf(LootTweakerException.class)
+            .hasMessage("Table id '%s' implicitly uses the minecraft namespace, this is discouraged",
+                implicitMinecraftNamespace);
+        assertThatThrownBy(() -> tableTweakManager.newTable(explicitMinecraftNamespace))
+            .isInstanceOf(LootTweakerException.class)
+            .hasMessage("Table id '%s' explicitly uses the minecraft namespace, this is discouraged",
+                explicitMinecraftNamespace);
+    }
 }
