@@ -2,6 +2,7 @@ package leviathan143.loottweaker.common.mutable_loot.entry;
 
 import java.util.List;
 
+import leviathan143.loottweaker.common.lib.LootConditions;
 import net.minecraft.world.storage.loot.LootEntryEmpty;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
@@ -25,12 +26,13 @@ public class MutableLootEntryEmpty extends MutableLootEntry
     @Override
     public MutableLootEntryEmpty deepClone()
     {
-        return new MutableLootEntryEmpty(getName(), getWeight(), getQuality(), deepCloneConditions());
+        return new MutableLootEntryEmpty(getName(), getWeight(), getQuality(),
+            LootConditions.deepClone(getConditions()));
     }
 
     @Override
     public LootEntryEmpty toImmutable()
     {
-        return new LootEntryEmpty(getWeight(), getQuality(), getConditions().toArray(new LootCondition[0]), getName());
+        return new LootEntryEmpty(getWeight(), getQuality(), getConditions().toArray(LootConditions.NONE), getName());
     }
 }

@@ -20,6 +20,8 @@ import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
 import leviathan143.loottweaker.common.lib.DataParser;
 import leviathan143.loottweaker.common.lib.QualifiedPoolIdentifier;
+import leviathan143.loottweaker.common.lib.LootConditions;
+import leviathan143.loottweaker.common.lib.LootFunctions;
 import leviathan143.loottweaker.common.mutable_loot.MutableLootPool;
 import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntry;
 import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntryEmpty;
@@ -42,8 +44,6 @@ public class ZenLootPoolWrapper
 {
     private static final String ENTRY_NAME_PREFIX = "loottweaker#";
     private static final int DEFAULT_QUALITY = 0;
-    private static final LootCondition[] NO_CONDITIONS = new LootCondition[0];
-    private static final LootFunction[] NO_FUNCTIONS = new LootFunction[0];
     //Other state
     private final LootTweakerContext context;
     private final DataParser loggingParser;
@@ -114,13 +114,13 @@ public class ZenLootPoolWrapper
 	@ZenMethod
 	public void addItemEntry(IItemStack stack, int weight, @Optional String name)
 	{
-		addItemEntryInternal(stack, weight, DEFAULT_QUALITY, NO_FUNCTIONS, NO_CONDITIONS, name);
+		addItemEntryInternal(stack, weight, DEFAULT_QUALITY, LootFunctions.NONE, LootConditions.NONE, name);
 	}
 
 	@ZenMethod
 	public void addItemEntry(IItemStack stack, int weight, int quality, @Optional String name)
 	{
-		addItemEntryInternal(stack, weight, quality, NO_FUNCTIONS, NO_CONDITIONS, name);
+		addItemEntryInternal(stack, weight, quality, LootFunctions.NONE, LootConditions.NONE, name);
 	}
 
 	@ZenMethod
@@ -177,16 +177,16 @@ public class ZenLootPoolWrapper
         List<LootFunction> functionsOut = Lists.newArrayListWithCapacity(existingFunctions.length + 3);
         Collections.addAll(functionsOut, existingFunctions);
         if (iStack.getAmount() > 1 && !sizeFuncExists)
-            functionsOut.add(new SetCount(NO_CONDITIONS, new RandomValueRange(iStack.getAmount())));
+            functionsOut.add(new SetCount(LootConditions.NONE, new RandomValueRange(iStack.getAmount())));
         if (iStack.getDamage() > 0 && !damageFuncExists)
         {
             functionsOut.add(stack.isItemStackDamageable()
                 // SetDamage takes a percentage, not a number
-                ? new SetDamage(NO_CONDITIONS, new RandomValueRange((float) stack.getItemDamage() / (float) stack.getMaxDamage()))
-                : new SetMetadata(NO_CONDITIONS, new RandomValueRange(iStack.getDamage())));
+                ? new SetDamage(LootConditions.NONE, new RandomValueRange((float) stack.getItemDamage() / (float) stack.getMaxDamage()))
+                : new SetMetadata(LootConditions.NONE, new RandomValueRange(iStack.getDamage())));
         }
         if (iStack.getTag() != DataMap.EMPTY && !nbtFuncExists)
-            functionsOut.add(new SetNBT(NO_CONDITIONS, CraftTweakerMC.getNBTCompound(iStack.getTag())));
+            functionsOut.add(new SetNBT(LootConditions.NONE, CraftTweakerMC.getNBTCompound(iStack.getTag())));
         return functionsOut;
     }
 
@@ -199,7 +199,7 @@ public class ZenLootPoolWrapper
 	@ZenMethod
 	public void addLootTableEntry(String tableName, int weight, int quality, @Optional String name)
 	{
-		addLootTableEntryInternal(tableName, weight, quality, NO_CONDITIONS, name);
+		addLootTableEntryInternal(tableName, weight, quality, LootConditions.NONE, name);
 	}
 
 	@ZenMethod
@@ -238,7 +238,7 @@ public class ZenLootPoolWrapper
 	@ZenMethod
 	public void addEmptyEntry(int weight, int quality, @Optional String name)
 	{
-		addEmptyEntryInternal(weight, quality, NO_CONDITIONS, name);
+		addEmptyEntryInternal(weight, quality, LootConditions.NONE, name);
 	}
 
 	@ZenMethod

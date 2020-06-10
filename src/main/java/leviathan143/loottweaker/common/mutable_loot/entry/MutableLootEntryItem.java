@@ -1,14 +1,12 @@
 package leviathan143.loottweaker.common.mutable_loot.entry;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 
 import leviathan143.loottweaker.common.darkmagic.LootEntryItemAccessors;
-import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
+import leviathan143.loottweaker.common.lib.LootConditions;
+import leviathan143.loottweaker.common.lib.LootFunctions;
 import net.minecraft.item.Item;
 import net.minecraft.world.storage.loot.LootEntryItem;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
@@ -36,29 +34,15 @@ public class MutableLootEntryItem extends MutableLootEntry
     @Override
     public MutableLootEntryItem deepClone()
     {
-        return new MutableLootEntryItem(getName(), getWeight(), getQuality(), deepCloneConditions(), item, deepCloneFunctions());
-    }
-
-    private List<LootFunction> deepCloneFunctions()
-    {
-        List<LootFunction> clone = new ArrayList<>(functions.size());
-        for (int i = 0; i < functions.size(); i++)
-            clone.add(deepCloneFunction(functions.get(i)));
-        return clone;
-    }
-
-    private LootFunction deepCloneFunction(LootFunction lootFunction)
-    {
-        Gson lootTableGson = LootTableManagerAccessors.getGsonInstance();
-        JsonElement json = lootTableGson.toJsonTree(lootFunction);
-        return lootTableGson.fromJson(json, LootFunction.class);
+        return new MutableLootEntryItem(getName(), getWeight(), getQuality(),
+            LootConditions.deepClone(getConditions()), item, LootFunctions.deepClone(functions));
     }
 
     @Override
     public LootEntryItem toImmutable()
     {
-        return new LootEntryItem(item, getWeight(), getQuality(), functions.toArray(new LootFunction[0]),
-            getConditions().toArray(new LootCondition[0]), getName());
+        return new LootEntryItem(item, getWeight(), getQuality(), functions.toArray(LootFunctions.NONE),
+            getConditions().toArray(LootConditions.NONE), getName());
     }
 
     public Item getItem()

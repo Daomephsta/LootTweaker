@@ -1,14 +1,10 @@
 package leviathan143.loottweaker.common.mutable_loot.entry;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 
 import leviathan143.loottweaker.common.darkmagic.LootEntryAccessors;
-import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootEntryEmpty;
 import net.minecraft.world.storage.loot.LootEntryItem;
@@ -55,21 +51,6 @@ public abstract class MutableLootEntry
     }
 
     public abstract MutableLootEntry deepClone();
-
-    protected List<LootCondition> deepCloneConditions()
-    {
-        List<LootCondition> clone = new ArrayList<>(conditions.size());
-        for (int i = 0; i < conditions.size(); i++)
-            clone.add(deepCloneCondition(conditions.get(i)));
-        return clone;
-    }
-
-    private LootCondition deepCloneCondition(LootCondition lootCondition)
-    {
-        Gson lootTableGson = LootTableManagerAccessors.getGsonInstance();
-        JsonElement json = lootTableGson.toJsonTree(lootCondition);
-        return lootTableGson.fromJson(json, LootCondition.class);
-    }
 
     public abstract LootEntry toImmutable();
 

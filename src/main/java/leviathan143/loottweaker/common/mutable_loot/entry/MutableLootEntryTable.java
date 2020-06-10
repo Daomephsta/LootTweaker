@@ -3,6 +3,7 @@ package leviathan143.loottweaker.common.mutable_loot.entry;
 import java.util.List;
 
 import leviathan143.loottweaker.common.darkmagic.LootEntryTableAccessors;
+import leviathan143.loottweaker.common.lib.LootConditions;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootEntryTable;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
@@ -32,14 +33,15 @@ public class MutableLootEntryTable extends MutableLootEntry
     @Override
     public MutableLootEntryTable deepClone()
     {
-        return new MutableLootEntryTable(getName(), getWeight(), getQuality(), deepCloneConditions(), delegateTableId);
+        return new MutableLootEntryTable(getName(), getWeight(), getQuality(),
+            LootConditions.deepClone(getConditions()), delegateTableId);
     }
 
     @Override
     public LootEntryTable toImmutable()
     {
         return new LootEntryTable(delegateTableId, getWeight(), getQuality(),
-            getConditions().toArray(new LootCondition[0]), getName());
+            getConditions().toArray(LootConditions.NONE), getName());
     }
 
     public ResourceLocation getDelegateTableId()

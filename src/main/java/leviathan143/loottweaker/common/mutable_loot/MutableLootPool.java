@@ -2,18 +2,15 @@ package leviathan143.loottweaker.common.mutable_loot;
 
 import static java.util.stream.Collectors.toMap;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BinaryOperator;
 
 import com.google.common.base.Functions;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 
 import leviathan143.loottweaker.common.darkmagic.LootPoolAccessors;
-import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
+import leviathan143.loottweaker.common.lib.LootConditions;
 import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntry;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootPool;
@@ -65,22 +62,7 @@ public class MutableLootPool
         };
         Map<String, MutableLootEntry> entriesDeepClone = entries.entrySet().stream()
             .collect(toMap(Map.Entry::getKey, e -> e.getValue().deepClone(), mergeFunction, HashMap::new));
-        return new MutableLootPool(name, entriesDeepClone, deepCloneConditions(), rolls, bonusRolls);
-    }
-
-    private List<LootCondition> deepCloneConditions()
-    {
-        List<LootCondition> clone = new ArrayList<>(conditions.size());
-        for (int i = 0; i < conditions.size(); i++)
-            clone.add(deepCloneCondition(conditions.get(i)));
-        return clone;
-    }
-
-    private LootCondition deepCloneCondition(LootCondition lootCondition)
-    {
-        Gson lootTableGson = LootTableManagerAccessors.getGsonInstance();
-        JsonElement json = lootTableGson.toJsonTree(lootCondition);
-        return lootTableGson.fromJson(json, LootCondition.class);
+        return new MutableLootPool(name, entriesDeepClone, LootConditions.deepClone(conditions), rolls, bonusRolls);
     }
 
     public LootPool toImmutable()
@@ -88,7 +70,7 @@ public class MutableLootPool
         LootEntry[] entriesArray = entries.values().stream()
             .map(MutableLootEntry::toImmutable)
             .toArray(LootEntry[]::new);
-        return new LootPool(entriesArray, conditions.toArray(new LootCondition[0]), rolls, bonusRolls, name);
+        return new LootPool(entriesArray, conditions.toArray(LootConditions.NONE), rolls, bonusRolls, name);
     }
 
     public List<LootCondition> getConditions()
