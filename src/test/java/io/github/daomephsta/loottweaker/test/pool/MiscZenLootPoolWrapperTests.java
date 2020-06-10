@@ -69,7 +69,7 @@ public class MiscZenLootPoolWrapperTests
         bazTweaks.removeEntry("quuz");
         assertThatThrownBy(() -> tweakManager.tweakTable(barId, barOriginal))
             .isInstanceOf(LootTweakerException.class)
-            .hasMessage("No entry with name quuz exists in pool baz");
+            .hasMessage("No entry with name quuz exists in pool 'baz' of table 'loottweaker:bar'");
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
