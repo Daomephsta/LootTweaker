@@ -3,13 +3,16 @@ package leviathan143.loottweaker.common.mutable_loot;
 import static java.util.stream.Collectors.toMap;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BinaryOperator;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Functions;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.darkmagic.LootTableAccessors;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
@@ -17,22 +20,31 @@ import net.minecraft.world.storage.loot.LootTable;
 
 public class MutableLootTable
 {
+    private static final Logger SANITY_LOGGER = LogManager.getLogger(LootTweaker.MODID + ".sanity_checks");
     private final ResourceLocation id;
     private Map<String, MutableLootPool> pools;
 
     public MutableLootTable(LootTable table, ResourceLocation id)
     {
         this.id = id;
-        //Can never be duplicate entries when pulling from an existing table, but be informative just in case
-        BinaryOperator<MutableLootPool> mergeFunction = (a, b) ->
+        List<LootPool> immutablePools = LootTableAccessors.getPools(table);
+        this.pools = new HashMap<>(immutablePools.size());
+        int uniqueSuffix = 0;
+        for (LootPool pool : immutablePools)
         {
-            throw new IllegalStateException(String.format(
-                "Unexpected duplicate pool '%s' while creating mutable table '%s' from immutable table. Report this to the mod author",
-                a.getName(), id));
-        };
-        this.pools = LootTableAccessors.getPools(table).stream()
-            .map(MutableLootPool::new)
-            .collect(toMap(MutableLootPool::getName, Functions.identity(), mergeFunction, HashMap::new));
+            MutableLootPool mutablePool = new MutableLootPool(pool);
+            MutableLootPool existing = pools.get(pool.getName());
+            if (existing != null)
+            {
+                String newName = mutablePool.getName() + uniqueSuffix++;
+                SANITY_LOGGER.error("Unexpected duplicate pool name '{}' in table '{}'. Duplicate added as '{}'."
+                    + "\nReport this to the loot adder.", mutablePool.getName(), getId(), newName);
+                mutablePool.setName(newName);
+                pools.put(newName, mutablePool);
+            }
+            else
+                pools.put(mutablePool.getName(), mutablePool);
+        }
     }
 
     public MutableLootTable(ResourceLocation id, Map<String, MutableLootPool> pools)

@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BinaryOperator;
 
-import com.google.common.base.Functions;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.darkmagic.LootPoolAccessors;
 import leviathan143.loottweaker.common.lib.LootConditions;
 import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntry;
@@ -19,7 +21,8 @@ import net.minecraft.world.storage.loot.conditions.LootCondition;
 
 public class MutableLootPool
 {
-    private final String name;
+    private static final Logger SANITY_LOGGER = LogManager.getLogger(LootTweaker.MODID + ".sanity_checks");
+    private String name;
     private Map<String, MutableLootEntry> entries;
     private List<LootCondition> conditions;
     private RandomValueRange rolls, bonusRolls;
@@ -27,16 +30,24 @@ public class MutableLootPool
     MutableLootPool(LootPool pool)
     {
         this.name = pool.getName();
-        //Should never be duplicate entries when pulling from an existing pool, but be informative just in case
-        BinaryOperator<MutableLootEntry> mergeFunction = (a, b) ->
+        List<LootEntry> immutableEntries = LootPoolAccessors.getEntries(pool);
+        this.entries = new HashMap<>(immutableEntries.size());
+        int uniqueSuffix = 0;
+        for (LootEntry entry : immutableEntries)
         {
-            throw new IllegalStateException(String.format(
-                "Unexpected duplicate entry '%s' while creating mutable pool '%s' from immutable pool. Report this to the mod author",
-                a.getName(), getName()));
-        };
-        this.entries = LootPoolAccessors.getEntries(pool).stream()
-            .map(MutableLootEntry::from)
-            .collect(toMap(MutableLootEntry::getName, Functions.identity(), mergeFunction, HashMap::new));
+            MutableLootEntry mutableEntry = MutableLootEntry.from(entry);
+            MutableLootEntry existing = entries.get(mutableEntry.getName());
+            if (existing != null)
+            {
+                String newName = mutableEntry.getName() + uniqueSuffix++;
+                SANITY_LOGGER.error("Unexpected duplicate entry name '{}' in pool '{}'. Duplicate added as '{}'."
+                    + "\nReport this to the loot adder.", mutableEntry.getName(), getName(), newName);
+                mutableEntry.setName(newName);
+                entries.put(newName, mutableEntry);
+            }
+            else
+                entries.put(mutableEntry.getName(), mutableEntry);
+        }
         this.conditions = LootPoolAccessors.getConditions(pool);
         this.rolls = pool.getRolls();
         this.bonusRolls = pool.getBonusRolls();
@@ -121,6 +132,11 @@ public class MutableLootPool
     public String getName()
     {
         return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
     }
 
     public Map<String, MutableLootEntry> getEntries()

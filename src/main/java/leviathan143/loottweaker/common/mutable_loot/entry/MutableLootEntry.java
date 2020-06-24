@@ -13,7 +13,7 @@ import net.minecraft.world.storage.loot.conditions.LootCondition;
 
 public abstract class MutableLootEntry
 {
-    private final String name;
+    private String name;
     private int weight, quality;
     private List<LootCondition> conditions;
 
@@ -97,5 +97,10 @@ public abstract class MutableLootEntry
     public String getName()
     {
         return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
     }
 }
