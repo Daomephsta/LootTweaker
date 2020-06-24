@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import crafttweaker.CraftTweakerAPI;
+import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
 import leviathan143.loottweaker.common.lib.LootTableDumper;
 import leviathan143.loottweaker.common.lib.LootTableFinder;
 import leviathan143.loottweaker.common.mutable_loot.MutableLootTable;
@@ -85,7 +86,7 @@ public class LootTableTweakManager
     public void onServerStart(MinecraftServer server)
     {
         File worldLootTables = server.getActiveAnvilConverter().getFile(server.getFolderName(), "data/loot_tables");
-        LootTableDumper dumper = new LootTableDumper(worldLootTables);
+        LootTableDumper dumper = new LootTableDumper(worldLootTables, LootTableManagerAccessors.getGsonInstance());
         for (ZenLootTableWrapper builder : tableBuilders.values())
         {
             MutableLootTable mutableTable = new MutableLootTable(builder.getId(), new HashMap<>());

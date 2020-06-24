@@ -8,25 +8,39 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
 
-import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.LootTable;
+import net.minecraft.world.storage.loot.*;
+import net.minecraft.world.storage.loot.conditions.LootCondition;
+import net.minecraft.world.storage.loot.conditions.LootConditionManager;
+import net.minecraft.world.storage.loot.functions.LootFunction;
+import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 
 public class LootTableDumper
 {
-	public static final LootTableDumper DEFAULT = new LootTableDumper(new File("dumps/loot_tables"));
+	public static final LootTableDumper DEFAULT = new LootTableDumper(new File("dumps/loot_tables"), new GsonBuilder()
+	    .registerTypeAdapter(RandomValueRange.class, new RandomValueRange.Serializer())
+	    .registerTypeAdapter(LootPool.class, new LootPool.Serializer())
+	    .registerTypeAdapter(LootTable.class, new LootTable.Serializer())
+	    .registerTypeHierarchyAdapter(LootEntry.class, new RobustLootEntrySerialiser())
+	    .registerTypeHierarchyAdapter(LootFunction.class, new LootFunctionManager.Serializer())
+	    .registerTypeHierarchyAdapter(LootCondition.class, new LootConditionManager.Serializer())
+	    .registerTypeHierarchyAdapter(LootContext.EntityTarget.class, new LootContext.EntityTarget.Serializer())
+	    .create());
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private final File dumpFolder;
+	private final Gson gsonInstance;
 
-	public LootTableDumper(File dumpFolder)
+	public LootTableDumper(File dumpFolder, Gson gsonInstance)
 	{
 		assert dumpFolder.isDirectory(): "Dump folder must be a directory";
 		this.dumpFolder = dumpFolder;
 		this.dumpFolder.mkdirs();
+		this.gsonInstance = gsonInstance;
 	}
 
 	public File dump(World world, ResourceLocation tableId)
@@ -44,7 +58,6 @@ public class LootTableDumper
 			dump.createNewFile();
 			try(FileWriter writer = new FileWriter(dump))
 			{
-				Gson gsonInstance = LootTableManagerAccessors.getGsonInstance();
 				JsonWriter dumper = gsonInstance.newJsonWriter(writer);
 				dumper.setIndent("  ");
 				gsonInstance.toJson(lootTable, lootTable.getClass(), dumper);
