@@ -56,7 +56,12 @@ public class SubcommandDumpTargetsLootTable implements Subcommand
             default:
                 return;
             }
-            if (tableId == null) return;
+            //E.g. chest with no loot table tag
+            if (tableId == null)
+            {
+                sender.sendMessage(new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.target.noTable"));
+                return;
+            }
             File dump = LootTableDumper.DEFAULT.dump(sender.getEntityWorld(), tableId);
             if (!server.isDedicatedServer())
                 linkDumpFileInChat(sender, dump, tableId);
