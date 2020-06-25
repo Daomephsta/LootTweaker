@@ -15,9 +15,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
-import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraft.world.storage.loot.functions.LootFunction;
-import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 
 public class LootTableDumper
 {
@@ -26,8 +24,8 @@ public class LootTableDumper
 	    .registerTypeAdapter(LootPool.class, new LootPool.Serializer())
 	    .registerTypeAdapter(LootTable.class, new LootTable.Serializer())
 	    .registerTypeHierarchyAdapter(LootEntry.class, new RobustLootEntrySerialiser())
-	    .registerTypeHierarchyAdapter(LootFunction.class, new LootFunctionManager.Serializer())
-	    .registerTypeHierarchyAdapter(LootCondition.class, new LootConditionManager.Serializer())
+	    .registerTypeHierarchyAdapter(LootFunction.class, new RobustLootFunctionSerialiser())
+	    .registerTypeHierarchyAdapter(LootCondition.class, new RobustLootConditionSerialiser())
 	    .registerTypeHierarchyAdapter(LootContext.EntityTarget.class, new LootContext.EntityTarget.Serializer())
 	    .create());
 	private static final Logger LOGGER = LogManager.getLogger();
