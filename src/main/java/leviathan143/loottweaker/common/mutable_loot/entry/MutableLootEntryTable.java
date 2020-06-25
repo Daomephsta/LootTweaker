@@ -8,7 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootEntryTable;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
-public class MutableLootEntryTable extends MutableLootEntry
+public class MutableLootEntryTable extends AbstractMutableLootEntry
 {
     private ResourceLocation delegateTableId;
 

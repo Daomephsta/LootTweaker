@@ -2,41 +2,20 @@ package leviathan143.loottweaker.common.mutable_loot.entry;
 
 import java.util.List;
 
-import com.google.common.collect.Lists;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import leviathan143.loottweaker.common.darkmagic.LootEntryAccessors;
+import leviathan143.loottweaker.common.LootTweaker;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootEntryEmpty;
 import net.minecraft.world.storage.loot.LootEntryItem;
 import net.minecraft.world.storage.loot.LootEntryTable;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
-public abstract class MutableLootEntry
+
+public interface MutableLootEntry
 {
-    private String name;
-    private int weight, quality;
-    private List<LootCondition> conditions;
-
-    protected MutableLootEntry(LootEntry entry)
-    {
-        this.name = entry.getEntryName();
-        this.weight = LootEntryAccessors.getWeight(entry);
-        this.quality = LootEntryAccessors.getQuality(entry);
-        this.conditions = Lists.newArrayList(LootEntryAccessors.getConditions(entry));
-    }
-
-    protected MutableLootEntry(String name, int weight, int quality, LootCondition[] conditions)
-    {
-        this(name, weight, quality, Lists.newArrayList(conditions));
-    }
-
-    protected MutableLootEntry(String name, int weight, int quality, List<LootCondition> conditions)
-    {
-        this.name = name;
-        this.weight = weight;
-        this.quality = quality;
-        this.conditions = conditions;
-    }
+    public static final Logger __LOGGER__ = LogManager.getLogger(LootTweaker.MODID + ".mutable_loot");
 
     public static MutableLootEntry from(LootEntry entry)
     {
@@ -47,60 +26,30 @@ public abstract class MutableLootEntry
         else if (entry instanceof LootEntryEmpty)
             return new MutableLootEntryEmpty((LootEntryEmpty) entry);
         else
-            throw new IllegalArgumentException("Unknown loot entry type " + entry.getClass().getName());
+            return new GenericMutableLootEmpty(entry);
     }
 
-    public abstract MutableLootEntry deepClone();
+    public MutableLootEntry deepClone();
 
-    public abstract LootEntry toImmutable();
+    public LootEntry toImmutable();
 
-    public int getWeight()
-    {
-        return weight;
-    }
+    public int getWeight();
 
-    public void setWeight(int weight)
-    {
-        this.weight = weight;
-    }
+    public void setWeight(int weight);
 
-    public int getQuality()
-    {
-        return quality;
-    }
+    public int getQuality();
 
-    public void setQuality(int quality)
-    {
-        this.quality = quality;
-    }
+    public void setQuality(int quality);
 
-    public List<LootCondition> getConditions()
-    {
-        return conditions;
-    }
+    public List<LootCondition> getConditions();
 
-    public void setConditions(List<LootCondition> conditions)
-    {
-        this.conditions = conditions;
-    }
+    public void setConditions(List<LootCondition> conditions);
 
-    public void addCondition(LootCondition condition)
-    {
-        conditions.add(condition);
-    }
+    public void addCondition(LootCondition condition);
 
-    public void clearConditions()
-    {
-        conditions.clear();
-    }
+    public void clearConditions();
 
-    public String getName()
-    {
-        return name;
-    }
+    public String getName();
 
-    public void setName(String name)
-    {
-        this.name = name;
-    }
+    public void setName(String name);
 }

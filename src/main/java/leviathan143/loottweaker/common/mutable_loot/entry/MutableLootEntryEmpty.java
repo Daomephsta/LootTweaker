@@ -6,7 +6,7 @@ import leviathan143.loottweaker.common.lib.LootConditions;
 import net.minecraft.world.storage.loot.LootEntryEmpty;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
-public class MutableLootEntryEmpty extends MutableLootEntry
+public class MutableLootEntryEmpty extends AbstractMutableLootEntry
 {
     MutableLootEntryEmpty(LootEntryEmpty entry)
     {
