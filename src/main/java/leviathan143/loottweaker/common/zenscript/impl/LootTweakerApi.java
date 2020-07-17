@@ -48,7 +48,7 @@ public class LootTweakerApi implements LootSystemInterface
 
     public LootTable processLootTable(ResourceLocation tableId, LootTable table)
     {
-        LootTableLoadCraftTweakerEventImpl ctEvent = new LootTableLoadCraftTweakerEventImpl(tableId, table);
+        LootTableLoadCraftTweakerEventImpl ctEvent = new LootTableLoadCraftTweakerEventImpl(tableId, table, context);
         lootTableLoad.publish(ctEvent);
         if (ctEvent.wasTableModified())
             return ctEvent.getModifiedTable();

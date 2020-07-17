@@ -9,12 +9,14 @@ public class LootTableLoadCraftTweakerEventImpl implements LootTableLoadCraftTwe
 {
     private final ResourceLocation tableId;
     private final LootTable table;
+    private final LootTweakerContext context;
     private MutableLootTable mutableLootTable;
 
-    public LootTableLoadCraftTweakerEventImpl(ResourceLocation tableId, LootTable table)
+    public LootTableLoadCraftTweakerEventImpl(ResourceLocation tableId, LootTable table, LootTweakerContext context)
     {
         this.tableId = tableId;
         this.table = table;
+        this.context = context;
     }
 
     @Override
@@ -27,7 +29,7 @@ public class LootTableLoadCraftTweakerEventImpl implements LootTableLoadCraftTwe
     public LootTableRepresentation getTable()
     {
         if (mutableLootTable == null)
-            mutableLootTable = new MutableLootTable(table, tableId);
+            mutableLootTable = new MutableLootTable(table, tableId, context);
         return mutableLootTable;
     }
 

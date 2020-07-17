@@ -1,11 +1,15 @@
 package io.github.daomephsta.loottweaker.test.zenscript;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Queue;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Logger;
-import org.junit.jupiter.api.extension.AfterAllCallback;
-import org.junit.jupiter.api.extension.BeforeAllCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.extension.*;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
 
@@ -13,7 +17,7 @@ import crafttweaker.CrafttweakerImplementationAPI;
 import crafttweaker.api.player.IPlayer;
 import crafttweaker.runtime.ILogger;
 
-public class CraftTweakerLoggerRedirect implements BeforeAllCallback, AfterAllCallback
+public class CraftTweakerLoggerRedirect implements BeforeAllCallback, AfterAllCallback, AfterTestExecutionCallback
 {
     private static final String ADAPTER_KEY = "CraftTweakerLoggerRedirect.adapter";
     private final Logger logger;
@@ -33,6 +37,29 @@ public class CraftTweakerLoggerRedirect implements BeforeAllCallback, AfterAllCa
     }
 
     @Override
+    public void afterTestExecution(ExtensionContext context) throws Exception
+    {
+        Store dataStore = context.getStore(Namespace.GLOBAL);
+        Adapter adapter = (Adapter) dataStore.get(ADAPTER_KEY);
+        boolean success = adapter.warnings.isEmpty()
+            && adapter.errors.isEmpty()
+            && adapter.errorsWithThrowables.isEmpty();
+
+        while (!adapter.warnings.isEmpty())
+            logger.warn(adapter.warnings.remove());
+        while (!adapter.errors.isEmpty())
+            logger.error(adapter.errors.remove());
+        while (!adapter.errorsWithThrowables.isEmpty())
+        {
+            Pair<String, Throwable> error = adapter.errorsWithThrowables.remove();
+            logger.error(error.getKey(), error.getValue());
+        }
+
+        if (!success)
+            Assertions.fail("Script generated errors and/or warnings");
+    }
+
+    @Override
     public void afterAll(ExtensionContext context) throws Exception
     {
         Store dataStore = context.getStore(Namespace.GLOBAL);
@@ -44,6 +71,9 @@ public class CraftTweakerLoggerRedirect implements BeforeAllCallback, AfterAllCa
         private static final Pattern FORMATTING_CODE_PATTERN = Pattern.compile("(?i)\u00a7[0-9A-FK-OR]");
         private boolean defaultLevelDisabled = false;
         private final Logger delegate;
+        private final Queue<String> warnings = new ArrayDeque<>();
+        private final Queue<String> errors = new ArrayDeque<>();
+        private final Queue<Pair<String, Throwable>> errorsWithThrowables = new ArrayDeque<>();
 
         private Adapter(Logger delegate)
         {
@@ -65,19 +95,19 @@ public class CraftTweakerLoggerRedirect implements BeforeAllCallback, AfterAllCa
         @Override
         public void logWarning(String message)
         {
-            delegate.warn(() -> stripFormatting(message));
+            warnings.add(stripFormatting(message));
         }
 
         @Override
         public void logError(String message)
         {
-            throw new ScriptException(stripFormatting(message));
+            errors.add(stripFormatting(message));
         }
 
         @Override
         public void logError(String message, Throwable exception)
         {
-            throw new ScriptException(stripFormatting(message), exception);
+            errorsWithThrowables.add(Pair.of(stripFormatting(message), exception));
         }
 
         @Override
@@ -108,19 +138,6 @@ public class CraftTweakerLoggerRedirect implements BeforeAllCallback, AfterAllCa
         public void setLogDisabled(boolean logDisabled)
         {
             this.defaultLevelDisabled  = logDisabled;
-        }
-    }
-
-    public static class ScriptException extends RuntimeException
-    {
-        private ScriptException(String message, Throwable cause)
-        {
-            super(message, cause);
-        }
-
-        private ScriptException(String message)
-        {
-            super(message);
         }
     }
 }

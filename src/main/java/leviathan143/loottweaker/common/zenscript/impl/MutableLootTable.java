@@ -12,6 +12,7 @@ import javax.annotation.Nullable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import crafttweaker.CraftTweakerAPI;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.darkmagic.LootTableAccessors;
 import leviathan143.loottweaker.common.zenscript.api.LootTableRepresentation;
@@ -24,9 +25,11 @@ public class MutableLootTable implements LootTableRepresentation
     private static final Logger SANITY_LOGGER = LogManager.getLogger(LootTweaker.MODID + ".sanity_checks");
     private final ResourceLocation id;
     private Map<String, MutableLootPool> pools;
+    private final LootTweakerContext context;
 
-    public MutableLootTable(LootTable table, ResourceLocation id)
+    public MutableLootTable(LootTable table, ResourceLocation id, LootTweakerContext context)
     {
+        this.context = context;
         this.id = id;
         List<LootPool> immutablePools = LootTableAccessors.getPools(table);
         this.pools = new HashMap<>(immutablePools.size());
@@ -48,10 +51,11 @@ public class MutableLootTable implements LootTableRepresentation
         }
     }
 
-    public MutableLootTable(ResourceLocation id, Map<String, MutableLootPool> pools)
+    public MutableLootTable(ResourceLocation id, Map<String, MutableLootPool> pools, LootTweakerContext context)
     {
         this.id = id;
         this.pools = pools;
+        this.context = context;
     }
 
     public MutableLootTable deepClone()
@@ -65,7 +69,7 @@ public class MutableLootTable implements LootTableRepresentation
         };
         Map<String, MutableLootPool> poolsDeepClone = pools.entrySet().stream()
             .collect(toMap(Map.Entry::getKey, e -> e.getValue().deepClone(), mergeFunction, HashMap::new));
-        return new MutableLootTable(id, poolsDeepClone);
+        return new MutableLootTable(id, poolsDeepClone, context);
     }
 
     public LootTable toImmutable()
@@ -98,9 +102,13 @@ public class MutableLootTable implements LootTableRepresentation
             throw new IllegalArgumentException(String.format("Duplicate pool name '%s' in table '%s'", pool.getName(), id));
     }
 
-    public MutableLootPool removePool(String name)
+    @Override
+    public void removePool(String poolId)
     {
-        return pools.remove(name);
+        if (pools.remove(poolId) == null)
+            context.getErrorHandler().error("No pool with id '%s' exists in table '%s'", poolId, id);
+        else
+            CraftTweakerAPI.logInfo(String.format("Removed pool '%s' from table '%s'", poolId, id));
     }
 
     public void clearPools()
