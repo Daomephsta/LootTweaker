@@ -32,9 +32,9 @@ public class ZenscriptTests
     public static final Iterable<ResourceLocation> TEST_LOOT_TABLES = Stream.of("loottweaker:foo", "loottweaker:bar").map(ResourceLocation::new).collect(Collectors.toSet());
 
     @SaddleTest(loadPhase = LoadPhase.INIT)
-    public void removePool()
+    public void tableMethods()
     {
-        ScriptRunner.run("scripts/remove-pool.zs");
+        ScriptRunner.run("scripts/loot-table-methods.zs");
         loadTestTables();
     }
 

@@ -111,8 +111,10 @@ public class MutableLootTable implements LootTableRepresentation
             CraftTweakerAPI.logInfo(String.format("Removed pool '%s' from table '%s'", poolId, id));
     }
 
-    public void clearPools()
+    @Override
+    public void removeAllPools()
     {
         pools.clear();
+        CraftTweakerAPI.logInfo(String.format("Removed all pools from table '%s'", id));
     }
 }

@@ -13,4 +13,6 @@ public interface LootTableRepresentation
 {
     @ZenMethod
     public void removePool(String poolId);
+    @ZenMethod
+    public void removeAllPools();
 }

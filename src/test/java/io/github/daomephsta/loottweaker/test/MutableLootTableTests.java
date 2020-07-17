@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import io.github.daomephsta.loottweaker.test.TestErrorHandler.LootTweakerException;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
+import leviathan143.loottweaker.common.darkmagic.LootTableAccessors;
 import leviathan143.loottweaker.common.zenscript.api.LootSystemInterface;
 import leviathan143.loottweaker.common.zenscript.impl.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.impl.MutableLootTable;
@@ -42,6 +43,20 @@ public class MutableLootTableTests
         assertThatThrownBy(() -> mutableFoo.removePool("quuz"))
             .isInstanceOf(LootTweakerException.class)
             .hasMessage("No pool with id 'quuz' exists in table '%s'", fooId);
+    }
+
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    public void removeAllPools()
+    {
+        LootTweakerContext context = TestUtils.createContext();
+        LootSystemInterface lootSystem = context.lootSystem();
+        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        MutableLootTable mutableFoo = mutableLootTable(fooId, context);
+        LootTable fooOriginal = loadTable(fooId);
+        assertThat(LootTableAccessors.getPools(fooOriginal)).isNotEmpty();
+        mutableFoo.removeAllPools();
+        LootTable fooNew = mutableFoo.toImmutable();
+        assertThat(LootTableAccessors.getPools(fooNew)).isEmpty();
     }
 
     private MutableLootTable mutableLootTable(ResourceLocation tableId, LootTweakerContext context)
