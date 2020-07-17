@@ -1,4 +1,4 @@
-package leviathan143.loottweaker.common.mutable_loot.entry;
+package leviathan143.loottweaker.common.zenscript.impl.entry;
 
 import java.util.Arrays;
 import java.util.List;

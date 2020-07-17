@@ -1,4 +1,4 @@
-package leviathan143.loottweaker.common.mutable_loot;
+package leviathan143.loottweaker.common.zenscript.impl;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -14,11 +14,12 @@ import org.apache.logging.log4j.Logger;
 
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.darkmagic.LootTableAccessors;
+import leviathan143.loottweaker.common.zenscript.api.LootTableRepresentation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
 
-public class MutableLootTable
+public class MutableLootTable implements LootTableRepresentation
 {
     private static final Logger SANITY_LOGGER = LogManager.getLogger(LootTweaker.MODID + ".sanity_checks");
     private final ResourceLocation id;

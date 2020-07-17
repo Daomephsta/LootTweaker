@@ -1,4 +1,4 @@
-package leviathan143.loottweaker.common.mutable_loot;
+package leviathan143.loottweaker.common.zenscript.impl;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.darkmagic.LootPoolAccessors;
 import leviathan143.loottweaker.common.lib.LootConditions;
-import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntry;
+import leviathan143.loottweaker.common.zenscript.impl.entry.MutableLootEntry;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.RandomValueRange;

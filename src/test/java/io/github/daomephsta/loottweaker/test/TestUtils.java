@@ -7,7 +7,7 @@ import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import leviathan143.loottweaker.common.darkmagic.LootTableAccessors;
 import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
-import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
+import leviathan143.loottweaker.common.zenscript.impl.LootTweakerContext;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
@@ -19,7 +19,7 @@ public class TestUtils
 {
     private TestUtils() {}
 
-    public static LootTweakerContext context()
+    public static LootTweakerContext createContext()
     {
         return new LootTweakerContext(new TestErrorHandler());
     }
@@ -49,15 +49,14 @@ public class TestUtils
         String location = "assets/" + name.getNamespace() + "/loot_tables/" + name.getPath() + ".json";
         StringBuilder dataBuilder = new StringBuilder();
         InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream(location);
-        if (stream == null)
-            throw new IllegalArgumentException("No such loot table " + name);
-        try(Scanner tableSource = new Scanner(stream))
+        if (stream == null) throw new IllegalArgumentException("No such loot table " + name);
+        try (Scanner tableSource = new Scanner(stream))
         {
-            while(tableSource.hasNextLine())
+            while (tableSource.hasNextLine())
                 dataBuilder.append(tableSource.nextLine());
         }
-        LootTable table = ForgeHooks.loadLootTable(LootTableManagerAccessors.getGsonInstance(), name, dataBuilder.toString(), true, null);
-        // Unfreeze table & pools, because doing tests will be a PITA otherwise
+        LootTable table = ForgeHooks.loadLootTable(LootTableManagerAccessors.getGsonInstance(),
+            name, dataBuilder.toString(), true, null); // Unfreeze table & pools, because doing tests will be a PITA otherwise
         ObfuscationReflectionHelper.setPrivateValue(LootTable.class, table, false, "isFrozen");
         for (LootPool pool : LootTableAccessors.getPools(table))
             ObfuscationReflectionHelper.setPrivateValue(LootPool.class, pool, false, "isFrozen");
