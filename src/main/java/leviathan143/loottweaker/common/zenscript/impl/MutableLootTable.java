@@ -7,14 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BinaryOperator;
 
-import javax.annotation.Nullable;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import crafttweaker.CraftTweakerAPI;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.darkmagic.LootTableAccessors;
+import leviathan143.loottweaker.common.zenscript.api.LootPoolRepresentation;
 import leviathan143.loottweaker.common.zenscript.api.LootTableRepresentation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
@@ -90,10 +89,16 @@ public class MutableLootTable implements LootTableRepresentation
         return pools;
     }
 
-    @Nullable
-    public MutableLootPool getPool(String name)
+    @Override
+    public LootPoolRepresentation getPool(String poolId)
     {
-        return pools.get(name);
+        if (!pools.containsKey(poolId))
+        {
+            context.getErrorHandler().error("No loot pool with id '%s' exists in table '%s'", poolId, id);
+            //Cannot return null, or NPEs make it harder to find any other script errors
+            return MutableLootPool.INVALID;
+        }
+        return pools.get(poolId);
     }
 
     public void addPool(MutableLootPool pool)

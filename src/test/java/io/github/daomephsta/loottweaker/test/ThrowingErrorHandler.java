@@ -2,7 +2,14 @@ package io.github.daomephsta.loottweaker.test;
 
 import leviathan143.loottweaker.common.ErrorHandler;
 
-public class TestErrorHandler implements ErrorHandler
+/**
+ * Error handler that throws all errors as exceptions. Used in tests to
+ * check that errors occur when expected.
+ *
+ * @author Daomephsta
+ *
+ */
+public class ThrowingErrorHandler implements ErrorHandler
 {
     public static class LootTweakerException extends RuntimeException
     {

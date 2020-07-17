@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import crafttweaker.util.IEventHandler;
-import io.github.daomephsta.loottweaker.test.TestErrorHandler.LootTweakerException;
+import io.github.daomephsta.loottweaker.test.ThrowingErrorHandler.LootTweakerException;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
 import leviathan143.loottweaker.common.zenscript.api.LootSystemInterface;

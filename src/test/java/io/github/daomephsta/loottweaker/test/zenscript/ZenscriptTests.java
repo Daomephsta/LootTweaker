@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import io.github.daomephsta.loottweaker.test.TestErrorHandler;
+import io.github.daomephsta.loottweaker.test.ThrowingErrorHandler;
 import io.github.daomephsta.loottweaker.test.TestUtils;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;

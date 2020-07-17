@@ -21,7 +21,7 @@ public class TestUtils
 
     public static LootTweakerContext createContext()
     {
-        return new LootTweakerContext(new TestErrorHandler());
+        return new LootTweakerContext(new ThrowingErrorHandler());
     }
 
     public static IItemStack iitemstack(Item item)

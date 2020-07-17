@@ -2,9 +2,7 @@ package leviathan143.loottweaker.common.zenscript.impl;
 
 import static java.util.stream.Collectors.toMap;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BinaryOperator;
 
 import org.apache.logging.log4j.LogManager;
@@ -13,14 +11,17 @@ import org.apache.logging.log4j.Logger;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.darkmagic.LootPoolAccessors;
 import leviathan143.loottweaker.common.lib.LootConditions;
+import leviathan143.loottweaker.common.zenscript.api.LootPoolRepresentation;
 import leviathan143.loottweaker.common.zenscript.impl.entry.MutableLootEntry;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
-public class MutableLootPool
+public class MutableLootPool implements LootPoolRepresentation
 {
+    public static final MutableLootPool INVALID = new MutableLootPool("invalid", new HashMap<>(), new ArrayList<>(),
+        new RandomValueRange(0), new RandomValueRange(0));
     private static final Logger SANITY_LOGGER = LogManager.getLogger(LootTweaker.MODID + ".sanity_checks");
     private String name;
     private Map<String, MutableLootEntry> entries;

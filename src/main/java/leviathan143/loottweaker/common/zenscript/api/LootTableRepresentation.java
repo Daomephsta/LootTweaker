@@ -12,7 +12,11 @@ import stanhebben.zenscript.annotations.ZenMethod;
 public interface LootTableRepresentation
 {
     @ZenMethod
+    public LootPoolRepresentation getPool(String poolId);
+
+    @ZenMethod
     public void removePool(String poolId);
+
     @ZenMethod
     public void removeAllPools();
 }
