@@ -52,6 +52,13 @@ public class ZenscriptTests
         loadTestTables();
     }
 
+    @SaddleTest(loadPhase = LoadPhase.INIT)
+    public void lootTableEntryAddition()
+    {
+        ScriptRunner.run("scripts/loot-table-entry-addition.zs");
+        loadTestTables();
+    }
+
     private void loadTestTables()
     {
         for (ResourceLocation testTable : TEST_LOOT_TABLES)

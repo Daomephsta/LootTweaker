@@ -23,6 +23,7 @@ import leviathan143.loottweaker.common.lib.QualifiedPoolIdentifier;
 import leviathan143.loottweaker.common.zenscript.api.LootPoolRepresentation;
 import leviathan143.loottweaker.common.zenscript.impl.entry.MutableLootEntry;
 import leviathan143.loottweaker.common.zenscript.impl.entry.MutableLootEntryEmpty;
+import leviathan143.loottweaker.common.zenscript.impl.entry.MutableLootEntryTable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootPool;
@@ -174,6 +175,34 @@ public class MutableLootPool implements LootPoolRepresentation
     }
 
     @Override
+    public void addLootTableEntry(String delegateTableId, String name)
+    {
+        addLootTableEntry(delegateTableId, DEFAULT_WEIGHT, name);
+    }
+
+    @Override
+    public void addLootTableEntry(String delegateTableId, int weight, String name)
+    {
+        addLootTableEntry(delegateTableId, weight, DEFAULT_QUALITY, name);
+    }
+
+    @Override
+    public void addLootTableEntry(String delegateTableId, int weight, int quality, String name)
+    {
+        //TODO Consider checking existence of the table
+        ResourceLocation delegateTableRL = new ResourceLocation(delegateTableId);
+        addEntry(new MutableLootEntryTable(name, weight, quality, LootConditions.NONE, delegateTableRL ));
+    }
+
+    @Override
+    public void addLootTableEntryJson(String delegateTableId, int weight, int quality, IData[] conditions, String name)
+    {
+        //TODO Consider checking existence of the table
+        ResourceLocation delegateTableRL = new ResourceLocation(delegateTableId);
+        addEntry(new MutableLootEntryTable(name, weight, quality, parseConditions(conditions), delegateTableRL ));
+    }
+
+    @Override
     public void addEmptyEntry(@Optional String name)
     {
         addEmptyEntry(DEFAULT_WEIGHT, name);
@@ -194,12 +223,16 @@ public class MutableLootPool implements LootPoolRepresentation
     @Override
     public void addEmptyEntryJson(int weight, int quality, IData[] conditions, @Optional String name)
     {
-        LootCondition[] parsedConditions = Arrays.stream(conditions)
+        addEntry(new MutableLootEntryEmpty(name, weight, quality, parseConditions(conditions)));
+    }
+
+    private LootCondition[] parseConditions(IData[] conditions)
+    {
+        return Arrays.stream(conditions)
             .map(c -> loggingParser.parse(c, LootCondition.class))
             .filter(java.util.Optional::isPresent)
             .map(java.util.Optional::get)
             .toArray(LootCondition[]::new);
-        addEntry(new MutableLootEntryEmpty(name, weight, quality, parsedConditions));
     }
 
     private int nextEntryId = 0;

@@ -12,6 +12,18 @@ import stanhebben.zenscript.annotations.ZenMethod;
 public interface LootPoolRepresentation
 {
     @ZenMethod
+    public void addLootTableEntry(String delegateTableId, @Optional String name);
+
+    @ZenMethod
+    public void addLootTableEntry(String delegateTableId, int weight, @Optional String name);
+
+    @ZenMethod
+    public void addLootTableEntry(String delegateTableId, int weight, int quality, @Optional String name);
+
+    @ZenMethod
+    public void addLootTableEntryJson(String delegateTableId, int weight, int quality, IData[] conditions, @Optional String name);
+
+    @ZenMethod
     public void addEmptyEntry(@Optional String name);
 
     @ZenMethod
