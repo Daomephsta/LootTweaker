@@ -10,5 +10,8 @@ import stanhebben.zenscript.annotations.ZenMethod;
 public interface LootPoolRepresentation
 {
     @ZenMethod
+    public void removeEntry(String entryId);
+
+    @ZenMethod
     public void removeAllEntries();
 }

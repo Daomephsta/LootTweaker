@@ -160,9 +160,13 @@ public class MutableLootPool implements LootPoolRepresentation
             throw new IllegalArgumentException(String.format("Duplicate entry name '%s' in pool '%s'", entry.getName(), this.getName()));
     }
 
-    public MutableLootEntry removeEntry(String name)
+    @Override
+    public void removeEntry(String entryId)
     {
-        return entries.remove(name);
+        if (entries.remove(entryId) == null)
+            context.getErrorHandler().error("No entry with id '%s' exists in %s", entryId, qualifiedId);
+        else
+            CraftTweakerAPI.logInfo(String.format("Removed entry '%s' from %s", entryId, qualifiedId));
     }
 
     @Override
