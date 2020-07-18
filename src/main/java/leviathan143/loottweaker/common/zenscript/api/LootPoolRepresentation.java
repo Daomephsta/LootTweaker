@@ -2,6 +2,7 @@ package leviathan143.loottweaker.common.zenscript.api;
 
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.data.IData;
+import crafttweaker.api.item.IItemStack;
 import leviathan143.loottweaker.common.LootTweaker;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
@@ -11,6 +12,18 @@ import stanhebben.zenscript.annotations.ZenMethod;
 @ZenClass(LootTweaker.MODID + ".LootPool")
 public interface LootPoolRepresentation
 {
+    @ZenMethod
+    public void addItemEntry(IItemStack stack, @Optional String name);
+
+    @ZenMethod
+    public void addItemEntry(IItemStack stack, int weight, @Optional String name);
+
+    @ZenMethod
+    public void addItemEntry(IItemStack stack, int weight, int quality, @Optional String name);
+
+    @ZenMethod
+    public void addItemEntryJson(IItemStack stack, int weight, int quality, IData[] functions, IData[] conditions, @Optional String name);
+
     @ZenMethod
     public void addLootTableEntry(String delegateTableId, @Optional String name);
 

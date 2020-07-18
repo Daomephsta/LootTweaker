@@ -1,34 +1,41 @@
 package leviathan143.loottweaker.common.zenscript.impl;
 
+import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toMap;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BinaryOperator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.collect.Lists;
+
 import crafttweaker.CraftTweakerAPI;
+import crafttweaker.api.data.DataMap;
 import crafttweaker.api.data.IData;
+import crafttweaker.api.item.IItemStack;
+import crafttweaker.api.minecraft.CraftTweakerMC;
 import leviathan143.loottweaker.common.ErrorHandler;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.darkmagic.LootPoolAccessors;
 import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
 import leviathan143.loottweaker.common.lib.DataParser;
 import leviathan143.loottweaker.common.lib.LootConditions;
+import leviathan143.loottweaker.common.lib.LootFunctions;
 import leviathan143.loottweaker.common.lib.QualifiedPoolIdentifier;
 import leviathan143.loottweaker.common.zenscript.api.LootPoolRepresentation;
 import leviathan143.loottweaker.common.zenscript.impl.entry.MutableLootEntry;
 import leviathan143.loottweaker.common.zenscript.impl.entry.MutableLootEntryEmpty;
+import leviathan143.loottweaker.common.zenscript.impl.entry.MutableLootEntryItem;
 import leviathan143.loottweaker.common.zenscript.impl.entry.MutableLootEntryTable;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
+import net.minecraft.world.storage.loot.functions.*;
 import stanhebben.zenscript.annotations.Optional;
 
 public class MutableLootPool implements LootPoolRepresentation
@@ -172,6 +179,73 @@ public class MutableLootPool implements LootPoolRepresentation
     public MutableLootEntry getEntry(String name)
     {
         return entries.get(name);
+    }
+
+    @Override
+    public void addItemEntry(IItemStack iStack, String name)
+    {
+        addItemEntry(iStack, DEFAULT_WEIGHT, name);
+    }
+
+    @Override
+    public void addItemEntry(IItemStack iStack, int weight, String name)
+    {
+        addItemEntry(iStack, weight, DEFAULT_QUALITY, name);
+    }
+
+    @Override
+    public void addItemEntry(IItemStack iStack, int weight, int quality, String name)
+    {
+        ItemStack stack = CraftTweakerMC.getItemStack(iStack);
+        addEntry(new MutableLootEntryItem(name, weight, quality, new ArrayList<>(),
+            stack.getItem(), withStackFunctions(iStack, LootFunctions.NONE)));
+    }
+
+    @Override
+    public void addItemEntryJson(IItemStack iStack, int weight, int quality, IData[] functions, IData[] conditions, String name)
+    {
+        ItemStack stack = CraftTweakerMC.getItemStack(iStack);
+        List<LootCondition> parsedConditions = Arrays.stream(conditions)
+            .map(c1 -> loggingParser.parse(c1, LootCondition.class))
+            .filter(java.util.Optional::isPresent)
+            .map(java.util.Optional::get)
+            .collect(toCollection(ArrayList::new));
+        LootFunction[] parsedFunctions = Arrays.stream(functions)
+            .map(c -> loggingParser.parse(c, LootFunction.class))
+            .filter(java.util.Optional::isPresent)
+            .map(java.util.Optional::get)
+            .toArray(LootFunction[]::new);
+        addEntry(new MutableLootEntryItem(name, weight, quality, parsedConditions,
+            stack.getItem(), withStackFunctions(iStack, parsedFunctions)));
+    }
+
+    /* Adds loot functions equivalent to the damage, stacksize and NBT of the
+     * input stack to the passed in array, if loot functions of the same type
+     * are not present. */
+    private List<LootFunction> withStackFunctions(IItemStack iStack, LootFunction[] existingFunctions)
+    {
+        ItemStack stack = CraftTweakerMC.getItemStack(iStack);
+        boolean sizeFuncExists = false, damageFuncExists = false, nbtFuncExists = false;
+        for (LootFunction lootFunction : existingFunctions)
+        {
+            if (lootFunction instanceof SetCount) sizeFuncExists = true;
+            if (lootFunction instanceof SetDamage || lootFunction instanceof SetMetadata) damageFuncExists = true;
+            if (lootFunction instanceof SetNBT) nbtFuncExists = true;
+        }
+        List<LootFunction> functionsOut = Lists.newArrayListWithCapacity(existingFunctions.length + 3);
+        Collections.addAll(functionsOut, existingFunctions);
+        if (iStack.getAmount() > 1 && !sizeFuncExists)
+            functionsOut.add(new SetCount(LootConditions.NONE, new RandomValueRange(iStack.getAmount())));
+        if (iStack.getDamage() > 0 && !damageFuncExists)
+        {
+            functionsOut.add(stack.isItemStackDamageable()
+                // SetDamage takes a percentage, not a number
+                ? new SetDamage(LootConditions.NONE, new RandomValueRange((float) stack.getItemDamage() / (float) stack.getMaxDamage()))
+                : new SetMetadata(LootConditions.NONE, new RandomValueRange(iStack.getDamage())));
+        }
+        if (iStack.getTag() != DataMap.EMPTY && !nbtFuncExists)
+            functionsOut.add(new SetNBT(LootConditions.NONE, CraftTweakerMC.getNBTCompound(iStack.getTag())));
+        return functionsOut;
     }
 
     @Override
