@@ -9,7 +9,7 @@ import net.minecraft.util.ResourceLocation;
 public class QualifiedPoolIdentifier
 {
     private final ResourceLocation tableId;
-    private final String poolId;
+    private String poolId;
 
     public QualifiedPoolIdentifier(ResourceLocation tableId, String poolId)
     {
@@ -25,6 +25,11 @@ public class QualifiedPoolIdentifier
     public String getPoolId()
     {
         return poolId;
+    }
+
+    public void setPoolId(String poolId)
+    {
+        this.poolId = poolId;
     }
 
     @Override

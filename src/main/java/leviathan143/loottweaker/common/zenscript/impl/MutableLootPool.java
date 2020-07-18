@@ -8,11 +8,14 @@ import java.util.function.BinaryOperator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import crafttweaker.CraftTweakerAPI;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.darkmagic.LootPoolAccessors;
 import leviathan143.loottweaker.common.lib.LootConditions;
+import leviathan143.loottweaker.common.lib.QualifiedPoolIdentifier;
 import leviathan143.loottweaker.common.zenscript.api.LootPoolRepresentation;
 import leviathan143.loottweaker.common.zenscript.impl.entry.MutableLootEntry;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.RandomValueRange;
@@ -20,17 +23,17 @@ import net.minecraft.world.storage.loot.conditions.LootCondition;
 
 public class MutableLootPool implements LootPoolRepresentation
 {
-    public static final MutableLootPool INVALID = new MutableLootPool("invalid", new HashMap<>(), new ArrayList<>(),
-        new RandomValueRange(0), new RandomValueRange(0));
     private static final Logger SANITY_LOGGER = LogManager.getLogger(LootTweaker.MODID + ".sanity_checks");
-    private String name;
+    private final LootTweakerContext context;
+    private QualifiedPoolIdentifier qualifiedId;
     private Map<String, MutableLootEntry> entries;
     private List<LootCondition> conditions;
     private RandomValueRange rolls, bonusRolls;
 
-    MutableLootPool(LootPool pool)
+    public MutableLootPool(LootPool pool, ResourceLocation parentTableId, LootTweakerContext context)
     {
-        this.name = pool.getName();
+        this.context = context;
+        this.qualifiedId = new QualifiedPoolIdentifier(parentTableId, pool.getName());
         List<LootEntry> immutableEntries = LootPoolAccessors.getEntries(pool);
         this.entries = new HashMap<>(immutableEntries.size());
         int uniqueSuffix = 0;
@@ -54,13 +57,14 @@ public class MutableLootPool implements LootPoolRepresentation
         this.bonusRolls = pool.getBonusRolls();
     }
 
-    public MutableLootPool(String name, Map<String, MutableLootEntry> entries, List<LootCondition> conditions, RandomValueRange rolls, RandomValueRange bonusRolls)
+    public MutableLootPool(QualifiedPoolIdentifier qualifiedId, Map<String, MutableLootEntry> entries, List<LootCondition> conditions, RandomValueRange rolls, RandomValueRange bonusRolls, LootTweakerContext context)
     {
-        this.name = name;
+        this.qualifiedId = qualifiedId;
         this.entries = entries;
         this.conditions = conditions;
         this.rolls = rolls;
         this.bonusRolls = bonusRolls;
+        this.context = context;
     }
 
     public MutableLootPool deepClone()
@@ -74,7 +78,7 @@ public class MutableLootPool implements LootPoolRepresentation
         };
         Map<String, MutableLootEntry> entriesDeepClone = entries.entrySet().stream()
             .collect(toMap(Map.Entry::getKey, e -> e.getValue().deepClone(), mergeFunction, HashMap::new));
-        return new MutableLootPool(name, entriesDeepClone, LootConditions.deepClone(conditions), rolls, bonusRolls);
+        return new MutableLootPool(qualifiedId, entriesDeepClone, LootConditions.deepClone(conditions), rolls, bonusRolls, context);
     }
 
     public LootPool toImmutable()
@@ -82,7 +86,7 @@ public class MutableLootPool implements LootPoolRepresentation
         LootEntry[] entriesArray = entries.values().stream()
             .map(MutableLootEntry::toImmutable)
             .toArray(LootEntry[]::new);
-        return new LootPool(entriesArray, conditions.toArray(LootConditions.NONE), rolls, bonusRolls, name);
+        return new LootPool(entriesArray, conditions.toArray(LootConditions.NONE), rolls, bonusRolls, qualifiedId.getPoolId());
     }
 
     public List<LootCondition> getConditions()
@@ -132,12 +136,12 @@ public class MutableLootPool implements LootPoolRepresentation
 
     public String getName()
     {
-        return name;
+        return qualifiedId.getPoolId();
     }
 
     public void setName(String name)
     {
-        this.name = name;
+        qualifiedId.setPoolId(name);
     }
 
     public Map<String, MutableLootEntry> getEntries()
@@ -161,8 +165,10 @@ public class MutableLootPool implements LootPoolRepresentation
         return entries.remove(name);
     }
 
-    public void clearEntries()
+    @Override
+    public void removeAllEntries()
     {
         entries.clear();
+        CraftTweakerAPI.logInfo("Removed all entries from " + qualifiedId);
     }
 }

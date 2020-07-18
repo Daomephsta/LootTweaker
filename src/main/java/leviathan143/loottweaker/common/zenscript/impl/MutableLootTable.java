@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 import crafttweaker.CraftTweakerAPI;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.darkmagic.LootTableAccessors;
+import leviathan143.loottweaker.common.lib.QualifiedPoolIdentifier;
 import leviathan143.loottweaker.common.zenscript.api.LootPoolRepresentation;
 import leviathan143.loottweaker.common.zenscript.api.LootTableRepresentation;
 import net.minecraft.util.ResourceLocation;
@@ -37,7 +38,7 @@ public class MutableLootTable implements LootTableRepresentation
         int uniqueSuffix = 0;
         for (LootPool pool : immutablePools)
         {
-            MutableLootPool mutablePool = new MutableLootPool(pool);
+            MutableLootPool mutablePool = new MutableLootPool(pool, id, context);
             MutableLootPool existing = pools.get(pool.getName());
             if (existing != null)
             {
@@ -98,7 +99,8 @@ public class MutableLootTable implements LootTableRepresentation
         {
             context.getErrorHandler().error("No loot pool with id '%s' exists in table '%s'", poolId, id);
             //Cannot return null, or NPEs make it harder to find any other script errors
-            return MutableLootPool.INVALID;
+            return new MutableLootPool(new QualifiedPoolIdentifier(new ResourceLocation("loottweaker:invalid"), "invalid"),
+                new HashMap<>(), new ArrayList<>(), new RandomValueRange(0), new RandomValueRange(0), context);
         }
         return pools.get(poolId);
     }
@@ -112,8 +114,8 @@ public class MutableLootTable implements LootTableRepresentation
     @Override
     public LootPoolRepresentation addPool(String poolId, float minRolls, float maxRolls, float minBonusRolls, float maxBonusRolls)
     {
-        MutableLootPool pool = new MutableLootPool(poolId, new HashMap<>(), new ArrayList<>(),
-            new RandomValueRange(minRolls, maxRolls), new RandomValueRange(minBonusRolls, maxBonusRolls));
+        MutableLootPool pool = new MutableLootPool(new QualifiedPoolIdentifier(id, poolId), new HashMap<>(), new ArrayList<>(),
+            new RandomValueRange(minRolls, maxRolls), new RandomValueRange(minBonusRolls, maxBonusRolls), context);
         if (pools.putIfAbsent(poolId, pool) != null)
             context.getErrorHandler().error("Cannot add pool '%s' to table '%s'. Pool names must be unique within their table.", poolId, id);
         else
