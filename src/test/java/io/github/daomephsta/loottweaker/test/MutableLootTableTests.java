@@ -4,6 +4,8 @@ import static io.github.daomephsta.loottweaker.test.TestUtils.loadTable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import org.assertj.core.api.SoftAssertions;
+
 import io.github.daomephsta.loottweaker.test.ThrowingErrorHandler.LootTweakerException;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
@@ -13,7 +15,9 @@ import leviathan143.loottweaker.common.zenscript.api.LootSystemInterface;
 import leviathan143.loottweaker.common.zenscript.impl.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.impl.MutableLootTable;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
+import net.minecraft.world.storage.loot.RandomValueRange;
 
 
 public class MutableLootTableTests
@@ -92,7 +96,7 @@ public class MutableLootTableTests
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void poolCaching()
+    public void poolCachingGetGet()
     {
         LootTweakerContext context = TestUtils.createContext();
         MutableLootTable mutableFoo = mutableLootTable(new ResourceLocation("loottweaker", "foo"), context);
@@ -100,12 +104,71 @@ public class MutableLootTableTests
         assertThat(mutableFoo.getPool("bar"))
             .withFailMessage("Different invocations of getPool() returned different objects for the pool named 'bar'")
             .isEqualTo(mutableFoo.getPool("bar"));
-        /* TODO Reimplement when addPool is reimplemented
-         * LootPoolRepresentation qux = mutableFoo.addPool("qux", 1, 1, 0, 0);
-         * assertThat(mutableFoo.getPool("qux"))
-         * .withFailMessage("Wrapper returned by addPool() for added pool 'qux' was not returned by subsequent invocation of getPool()"
-         * ) .isEqualTo(qux);
-         */
+
+    }
+
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    public void poolCachingAddGet()
+    {
+        LootTweakerContext context = TestUtils.createContext();
+        MutableLootTable mutableFoo = mutableLootTable(new ResourceLocation("loottweaker", "foo"), context);
+        LootPoolRepresentation qux = mutableFoo.addPool("qux", 1, 1, 0, 0);
+        assertThat(mutableFoo.getPool("qux"))
+            .withFailMessage("Wrapper returned by addPool() for added pool 'qux' was not returned by subsequent invocation of getPool()")
+            .isEqualTo(qux);
+    }
+
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    public void addPoolWithoutBonusRolls()
+    {
+        LootTweakerContext context = TestUtils.createContext();
+        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        MutableLootTable mutableFoo = mutableLootTable(fooId, context);
+        LootTable fooOriginal = loadTable(fooId);
+        assertThat(fooOriginal.getPool("qux")).isNull();
+        mutableFoo.addPool("qux", 1, 2);
+        LootTable fooNew = mutableFoo.toImmutable();
+        LootPool qux = fooNew.getPool("qux");
+        assertThat(qux).isNotNull();
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(qux.getRolls()).extracting(RandomValueRange::getMin).isEqualTo(1.0F);
+        softly.assertThat(qux.getRolls()).extracting(RandomValueRange::getMax).isEqualTo(2.0F);
+        softly.assertThat(qux.getBonusRolls()).extracting(RandomValueRange::getMin).isEqualTo(0.0F);
+        softly.assertThat(qux.getBonusRolls()).extracting(RandomValueRange::getMax).isEqualTo(0.0F);
+        softly.assertAll();
+    }
+
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    public void addPoolWithBonusRolls()
+    {
+        LootTweakerContext context = TestUtils.createContext();
+        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        MutableLootTable mutableFoo = mutableLootTable(fooId, context);
+        LootTable fooOriginal = loadTable(fooId);
+        assertThat(fooOriginal.getPool("qux")).isNull();
+        mutableFoo.addPool("qux", 1, 2, 3, 4);
+        LootTable fooNew = mutableFoo.toImmutable();
+        LootPool qux = fooNew.getPool("qux");
+        assertThat(qux).isNotNull();
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(qux.getRolls()).extracting(RandomValueRange::getMin).isEqualTo(1.0F);
+        softly.assertThat(qux.getRolls()).extracting(RandomValueRange::getMax).isEqualTo(2.0F);
+        softly.assertThat(qux.getBonusRolls()).extracting(RandomValueRange::getMin).isEqualTo(3.0F);
+        softly.assertThat(qux.getBonusRolls()).extracting(RandomValueRange::getMax).isEqualTo(4.0F);
+        softly.assertAll();
+    }
+
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    public void addPoolNameCollision()
+    {
+        LootTweakerContext context = TestUtils.createContext();
+        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        MutableLootTable mutableFoo = mutableLootTable(fooId, context);
+        LootTable fooOriginal = loadTable(fooId);
+        assertThat(fooOriginal.getPool("bar")).isNotNull();
+        assertThatThrownBy(() -> mutableFoo.addPool("bar", 1, 2, 3, 4))
+            .isInstanceOf(LootTweakerException.class)
+            .hasMessage("Cannot add pool 'bar' to table '%s'. Pool names must be unique within their table.", fooId);
     }
 
     private MutableLootTable mutableLootTable(ResourceLocation tableId, LootTweakerContext context)

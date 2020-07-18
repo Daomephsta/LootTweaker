@@ -15,6 +15,12 @@ public interface LootTableRepresentation
     public LootPoolRepresentation getPool(String poolId);
 
     @ZenMethod
+    public LootPoolRepresentation addPool(String poolId, float minRolls, float maxRolls);
+
+    @ZenMethod
+    public LootPoolRepresentation addPool(String poolId, float minRolls, float maxRolls, float minBonusRolls, float maxBonusRolls);
+
+    @ZenMethod
     public void removePool(String poolId);
 
     @ZenMethod

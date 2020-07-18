@@ -2,6 +2,7 @@ package leviathan143.loottweaker.common.zenscript.impl;
 
 import static java.util.stream.Collectors.toMap;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import leviathan143.loottweaker.common.zenscript.api.LootTableRepresentation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
+import net.minecraft.world.storage.loot.RandomValueRange;
 
 public class MutableLootTable implements LootTableRepresentation
 {
@@ -101,10 +103,22 @@ public class MutableLootTable implements LootTableRepresentation
         return pools.get(poolId);
     }
 
-    public void addPool(MutableLootPool pool)
+    @Override
+    public LootPoolRepresentation addPool(String poolId, float minRolls, float maxRolls)
     {
-        if (pools.putIfAbsent(pool.getName(), pool) != null)
-            throw new IllegalArgumentException(String.format("Duplicate pool name '%s' in table '%s'", pool.getName(), id));
+        return addPool(poolId, minRolls, maxRolls, 0, 0);
+    }
+
+    @Override
+    public LootPoolRepresentation addPool(String poolId, float minRolls, float maxRolls, float minBonusRolls, float maxBonusRolls)
+    {
+        MutableLootPool pool = new MutableLootPool(poolId, new HashMap<>(), new ArrayList<>(),
+            new RandomValueRange(minRolls, maxRolls), new RandomValueRange(minBonusRolls, maxBonusRolls));
+        if (pools.putIfAbsent(poolId, pool) != null)
+            context.getErrorHandler().error("Cannot add pool '%s' to table '%s'. Pool names must be unique within their table.", poolId, id);
+        else
+            CraftTweakerAPI.logInfo(String.format("Added pool '%s' to table '%s'", poolId, id));
+        return pool;
     }
 
     @Override
