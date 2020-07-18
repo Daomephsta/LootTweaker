@@ -45,6 +45,13 @@ public class ZenscriptTests
         loadTestTables();
     }
 
+    @SaddleTest(loadPhase = LoadPhase.INIT)
+    public void emptyEntryAddition()
+    {
+        ScriptRunner.run("scripts/empty-entry-addition.zs");
+        loadTestTables();
+    }
+
     private void loadTestTables()
     {
         for (ResourceLocation testTable : TEST_LOOT_TABLES)

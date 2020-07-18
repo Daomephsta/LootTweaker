@@ -2,29 +2,41 @@ package leviathan143.loottweaker.common.zenscript.impl;
 
 import static java.util.stream.Collectors.toMap;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BinaryOperator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import crafttweaker.CraftTweakerAPI;
+import crafttweaker.api.data.IData;
+import leviathan143.loottweaker.common.ErrorHandler;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.darkmagic.LootPoolAccessors;
+import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
+import leviathan143.loottweaker.common.lib.DataParser;
 import leviathan143.loottweaker.common.lib.LootConditions;
 import leviathan143.loottweaker.common.lib.QualifiedPoolIdentifier;
 import leviathan143.loottweaker.common.zenscript.api.LootPoolRepresentation;
 import leviathan143.loottweaker.common.zenscript.impl.entry.MutableLootEntry;
+import leviathan143.loottweaker.common.zenscript.impl.entry.MutableLootEntryEmpty;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
+import stanhebben.zenscript.annotations.Optional;
 
 public class MutableLootPool implements LootPoolRepresentation
 {
     private static final Logger SANITY_LOGGER = LogManager.getLogger(LootTweaker.MODID + ".sanity_checks");
+    private static final int DEFAULT_QUALITY = 0;
+    private static final int DEFAULT_WEIGHT = 1;
     private final LootTweakerContext context;
+    private final DataParser loggingParser;
     private QualifiedPoolIdentifier qualifiedId;
     private Map<String, MutableLootEntry> entries;
     private List<LootCondition> conditions;
@@ -33,6 +45,7 @@ public class MutableLootPool implements LootPoolRepresentation
     public MutableLootPool(LootPool pool, ResourceLocation parentTableId, LootTweakerContext context)
     {
         this.context = context;
+        this.loggingParser = createDataParser(context.getErrorHandler());
         this.qualifiedId = new QualifiedPoolIdentifier(parentTableId, pool.getName());
         List<LootEntry> immutableEntries = LootPoolAccessors.getEntries(pool);
         this.entries = new HashMap<>(immutableEntries.size());
@@ -65,6 +78,12 @@ public class MutableLootPool implements LootPoolRepresentation
         this.rolls = rolls;
         this.bonusRolls = bonusRolls;
         this.context = context;
+        this.loggingParser = createDataParser(context.getErrorHandler());
+    }
+
+    private DataParser createDataParser(ErrorHandler errorHandler)
+    {
+        return new DataParser(LootTableManagerAccessors.getGsonInstance(), e -> errorHandler.error(e.getMessage()));
     }
 
     public MutableLootPool deepClone()
@@ -154,10 +173,49 @@ public class MutableLootPool implements LootPoolRepresentation
         return entries.get(name);
     }
 
-    public void addEntry(MutableLootEntry entry)
+    @Override
+    public void addEmptyEntry(@Optional String name)
     {
+        addEmptyEntry(DEFAULT_WEIGHT, name);
+    }
+
+    @Override
+    public void addEmptyEntry(int weight, @Optional String name)
+    {
+        addEmptyEntry(weight, DEFAULT_QUALITY, name);
+    }
+
+    @Override
+    public void addEmptyEntry(int weight, int quality, @Optional String name)
+    {
+        addEntry(new MutableLootEntryEmpty(name, weight, quality, LootConditions.NONE));
+    }
+
+    @Override
+    public void addEmptyEntryJson(int weight, int quality, IData[] conditions, @Optional String name)
+    {
+        LootCondition[] parsedConditions = Arrays.stream(conditions)
+            .map(c -> loggingParser.parse(c, LootCondition.class))
+            .filter(java.util.Optional::isPresent)
+            .map(java.util.Optional::get)
+            .toArray(LootCondition[]::new);
+        addEntry(new MutableLootEntryEmpty(name, weight, quality, parsedConditions));
+    }
+
+    private int nextEntryId = 0;
+    private void addEntry(MutableLootEntry entry)
+    {
+        //Entry name autogeneration
+        if (entry.getName() == null)
+            entry.setName("loottweaker#" + nextEntryId++);
+
         if (entries.putIfAbsent(entry.getName(), entry) != null)
-            throw new IllegalArgumentException(String.format("Duplicate entry name '%s' in pool '%s'", entry.getName(), this.getName()));
+        {
+            context.getErrorHandler().error("Cannot add entry '%s' to %s. Entry names must be unique within their pool.",
+                entry.getName(), qualifiedId);
+        }
+        else
+            CraftTweakerAPI.logInfo(String.format("Added entry '%s' to %s", entry.getName(), qualifiedId));
     }
 
     @Override
