@@ -4,8 +4,10 @@ import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.event.IEventHandle;
 import crafttweaker.util.IEventHandler;
 import leviathan143.loottweaker.common.LootTweaker;
+import leviathan143.loottweaker.common.zenscript.api.factory.LootConditionFactory;
 import net.minecraftforge.fml.common.Mod;
 import stanhebben.zenscript.annotations.ZenClass;
+import stanhebben.zenscript.annotations.ZenGetter;
 import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenRegister
@@ -25,4 +27,7 @@ public interface LootSystemInterface
     {
         public void apply(LootTableRepresentation lootTable);
     }
+
+    @ZenGetter("conditions")
+    public LootConditionFactory getLootConditionFactory();
 }

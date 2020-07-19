@@ -4,6 +4,7 @@ import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.data.IData;
 import crafttweaker.api.item.IItemStack;
 import leviathan143.loottweaker.common.LootTweaker;
+import leviathan143.loottweaker.common.zenscript.api.entry.LootConditionRepresentation;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -37,6 +38,9 @@ public interface LootPoolRepresentation
     public void addLootTableEntryJson(String delegateTableId, int weight, int quality, IData[] conditions, @Optional String name);
 
     @ZenMethod
+    public void addLootTableEntryHelper(String delegateTableId, int weight, int quality, LootConditionRepresentation[] conditions, @Optional String name);
+
+    @ZenMethod
     public void addEmptyEntry(@Optional String name);
 
     @ZenMethod
@@ -47,6 +51,9 @@ public interface LootPoolRepresentation
 
     @ZenMethod
     public void addEmptyEntryJson(int weight, int quality, IData[] conditions, @Optional String name);
+
+    @ZenMethod
+    public void addEmptyEntryHelper(int weight, int quality, LootConditionRepresentation[] conditions, @Optional String name);
 
     @ZenMethod
     public void removeEntry(String entryId);

@@ -25,6 +25,7 @@ import leviathan143.loottweaker.common.lib.LootConditions;
 import leviathan143.loottweaker.common.lib.LootFunctions;
 import leviathan143.loottweaker.common.lib.QualifiedPoolIdentifier;
 import leviathan143.loottweaker.common.zenscript.api.LootPoolRepresentation;
+import leviathan143.loottweaker.common.zenscript.api.entry.LootConditionRepresentation;
 import leviathan143.loottweaker.common.zenscript.impl.entry.MutableLootEntry;
 import leviathan143.loottweaker.common.zenscript.impl.entry.MutableLootEntryEmpty;
 import leviathan143.loottweaker.common.zenscript.impl.entry.MutableLootEntryItem;
@@ -265,7 +266,7 @@ public class MutableLootPool implements LootPoolRepresentation
     {
         //TODO Consider checking existence of the table
         ResourceLocation delegateTableRL = new ResourceLocation(delegateTableId);
-        addEntry(new MutableLootEntryTable(name, weight, quality, LootConditions.NONE, delegateTableRL ));
+        addEntry(new MutableLootEntryTable(name, weight, quality, LootConditions.NONE, delegateTableRL));
     }
 
     @Override
@@ -273,7 +274,15 @@ public class MutableLootPool implements LootPoolRepresentation
     {
         //TODO Consider checking existence of the table
         ResourceLocation delegateTableRL = new ResourceLocation(delegateTableId);
-        addEntry(new MutableLootEntryTable(name, weight, quality, parseConditions(conditions), delegateTableRL ));
+        addEntry(new MutableLootEntryTable(name, weight, quality, parseConditions(conditions), delegateTableRL));
+    }
+
+    @Override
+    public void addLootTableEntryHelper(String delegateTableId, int weight, int quality, LootConditionRepresentation[] conditions, String name)
+    {
+        //TODO Consider checking existence of the table
+        ResourceLocation delegateTableRL = new ResourceLocation(delegateTableId);
+        addEntry(new MutableLootEntryTable(name, weight, quality, parseConditions(conditions), delegateTableRL));
     }
 
     @Override
@@ -300,12 +309,26 @@ public class MutableLootPool implements LootPoolRepresentation
         addEntry(new MutableLootEntryEmpty(name, weight, quality, parseConditions(conditions)));
     }
 
+    @Override
+    public void addEmptyEntryHelper(int weight, int quality, LootConditionRepresentation[] conditions, @Optional String name)
+    {
+        addEntry(new MutableLootEntryEmpty(name, weight, quality, parseConditions(conditions)));
+    }
+
     private LootCondition[] parseConditions(IData[] conditions)
     {
         return Arrays.stream(conditions)
             .map(c -> loggingParser.parse(c, LootCondition.class))
             .filter(java.util.Optional::isPresent)
             .map(java.util.Optional::get)
+            .toArray(LootCondition[]::new);
+    }
+
+    private LootCondition[] parseConditions(LootConditionRepresentation[] conditions)
+    {
+        return Arrays.stream(conditions)
+            .filter(LootConditionRepresentation::isValid)
+            .map(LootConditionRepresentation::toImmutable)
             .toArray(LootCondition[]::new);
     }
 

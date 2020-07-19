@@ -18,6 +18,7 @@ import io.github.daomephsta.loottweaker.test.TestUtils;
 import io.github.daomephsta.loottweaker.test.util.DataMapBuilder;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
+import leviathan143.loottweaker.common.zenscript.api.factory.LootConditionFactory;
 import leviathan143.loottweaker.common.zenscript.impl.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.impl.MutableLootPool;
 import net.minecraft.init.Items;
@@ -96,6 +97,7 @@ public class ItemEntryAdditionTests
     public void addItemEntryWithCondition()
     {
         LootTweakerContext context = TestUtils.createContext();
+        LootConditionFactory conditionFactory = context.lootSystem().getLootConditionFactory();
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootPool barOriginal = loadTable(fooId).getPool("bar");
         MutableLootPool mutableBar = new MutableLootPool(barOriginal, fooId, context);

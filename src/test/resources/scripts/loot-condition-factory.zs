@@ -1,7 +1,5 @@
-import loottweaker.vanilla.loot.Conditions;
-
-Conditions.randomChance(0.21);
-Conditions.randomChanceWithLooting(0.35, 1.2);
-Conditions.killedByPlayer();
-Conditions.killedByNonPlayer();
-Conditions.parse({"condition": "minecraft:killed_by_player"});
+lootTweakerApi.conditions.randomChance(0.21);
+lootTweakerApi.conditions.randomChanceWithLooting(0.35, 1.2);
+lootTweakerApi.conditions.killedByPlayer();
+lootTweakerApi.conditions.killedByNonPlayer();
+lootTweakerApi.conditions.parse({"condition": "minecraft:killed_by_player"});

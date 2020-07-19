@@ -66,6 +66,13 @@ public class ZenscriptTests
         loadTestTables();
     }
 
+    @SaddleTest(loadPhase = LoadPhase.INIT)
+    public void lootConditionFactory()
+    {
+        ScriptRunner.run("scripts/loot-condition-factory.zs");
+        loadTestTables();
+    }
+
     private void loadTestTables()
     {
         for (ResourceLocation testTable : TEST_LOOT_TABLES)

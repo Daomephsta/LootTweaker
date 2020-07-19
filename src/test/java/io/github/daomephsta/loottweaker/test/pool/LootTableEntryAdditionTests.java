@@ -9,11 +9,12 @@ import io.github.daomephsta.loottweaker.test.TestUtils;
 import io.github.daomephsta.loottweaker.test.util.DataMapBuilder;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
+import leviathan143.loottweaker.common.zenscript.api.entry.LootConditionRepresentation;
+import leviathan143.loottweaker.common.zenscript.api.factory.LootConditionFactory;
 import leviathan143.loottweaker.common.zenscript.impl.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.impl.MutableLootPool;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
-import net.minecraft.world.storage.loot.LootTable;
 import net.minecraft.world.storage.loot.conditions.KilledByPlayer;
 
 
@@ -73,14 +74,15 @@ public class LootTableEntryAdditionTests
             .spawnsFromTable("loottweaker:qux");
     }
 
-    /*@SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void addLootTableEntryWithCondition()
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    public void addLootTableEntryHelper()
     {
         LootTweakerContext context = TestUtils.createContext();
+        LootConditionFactory conditionFactory = context.lootSystem().getLootConditionFactory();
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootPool barOriginal = loadTable(fooId).getPool("bar");
         MutableLootPool mutableBar = new MutableLootPool(barOriginal, fooId, context);
-        mutableBar.addLootTableEntryHelper("loottweaker:qux", 2, 3, new ZenLootConditionWrapper[] { LootConditionFactory.killedByPlayer() }, "corge");
+        mutableBar.addLootTableEntryHelper("loottweaker:qux", 2, 3, new LootConditionRepresentation[] { conditionFactory.killedByPlayer() }, "corge");
 
         LootPool barNew = mutableBar.toImmutable();
         assertThat(barNew).extractEntry("corge")
@@ -90,7 +92,7 @@ public class LootTableEntryAdditionTests
                 && !isInverted((KilledByPlayer) condition), "KilledByPlayer()")
             .asLootTableEntry()
             .spawnsFromTable("loottweaker:qux");
-    }*/
+    }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void addLootTableEntryJson()
