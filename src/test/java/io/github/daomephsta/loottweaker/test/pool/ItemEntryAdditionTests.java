@@ -9,23 +9,22 @@ import static io.github.daomephsta.loottweaker.test.TestUtils.iitemstack;
 import static io.github.daomephsta.loottweaker.test.TestUtils.loadTable;
 import static io.github.daomephsta.loottweaker.test.assertion.LootTweakerAssertions.assertThat;
 
-import com.google.common.collect.ImmutableMap;
-
 import crafttweaker.api.data.DataMap;
-import crafttweaker.api.data.DataString;
 import crafttweaker.api.data.IData;
 import io.github.daomephsta.loottweaker.test.TestUtils;
 import io.github.daomephsta.loottweaker.test.util.DataMapBuilder;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
+import leviathan143.loottweaker.common.zenscript.api.entry.LootConditionRepresentation;
+import leviathan143.loottweaker.common.zenscript.api.entry.LootFunctionRepresentation;
 import leviathan143.loottweaker.common.zenscript.api.factory.LootConditionFactory;
+import leviathan143.loottweaker.common.zenscript.api.factory.LootFunctionFactory;
 import leviathan143.loottweaker.common.zenscript.impl.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.impl.MutableLootPool;
 import net.minecraft.init.Items;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
-import net.minecraft.world.storage.loot.LootTable;
 import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraft.world.storage.loot.conditions.KilledByPlayer;
 import net.minecraft.world.storage.loot.functions.SetCount;
@@ -93,20 +92,21 @@ public class ItemEntryAdditionTests
             .hasNoLootFunctions();
     }
 
-    /*@SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void addItemEntryWithCondition()
     {
         LootTweakerContext context = TestUtils.createContext();
-        LootConditionFactory conditionFactory = context.lootSystem().getLootConditionFactory();
+        LootConditionFactory factory = context.lootSystem().getLootConditionFactory();
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootPool barOriginal = loadTable(fooId).getPool("bar");
         MutableLootPool mutableBar = new MutableLootPool(barOriginal, fooId, context);
-        mutableBar.addItemEntryHelper(iitemstack(Items.BAKED_POTATO), 2, 3, new ZenLootFunctionWrapper[0], new ZenLootConditionWrapper[] { LootConditionFactory.killedByPlayer() }, "qux");
+        mutableBar.addItemEntryHelper(iitemstack(Items.BAKED_POTATO), 2, 3, new LootFunctionRepresentation[0],
+            new LootConditionRepresentation[] { factory.killedByPlayer() }, "qux");
 
         LootPool barNew = mutableBar.toImmutable();
         assertThat(barNew).extractEntry("qux").hasWeight(2).hasQuality(3).hasMatchingCondition(condition -> condition instanceof KilledByPlayer && !isInverted((KilledByPlayer) condition), "KilledByPlayer()").asItemEntry()
             .spawnsItem(Items.BAKED_POTATO).hasNoLootFunctions();
-    }*/
+    }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void addItemEntryJson()
@@ -156,14 +156,16 @@ public class ItemEntryAdditionTests
             }, "SetCount(%d)", expectedCount);
     }
 
-    /*@SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void addItemEntryWithExplicitSetCount()
     {
         LootTweakerContext context = TestUtils.createContext();
+        LootFunctionFactory factory = context.lootSystem().getLootFunctionFactory();
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootPool barOriginal = loadTable(fooId).getPool("bar");
         MutableLootPool mutableBar = new MutableLootPool(barOriginal, fooId, context);
-        mutableBar.addItemEntryHelper(iitemstack(Items.ARROW), 2, 1, new ZenLootFunctionWrapper[] { LootFunctionFactory.setCount(3, 3) }, new ZenLootConditionWrapper[0], "qux");
+        mutableBar.addItemEntryHelper(iitemstack(Items.ARROW), 2, 1, new LootFunctionRepresentation[] { factory.setCount(3, 3) },
+            new LootConditionRepresentation[0], "qux");
 
         int expectedCount = 3;
         LootPool barNew = mutableBar.toImmutable();
@@ -182,7 +184,7 @@ public class ItemEntryAdditionTests
                 }
                 return false;
             }, "SetCount(%d)", expectedCount);
-    }*/
+    }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void addItemEntryWithImplicitSetDamage()

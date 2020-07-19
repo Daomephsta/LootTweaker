@@ -6,13 +6,11 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import io.github.daomephsta.loottweaker.test.ThrowingErrorHandler;
 import io.github.daomephsta.loottweaker.test.TestUtils;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
 import leviathan143.loottweaker.common.CTLoggingErrorHandler;
 import leviathan143.loottweaker.common.zenscript.impl.LootTweakerContext;
-import leviathan143.loottweaker.common.zenscript.impl.ZenScriptPlugin;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -70,6 +68,13 @@ public class ZenscriptTests
     public void lootConditionFactory()
     {
         ScriptRunner.run("scripts/loot-condition-factory.zs");
+        loadTestTables();
+    }
+
+    @SaddleTest(loadPhase = LoadPhase.INIT)
+    public void lootFunctionFactory()
+    {
+        ScriptRunner.run("scripts/loot-function-factory.zs");
         loadTestTables();
     }
 

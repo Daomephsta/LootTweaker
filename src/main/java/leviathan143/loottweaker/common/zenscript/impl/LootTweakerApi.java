@@ -11,7 +11,9 @@ import leviathan143.loottweaker.common.lib.LootTableFinder;
 import leviathan143.loottweaker.common.zenscript.api.LootSystemInterface;
 import leviathan143.loottweaker.common.zenscript.api.LootTableLoadCraftTweakerEvent;
 import leviathan143.loottweaker.common.zenscript.api.factory.LootConditionFactory;
+import leviathan143.loottweaker.common.zenscript.api.factory.LootFunctionFactory;
 import leviathan143.loottweaker.common.zenscript.impl.factory.VanillaLootConditionFactory;
+import leviathan143.loottweaker.common.zenscript.impl.factory.VanillaLootFunctionFactory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTable;
 import net.minecraftforge.event.LootTableLoadEvent;
@@ -22,12 +24,14 @@ public class LootTweakerApi implements LootSystemInterface
     private final EventList<LootTableLoadCraftTweakerEvent> lootTableLoad = new EventList<>();
     private final ConvenienceHandler convenience = new ConvenienceHandler();
     private final LootConditionFactory conditionFactory;
+    private final LootFunctionFactory functionFactory;
     private final LootTweakerContext context;
     private final ErrorHandler errorHandler;
 
     public LootTweakerApi(LootTweakerContext context)
     {
         this.conditionFactory = new VanillaLootConditionFactory(context);
+        this.functionFactory = new VanillaLootFunctionFactory(context);
         this.context = context;
         this.errorHandler = context.getErrorHandler();
         lootTableLoad.add(convenience);
@@ -69,6 +73,12 @@ public class LootTweakerApi implements LootSystemInterface
     public LootConditionFactory getLootConditionFactory()
     {
         return conditionFactory;
+    }
+
+    @Override
+    public LootFunctionFactory getLootFunctionFactory()
+    {
+        return functionFactory;
     }
 
     private static class ConvenienceHandler implements IEventHandler<LootTableLoadCraftTweakerEvent>

@@ -26,6 +26,7 @@ import leviathan143.loottweaker.common.lib.LootFunctions;
 import leviathan143.loottweaker.common.lib.QualifiedPoolIdentifier;
 import leviathan143.loottweaker.common.zenscript.api.LootPoolRepresentation;
 import leviathan143.loottweaker.common.zenscript.api.entry.LootConditionRepresentation;
+import leviathan143.loottweaker.common.zenscript.api.entry.LootFunctionRepresentation;
 import leviathan143.loottweaker.common.zenscript.impl.entry.MutableLootEntry;
 import leviathan143.loottweaker.common.zenscript.impl.entry.MutableLootEntryEmpty;
 import leviathan143.loottweaker.common.zenscript.impl.entry.MutableLootEntryItem;
@@ -38,6 +39,7 @@ import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.functions.*;
 import stanhebben.zenscript.annotations.Optional;
+import stanhebben.zenscript.annotations.ZenMethod;
 
 public class MutableLootPool implements LootPoolRepresentation
 {
@@ -215,6 +217,24 @@ public class MutableLootPool implements LootPoolRepresentation
             .map(c -> loggingParser.parse(c, LootFunction.class))
             .filter(java.util.Optional::isPresent)
             .map(java.util.Optional::get)
+            .toArray(LootFunction[]::new);
+        addEntry(new MutableLootEntryItem(name, weight, quality, parsedConditions,
+            stack.getItem(), withStackFunctions(iStack, parsedFunctions)));
+    }
+
+    @Override
+    @ZenMethod
+    public void addItemEntryHelper(IItemStack iStack, int weight, int quality, LootFunctionRepresentation[] functions,
+        LootConditionRepresentation[] conditions, @Optional String name)
+    {
+        ItemStack stack = CraftTweakerMC.getItemStack(iStack);
+        List<LootCondition> parsedConditions = Arrays.stream(conditions)
+            .filter(LootConditionRepresentation::isValid)
+            .map(LootConditionRepresentation::toImmutable)
+            .collect(toCollection(ArrayList::new));
+        LootFunction[] parsedFunctions = Arrays.stream(functions)
+            .filter(LootFunctionRepresentation::isValid)
+            .map(LootFunctionRepresentation::toImmutable)
             .toArray(LootFunction[]::new);
         addEntry(new MutableLootEntryItem(name, weight, quality, parsedConditions,
             stack.getItem(), withStackFunctions(iStack, parsedFunctions)));

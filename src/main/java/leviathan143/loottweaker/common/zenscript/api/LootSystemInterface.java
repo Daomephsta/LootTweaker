@@ -5,6 +5,7 @@ import crafttweaker.api.event.IEventHandle;
 import crafttweaker.util.IEventHandler;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.zenscript.api.factory.LootConditionFactory;
+import leviathan143.loottweaker.common.zenscript.api.factory.LootFunctionFactory;
 import net.minecraftforge.fml.common.Mod;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenGetter;
@@ -30,4 +31,7 @@ public interface LootSystemInterface
 
     @ZenGetter("conditions")
     public LootConditionFactory getLootConditionFactory();
+
+    @ZenGetter("functions")
+    public LootFunctionFactory getLootFunctionFactory();
 }

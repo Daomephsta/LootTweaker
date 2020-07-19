@@ -1,11 +1,9 @@
-import loottweaker.vanilla.loot.Functions;
-
-Functions.enchantRandomly(["minecraft:thorns"]);
-Functions.enchantWithLevels(11, 26, false);
-Functions.lootingEnchantBonus(1, 2, 3);
-Functions.setCount(1, 3);
-Functions.setDamage(0.2, 0.8);
-Functions.setMetadata(23, 45);
-Functions.setNBT({"foo": "bar"});
-Functions.smelt();
-Functions.parse({"function": "minecraft:furnace_smelt"});
+lootTweakerApi.functions.enchantRandomly(["minecraft:thorns"]);
+lootTweakerApi.functions.enchantWithLevels(11, 26, false);
+lootTweakerApi.functions.lootingEnchantBonus(1, 2, 3);
+lootTweakerApi.functions.setCount(1, 3);
+lootTweakerApi.functions.setDamage(0.2, 0.8);
+lootTweakerApi.functions.setMetadata(23, 45);
+lootTweakerApi.functions.setNBT({"foo": "bar"});
+lootTweakerApi.functions.smelt();
+lootTweakerApi.functions.parse({"function": "minecraft:furnace_smelt"});
