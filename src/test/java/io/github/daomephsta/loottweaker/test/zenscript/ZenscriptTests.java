@@ -78,6 +78,13 @@ public class ZenscriptTests
         loadTestTables();
     }
 
+    @SaddleTest(loadPhase = LoadPhase.INIT)
+    public void lootPoolConditions()
+    {
+        ScriptRunner.run("scripts/loot-pool-conditions.zs");
+        loadTestTables();
+    }
+
     private void loadTestTables()
     {
         for (ResourceLocation testTable : TEST_LOOT_TABLES)

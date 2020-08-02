@@ -65,4 +65,13 @@ public interface LootPoolRepresentation
 
     @ZenMethod
     public void removeAllEntries();
+
+    @ZenMethod
+    public void addConditionsJson(IData[] conditions);
+
+    @ZenMethod
+    public void addConditionsHelper(LootConditionRepresentation[] conditions);
+
+    @ZenMethod
+    public void removeAllConditions();
 }

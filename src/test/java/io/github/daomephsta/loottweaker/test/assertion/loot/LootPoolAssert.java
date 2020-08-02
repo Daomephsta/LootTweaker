@@ -53,6 +53,16 @@ public class LootPoolAssert extends AbstractObjectAssert<LootPoolAssert, LootPoo
         return this;
     }
 
+    public LootPoolAssert hasLootConditions()
+    {
+        isNotNull();
+
+        List<LootCondition> actualConditions = LootPoolAccessors.getConditions(actual);
+        if (actualConditions.isEmpty())
+            failWithMessage("Expected '%s' to have loot conditions, has none", actual.getName());
+        return this;
+    }
+
     public LootPoolAssert hasNoLootConditions()
     {
         isNotNull();

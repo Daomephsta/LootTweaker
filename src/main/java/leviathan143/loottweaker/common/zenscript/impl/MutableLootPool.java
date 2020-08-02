@@ -119,31 +119,6 @@ public class MutableLootPool implements LootPoolRepresentation
         return new LootPool(entriesArray, conditions.toArray(LootConditions.NONE), rolls, bonusRolls, qualifiedId.getPoolId());
     }
 
-    public List<LootCondition> getConditions()
-    {
-        return conditions;
-    }
-
-    public void setConditions(List<LootCondition> conditions)
-    {
-        this.conditions = conditions;
-    }
-
-    public void addCondition(LootCondition condition)
-    {
-        conditions.add(condition);
-    }
-
-    public void addConditions(List<LootCondition> newConditions)
-    {
-        conditions.addAll(newConditions);
-    }
-
-    public void clearConditions()
-    {
-        conditions.clear();
-    }
-
     public RandomValueRange getRolls()
     {
         return rolls;
@@ -382,5 +357,26 @@ public class MutableLootPool implements LootPoolRepresentation
     {
         entries.clear();
         CraftTweakerAPI.logInfo("Removed all entries from " + qualifiedId);
+    }
+
+    @Override
+    public void addConditionsJson(IData[] conditions)
+    {
+        Collections.addAll(this.conditions, parseConditions(conditions));
+        CraftTweakerAPI.logInfo("Added " + conditions.length + " conditions to " + qualifiedId);
+    }
+
+    @Override
+    public void addConditionsHelper(LootConditionRepresentation[] conditions)
+    {
+        Collections.addAll(this.conditions, parseConditions(conditions));
+        CraftTweakerAPI.logInfo("Added " + conditions.length + " conditions to " + qualifiedId);
+    }
+
+    @Override
+    public void removeAllConditions()
+    {
+        conditions.clear();
+        CraftTweakerAPI.logInfo("Removed all conditions from " + qualifiedId);
     }
 }
