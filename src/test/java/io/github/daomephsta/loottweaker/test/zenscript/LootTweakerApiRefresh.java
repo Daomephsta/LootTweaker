@@ -1,6 +1,5 @@
 package io.github.daomephsta.loottweaker.test.zenscript;
 
-import java.lang.reflect.Method;
 import java.util.function.Supplier;
 
 import org.junit.jupiter.api.extension.AfterEachCallback;
@@ -8,17 +7,12 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 
-import crafttweaker.CraftTweakerAPI;
 import crafttweaker.zenscript.GlobalRegistry;
 import leviathan143.loottweaker.common.zenscript.impl.LootTweakerApi;
 import leviathan143.loottweaker.common.zenscript.impl.LootTweakerContext;
-import stanhebben.zenscript.expression.ExpressionCallVirtual;
-import stanhebben.zenscript.expression.partial.IPartialExpression;
 import stanhebben.zenscript.symbols.IZenSymbol;
 import stanhebben.zenscript.symbols.SymbolJavaStaticGetter;
-import stanhebben.zenscript.type.natives.IJavaMethod;
 import stanhebben.zenscript.type.natives.JavaMethod;
-import stanhebben.zenscript.util.ZenPosition;
 
 public class LootTweakerApiRefresh implements BeforeEachCallback, AfterEachCallback
 {

@@ -9,7 +9,6 @@ import io.github.daomephsta.loottweaker.test.TestUtils;
 import io.github.daomephsta.loottweaker.test.util.DataMapBuilder;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
-import leviathan143.loottweaker.common.zenscript.api.LootPoolRepresentation;
 import leviathan143.loottweaker.common.zenscript.api.entry.LootConditionRepresentation;
 import leviathan143.loottweaker.common.zenscript.api.factory.LootConditionFactory;
 import leviathan143.loottweaker.common.zenscript.impl.LootTweakerContext;

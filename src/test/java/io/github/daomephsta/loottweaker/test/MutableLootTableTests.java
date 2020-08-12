@@ -11,7 +11,6 @@ import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
 import leviathan143.loottweaker.common.darkmagic.LootTableAccessors;
 import leviathan143.loottweaker.common.zenscript.api.LootPoolRepresentation;
-import leviathan143.loottweaker.common.zenscript.api.LootSystemInterface;
 import leviathan143.loottweaker.common.zenscript.impl.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.impl.MutableLootTable;
 import net.minecraft.util.ResourceLocation;
@@ -26,7 +25,6 @@ public class MutableLootTableTests
     public void removeExistingPool()
     {
         LootTweakerContext context = TestUtils.createContext();
-        LootSystemInterface lootSystem = context.lootSystem();
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         MutableLootTable mutableFoo = mutableLootTable(fooId, context);
         LootTable fooOriginal = loadTable(fooId);
@@ -40,7 +38,6 @@ public class MutableLootTableTests
     public void removeNonExistentPool()
     {
         LootTweakerContext context = TestUtils.createContext();
-        LootSystemInterface lootSystem = context.lootSystem();
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         MutableLootTable mutableFoo = mutableLootTable(fooId, context);
         LootTable fooOriginal = loadTable(fooId);
@@ -54,7 +51,6 @@ public class MutableLootTableTests
     public void removeAllPools()
     {
         LootTweakerContext context = TestUtils.createContext();
-        LootSystemInterface lootSystem = context.lootSystem();
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         MutableLootTable mutableFoo = mutableLootTable(fooId, context);
         LootTable fooOriginal = loadTable(fooId);

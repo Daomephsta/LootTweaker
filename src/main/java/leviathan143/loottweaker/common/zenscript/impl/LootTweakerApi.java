@@ -26,7 +26,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTable;
 import net.minecraftforge.event.LootTableLoadEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -66,6 +65,8 @@ public class LootTweakerApi implements LootSystemInterface
         convenience.tweaks.put(tableId, tweaks);
     }
 
+    // Delaying creation via an anonymous function isn't strictly necessary, but it makes the API more consistent.
+    // Additionally it avoids issues with other mods registering loot conditions/functions too late.
     @Override
     public void createLootTable(String id, LootTableConsumer tweaks)
     {
