@@ -74,4 +74,10 @@ public interface LootPoolRepresentation
 
     @ZenMethod
     public void removeAllConditions();
+
+    @ZenMethod
+    public void setRolls(float min, float max);
+
+    @ZenMethod
+    public void setBonusRolls(float min, float max);
 }

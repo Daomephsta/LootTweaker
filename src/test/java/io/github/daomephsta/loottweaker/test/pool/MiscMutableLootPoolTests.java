@@ -14,6 +14,7 @@ import leviathan143.loottweaker.common.zenscript.impl.MutableLootPool;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
+import net.minecraft.world.storage.loot.RandomValueRange;
 
 
 public class MiscMutableLootPoolTests
@@ -60,5 +61,44 @@ public class MiscMutableLootPoolTests
         mutableBaz.removeAllEntries();
         LootPool bazNew = mutableBaz.toImmutable();
         assertThat(getEntries(bazNew)).isEmpty();
+    }
+
+
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    public void setRolls()
+    {
+        LootTweakerContext context = TestUtils.createContext();
+        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        LootTable foo = loadTable(fooId);
+        LootPool barOriginal = foo.getPool("bar");
+        MutableLootPool mutableBar = new MutableLootPool(barOriginal, fooId, context);
+        mutableBar.setRolls(2.0F, 5.0F);
+
+        LootPool barNew = mutableBar.toImmutable();
+        assertThat(barNew.getRolls())
+            .extracting(RandomValueRange::getMin)
+            .isEqualTo(2.0F);
+        assertThat(barNew.getRolls())
+            .extracting(RandomValueRange::getMax)
+            .isEqualTo(5.0F);
+    }
+
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    public void setBonusRolls()
+    {
+        LootTweakerContext context = TestUtils.createContext();
+        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        LootTable foo = loadTable(fooId);
+        LootPool barOriginal = foo.getPool("bar");
+        MutableLootPool mutableBar = new MutableLootPool(barOriginal, fooId, context);
+        mutableBar.setBonusRolls(1.0F, 3.0F);
+
+        LootPool barNew = mutableBar.toImmutable();
+        assertThat(barNew.getBonusRolls())
+            .extracting(RandomValueRange::getMin)
+            .isEqualTo(1.0F);
+        assertThat(barNew.getBonusRolls())
+            .extracting(RandomValueRange::getMax)
+            .isEqualTo(3.0F);
     }
 }

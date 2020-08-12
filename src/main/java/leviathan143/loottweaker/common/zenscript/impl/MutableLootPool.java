@@ -119,26 +119,6 @@ public class MutableLootPool implements LootPoolRepresentation
         return new LootPool(entriesArray, conditions.toArray(LootConditions.NONE), rolls, bonusRolls, qualifiedId.getPoolId());
     }
 
-    public RandomValueRange getRolls()
-    {
-        return rolls;
-    }
-
-    public void setRolls(RandomValueRange rolls)
-    {
-        this.rolls = rolls;
-    }
-
-    public RandomValueRange getBonusRolls()
-    {
-        return bonusRolls;
-    }
-
-    public void setBonusRolls(RandomValueRange bonusRolls)
-    {
-        this.bonusRolls = bonusRolls;
-    }
-
     public String getName()
     {
         return qualifiedId.getPoolId();
@@ -379,4 +359,19 @@ public class MutableLootPool implements LootPoolRepresentation
         conditions.clear();
         CraftTweakerAPI.logInfo("Removed all conditions from " + qualifiedId);
     }
+
+    @Override
+    public void setRolls(float min, float max)
+    {
+        this.rolls = new RandomValueRange(min, max);
+        CraftTweakerAPI.logInfo(String.format("Set rolls for %s to (%.2f, %.2f)", qualifiedId, min, max));
+    }
+
+    @Override
+    public void setBonusRolls(float min, float max)
+    {
+        this.bonusRolls = new RandomValueRange(min, max);
+        CraftTweakerAPI.logInfo(String.format("Set bonus rolls for %s to (%.2f, %.2f)", qualifiedId, min, max));
+    }
+
 }
