@@ -22,6 +22,9 @@ public interface LootSystemInterface
     @ZenMethod
     public void tweakLootTable(String id, LootTableConsumer tweaks);
 
+    @ZenMethod
+    public void createLootTable(String id, LootTableConsumer tweaks);
+
     @ZenRegister
     @ZenClass(LootTweaker.MODID + ".LootTableConsumer")
     public interface LootTableConsumer

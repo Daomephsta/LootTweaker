@@ -72,7 +72,7 @@ public class LootTweaker
 	@Mod.EventHandler
 	public void serverStarting(FMLServerStartingEvent event)
 	{
-
+	    ZenScriptPlugin.onServerStarting(event);
 	}
 
 	@Mod.EventHandler

@@ -85,6 +85,13 @@ public class ZenscriptTests
         loadTestTables();
     }
 
+    @SaddleTest(loadPhase = LoadPhase.INIT)
+    public void createLootTable()
+    {
+        ScriptRunner.run("scripts/create-loot-table.zs");
+        loadTestTables();
+    }
+
     private void loadTestTables()
     {
         for (ResourceLocation testTable : TEST_LOOT_TABLES)
