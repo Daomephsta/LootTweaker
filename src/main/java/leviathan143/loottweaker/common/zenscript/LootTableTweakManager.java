@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import crafttweaker.CraftTweakerAPI;
+import leviathan143.loottweaker.common.LTConfig;
 import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
 import leviathan143.loottweaker.common.lib.LootTableDumper;
 import leviathan143.loottweaker.common.lib.LootTableFinder;
@@ -58,7 +59,7 @@ public class LootTableTweakManager
     public ZenLootTableWrapper newTable(String id)
     {
         ResourceLocation tableId = new ResourceLocation(id);
-        if (tableId.getNamespace().equals("minecraft"))
+        if (LTConfig.warnings.newTableMinecraftNamespace && tableId.getNamespace().equals("minecraft"))
         {
             if (id.startsWith("minecraft"))
             {
