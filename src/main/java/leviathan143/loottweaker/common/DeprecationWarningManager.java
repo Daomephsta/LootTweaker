@@ -17,7 +17,7 @@ public class DeprecationWarningManager
 
 	public static void addWarning()
 	{
-		if(!LTConfig.deprecationWarnings) return;
+		if(!LTConfig.warnings.deprecation) return;
 		try
 		{
 			StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
@@ -37,7 +37,7 @@ public class DeprecationWarningManager
 
 	public static void printDeprecationWarnings()
 	{
-		if(deprecatedObjectsUsed.isEmpty() || !LTConfig.deprecationWarnings) return;
+		if(deprecatedObjectsUsed.isEmpty() || !LTConfig.warnings.deprecation) return;
 		CraftTweakerAPI.logWarning("LootTweaker: One or more scripts use deprecated methods. Check crafttweaker.log for more information.");
 		for(String deprecatedObj : deprecatedObjectsUsed)
 		{

@@ -13,6 +13,7 @@ import crafttweaker.util.EventList;
 import crafttweaker.util.IEventHandler;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import leviathan143.loottweaker.common.ErrorHandler;
+import leviathan143.loottweaker.common.LTConfig;
 import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
 import leviathan143.loottweaker.common.lib.LootTableDumper;
 import leviathan143.loottweaker.common.lib.LootTableFinder;
@@ -71,7 +72,7 @@ public class LootTweakerApi implements LootSystemInterface
     public void createLootTable(String id, LootTableConsumer tweaks)
     {
         ResourceLocation tableId = new ResourceLocation(id);
-        if (tableId.getNamespace().equals("minecraft"))
+        if (LTConfig.warnings.newTableMinecraftNamespace && tableId.getNamespace().equals("minecraft"))
         {
             if (id.startsWith("minecraft"))
             {
