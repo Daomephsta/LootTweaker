@@ -1,6 +1,9 @@
 package io.github.daomephsta.loottweaker.test.assertion.loot;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -98,5 +101,43 @@ public class LootPoolAssert extends AbstractObjectAssert<LootPoolAssert, LootPoo
     public LootPoolAssert hasMatchingCondition(Predicate<LootCondition> matcher, String format, Object... args)
     {
         return hasMatchingCondition(matcher, String.format(format, args));
+    }
+
+    public LootPoolAssert hasEntries(String... entryNames)
+    {
+
+        isNotNull();
+
+        Set<String> missing = new HashSet<>();
+        for (String name : entryNames)
+        {
+            if (actual.getEntry(name) == null)
+                missing.add(name);
+        }
+        if (!missing.isEmpty())
+        {
+            failWithMessage("%nExpected pool '%s' to contain entries %s, missing %s",
+                actual.getName(), Arrays.toString(entryNames), missing);
+        }
+        return this;
+    }
+
+    public LootPoolAssert doesNotHaveEntries(String... entryNames)
+    {
+
+        isNotNull();
+
+        Set<String> found = new HashSet<>();
+        for (String name : entryNames)
+        {
+            if (actual.getEntry(name) != null)
+                found.add(name);
+        }
+        if (!found.isEmpty())
+        {
+            failWithMessage("%nExpected pool '%s' not to contain entries %s, found %s",
+                actual.getName(), Arrays.toString(entryNames), found);
+        }
+        return this;
     }
 }

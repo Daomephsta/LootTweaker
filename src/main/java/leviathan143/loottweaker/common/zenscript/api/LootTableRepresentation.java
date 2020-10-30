@@ -2,12 +2,15 @@ package leviathan143.loottweaker.common.zenscript.api;
 
 import crafttweaker.annotations.ZenRegister;
 import leviathan143.loottweaker.common.LootTweaker;
+import leviathan143.loottweaker.common.zenscript.api.iteration.LootPoolIterator;
+import stanhebben.zenscript.annotations.IterableSimple;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenRegister
 @ZenClass(LootTweaker.MODID + ".LootTable")
-public interface LootTableRepresentation
+@IterableSimple(LootTweaker.MODID + ".LootPoolIterator")
+public interface LootTableRepresentation extends Iterable<LootPoolIterator>
 {
     @ZenMethod
     public LootPoolRepresentation getPool(String poolId);

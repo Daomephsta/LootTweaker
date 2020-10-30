@@ -6,13 +6,16 @@ import crafttweaker.api.item.IItemStack;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.zenscript.api.entry.LootConditionRepresentation;
 import leviathan143.loottweaker.common.zenscript.api.entry.LootFunctionRepresentation;
+import leviathan143.loottweaker.common.zenscript.api.iteration.LootEntryIterator;
+import stanhebben.zenscript.annotations.IterableSimple;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenRegister
 @ZenClass(LootTweaker.MODID + ".LootPool")
-public interface LootPoolRepresentation
+@IterableSimple(LootTweaker.MODID + ".LootEntryIterator")
+public interface LootPoolRepresentation extends Iterable<LootEntryIterator>
 {
     @ZenMethod
     public void addItemEntry(IItemStack stack, @Optional String name);
@@ -80,4 +83,9 @@ public interface LootPoolRepresentation
 
     @ZenMethod
     public void setBonusRolls(float min, float max);
+
+    @ZenMethod
+    public String getName();
+
+    public String describe();
 }

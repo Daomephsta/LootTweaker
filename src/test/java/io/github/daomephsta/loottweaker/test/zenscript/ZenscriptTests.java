@@ -27,7 +27,10 @@ public class ZenscriptTests
     public static final CraftTweakerLoggerRedirect redirect = new CraftTweakerLoggerRedirect(LogManager.getFormatterLogger("Saddle.LootTweaker"));
     @RegisterExtension
     public static final LootTweakerApiRefresh apiRefresh = new LootTweakerApiRefresh(() -> new LootTweakerContext(new CTLoggingErrorHandler()));
-    public static final Iterable<ResourceLocation> TEST_LOOT_TABLES = Stream.of("loottweaker:foo", "loottweaker:bar").map(ResourceLocation::new).collect(Collectors.toSet());
+    public static final Iterable<ResourceLocation> TEST_LOOT_TABLES =
+        Stream.of("loottweaker:foo", "loottweaker:bar", "loottweaker:baz")
+        .map(ResourceLocation::new)
+        .collect(Collectors.toSet());
 
     @SaddleTest(loadPhase = LoadPhase.INIT)
     public void tableMethods()

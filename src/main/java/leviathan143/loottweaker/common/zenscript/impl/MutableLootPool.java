@@ -20,13 +20,11 @@ import leviathan143.loottweaker.common.ErrorHandler;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.darkmagic.LootPoolAccessors;
 import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
-import leviathan143.loottweaker.common.lib.DataParser;
-import leviathan143.loottweaker.common.lib.LootConditions;
-import leviathan143.loottweaker.common.lib.LootFunctions;
-import leviathan143.loottweaker.common.lib.QualifiedPoolIdentifier;
+import leviathan143.loottweaker.common.lib.*;
 import leviathan143.loottweaker.common.zenscript.api.LootPoolRepresentation;
 import leviathan143.loottweaker.common.zenscript.api.entry.LootConditionRepresentation;
 import leviathan143.loottweaker.common.zenscript.api.entry.LootFunctionRepresentation;
+import leviathan143.loottweaker.common.zenscript.api.iteration.LootEntryIterator;
 import leviathan143.loottweaker.common.zenscript.impl.entry.MutableLootEntry;
 import leviathan143.loottweaker.common.zenscript.impl.entry.MutableLootEntryEmpty;
 import leviathan143.loottweaker.common.zenscript.impl.entry.MutableLootEntryItem;
@@ -63,7 +61,7 @@ public class MutableLootPool implements LootPoolRepresentation
         int uniqueSuffix = 0;
         for (LootEntry entry : immutableEntries)
         {
-            MutableLootEntry mutableEntry = MutableLootEntry.from(entry);
+            MutableLootEntry mutableEntry = MutableLootEntry.from(entry, qualifiedId);
             MutableLootEntry existing = entries.get(mutableEntry.getName());
             if (existing != null)
             {
@@ -119,6 +117,7 @@ public class MutableLootPool implements LootPoolRepresentation
         return new LootPool(entriesArray, conditions.toArray(LootConditions.NONE), rolls, bonusRolls, qualifiedId.getPoolId());
     }
 
+    @Override
     public String getName()
     {
         return qualifiedId.getPoolId();
@@ -155,7 +154,7 @@ public class MutableLootPool implements LootPoolRepresentation
     public void addItemEntry(IItemStack iStack, int weight, int quality, String name)
     {
         ItemStack stack = CraftTweakerMC.getItemStack(iStack);
-        addEntry(new MutableLootEntryItem(name, weight, quality, new ArrayList<>(),
+        addEntry(new MutableLootEntryItem(new QualifiedEntryIdentifier(qualifiedId, name), weight, quality, new ArrayList<>(),
             stack.getItem(), withStackFunctions(iStack, LootFunctions.NONE)));
     }
 
@@ -173,7 +172,7 @@ public class MutableLootPool implements LootPoolRepresentation
             .filter(java.util.Optional::isPresent)
             .map(java.util.Optional::get)
             .toArray(LootFunction[]::new);
-        addEntry(new MutableLootEntryItem(name, weight, quality, parsedConditions,
+        addEntry(new MutableLootEntryItem(new QualifiedEntryIdentifier(qualifiedId, name), weight, quality, parsedConditions,
             stack.getItem(), withStackFunctions(iStack, parsedFunctions)));
     }
 
@@ -191,7 +190,7 @@ public class MutableLootPool implements LootPoolRepresentation
             .filter(LootFunctionRepresentation::isValid)
             .map(LootFunctionRepresentation::toImmutable)
             .toArray(LootFunction[]::new);
-        addEntry(new MutableLootEntryItem(name, weight, quality, parsedConditions,
+        addEntry(new MutableLootEntryItem(new QualifiedEntryIdentifier(qualifiedId, name), weight, quality, parsedConditions,
             stack.getItem(), withStackFunctions(iStack, parsedFunctions)));
     }
 
@@ -241,7 +240,8 @@ public class MutableLootPool implements LootPoolRepresentation
     {
         //TODO Consider checking existence of the table
         ResourceLocation delegateTableRL = new ResourceLocation(delegateTableId);
-        addEntry(new MutableLootEntryTable(name, weight, quality, LootConditions.NONE, delegateTableRL));
+        addEntry(new MutableLootEntryTable(new QualifiedEntryIdentifier(qualifiedId, name), weight, quality,
+            LootConditions.NONE, delegateTableRL));
     }
 
     @Override
@@ -249,7 +249,8 @@ public class MutableLootPool implements LootPoolRepresentation
     {
         //TODO Consider checking existence of the table
         ResourceLocation delegateTableRL = new ResourceLocation(delegateTableId);
-        addEntry(new MutableLootEntryTable(name, weight, quality, parseConditions(conditions), delegateTableRL));
+        addEntry(new MutableLootEntryTable(new QualifiedEntryIdentifier(qualifiedId, name), weight, quality,
+            parseConditions(conditions), delegateTableRL));
     }
 
     @Override
@@ -257,7 +258,8 @@ public class MutableLootPool implements LootPoolRepresentation
     {
         //TODO Consider checking existence of the table
         ResourceLocation delegateTableRL = new ResourceLocation(delegateTableId);
-        addEntry(new MutableLootEntryTable(name, weight, quality, parseConditions(conditions), delegateTableRL));
+        addEntry(new MutableLootEntryTable(new QualifiedEntryIdentifier(qualifiedId, name), weight, quality,
+            parseConditions(conditions), delegateTableRL));
     }
 
     @Override
@@ -275,19 +277,19 @@ public class MutableLootPool implements LootPoolRepresentation
     @Override
     public void addEmptyEntry(int weight, int quality, @Optional String name)
     {
-        addEntry(new MutableLootEntryEmpty(name, weight, quality, LootConditions.NONE));
+        addEntry(new MutableLootEntryEmpty(new QualifiedEntryIdentifier(qualifiedId, name), weight, quality, LootConditions.NONE));
     }
 
     @Override
     public void addEmptyEntryJson(int weight, int quality, IData[] conditions, @Optional String name)
     {
-        addEntry(new MutableLootEntryEmpty(name, weight, quality, parseConditions(conditions)));
+        addEntry(new MutableLootEntryEmpty(new QualifiedEntryIdentifier(qualifiedId, name), weight, quality, parseConditions(conditions)));
     }
 
     @Override
     public void addEmptyEntryHelper(int weight, int quality, LootConditionRepresentation[] conditions, @Optional String name)
     {
-        addEntry(new MutableLootEntryEmpty(name, weight, quality, parseConditions(conditions)));
+        addEntry(new MutableLootEntryEmpty(new QualifiedEntryIdentifier(qualifiedId, name), weight, quality, parseConditions(conditions)));
     }
 
     private LootCondition[] parseConditions(IData[] conditions)
@@ -374,4 +376,15 @@ public class MutableLootPool implements LootPoolRepresentation
         CraftTweakerAPI.logInfo(String.format("Set bonus rolls for %s to (%.2f, %.2f)", qualifiedId, min, max));
     }
 
+    @Override
+    public Iterator<LootEntryIterator> iterator()
+    {
+        return new LootEntryIterator(entries.values().iterator(), context);
+    }
+
+    @Override
+    public String describe()
+    {
+        return qualifiedId.toString();
+    }
 }

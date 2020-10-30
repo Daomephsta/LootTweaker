@@ -1,14 +1,21 @@
 package io.github.daomephsta.loottweaker.test.pool;
 
 import static io.github.daomephsta.loottweaker.test.TestUtils.loadTable;
+import static io.github.daomephsta.loottweaker.test.assertion.LootTweakerAssertions.assertThat;
 import static leviathan143.loottweaker.common.darkmagic.LootPoolAccessors.getEntries;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import java.util.Set;
+
+import com.google.common.collect.Sets;
 
 import io.github.daomephsta.loottweaker.test.TestUtils;
 import io.github.daomephsta.loottweaker.test.ThrowingErrorHandler.LootTweakerException;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
+import leviathan143.loottweaker.common.zenscript.api.entry.LootEntryRepresentation;
+import leviathan143.loottweaker.common.zenscript.api.iteration.LootEntryIterator;
 import leviathan143.loottweaker.common.zenscript.impl.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.impl.MutableLootPool;
 import net.minecraft.util.ResourceLocation;
@@ -100,5 +107,67 @@ public class MiscMutableLootPoolTests
         assertThat(barNew.getBonusRolls())
             .extracting(RandomValueRange::getMax)
             .isEqualTo(3.0F);
+    }
+
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    public void iterator()
+    {
+        LootTweakerContext context = TestUtils.createContext();
+        ResourceLocation bazId = new ResourceLocation("loottweaker", "baz");
+        LootTable baz = loadTable(bazId);
+        LootPool fooOriginal = baz.getPool("foo");
+        MutableLootPool mutableFoo = new MutableLootPool(fooOriginal, bazId, context);
+        Set<String> expectedNames = Sets.newHashSet("qux", "quuz", "corge");
+        Set<String> unexpectedNames = Sets.newHashSet();
+        for (LootEntryRepresentation pool : mutableFoo)
+        {
+            if (!expectedNames.remove(pool.getName()))
+                unexpectedNames.add(pool.getName());
+        }
+        assertThat(expectedNames.isEmpty() && unexpectedNames.isEmpty())
+            .describedAs("Iteration test failed. Unexpected: %s Missing: %s",
+                unexpectedNames, expectedNames)
+            .isTrue();
+    }
+
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    public void iteratorRemove()
+    {
+        LootTweakerContext context = TestUtils.createContext();
+        ResourceLocation bazId = new ResourceLocation("loottweaker", "baz");
+        LootTable baz = loadTable(bazId);
+        LootPool fooOriginal = baz.getPool("foo");
+        MutableLootPool mutableFoo = new MutableLootPool(fooOriginal, bazId, context);
+        assertThat(fooOriginal).hasEntries("qux", "quuz", "corge");
+        for (LootEntryIterator entry : mutableFoo)
+        {
+            if (entry.getName().startsWith("q"))
+                entry.remove();
+        }
+        LootPool bazNew = mutableFoo.toImmutable();
+        assertThat(bazNew)
+            .hasEntry("corge")
+            .doesNotHaveEntries("qux", "quuz");
+    }
+
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    public void iteratorRemoveCME()
+    {
+        LootTweakerContext context = TestUtils.createContext();
+        ResourceLocation bazId = new ResourceLocation("loottweaker", "baz");
+        LootTable baz = loadTable(bazId);
+        LootPool fooOriginal = baz.getPool("foo");
+        MutableLootPool mutableFoo = new MutableLootPool(fooOriginal, bazId, context);
+        assertThat(fooOriginal).hasEntries("qux", "quuz", "corge");
+        assertThatThrownBy(() ->
+        {
+            for (LootEntryIterator entry : mutableFoo)
+            {
+                if (entry.getName().startsWith("q"))
+                    mutableFoo.removeEntry(entry.getName());
+            }
+        })
+        .isInstanceOf(LootTweakerException.class)
+        .hasMessageStartingWith("Entries unsafely removed while iterating");
     }
 }

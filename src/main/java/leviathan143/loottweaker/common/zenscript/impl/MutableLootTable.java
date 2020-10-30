@@ -2,10 +2,7 @@ package leviathan143.loottweaker.common.zenscript.impl;
 
 import static java.util.stream.Collectors.toMap;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BinaryOperator;
 
 import org.apache.logging.log4j.LogManager;
@@ -17,6 +14,7 @@ import leviathan143.loottweaker.common.darkmagic.LootTableAccessors;
 import leviathan143.loottweaker.common.lib.QualifiedPoolIdentifier;
 import leviathan143.loottweaker.common.zenscript.api.LootPoolRepresentation;
 import leviathan143.loottweaker.common.zenscript.api.LootTableRepresentation;
+import leviathan143.loottweaker.common.zenscript.api.iteration.LootPoolIterator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
@@ -137,5 +135,11 @@ public class MutableLootTable implements LootTableRepresentation
     {
         pools.clear();
         CraftTweakerAPI.logInfo(String.format("Removed all pools from table '%s'", id));
+    }
+
+    @Override
+    public Iterator<LootPoolIterator> iterator()
+    {
+        return new LootPoolIterator(pools.values().iterator(), context);
     }
 }

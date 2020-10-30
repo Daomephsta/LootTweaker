@@ -9,3 +9,10 @@ lootTweakerApi.tweakLootTable("loottweaker:foo", function(foo)
     foo.addPool("quuz", 1, 2, 0, 1);
     foo.removeAllPools();
 });
+lootTweakerApi.tweakLootTable("loottweaker:baz", function(baz)
+{
+    for pool in baz
+    {
+        pool.remove();
+    }
+});

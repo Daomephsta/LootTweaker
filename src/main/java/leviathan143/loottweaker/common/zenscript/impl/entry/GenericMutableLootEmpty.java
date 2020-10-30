@@ -7,15 +7,19 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import leviathan143.loottweaker.common.darkmagic.LootEntryAccessors;
 import leviathan143.loottweaker.common.lib.LootConditions;
+import leviathan143.loottweaker.common.lib.QualifiedEntryIdentifier;
+import leviathan143.loottweaker.common.lib.QualifiedPoolIdentifier;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
 public class GenericMutableLootEmpty implements MutableLootEntry
 {
     private final LootEntry entry;
+    private QualifiedEntryIdentifier qualifiedId;
 
-    GenericMutableLootEmpty(LootEntry entry)
+    GenericMutableLootEmpty(LootEntry entry, QualifiedPoolIdentifier poolId)
     {
+        this.qualifiedId = new QualifiedEntryIdentifier(poolId, entry.getEntryName());
         this.entry = entry;
     }
 
@@ -89,6 +93,13 @@ public class GenericMutableLootEmpty implements MutableLootEntry
     @Override
     public void setName(String name)
     {
+        qualifiedId.setEntryName(name);
         LootEntryAccessors.setName(entry, name);
+    }
+
+    @Override
+    public String describe()
+    {
+        return qualifiedId.toString();
     }
 }

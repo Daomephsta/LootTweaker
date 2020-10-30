@@ -7,6 +7,8 @@ import com.google.common.collect.Lists;
 import leviathan143.loottweaker.common.darkmagic.LootEntryItemAccessors;
 import leviathan143.loottweaker.common.lib.LootConditions;
 import leviathan143.loottweaker.common.lib.LootFunctions;
+import leviathan143.loottweaker.common.lib.QualifiedEntryIdentifier;
+import leviathan143.loottweaker.common.lib.QualifiedPoolIdentifier;
 import net.minecraft.item.Item;
 import net.minecraft.world.storage.loot.LootEntryItem;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
@@ -17,16 +19,16 @@ public class MutableLootEntryItem extends AbstractMutableLootEntry
     private Item item;
     private List<LootFunction> functions;
 
-    MutableLootEntryItem(LootEntryItem entry)
+    MutableLootEntryItem(LootEntryItem entry, QualifiedPoolIdentifier qualifiedId)
     {
-        super(entry);
+        super(entry, qualifiedId);
         this.item = LootEntryItemAccessors.getItem(entry);
         this.functions = Lists.newArrayList(LootEntryItemAccessors.getFunctions(entry));
     }
 
-    public MutableLootEntryItem(String name, int weight, int quality, List<LootCondition> conditions, Item item, List<LootFunction> functions)
+    public MutableLootEntryItem(QualifiedEntryIdentifier qualifiedId, int weight, int quality, List<LootCondition> conditions, Item item, List<LootFunction> functions)
     {
-        super(name, weight, quality, conditions);
+        super(qualifiedId, weight, quality, conditions);
         this.item = item;
         this.functions = functions;
     }
@@ -34,7 +36,7 @@ public class MutableLootEntryItem extends AbstractMutableLootEntry
     @Override
     public MutableLootEntryItem deepClone()
     {
-        return new MutableLootEntryItem(getName(), getWeight(), getQuality(),
+        return new MutableLootEntryItem(getQualifiedId(), getWeight(), getQuality(),
             LootConditions.deepClone(getConditions()), item, LootFunctions.deepClone(functions));
     }
 

@@ -3,30 +3,32 @@ package leviathan143.loottweaker.common.zenscript.impl.entry;
 import java.util.List;
 
 import leviathan143.loottweaker.common.lib.LootConditions;
+import leviathan143.loottweaker.common.lib.QualifiedEntryIdentifier;
+import leviathan143.loottweaker.common.lib.QualifiedPoolIdentifier;
 import net.minecraft.world.storage.loot.LootEntryEmpty;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
 public class MutableLootEntryEmpty extends AbstractMutableLootEntry
 {
-    MutableLootEntryEmpty(LootEntryEmpty entry)
+    MutableLootEntryEmpty(LootEntryEmpty entry, QualifiedPoolIdentifier qualifiedId)
     {
-        super(entry);
+        super(entry, qualifiedId);
     }
 
-    public MutableLootEntryEmpty(String name, int weight, int quality, LootCondition[] conditions)
+    public MutableLootEntryEmpty(QualifiedEntryIdentifier qualifiedId, int weight, int quality, LootCondition[] conditions)
     {
-        super(name, weight, quality, conditions);
+        super(qualifiedId, weight, quality, conditions);
     }
 
-    public MutableLootEntryEmpty(String name, int weight, int quality, List<LootCondition> conditions)
+    public MutableLootEntryEmpty(QualifiedEntryIdentifier qualifiedId, int weight, int quality, List<LootCondition> conditions)
     {
-        super(name, weight, quality, conditions);
+        super(qualifiedId, weight, quality, conditions);
     }
 
     @Override
     public MutableLootEntryEmpty deepClone()
     {
-        return new MutableLootEntryEmpty(getName(), getWeight(), getQuality(),
+        return new MutableLootEntryEmpty(getQualifiedId(), getWeight(), getQuality(),
             LootConditions.deepClone(getConditions()));
     }
 

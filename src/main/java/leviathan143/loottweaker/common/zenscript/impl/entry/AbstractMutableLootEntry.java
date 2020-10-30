@@ -5,31 +5,33 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import leviathan143.loottweaker.common.darkmagic.LootEntryAccessors;
+import leviathan143.loottweaker.common.lib.QualifiedEntryIdentifier;
+import leviathan143.loottweaker.common.lib.QualifiedPoolIdentifier;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
 public abstract class AbstractMutableLootEntry implements MutableLootEntry
 {
-    private String name;
+    private QualifiedEntryIdentifier qualifiedId;
     private int weight, quality;
     private List<LootCondition> conditions;
 
-    protected AbstractMutableLootEntry(LootEntry entry)
+    protected AbstractMutableLootEntry(LootEntry entry, QualifiedPoolIdentifier poolId)
     {
-        this.name = entry.getEntryName();
+        this.qualifiedId = new QualifiedEntryIdentifier(poolId, entry.getEntryName());
         this.weight = LootEntryAccessors.getWeight(entry);
         this.quality = LootEntryAccessors.getQuality(entry);
         this.conditions = Lists.newArrayList(LootEntryAccessors.getConditions(entry));
     }
 
-    protected AbstractMutableLootEntry(String name, int weight, int quality, LootCondition[] conditions)
+    protected AbstractMutableLootEntry(QualifiedEntryIdentifier qualifiedId, int weight, int quality, LootCondition[] conditions)
     {
-        this(name, weight, quality, Lists.newArrayList(conditions));
+        this(qualifiedId, weight, quality, Lists.newArrayList(conditions));
     }
 
-    protected AbstractMutableLootEntry(String name, int weight, int quality, List<LootCondition> conditions)
+    protected AbstractMutableLootEntry(QualifiedEntryIdentifier qualifiedId, int weight, int quality, List<LootCondition> conditions)
     {
-        this.name = name;
+        this.qualifiedId = qualifiedId;
         this.weight = weight;
         this.quality = quality;
         this.conditions = conditions;
@@ -89,15 +91,26 @@ public abstract class AbstractMutableLootEntry implements MutableLootEntry
         conditions.clear();
     }
 
+    public QualifiedEntryIdentifier getQualifiedId()
+    {
+        return qualifiedId;
+    }
+
     @Override
     public String getName()
     {
-        return name;
+        return qualifiedId.getEntryName();
     }
 
     @Override
     public void setName(String name)
     {
-        this.name = name;
+        qualifiedId.setEntryName(name);
+    }
+
+    @Override
+    public String describe()
+    {
+        return qualifiedId.toString();
     }
 }
