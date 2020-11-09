@@ -9,6 +9,7 @@ import java.util.function.BinaryOperator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 
 import crafttweaker.CraftTweakerAPI;
@@ -23,8 +24,8 @@ import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
 import leviathan143.loottweaker.common.lib.*;
 import leviathan143.loottweaker.common.zenscript.api.LootPoolRepresentation;
 import leviathan143.loottweaker.common.zenscript.api.entry.LootConditionRepresentation;
+import leviathan143.loottweaker.common.zenscript.api.entry.LootEntryRepresentation;
 import leviathan143.loottweaker.common.zenscript.api.entry.LootFunctionRepresentation;
-import leviathan143.loottweaker.common.zenscript.api.iteration.LootEntryIterator;
 import leviathan143.loottweaker.common.zenscript.impl.entry.MutableLootEntry;
 import leviathan143.loottweaker.common.zenscript.impl.entry.MutableLootEntryEmpty;
 import leviathan143.loottweaker.common.zenscript.impl.entry.MutableLootEntryItem;
@@ -50,6 +51,7 @@ public class MutableLootPool implements LootPoolRepresentation
     private Map<String, MutableLootEntry> entries;
     private List<LootCondition> conditions;
     private RandomValueRange rolls, bonusRolls;
+    private Modification lastModification = null;
 
     public MutableLootPool(LootPool pool, ResourceLocation parentTableId, LootTweakerContext context)
     {
@@ -322,22 +324,30 @@ public class MutableLootPool implements LootPoolRepresentation
                 entry.getName(), qualifiedId);
         }
         else
+        {
+            lastModification = new Modification(entry, "added");
             CraftTweakerAPI.logInfo(String.format("Added entry '%s' to %s", entry.getName(), qualifiedId));
+        }
     }
 
     @Override
     public void removeEntry(String entryId)
     {
-        if (entries.remove(entryId) == null)
+        MutableLootEntry removed = entries.remove(entryId);
+        if (removed == null)
             context.getErrorHandler().error("No entry with id '%s' exists in %s", entryId, qualifiedId);
         else
+        {
+            lastModification = new Modification(removed, "removed");
             CraftTweakerAPI.logInfo(String.format("Removed entry '%s' from %s", entryId, qualifiedId));
+        }
     }
 
     @Override
     public void removeAllEntries()
     {
         entries.clear();
+        lastModification = new Modification(this, "cleared");
         CraftTweakerAPI.logInfo("Removed all entries from " + qualifiedId);
     }
 
@@ -377,9 +387,16 @@ public class MutableLootPool implements LootPoolRepresentation
     }
 
     @Override
-    public Iterator<LootEntryIterator> iterator()
+    public EntriesIterator<? extends LootEntryRepresentation> entriesIterator()
     {
-        return new LootEntryIterator(entries.values().iterator(), context);
+        Supplier<String> message = () ->
+        {
+            if (lastModification == null)
+                throw new NullPointerException("Last modification unknown");
+            return String.format("%s unsafely %s while iterating entries of %s",
+                lastModification.describable.describe(), lastModification.action, describe());
+        };
+        return new EntriesIterator<MutableLootEntry>(entries.values().iterator(), context.getErrorHandler(), message);
     }
 
     @Override

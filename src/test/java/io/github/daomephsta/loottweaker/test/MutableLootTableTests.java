@@ -16,14 +16,13 @@ import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
 import leviathan143.loottweaker.common.darkmagic.LootTableAccessors;
 import leviathan143.loottweaker.common.zenscript.api.LootPoolRepresentation;
-import leviathan143.loottweaker.common.zenscript.api.iteration.LootPoolIterator;
+import leviathan143.loottweaker.common.zenscript.api.iteration.LootIterator;
 import leviathan143.loottweaker.common.zenscript.impl.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.impl.MutableLootTable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
 import net.minecraft.world.storage.loot.RandomValueRange;
-
 
 public class MutableLootTableTests
 {
@@ -181,7 +180,7 @@ public class MutableLootTableTests
         MutableLootTable mutableBaz = mutableLootTable(bazId, context);
         Set<String> expectedNames = Sets.newHashSet("foo", "bar", "baz");
         Set<String> unexpectedNames = Sets.newHashSet();
-        for (LootPoolRepresentation pool : mutableBaz)
+        for (LootPoolRepresentation pool : mutableBaz.poolsIterator())
         {
             if (!expectedNames.remove(pool.getName()))
                 unexpectedNames.add(pool.getName());
@@ -201,10 +200,11 @@ public class MutableLootTableTests
         LootTable bazOriginal = loadTable(bazId);
         assertThat(bazOriginal)
             .hasPools("foo", "bar", "baz");
-        for (LootPoolIterator pool : mutableBaz)
+        LootIterator<?, LootPoolRepresentation> poolsIter = mutableBaz.poolsIterator();
+        for (LootPoolRepresentation pool : poolsIter)
         {
             if (pool.getName().startsWith("b"))
-                pool.remove();
+                poolsIter.remove();
         }
         LootTable bazNew = mutableBaz.toImmutable();
         assertThat(bazNew)
@@ -223,14 +223,14 @@ public class MutableLootTableTests
             .hasPools("foo", "bar", "baz");
         assertThatThrownBy(() ->
         {
-            for (LootPoolIterator pool : mutableBaz)
+            for (LootPoolRepresentation pool : mutableBaz.poolsIterator())
             {
                 if (pool.getName().startsWith("b"))
                     mutableBaz.removePool(pool.getName());
             }
         })
         .isInstanceOf(LootTweakerException.class)
-        .hasMessageStartingWith("Pools unsafely removed while iterating");
+        .hasMessageStartingWith("pool 'bar' of table 'loottweaker:baz' unsafely removed");
     }
 
     private MutableLootTable mutableLootTable(ResourceLocation tableId, LootTweakerContext context)

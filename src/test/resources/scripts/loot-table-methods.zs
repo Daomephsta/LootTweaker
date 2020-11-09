@@ -11,8 +11,9 @@ lootTweakerApi.tweakLootTable("loottweaker:foo", function(foo)
 });
 lootTweakerApi.tweakLootTable("loottweaker:baz", function(baz)
 {
-    for pool in baz
+    val poolsIter = baz.poolsIterator();
+    for pool in poolsIter
     {
-        pool.remove();
+        poolsIter.removeCurrent();
     }
 });

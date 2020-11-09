@@ -1,12 +1,19 @@
 package leviathan143.loottweaker.common.zenscript.api;
 
+import java.util.Iterator;
+
+import com.google.common.base.Supplier;
+
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.data.IData;
 import crafttweaker.api.item.IItemStack;
+import leviathan143.loottweaker.common.ErrorHandler;
 import leviathan143.loottweaker.common.LootTweaker;
+import leviathan143.loottweaker.common.lib.Describable;
 import leviathan143.loottweaker.common.zenscript.api.entry.LootConditionRepresentation;
+import leviathan143.loottweaker.common.zenscript.api.entry.LootEntryRepresentation;
 import leviathan143.loottweaker.common.zenscript.api.entry.LootFunctionRepresentation;
-import leviathan143.loottweaker.common.zenscript.api.iteration.LootEntryIterator;
+import leviathan143.loottweaker.common.zenscript.api.iteration.LootIterator;
 import stanhebben.zenscript.annotations.IterableSimple;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
@@ -14,8 +21,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenRegister
 @ZenClass(LootTweaker.MODID + ".LootPool")
-@IterableSimple(LootTweaker.MODID + ".LootEntryIterator")
-public interface LootPoolRepresentation extends Iterable<LootEntryIterator>
+public interface LootPoolRepresentation extends Describable
 {
     @ZenMethod
     public void addItemEntry(IItemStack stack, @Optional String name);
@@ -87,5 +93,17 @@ public interface LootPoolRepresentation extends Iterable<LootEntryIterator>
     @ZenMethod
     public String getName();
 
-    public String describe();
+    @ZenRegister
+    @ZenClass(LootTweaker.MODID + ".EntriesIterator")
+    @IterableSimple(LootTweaker.MODID + ".LootEntry")
+    public static class EntriesIterator<E extends LootEntryRepresentation> extends LootIterator<E, LootEntryRepresentation>
+    {
+        public EntriesIterator(Iterator<E> delegate, ErrorHandler errorHandler, Supplier<String> message)
+        {
+            super(delegate, errorHandler, message);
+        }
+    }
+
+    @ZenMethod
+    public EntriesIterator<? extends LootEntryRepresentation> entriesIterator();
 }

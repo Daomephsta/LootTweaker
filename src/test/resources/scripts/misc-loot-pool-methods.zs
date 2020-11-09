@@ -13,8 +13,9 @@ lootTweakerApi.tweakLootTable("loottweaker:bar", function(bar)
 lootTweakerApi.tweakLootTable("loottweaker:baz", function(baz)
 {
     val foo = baz.getPool("foo");
-    for entry in foo
+    val entriesIter = foo.entriesIterator();
+    for entry in entriesIter
     {
-        entry.remove();
+        entriesIter.removeCurrent();
     }
 });

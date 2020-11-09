@@ -15,7 +15,7 @@ import io.github.daomephsta.loottweaker.test.ThrowingErrorHandler.LootTweakerExc
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
 import leviathan143.loottweaker.common.zenscript.api.entry.LootEntryRepresentation;
-import leviathan143.loottweaker.common.zenscript.api.iteration.LootEntryIterator;
+import leviathan143.loottweaker.common.zenscript.api.iteration.LootIterator;
 import leviathan143.loottweaker.common.zenscript.impl.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.impl.MutableLootPool;
 import net.minecraft.util.ResourceLocation;
@@ -119,7 +119,7 @@ public class MiscMutableLootPoolTests
         MutableLootPool mutableFoo = new MutableLootPool(fooOriginal, bazId, context);
         Set<String> expectedNames = Sets.newHashSet("qux", "quuz", "corge");
         Set<String> unexpectedNames = Sets.newHashSet();
-        for (LootEntryRepresentation pool : mutableFoo)
+        for (LootEntryRepresentation pool : mutableFoo.entriesIterator())
         {
             if (!expectedNames.remove(pool.getName()))
                 unexpectedNames.add(pool.getName());
@@ -139,10 +139,11 @@ public class MiscMutableLootPoolTests
         LootPool fooOriginal = baz.getPool("foo");
         MutableLootPool mutableFoo = new MutableLootPool(fooOriginal, bazId, context);
         assertThat(fooOriginal).hasEntries("qux", "quuz", "corge");
-        for (LootEntryIterator entry : mutableFoo)
+        LootIterator<?, LootEntryRepresentation> entriesIterator = mutableFoo.entriesIterator();
+        for (LootEntryRepresentation entry : entriesIterator)
         {
             if (entry.getName().startsWith("q"))
-                entry.remove();
+                entriesIterator.remove();
         }
         LootPool bazNew = mutableFoo.toImmutable();
         assertThat(bazNew)
@@ -161,13 +162,13 @@ public class MiscMutableLootPoolTests
         assertThat(fooOriginal).hasEntries("qux", "quuz", "corge");
         assertThatThrownBy(() ->
         {
-            for (LootEntryIterator entry : mutableFoo)
+            for (LootEntryRepresentation entry : mutableFoo.entriesIterator())
             {
                 if (entry.getName().startsWith("q"))
                     mutableFoo.removeEntry(entry.getName());
             }
         })
         .isInstanceOf(LootTweakerException.class)
-        .hasMessageStartingWith("Entries unsafely removed while iterating");
+        .hasMessageStartingWith("entry 'quuz' of pool 'foo' of table 'loottweaker:baz' unsafely removed");
     }
 }

@@ -2,19 +2,24 @@ package leviathan143.loottweaker.common.zenscript.impl;
 
 import static java.util.stream.Collectors.toMap;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BinaryOperator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.base.Supplier;
+
 import crafttweaker.CraftTweakerAPI;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.darkmagic.LootTableAccessors;
+import leviathan143.loottweaker.common.lib.Modification;
 import leviathan143.loottweaker.common.lib.QualifiedPoolIdentifier;
 import leviathan143.loottweaker.common.zenscript.api.LootPoolRepresentation;
 import leviathan143.loottweaker.common.zenscript.api.LootTableRepresentation;
-import leviathan143.loottweaker.common.zenscript.api.iteration.LootPoolIterator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
@@ -26,6 +31,7 @@ public class MutableLootTable implements LootTableRepresentation
     private final ResourceLocation id;
     private Map<String, MutableLootPool> pools;
     private final LootTweakerContext context;
+    private Modification lastModification = null;
 
     public MutableLootTable(LootTable table, ResourceLocation id, LootTweakerContext context)
     {
@@ -117,29 +123,51 @@ public class MutableLootTable implements LootTableRepresentation
         if (pools.putIfAbsent(poolId, pool) != null)
             context.getErrorHandler().error("Cannot add pool '%s' to table '%s'. Pool names must be unique within their table.", poolId, id);
         else
+        {
+            lastModification = new Modification(pool, "added");
             CraftTweakerAPI.logInfo(String.format("Added pool '%s' to table '%s'", poolId, id));
+        }
         return pool;
     }
 
     @Override
     public void removePool(String poolId)
     {
-        if (pools.remove(poolId) == null)
+        MutableLootPool removed = pools.remove(poolId);
+        if (removed == null)
             context.getErrorHandler().error("No pool with id '%s' exists in table '%s'", poolId, id);
         else
+        {
+            lastModification = new Modification(removed, "removed");
             CraftTweakerAPI.logInfo(String.format("Removed pool '%s' from table '%s'", poolId, id));
+        }
     }
 
     @Override
     public void removeAllPools()
     {
         pools.clear();
+        lastModification = new Modification(this, "cleared");
         CraftTweakerAPI.logInfo(String.format("Removed all pools from table '%s'", id));
     }
 
     @Override
-    public Iterator<LootPoolIterator> iterator()
+    public PoolsIterator<? extends LootPoolRepresentation> poolsIterator()
     {
-        return new LootPoolIterator(pools.values().iterator(), context);
+        Supplier<String> message = () ->
+        {
+            if (lastModification == null)
+                throw new NullPointerException("Last modification unknown");
+            return String.format("%s unsafely %s while iterating pools of %s",
+                lastModification.describable.describe(), lastModification.action, describe());
+        };
+        return new PoolsIterator<MutableLootPool>(pools.values().iterator(), context.getErrorHandler(),
+            message);
+    }
+
+    @Override
+    public String describe()
+    {
+        return String.format("table '%s'", id);
     }
 }

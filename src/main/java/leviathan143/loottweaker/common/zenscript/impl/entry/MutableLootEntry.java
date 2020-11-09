@@ -14,7 +14,6 @@ import net.minecraft.world.storage.loot.LootEntryItem;
 import net.minecraft.world.storage.loot.LootEntryTable;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
-
 public interface MutableLootEntry extends LootEntryRepresentation
 {
     public static final Logger __LOGGER__ = LogManager.getLogger(LootTweaker.MODID + ".mutable_loot");
@@ -51,6 +50,7 @@ public interface MutableLootEntry extends LootEntryRepresentation
 
     public void clearConditions();
 
+    @Override
     public String getName();
 
     public void setName(String name);
