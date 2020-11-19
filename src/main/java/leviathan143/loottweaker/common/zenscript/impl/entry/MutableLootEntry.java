@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import leviathan143.loottweaker.common.ErrorHandler;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.lib.QualifiedPoolIdentifier;
 import leviathan143.loottweaker.common.zenscript.api.entry.LootEntryRepresentation;
@@ -18,27 +19,27 @@ public interface MutableLootEntry extends LootEntryRepresentation
 {
     public static final Logger __LOGGER__ = LogManager.getLogger(LootTweaker.MODID + ".mutable_loot");
 
-    public static MutableLootEntry from(LootEntry entry, QualifiedPoolIdentifier parent)
+    public static MutableLootEntry from(LootEntry entry, QualifiedPoolIdentifier parent, ErrorHandler errorHandler)
     {
         if (entry instanceof LootEntryItem)
-            return new MutableLootEntryItem((LootEntryItem) entry, parent);
+            return new MutableLootEntryItem((LootEntryItem) entry, parent, errorHandler);
         else if (entry instanceof LootEntryTable)
-            return new MutableLootEntryTable((LootEntryTable) entry, parent);
+            return new MutableLootEntryTable((LootEntryTable) entry, parent, errorHandler);
         else if (entry instanceof LootEntryEmpty)
-            return new MutableLootEntryEmpty((LootEntryEmpty) entry, parent);
+            return new MutableLootEntryEmpty((LootEntryEmpty) entry, parent, errorHandler);
         else
-            return new GenericMutableLootEmpty(entry, parent);
+            return new GenericMutableLootEntry(entry, parent, errorHandler);
     }
 
     public MutableLootEntry deepClone();
 
     public LootEntry toImmutable();
 
-    public int getWeight();
+    public int weight();
 
     public void setWeight(int weight);
 
-    public int getQuality();
+    public int quality();
 
     public void setQuality(int quality);
 
@@ -51,7 +52,7 @@ public interface MutableLootEntry extends LootEntryRepresentation
     public void clearConditions();
 
     @Override
-    public String getName();
+    public String name();
 
     public void setName(String name);
 }

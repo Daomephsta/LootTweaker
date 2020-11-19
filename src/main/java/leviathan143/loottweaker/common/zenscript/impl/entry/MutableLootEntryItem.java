@@ -4,76 +4,131 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
+import crafttweaker.api.data.IData;
+import leviathan143.loottweaker.common.ErrorHandler;
 import leviathan143.loottweaker.common.darkmagic.LootEntryItemAccessors;
 import leviathan143.loottweaker.common.lib.LootConditions;
 import leviathan143.loottweaker.common.lib.LootFunctions;
 import leviathan143.loottweaker.common.lib.QualifiedEntryIdentifier;
 import leviathan143.loottweaker.common.lib.QualifiedPoolIdentifier;
+import leviathan143.loottweaker.common.zenscript.api.entry.LootEntryItemRepresentation;
+import leviathan143.loottweaker.common.zenscript.api.entry.LootEntryTableRepresentation;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootEntryItem;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.functions.LootFunction;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class MutableLootEntryItem extends AbstractMutableLootEntry
+public class MutableLootEntryItem extends AbstractMutableLootEntry implements LootEntryItemRepresentation
 {
-    private Item item;
     private List<LootFunction> functions;
+    private FunctionEffects functionEffects;
 
-    MutableLootEntryItem(LootEntryItem entry, QualifiedPoolIdentifier qualifiedId)
+    MutableLootEntryItem(LootEntryItem entry, QualifiedPoolIdentifier qualifiedId, ErrorHandler errorHandler)
     {
-        super(entry, qualifiedId);
-        this.item = LootEntryItemAccessors.getItem(entry);
+        super(entry, qualifiedId, errorHandler);
         this.functions = Lists.newArrayList(LootEntryItemAccessors.getFunctions(entry));
+        this.functionEffects = new FunctionEffects(LootEntryItemAccessors.getItem(entry));
     }
 
-    public MutableLootEntryItem(QualifiedEntryIdentifier qualifiedId, int weight, int quality, List<LootCondition> conditions, Item item, List<LootFunction> functions)
+    public MutableLootEntryItem(QualifiedEntryIdentifier qualifiedId, int weight, int quality, List<LootCondition> conditions, Item item, List<LootFunction> functions, ErrorHandler errorHandler)
     {
-        super(qualifiedId, weight, quality, conditions);
-        this.item = item;
+        super(qualifiedId, weight, quality, conditions, errorHandler);
+        this.functionEffects = new FunctionEffects(item);
         this.functions = functions;
     }
 
     @Override
     public MutableLootEntryItem deepClone()
     {
-        return new MutableLootEntryItem(getQualifiedId(), getWeight(), getQuality(),
-            LootConditions.deepClone(getConditions()), item, LootFunctions.deepClone(functions));
+        return new MutableLootEntryItem(getQualifiedId(), weight(), quality(),
+            LootConditions.deepClone(getConditions()), functionEffects.getItem(),
+            LootFunctions.deepClone(functions), errorHandler);
     }
 
     @Override
     public LootEntryItem toImmutable()
     {
-        return new LootEntryItem(item, getWeight(), getQuality(), functions.toArray(LootFunctions.NONE),
-            getConditions().toArray(LootConditions.NONE), getName());
+        return new LootEntryItem(functionEffects.getItem(), weight(), quality(),
+            functions.toArray(LootFunctions.NONE), getConditions().toArray(LootConditions.NONE),
+            name());
     }
 
-    public Item getItem()
+    @Override
+    public String itemId()
     {
-        return item;
+        return functionEffects.getItem().getRegistryName().toString();
     }
 
-    public void setItem(Item item)
+    @Override
+    public int minimumMetadata()
     {
-        this.item = item;
+        functionEffects.initialise(this, functions, errorHandler);
+        return functionEffects.getMinMeta();
     }
 
-    public List<LootFunction> getFunctions()
+    @Override
+    public int maximumMetadata()
     {
-        return functions;
+        functionEffects.initialise(this, functions, errorHandler);
+        return functionEffects.getMaxMeta();
     }
 
-    public void setFunctions(List<LootFunction> functions)
+    @Override
+    public int minimumDamageAmount()
     {
-        this.functions = functions;
+        functionEffects.initialise(this, functions, errorHandler);
+        return functionEffects.getMinDamageAmount();
     }
 
-    public void addFunction(LootFunction function)
+    @Override
+    public int maximumDamageAmount()
     {
-        functions.add(function);
+        functionEffects.initialise(this, functions, errorHandler);
+        return functionEffects.getMaxDamageAmount();
     }
 
-    public void clearFunctions()
+    @Override
+    public float minimumDamagePercent()
     {
-        functions.clear();
+        functionEffects.initialise(this, functions, errorHandler);
+        return functionEffects.getMinDamagePercent();
+    }
+
+    @Override
+    public float maximumDamagePercent()
+    {
+        functionEffects.initialise(this, functions, errorHandler);
+        return functionEffects.getMaxDamagePercent();
+    }
+
+    @Override
+    public IData nbt()
+    {
+        functionEffects.initialise(this, functions, errorHandler);
+        return functionEffects.getNbt();
+    }
+
+    @Override
+    public LootEntryTableRepresentation asTableEntry()
+    {
+        errorHandler.error("%s is not a TableEntry", describe());
+        return null;
+    }
+
+    public ItemStack g()
+    {
+        ItemStack stack = ItemStack.EMPTY;
+        WorldServer world = FMLCommonHandler.instance()
+            .getMinecraftServerInstance().getWorld(0);
+        LootContext context = new LootContext.Builder(world).build();
+        for (LootFunction function : functions)
+        {
+            function.apply(stack, world.rand, context);
+        }
+        return stack;
     }
 }

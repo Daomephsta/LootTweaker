@@ -63,18 +63,18 @@ public class MutableLootPool implements LootPoolRepresentation
         int uniqueSuffix = 0;
         for (LootEntry entry : immutableEntries)
         {
-            MutableLootEntry mutableEntry = MutableLootEntry.from(entry, qualifiedId);
-            MutableLootEntry existing = entries.get(mutableEntry.getName());
+            MutableLootEntry mutableEntry = MutableLootEntry.from(entry, qualifiedId, context.getErrorHandler());
+            MutableLootEntry existing = entries.get(mutableEntry.name());
             if (existing != null)
             {
-                String newName = mutableEntry.getName() + uniqueSuffix++;
+                String newName = mutableEntry.name() + uniqueSuffix++;
                 SANITY_LOGGER.error("Unexpected duplicate entry name '{}' in pool '{}'. Duplicate added as '{}'."
-                    + "\nReport this to the loot adder.", mutableEntry.getName(), getName(), newName);
+                    + "\nReport this to the loot adder.", mutableEntry.name(), getName(), newName);
                 mutableEntry.setName(newName);
                 entries.put(newName, mutableEntry);
             }
             else
-                entries.put(mutableEntry.getName(), mutableEntry);
+                entries.put(mutableEntry.name(), mutableEntry);
         }
         this.conditions = LootPoolAccessors.getConditions(pool);
         this.rolls = pool.getRolls();
@@ -104,7 +104,7 @@ public class MutableLootPool implements LootPoolRepresentation
         {
             throw new IllegalStateException(String.format(
                 "Unexpected duplicate entry '%s' while deep cloning mutable pool '%s'. Report this to the mod author",
-                a.getName(), getName()));
+                a.name(), getName()));
         };
         Map<String, MutableLootEntry> entriesDeepClone = entries.entrySet().stream()
             .collect(toMap(Map.Entry::getKey, e -> e.getValue().deepClone(), mergeFunction, HashMap::new));
@@ -157,7 +157,7 @@ public class MutableLootPool implements LootPoolRepresentation
     {
         ItemStack stack = CraftTweakerMC.getItemStack(iStack);
         addEntry(new MutableLootEntryItem(new QualifiedEntryIdentifier(qualifiedId, name), weight, quality, new ArrayList<>(),
-            stack.getItem(), withStackFunctions(iStack, LootFunctions.NONE)));
+            stack.getItem(), withStackFunctions(iStack, LootFunctions.NONE), context.getErrorHandler()));
     }
 
     @Override
@@ -175,7 +175,7 @@ public class MutableLootPool implements LootPoolRepresentation
             .map(java.util.Optional::get)
             .toArray(LootFunction[]::new);
         addEntry(new MutableLootEntryItem(new QualifiedEntryIdentifier(qualifiedId, name), weight, quality, parsedConditions,
-            stack.getItem(), withStackFunctions(iStack, parsedFunctions)));
+            stack.getItem(), withStackFunctions(iStack, parsedFunctions), context.getErrorHandler()));
     }
 
     @Override
@@ -193,7 +193,7 @@ public class MutableLootPool implements LootPoolRepresentation
             .map(LootFunctionRepresentation::toImmutable)
             .toArray(LootFunction[]::new);
         addEntry(new MutableLootEntryItem(new QualifiedEntryIdentifier(qualifiedId, name), weight, quality, parsedConditions,
-            stack.getItem(), withStackFunctions(iStack, parsedFunctions)));
+            stack.getItem(), withStackFunctions(iStack, parsedFunctions), context.getErrorHandler()));
     }
 
     /* Adds loot functions equivalent to the damage, stacksize and NBT of the
@@ -243,7 +243,7 @@ public class MutableLootPool implements LootPoolRepresentation
         //TODO Consider checking existence of the table
         ResourceLocation delegateTableRL = new ResourceLocation(delegateTableId);
         addEntry(new MutableLootEntryTable(new QualifiedEntryIdentifier(qualifiedId, name), weight, quality,
-            LootConditions.NONE, delegateTableRL));
+            LootConditions.NONE, delegateTableRL, context.getErrorHandler()));
     }
 
     @Override
@@ -252,7 +252,7 @@ public class MutableLootPool implements LootPoolRepresentation
         //TODO Consider checking existence of the table
         ResourceLocation delegateTableRL = new ResourceLocation(delegateTableId);
         addEntry(new MutableLootEntryTable(new QualifiedEntryIdentifier(qualifiedId, name), weight, quality,
-            parseConditions(conditions), delegateTableRL));
+            parseConditions(conditions), delegateTableRL, context.getErrorHandler()));
     }
 
     @Override
@@ -261,7 +261,7 @@ public class MutableLootPool implements LootPoolRepresentation
         //TODO Consider checking existence of the table
         ResourceLocation delegateTableRL = new ResourceLocation(delegateTableId);
         addEntry(new MutableLootEntryTable(new QualifiedEntryIdentifier(qualifiedId, name), weight, quality,
-            parseConditions(conditions), delegateTableRL));
+            parseConditions(conditions), delegateTableRL, context.getErrorHandler()));
     }
 
     @Override
@@ -279,19 +279,19 @@ public class MutableLootPool implements LootPoolRepresentation
     @Override
     public void addEmptyEntry(int weight, int quality, @Optional String name)
     {
-        addEntry(new MutableLootEntryEmpty(new QualifiedEntryIdentifier(qualifiedId, name), weight, quality, LootConditions.NONE));
+        addEntry(new MutableLootEntryEmpty(new QualifiedEntryIdentifier(qualifiedId, name), weight, quality, LootConditions.NONE, context.getErrorHandler()));
     }
 
     @Override
     public void addEmptyEntryJson(int weight, int quality, IData[] conditions, @Optional String name)
     {
-        addEntry(new MutableLootEntryEmpty(new QualifiedEntryIdentifier(qualifiedId, name), weight, quality, parseConditions(conditions)));
+        addEntry(new MutableLootEntryEmpty(new QualifiedEntryIdentifier(qualifiedId, name), weight, quality, parseConditions(conditions), context.getErrorHandler()));
     }
 
     @Override
     public void addEmptyEntryHelper(int weight, int quality, LootConditionRepresentation[] conditions, @Optional String name)
     {
-        addEntry(new MutableLootEntryEmpty(new QualifiedEntryIdentifier(qualifiedId, name), weight, quality, parseConditions(conditions)));
+        addEntry(new MutableLootEntryEmpty(new QualifiedEntryIdentifier(qualifiedId, name), weight, quality, parseConditions(conditions), context.getErrorHandler()));
     }
 
     private LootCondition[] parseConditions(IData[] conditions)
@@ -315,18 +315,18 @@ public class MutableLootPool implements LootPoolRepresentation
     private void addEntry(MutableLootEntry entry)
     {
         //Entry name autogeneration
-        if (entry.getName() == null)
+        if (entry.name() == null)
             entry.setName("loottweaker#" + nextEntryId++);
 
-        if (entries.putIfAbsent(entry.getName(), entry) != null)
+        if (entries.putIfAbsent(entry.name(), entry) != null)
         {
             context.getErrorHandler().error("Cannot add entry '%s' to %s. Entry names must be unique within their pool.",
-                entry.getName(), qualifiedId);
+                entry.name(), qualifiedId);
         }
         else
         {
             lastModification = new Modification(entry, "added");
-            CraftTweakerAPI.logInfo(String.format("Added entry '%s' to %s", entry.getName(), qualifiedId));
+            CraftTweakerAPI.logInfo(String.format("Added entry '%s' to %s", entry.name(), qualifiedId));
         }
     }
 

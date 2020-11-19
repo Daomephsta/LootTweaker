@@ -5,29 +5,34 @@ import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import leviathan143.loottweaker.common.ErrorHandler;
 import leviathan143.loottweaker.common.darkmagic.LootEntryAccessors;
 import leviathan143.loottweaker.common.lib.LootConditions;
 import leviathan143.loottweaker.common.lib.QualifiedEntryIdentifier;
 import leviathan143.loottweaker.common.lib.QualifiedPoolIdentifier;
+import leviathan143.loottweaker.common.zenscript.api.entry.LootEntryItemRepresentation;
+import leviathan143.loottweaker.common.zenscript.api.entry.LootEntryTableRepresentation;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
-public class GenericMutableLootEmpty implements MutableLootEntry
+public class GenericMutableLootEntry implements MutableLootEntry
 {
     private final LootEntry entry;
+    private final ErrorHandler errorHandler;
     private QualifiedEntryIdentifier qualifiedId;
 
-    GenericMutableLootEmpty(LootEntry entry, QualifiedPoolIdentifier poolId)
+    GenericMutableLootEntry(LootEntry entry, QualifiedPoolIdentifier poolId, ErrorHandler errorHandler)
     {
         this.qualifiedId = new QualifiedEntryIdentifier(poolId, entry.getEntryName());
         this.entry = entry;
+        this.errorHandler = errorHandler;
     }
 
     @Override
     public MutableLootEntry deepClone()
     {
         throw new UnsupportedOperationException(String.format("Could not deep copy entry '%s' as it is a non-vanilla loot entry type (%s)",
-            getName(), entry.getClass().getName()));
+            name(), entry.getClass().getName()));
     }
 
     @Override
@@ -37,7 +42,7 @@ public class GenericMutableLootEmpty implements MutableLootEntry
     }
 
     @Override
-    public int getWeight()
+    public int weight()
     {
         return LootEntryAccessors.getWeight(entry);
     }
@@ -49,7 +54,7 @@ public class GenericMutableLootEmpty implements MutableLootEntry
     }
 
     @Override
-    public int getQuality()
+    public int quality()
     {
         return LootEntryAccessors.getQuality(entry);
     }
@@ -85,7 +90,7 @@ public class GenericMutableLootEmpty implements MutableLootEntry
     }
 
     @Override
-    public String getName()
+    public String name()
     {
         return entry.getEntryName();
     }
@@ -101,5 +106,31 @@ public class GenericMutableLootEmpty implements MutableLootEntry
     public String describe()
     {
         return qualifiedId.toString();
+    }
+
+    @Override
+    public String toString()
+    {
+        return describe();
+    }
+
+    @Override
+    public LootEntryItemRepresentation asItemEntry()
+    {
+        errorHandler.error("%s is not an ItemEntry", describe());
+        return null;
+    }
+
+    @Override
+    public LootEntryTableRepresentation asTableEntry()
+    {
+        errorHandler.error("%s is not a TableEntry", describe());
+        return null;
+    }
+
+    @Override
+    public boolean isUnknownType()
+    {
+        return true;
     }
 }

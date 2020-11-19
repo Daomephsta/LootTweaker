@@ -1,0 +1,21 @@
+{
+	"pools":
+	[
+		{
+			"name": "qux",
+			"entries": 
+			[
+				{
+					"type": "loot_table",
+					"entryName": "qux_table_ref",
+					"name": "loottweaker:bar"
+				},
+				{
+					"type": "empty",
+					"entryName": "qux_empty"
+				}
+			],
+			"rolls": 1
+		}
+	]
+}

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
+import leviathan143.loottweaker.common.ErrorHandler;
 import leviathan143.loottweaker.common.darkmagic.LootEntryAccessors;
 import leviathan143.loottweaker.common.lib.QualifiedEntryIdentifier;
 import leviathan143.loottweaker.common.lib.QualifiedPoolIdentifier;
@@ -15,26 +16,29 @@ public abstract class AbstractMutableLootEntry implements MutableLootEntry
     private QualifiedEntryIdentifier qualifiedId;
     private int weight, quality;
     private List<LootCondition> conditions;
+    protected final ErrorHandler errorHandler;
 
-    protected AbstractMutableLootEntry(LootEntry entry, QualifiedPoolIdentifier poolId)
+    protected AbstractMutableLootEntry(LootEntry entry, QualifiedPoolIdentifier poolId, ErrorHandler errorHandler)
     {
         this.qualifiedId = new QualifiedEntryIdentifier(poolId, entry.getEntryName());
         this.weight = LootEntryAccessors.getWeight(entry);
         this.quality = LootEntryAccessors.getQuality(entry);
         this.conditions = Lists.newArrayList(LootEntryAccessors.getConditions(entry));
+        this.errorHandler = errorHandler;
     }
 
-    protected AbstractMutableLootEntry(QualifiedEntryIdentifier qualifiedId, int weight, int quality, LootCondition[] conditions)
+    protected AbstractMutableLootEntry(QualifiedEntryIdentifier qualifiedId, int weight, int quality, LootCondition[] conditions, ErrorHandler errorHandler)
     {
-        this(qualifiedId, weight, quality, Lists.newArrayList(conditions));
+        this(qualifiedId, weight, quality, Lists.newArrayList(conditions), errorHandler);
     }
 
-    protected AbstractMutableLootEntry(QualifiedEntryIdentifier qualifiedId, int weight, int quality, List<LootCondition> conditions)
+    protected AbstractMutableLootEntry(QualifiedEntryIdentifier qualifiedId, int weight, int quality, List<LootCondition> conditions, ErrorHandler errorHandler)
     {
         this.qualifiedId = qualifiedId;
         this.weight = weight;
         this.quality = quality;
         this.conditions = conditions;
+        this.errorHandler = errorHandler;
     }
 
     @Override
@@ -44,7 +48,7 @@ public abstract class AbstractMutableLootEntry implements MutableLootEntry
     public abstract LootEntry toImmutable();
 
     @Override
-    public int getWeight()
+    public int weight()
     {
         return weight;
     }
@@ -56,7 +60,7 @@ public abstract class AbstractMutableLootEntry implements MutableLootEntry
     }
 
     @Override
-    public int getQuality()
+    public int quality()
     {
         return quality;
     }
@@ -97,7 +101,7 @@ public abstract class AbstractMutableLootEntry implements MutableLootEntry
     }
 
     @Override
-    public String getName()
+    public String name()
     {
         return qualifiedId.getEntryName();
     }
@@ -112,5 +116,11 @@ public abstract class AbstractMutableLootEntry implements MutableLootEntry
     public String describe()
     {
         return qualifiedId.toString();
+    }
+
+    @Override
+    public String toString()
+    {
+        return describe();
     }
 }

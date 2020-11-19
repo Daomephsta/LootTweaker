@@ -28,7 +28,7 @@ public class ZenscriptTests
     @RegisterExtension
     public static final LootTweakerApiRefresh apiRefresh = new LootTweakerApiRefresh(() -> new LootTweakerContext(new CTLoggingErrorHandler()));
     public static final Iterable<ResourceLocation> TEST_LOOT_TABLES =
-        Stream.of("loottweaker:foo", "loottweaker:bar", "loottweaker:baz")
+        Stream.of("loottweaker:foo", "loottweaker:bar", "loottweaker:baz", "loottweaker:qux")
         .map(ResourceLocation::new)
         .collect(Collectors.toSet());
 
@@ -92,6 +92,13 @@ public class ZenscriptTests
     public void createLootTable()
     {
         ScriptRunner.run("scripts/create-loot-table.zs");
+        loadTestTables();
+    }
+
+    @SaddleTest(loadPhase = LoadPhase.INIT)
+    public void entryInspection()
+    {
+        ScriptRunner.run("scripts/entry-inspection.zs");
         loadTestTables();
     }
 

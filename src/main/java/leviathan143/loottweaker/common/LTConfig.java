@@ -30,6 +30,11 @@ public class LTConfig
         public boolean newTableMinecraftNamespace = true;
     }
 
+    @RequiresMcRestart
+    @Comment("Enables additional features to assist pack development")
+    @LangKey(LootTweaker.MODID + ".config.packdevMode")
+    public static boolean packdevMode = false;
+
     @Comment("Do not touch!")
     @LangKey(LootTweaker.MODID + ".config.lastCfgVersion")
     public static String lastCfgVersion = LootTweaker.VERSION;
