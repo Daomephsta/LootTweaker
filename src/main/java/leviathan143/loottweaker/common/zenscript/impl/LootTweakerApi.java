@@ -28,6 +28,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTable;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class LootTweakerApi implements LootSystemInterface
@@ -115,7 +116,7 @@ public class LootTweakerApi implements LootSystemInterface
         return table;
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onLootTableLoad(LootTableLoadEvent event)
     {
         event.setTable(processLootTable(event.getName(), event.getTable()));
