@@ -119,10 +119,10 @@ public class MiscMutableLootPoolTests
         MutableLootPool mutableFoo = new MutableLootPool(fooOriginal, bazId, context);
         Set<String> expectedNames = Sets.newHashSet("qux", "quuz", "corge");
         Set<String> unexpectedNames = Sets.newHashSet();
-        for (LootEntryRepresentation pool : mutableFoo.entriesIterator())
+        for (LootEntryRepresentation entry : mutableFoo.entriesIterator())
         {
-            if (!expectedNames.remove(pool.getName()))
-                unexpectedNames.add(pool.getName());
+            if (!expectedNames.remove(entry.name()))
+                unexpectedNames.add(entry.name());
         }
         assertThat(expectedNames.isEmpty() && unexpectedNames.isEmpty())
             .describedAs("Iteration test failed. Unexpected: %s Missing: %s",
@@ -142,7 +142,7 @@ public class MiscMutableLootPoolTests
         LootIterator<?, LootEntryRepresentation> entriesIterator = mutableFoo.entriesIterator();
         for (LootEntryRepresentation entry : entriesIterator)
         {
-            if (entry.getName().startsWith("q"))
+            if (entry.name().startsWith("q"))
                 entriesIterator.remove();
         }
         LootPool bazNew = mutableFoo.toImmutable();
@@ -164,8 +164,8 @@ public class MiscMutableLootPoolTests
         {
             for (LootEntryRepresentation entry : mutableFoo.entriesIterator())
             {
-                if (entry.getName().startsWith("q"))
-                    mutableFoo.removeEntry(entry.getName());
+                if (entry.name().startsWith("q"))
+                    mutableFoo.removeEntry(entry.name());
             }
         })
         .isInstanceOf(LootTweakerException.class)
