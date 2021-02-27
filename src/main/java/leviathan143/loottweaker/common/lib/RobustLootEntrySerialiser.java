@@ -27,7 +27,7 @@ public class RobustLootEntrySerialiser implements JsonSerializer<LootEntry>
     public JsonElement serialize(LootEntry value, Type type, JsonSerializationContext context)
     {
         if (value instanceof LootEntryItem || value instanceof LootEntryTable || value instanceof LootEntryEmpty)
-            return vanilla.serialize(value, type, context);
+            return vanilla.serialize(patch(value), type, context);
 
         JsonObject json = new JsonObject();
         if (value.getEntryName() != null)
@@ -41,5 +41,13 @@ public class RobustLootEntrySerialiser implements JsonSerializer<LootEntry>
         json.addProperty("_comment", "A best effort serialisation of a non-serialisable entry");
         json.addProperty("class", value.getClass().getName());
         return json;
+    }
+
+    /** Mutates an entry to avoid bugs in the vanilla serialiser **/
+    private LootEntry patch(LootEntry entry)
+    {
+        if (LootEntryAccessors.getConditionsUnsafe(entry) == null)
+            LootEntryAccessors.setConditions(entry, LootConditions.NONE);
+        return entry;
     }
 }

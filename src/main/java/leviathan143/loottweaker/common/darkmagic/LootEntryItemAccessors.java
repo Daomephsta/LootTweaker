@@ -2,6 +2,7 @@ package leviathan143.loottweaker.common.darkmagic;
 
 import java.lang.invoke.MethodHandle;
 
+import leviathan143.loottweaker.common.lib.LootFunctions;
 import net.minecraft.item.Item;
 import net.minecraft.world.storage.loot.LootEntryItem;
 import net.minecraft.world.storage.loot.functions.LootFunction;
@@ -36,6 +37,12 @@ public class LootEntryItemAccessors extends AbstractAccessors
     }
 
     public static LootFunction[] getFunctions(LootEntryItem entry)
+    {
+        LootFunction[] functions = getFunctionsUnsafe(entry);
+        return functions != null ? functions : LootFunctions.NONE;
+    }
+
+    public static LootFunction[] getFunctionsUnsafe(LootEntryItem entry)
     {
         try
         {

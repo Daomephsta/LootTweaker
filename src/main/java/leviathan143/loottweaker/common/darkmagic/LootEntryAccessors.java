@@ -2,6 +2,7 @@ package leviathan143.loottweaker.common.darkmagic;
 
 import java.lang.invoke.MethodHandle;
 
+import leviathan143.loottweaker.common.lib.LootConditions;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
@@ -81,6 +82,12 @@ public class LootEntryAccessors extends AbstractAccessors
     }
 
     public static LootCondition[] getConditions(LootEntry entry)
+    {
+        LootCondition[] conditions = getConditionsUnsafe(entry);
+        return conditions != null ? conditions : LootConditions.NONE;
+    }
+
+    public static LootCondition[] getConditionsUnsafe(LootEntry entry)
     {
         try
         {
