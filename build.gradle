@@ -2,13 +2,14 @@
 // For those who want the bleeding edge
 buildscript {
     repositories {
+    	maven { url = 'https://sizableshrimp.me/maven' }
         jcenter()
 		maven {
 			url 'https://plugins.gradle.org/m2/'
 		}
         maven {
             name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            url "https://maven.minecraftforge.net/"
         }
     }
     dependencies {
