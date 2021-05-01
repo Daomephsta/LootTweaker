@@ -9,6 +9,10 @@ import crafttweaker.mc1120.commands.CTChatCommand;
 import leviathan143.loottweaker.common.command.CommandLootTables;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.ZenLootTableTweakManager;
+import leviathan143.loottweaker.common.zenscript.factory.ZenLambdaLootCondition;
+import leviathan143.loottweaker.common.zenscript.factory.ZenLambdaLootFunction;
+import net.minecraft.world.storage.loot.conditions.LootConditionManager;
+import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -23,7 +27,7 @@ public class LootTweaker
 	public static final String MODNAME = "LootTweaker";
 	public static final String MODID = "loottweaker";
 	public static final String VERSION = "GRADLE:VERSION";
-	public static final String DEPENDENCIES = "required-after:crafttweaker; before:jeresources; required:forge@[14.23.5.2779,);";
+	public static final String DEPENDENCIES = "required-after:crafttweaker@[4.1.20,); before:jeresources; required:forge@[14.23.5.2779,);";
 	public static final LootTweakerContext CONTEXT = new LootTweakerContext(new CTLoggingErrorHandler());
 	private static final Logger LOGGER = LogManager.getLogger(MODNAME);
 
@@ -62,6 +66,8 @@ public class LootTweaker
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		LTConfig.onLoad();
+		LootFunctionManager.registerFunction(ZenLambdaLootFunction.SERIALISER);
+		LootConditionManager.registerCondition(ZenLambdaLootCondition.SERIALISER);
 	}
 
 	@Mod.EventHandler

@@ -94,4 +94,9 @@ public class LootFunctionFactoryImpl
     {
         return loggingParser.parse(json, LootFunction.class).map(ZenLootFunctionWrapper::new).orElse(ZenLootFunctionWrapper.INVALID);
     }
+
+    public ZenLootFunctionWrapper zenscript(ZenLambdaLootFunction.Delegate delegate)
+    {
+        return new ZenLootFunctionWrapper(new ZenLambdaLootFunction(delegate, LootConditions.NONE));
+    }
 }

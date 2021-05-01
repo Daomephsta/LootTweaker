@@ -43,4 +43,9 @@ public class LootConditionFactoryImpl
 	{
 	    return loggingParser.parse(json, LootCondition.class).map(ZenLootConditionWrapper::new).orElse(ZenLootConditionWrapper.INVALID);
 	}
+
+	public ZenLootConditionWrapper zenscript(ZenLambdaLootCondition.Delegate delegate)
+	{
+	    return new ZenLootConditionWrapper(new ZenLambdaLootCondition(delegate));
+	}
 }

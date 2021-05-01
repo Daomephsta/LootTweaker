@@ -66,4 +66,10 @@ public class LootFunctionFactory
     {
         return IMPLEMENTATION.parse(json);
     }
+
+    @ZenMethod
+    public static ZenLootFunctionWrapper zenscript(ZenLambdaLootFunction.Delegate delegate)
+    {
+        return IMPLEMENTATION.zenscript(delegate);
+    }
 }

@@ -42,4 +42,10 @@ public class LootConditionFactory
     {
         return IMPLEMENTATION.parse(json);
     }
+
+    @ZenMethod
+    public static ZenLootConditionWrapper zenscript(ZenLambdaLootCondition.Delegate delegate)
+    {
+        return IMPLEMENTATION.zenscript(delegate);
+    }
 }
