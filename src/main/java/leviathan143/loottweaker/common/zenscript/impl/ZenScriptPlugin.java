@@ -15,7 +15,7 @@ public class ZenScriptPlugin
     {
         MinecraftForge.EVENT_BUS.register(API_INSTANCE);
         IZenSymbol apiSymbol = CraftTweakerAPI.getJavaStaticFieldSymbol(ZenScriptPlugin.class, "API_INSTANCE");
-        CraftTweakerAPI.registerGlobalSymbol("lootTweakerApi", apiSymbol);
+        CraftTweakerAPI.registerGlobalSymbol("loot", apiSymbol);
     }
 
     public static void onServerStarting(FMLServerStartingEvent event)
