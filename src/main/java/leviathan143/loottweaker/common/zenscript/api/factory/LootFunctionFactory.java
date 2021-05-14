@@ -34,7 +34,4 @@ public interface LootFunctionFactory
 
     @ZenMethod
     public LootFunctionRepresentation smelt();
-
-    @ZenMethod
-    public LootFunctionRepresentation parse(IData json);
 }

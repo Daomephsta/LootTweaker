@@ -8,7 +8,7 @@ import stanhebben.zenscript.symbols.IZenSymbol;
 
 public class ZenScriptPlugin
 {
-    private static final LootTweakerContext CONTEXT = new LootTweakerContext(new CTLoggingErrorHandler());
+    static final LootTweakerContext CONTEXT = new LootTweakerContext(new CTLoggingErrorHandler());
     public static final LootTweakerApi API_INSTANCE = new LootTweakerApi(CONTEXT);
 
     public static void setup()

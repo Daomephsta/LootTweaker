@@ -1,7 +1,6 @@
 package leviathan143.loottweaker.common.zenscript.api.factory;
 
 import crafttweaker.annotations.ZenRegister;
-import crafttweaker.api.data.IData;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.zenscript.api.entry.LootConditionRepresentation;
 import stanhebben.zenscript.annotations.ZenClass;
@@ -22,7 +21,4 @@ public interface LootConditionFactory
 
     @ZenMethod
     public LootConditionRepresentation killedByNonPlayer();
-
-    @ZenMethod
-    public LootConditionRepresentation parse(IData json);
 }

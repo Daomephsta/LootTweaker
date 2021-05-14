@@ -5,7 +5,6 @@ import java.util.Iterator;
 import com.google.common.base.Supplier;
 
 import crafttweaker.annotations.ZenRegister;
-import crafttweaker.api.data.IData;
 import crafttweaker.api.item.IItemStack;
 import leviathan143.loottweaker.common.ErrorHandler;
 import leviathan143.loottweaker.common.LootTweaker;
@@ -33,10 +32,7 @@ public interface LootPoolRepresentation extends Describable
     public void addItemEntry(IItemStack stack, int weight, int quality, @Optional String name);
 
     @ZenMethod
-    public void addItemEntryJson(IItemStack stack, int weight, int quality, IData[] functions, IData[] conditions, @Optional String name);
-
-    @ZenMethod
-    public void addItemEntryHelper(IItemStack stack, int weight, int quality, LootFunctionRepresentation[] functions,
+    public void addItemEntry(IItemStack stack, int weight, int quality, LootFunctionRepresentation[] functions,
         LootConditionRepresentation[] conditions, @Optional String name);
 
     @ZenMethod
@@ -49,10 +45,7 @@ public interface LootPoolRepresentation extends Describable
     public void addLootTableEntry(String delegateTableId, int weight, int quality, @Optional String name);
 
     @ZenMethod
-    public void addLootTableEntryJson(String delegateTableId, int weight, int quality, IData[] conditions, @Optional String name);
-
-    @ZenMethod
-    public void addLootTableEntryHelper(String delegateTableId, int weight, int quality, LootConditionRepresentation[] conditions, @Optional String name);
+    public void addLootTableEntry(String delegateTableId, int weight, int quality, LootConditionRepresentation[] conditions, @Optional String name);
 
     @ZenMethod
     public void addEmptyEntry(@Optional String name);
@@ -64,10 +57,7 @@ public interface LootPoolRepresentation extends Describable
     public void addEmptyEntry(int weight, int quality, @Optional String name);
 
     @ZenMethod
-    public void addEmptyEntryJson(int weight, int quality, IData[] conditions, @Optional String name);
-
-    @ZenMethod
-    public void addEmptyEntryHelper(int weight, int quality, LootConditionRepresentation[] conditions, @Optional String name);
+    public void addEmptyEntry(int weight, int quality, LootConditionRepresentation[] conditions, @Optional String name);
 
     @ZenMethod
     public void removeEntry(String entryId);
@@ -76,10 +66,7 @@ public interface LootPoolRepresentation extends Describable
     public void removeAllEntries();
 
     @ZenMethod
-    public void addConditionsJson(IData[] conditions);
-
-    @ZenMethod
-    public void addConditionsHelper(LootConditionRepresentation[] conditions);
+    public void addConditions(LootConditionRepresentation[] conditions);
 
     @ZenMethod
     public void removeAllConditions();

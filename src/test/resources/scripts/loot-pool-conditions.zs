@@ -7,7 +7,7 @@ val conditions = lootTweakerApi.conditions;
 lootTweakerApi.tweakLootTable("loottweaker:bar", function(bar)
 {
     val baz = bar.getPool("baz");
-    baz.addConditionsHelper([conditions.killedByPlayer()]);
+    baz.addConditions([conditions.killedByPlayer()]);
     baz.removeAllConditions();
-    baz.addConditionsJson([{"condition": "minecraft:killed_by_player"}]);
+    baz.addConditions([{"condition": "minecraft:killed_by_player"}]);
 });

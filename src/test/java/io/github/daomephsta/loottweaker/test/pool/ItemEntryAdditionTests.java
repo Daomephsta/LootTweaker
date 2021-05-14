@@ -10,9 +10,7 @@ import static io.github.daomephsta.loottweaker.test.TestUtils.loadTable;
 import static io.github.daomephsta.loottweaker.test.assertion.LootTweakerAssertions.assertThat;
 
 import crafttweaker.api.data.DataMap;
-import crafttweaker.api.data.IData;
 import io.github.daomephsta.loottweaker.test.TestUtils;
-import io.github.daomephsta.loottweaker.test.util.DataMapBuilder;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
 import leviathan143.loottweaker.common.zenscript.api.entry.LootConditionRepresentation;
@@ -100,32 +98,12 @@ public class ItemEntryAdditionTests
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootPool barOriginal = loadTable(fooId).getPool("bar");
         MutableLootPool mutableBar = new MutableLootPool(barOriginal, fooId, context);
-        mutableBar.addItemEntryHelper(iitemstack(Items.BAKED_POTATO), 2, 3, new LootFunctionRepresentation[0],
+        mutableBar.addItemEntry(iitemstack(Items.BAKED_POTATO), 2, 3, new LootFunctionRepresentation[0],
             new LootConditionRepresentation[] { factory.killedByPlayer() }, "qux");
 
         LootPool barNew = mutableBar.toImmutable();
         assertThat(barNew).extractEntry("qux").hasWeight(2).hasQuality(3).hasMatchingCondition(condition -> condition instanceof KilledByPlayer && !isInverted((KilledByPlayer) condition), "KilledByPlayer()").asItemEntry()
             .spawnsItem(Items.BAKED_POTATO).hasNoLootFunctions();
-    }
-
-    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void addItemEntryJson()
-    {
-        LootTweakerContext context = TestUtils.createContext();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
-        LootPool barOriginal = loadTable(fooId).getPool("bar");
-        MutableLootPool mutableBar = new MutableLootPool(barOriginal, fooId, context);
-        mutableBar.addItemEntryJson(iitemstack(Items.BAKED_POTATO), 2, 3, new IData[0], new IData[] { new DataMapBuilder().putString("condition", "minecraft:killed_by_player").build() }, "qux");
-
-        LootPool barNew = mutableBar.toImmutable();
-        assertThat(barNew).extractEntry("qux")
-            .hasWeight(2)
-            .hasQuality(3)
-            .hasMatchingCondition(condition -> condition instanceof KilledByPlayer
-                && !isInverted((KilledByPlayer) condition), "KilledByPlayer()")
-            .asItemEntry()
-            .spawnsItem(Items.BAKED_POTATO)
-            .hasNoLootFunctions();
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
@@ -164,7 +142,7 @@ public class ItemEntryAdditionTests
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         LootPool barOriginal = loadTable(fooId).getPool("bar");
         MutableLootPool mutableBar = new MutableLootPool(barOriginal, fooId, context);
-        mutableBar.addItemEntryHelper(iitemstack(Items.ARROW), 2, 1, new LootFunctionRepresentation[] { factory.setCount(3, 3) },
+        mutableBar.addItemEntry(iitemstack(Items.ARROW), 2, 1, new LootFunctionRepresentation[] { factory.setCount(3, 3) },
             new LootConditionRepresentation[0], "qux");
 
         int expectedCount = 3;

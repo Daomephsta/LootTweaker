@@ -6,9 +6,6 @@ import com.google.common.collect.Lists;
 
 import crafttweaker.api.data.IData;
 import crafttweaker.mc1120.data.NBTConverter;
-import leviathan143.loottweaker.common.ErrorHandler;
-import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
-import leviathan143.loottweaker.common.lib.DataParser;
 import leviathan143.loottweaker.common.lib.LootConditions;
 import leviathan143.loottweaker.common.zenscript.api.entry.LootFunctionRepresentation;
 import leviathan143.loottweaker.common.zenscript.api.factory.LootFunctionFactory;
@@ -23,17 +20,10 @@ import net.minecraft.world.storage.loot.functions.*;
 public class VanillaLootFunctionFactory implements LootFunctionFactory
 {
     private final LootTweakerContext context;
-    private final DataParser loggingParser;
 
     public VanillaLootFunctionFactory(LootTweakerContext context)
     {
         this.context = context;
-        this.loggingParser = createDataParser(context.getErrorHandler());
-    }
-
-    private DataParser createDataParser(ErrorHandler errorHandler)
-    {
-        return new DataParser(LootTableManagerAccessors.getGsonInstance(), e -> errorHandler.error(e.getMessage()));
     }
 
     @Override
@@ -104,13 +94,5 @@ public class VanillaLootFunctionFactory implements LootFunctionFactory
     public LootFunctionRepresentation smelt()
     {
         return new LootFunctionWrapper(new Smelt(LootConditions.NONE));
-    }
-
-    @Override
-    public LootFunctionRepresentation parse(IData json)
-    {
-        return loggingParser.parse(json, LootFunction.class)
-            .map(LootFunctionWrapper::new)
-            .orElse(LootFunctionWrapper.INVALID);
     }
 }

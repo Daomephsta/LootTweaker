@@ -4,9 +4,7 @@ import static io.github.daomephsta.loottweaker.test.TestLootConditionAccessors.i
 import static io.github.daomephsta.loottweaker.test.TestUtils.loadTable;
 import static io.github.daomephsta.loottweaker.test.assertion.LootTweakerAssertions.assertThat;
 
-import crafttweaker.api.data.IData;
 import io.github.daomephsta.loottweaker.test.TestUtils;
-import io.github.daomephsta.loottweaker.test.util.DataMapBuilder;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
 import leviathan143.loottweaker.common.zenscript.api.entry.LootConditionRepresentation;
@@ -21,7 +19,7 @@ import net.minecraft.world.storage.loot.conditions.KilledByPlayer;
 public class PoolConditionsTests
 {
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void addConditionsHelper()
+    public void addConditions()
     {
         LootTweakerContext context = TestUtils.createContext();
         LootConditionFactory conditions = context.lootSystem().getLootConditionFactory();
@@ -29,23 +27,7 @@ public class PoolConditionsTests
         LootTable foo = loadTable(fooId);
         LootPool barOriginal = foo.getPool("bar");
         MutableLootPool mutableBar = new MutableLootPool(barOriginal, fooId, context);
-        mutableBar.addConditionsHelper(new LootConditionRepresentation[] {conditions.killedByPlayer()});
-
-        LootPool barNew = mutableBar.toImmutable();
-        assertThat(barNew).hasMatchingCondition(condition ->
-            condition instanceof KilledByPlayer && !isInverted((KilledByPlayer) condition),
-        "KilledByPlayer()");
-    }
-
-    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void addConditionsJson()
-    {
-        LootTweakerContext context = TestUtils.createContext();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
-        LootTable foo = loadTable(fooId);
-        LootPool barOriginal = foo.getPool("bar");
-        MutableLootPool mutableBar = new MutableLootPool(barOriginal, fooId, context);
-        mutableBar.addConditionsJson(new IData[] { new DataMapBuilder().putString("condition", "minecraft:killed_by_player").build() });
+        mutableBar.addConditions(new LootConditionRepresentation[] {conditions.killedByPlayer()});
 
         LootPool barNew = mutableBar.toImmutable();
         assertThat(barNew).hasMatchingCondition(condition ->

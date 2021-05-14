@@ -6,4 +6,3 @@ lootTweakerApi.functions.setDamage(0.2, 0.8);
 lootTweakerApi.functions.setMetadata(23, 45);
 lootTweakerApi.functions.setNBT({"foo": "bar"});
 lootTweakerApi.functions.smelt();
-lootTweakerApi.functions.parse({"function": "minecraft:furnace_smelt"});

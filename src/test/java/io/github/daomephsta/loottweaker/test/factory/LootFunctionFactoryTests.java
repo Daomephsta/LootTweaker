@@ -166,27 +166,4 @@ public class LootFunctionFactoryTests
             .extracting(LootFunctionRepresentation::toImmutable)
             .isInstanceOf(Smelt.class);
     }
-
-    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void parse()
-    {
-        Map<String, IData> data = new HashMap<>();
-        data.put("function", new DataString("minecraft:furnace_smelt"));
-        IData json = new DataMap(data, false);
-        assertThat(factory.parse(json))
-            .is(VALID_FUNCTION)
-            .extracting(LootFunctionRepresentation::toImmutable)
-            .isInstanceOf(Smelt.class);
-    }
-
-    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void parseMalformed()
-    {
-        Map<String, IData> data = new HashMap<>();
-        data.put("function", new DataString("garBaGe"));
-        IData json = new DataMap(data, false);
-        assertThatThrownBy(() -> factory.parse(json))
-            .isInstanceOf(LootTweakerException.class)
-            .hasMessage("Unknown function 'minecraft:garbage'");
-    }
 }
