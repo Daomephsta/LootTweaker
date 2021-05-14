@@ -1,15 +1,23 @@
 package io.github.daomephsta.loottweaker.test.factory;
 
-import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.*;
+import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getBonusRange;
+import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getCountRange;
+import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getDamageRange;
+import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getEnchantments;
+import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getLevelRange;
+import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getLimit;
+import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getMetaRange;
+import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.isTreasure;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.InstanceOfAssertFactories.type;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.api.Condition;
+
+import com.google.common.collect.ImmutableMap;
 
 import crafttweaker.api.data.DataMap;
 import crafttweaker.api.data.DataString;
@@ -136,8 +144,7 @@ public class LootFunctionFactoryTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void setNBT()
     {
-        Map<String, IData> data = new HashMap<>();
-        data.put("foo", new DataString("bar"));
+        Map<String, IData> data = ImmutableMap.of("foo", new DataString("bar"));
         IData nbtData = new DataMap(data, false);
 
         NBTTagCompound expectedTag = new NBTTagCompound();

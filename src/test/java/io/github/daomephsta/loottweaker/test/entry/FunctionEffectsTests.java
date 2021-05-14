@@ -9,11 +9,14 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 
+import com.google.common.collect.ImmutableMap;
+
+import crafttweaker.api.data.DataMap;
+import crafttweaker.api.data.DataString;
 import crafttweaker.api.data.IData;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import io.github.daomephsta.loottweaker.test.ThrowingErrorHandler;
 import io.github.daomephsta.loottweaker.test.ThrowingErrorHandler.LootTweakerException;
-import io.github.daomephsta.loottweaker.test.util.DataMapBuilder;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
 import leviathan143.loottweaker.common.LTConfig;
@@ -154,10 +157,10 @@ public class FunctionEffectsTests
         FunctionEffects effects = new FunctionEffects(Items.DYE).initialise(() -> "test",
             Arrays.asList(setNbt(nbtA), setNbt(nbtB)), new ThrowingErrorHandler());
 
-        IData expected = new DataMapBuilder()
-            .putString("foo", "bar")
-            .putString("baz", "qux")
-            .build();
+        IData expected = new DataMap(ImmutableMap.<String, IData>builder()
+            .put("foo", new DataString("bar"))
+            .put("baz", new DataString("qux"))
+            .build(), true);
         IData actual = effects.getNbt();
         assertThat(actual.equals(expected))
             .as("\nExpecting:\n <%s>\nto be equal to:\n <%s>\nbut was not.", actual, expected)
