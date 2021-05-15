@@ -1,5 +1,7 @@
 package leviathan143.loottweaker.common.zenscript.factory;
 
+import java.util.Map;
+
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.data.IData;
 import leviathan143.loottweaker.common.LootTweaker;
@@ -62,7 +64,7 @@ public class LootFunctionFactory
     }
 
     @ZenMethod
-    public static ZenLootFunctionWrapper parse(IData json)
+    public static ZenLootFunctionWrapper parse(Map<String, Object> json)
     {
         return IMPLEMENTATION.parse(json);
     }

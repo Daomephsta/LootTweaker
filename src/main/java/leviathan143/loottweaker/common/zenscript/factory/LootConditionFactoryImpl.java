@@ -1,22 +1,21 @@
 package leviathan143.loottweaker.common.zenscript.factory;
 
-import crafttweaker.api.data.IData;
-import leviathan143.loottweaker.common.ErrorHandler;
-import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
-import leviathan143.loottweaker.common.lib.DataParser;
+import java.util.Map;
+
+import leviathan143.loottweaker.common.zenscript.AnyDictConversions;
+import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootConditionWrapper;
 import net.minecraft.world.storage.loot.conditions.KilledByPlayer;
-import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.conditions.RandomChance;
 import net.minecraft.world.storage.loot.conditions.RandomChanceWithLooting;
 
 public class LootConditionFactoryImpl
 {
-    private final DataParser loggingParser;
+	private final AnyDictConversions.Impl anyDictConversions;
 
-	public LootConditionFactoryImpl(ErrorHandler errorHandler)
+    public LootConditionFactoryImpl(LootTweakerContext context)
     {
-        this.loggingParser = new DataParser(LootTableManagerAccessors.getGsonInstance(), e -> errorHandler.error(e.getMessage()));
+        this.anyDictConversions = new AnyDictConversions.Impl(context);
     }
 
     public ZenLootConditionWrapper randomChance(float chance)
@@ -39,9 +38,9 @@ public class LootConditionFactoryImpl
 	    return new ZenLootConditionWrapper(new KilledByPlayer(true));
 	}
 
-	public ZenLootConditionWrapper parse(IData json)
+	public ZenLootConditionWrapper parse(Map<String, Object> json)
 	{
-	    return loggingParser.parse(json, LootCondition.class).map(ZenLootConditionWrapper::new).orElse(ZenLootConditionWrapper.INVALID);
+	    return anyDictConversions.asLootCondition(json);
 	}
 
 	public ZenLootConditionWrapper zenscript(ZenLambdaLootCondition.Delegate delegate)

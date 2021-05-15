@@ -1,15 +1,16 @@
 package leviathan143.loottweaker.common.zenscript.factory;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.Lists;
 
 import crafttweaker.api.data.IData;
 import crafttweaker.mc1120.data.NBTConverter;
 import leviathan143.loottweaker.common.ErrorHandler;
-import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
-import leviathan143.loottweaker.common.lib.DataParser;
 import leviathan143.loottweaker.common.lib.LootConditions;
+import leviathan143.loottweaker.common.zenscript.AnyDictConversions;
+import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootFunctionWrapper;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.nbt.NBTBase;
@@ -20,14 +21,14 @@ import net.minecraft.world.storage.loot.functions.*;
 public class LootFunctionFactoryImpl
 {
     private final ErrorHandler errorHandler;
-    private final DataParser loggingParser;
+    private final AnyDictConversions.Impl anyDictConversions;
 
-    public LootFunctionFactoryImpl(ErrorHandler errorHandler)
+    public LootFunctionFactoryImpl(LootTweakerContext context)
     {
-        this.errorHandler = errorHandler;
-        this.loggingParser = new DataParser(LootTableManagerAccessors.getGsonInstance(), e -> errorHandler.error(e.getMessage()));
+        this.errorHandler = context.getErrorHandler();
+        this.anyDictConversions = new AnyDictConversions.Impl(context);
     }
-
+    
     public ZenLootFunctionWrapper enchantRandomly(String[] enchantIDList)
     {
         List<Enchantment> enchantments = Lists.newArrayListWithCapacity(enchantIDList.length);
@@ -90,9 +91,9 @@ public class LootFunctionFactoryImpl
         return new ZenLootFunctionWrapper(new Smelt(LootConditions.NONE));
     }
 
-    public ZenLootFunctionWrapper parse(IData json)
+    public ZenLootFunctionWrapper parse(Map<String, Object> json)
     {
-        return loggingParser.parse(json, LootFunction.class).map(ZenLootFunctionWrapper::new).orElse(ZenLootFunctionWrapper.INVALID);
+        return anyDictConversions.asLootFunction(json);
     }
 
     public ZenLootFunctionWrapper zenscript(ZenLambdaLootFunction.Delegate delegate)

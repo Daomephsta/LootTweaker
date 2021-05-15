@@ -28,12 +28,12 @@ public class LootTweakerContext
 
     public LootConditionFactoryImpl createLootConditionFactory()
     {
-        return new LootConditionFactoryImpl(errorHandler);
+        return new LootConditionFactoryImpl(this);
     }
 
     public LootFunctionFactoryImpl createLootFunctionFactory()
     {
-        return new LootFunctionFactoryImpl(errorHandler);
+        return new LootFunctionFactoryImpl(this);
     }
 
     public ZenLootTableWrapper wrapLootTable(ResourceLocation id)

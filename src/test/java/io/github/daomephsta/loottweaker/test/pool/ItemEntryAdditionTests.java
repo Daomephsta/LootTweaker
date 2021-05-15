@@ -15,7 +15,6 @@ import crafttweaker.api.data.DataMap;
 import crafttweaker.api.data.DataString;
 import crafttweaker.api.data.IData;
 import io.github.daomephsta.loottweaker.test.TestUtils;
-import io.github.daomephsta.loottweaker.test.util.DataMapBuilder;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
 import leviathan143.loottweaker.common.zenscript.LootTableTweakManager;
@@ -88,39 +87,10 @@ public class ItemEntryAdditionTests
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
-        barTweaks.addItemEntryHelper(iitemstack(Items.BAKED_POTATO), 2, 3,
+        barTweaks.addItemEntry(iitemstack(Items.BAKED_POTATO), 2, 3,
             new ZenLootFunctionWrapper[0],
             new ZenLootConditionWrapper[] {LootConditionFactory.killedByPlayer()},
             "qux");
-
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
-        assertThat(foo.getPool("bar"))
-            .extractEntry("qux")
-            .hasWeight(2)
-            .hasQuality(3)
-            .hasMatchingCondition(condition ->
-                condition instanceof KilledByPlayer && !isInverted((KilledByPlayer) condition),
-            "KilledByPlayer()")
-            .asItemEntry()
-            .spawnsItem(Items.BAKED_POTATO)
-            .hasNoLootFunctions();
-    }
-
-    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void addItemEntryJson()
-    {
-        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
-        ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
-        ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
-        barTweaks.addItemEntryJson(iitemstack(Items.BAKED_POTATO), 2, 3,
-            new IData[0],
-            new IData[]
-            {
-                new DataMapBuilder()
-                    .putString("condition", "minecraft:killed_by_player")
-                    .build()
-            }, "qux");
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
         assertThat(foo.getPool("bar"))
@@ -170,7 +140,7 @@ public class ItemEntryAdditionTests
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
-        barTweaks.addItemEntryHelper(iitemstack(Items.ARROW), 2, 1,
+        barTweaks.addItemEntry(iitemstack(Items.ARROW), 2, 1,
             new ZenLootFunctionWrapper[] {LootFunctionFactory.setCount(3, 3)},
             new ZenLootConditionWrapper[0],
             "qux");
@@ -234,7 +204,7 @@ public class ItemEntryAdditionTests
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         //set empty tag to work around weird Mojang code where items without NBT are undamageable
-        barTweaks.addItemEntryHelper(iitemstack(Items.BOW), 2, 1,
+        barTweaks.addItemEntry(iitemstack(Items.BOW), 2, 1,
             new ZenLootFunctionWrapper[] {LootFunctionFactory.setDamage(0.5F, 0.5F)},
             new ZenLootConditionWrapper[0],
             "qux");
@@ -294,7 +264,7 @@ public class ItemEntryAdditionTests
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
-        barTweaks.addItemEntryHelper(iitemstack(Items.DYE), 2, 1,
+        barTweaks.addItemEntry(iitemstack(Items.DYE), 2, 1,
             new ZenLootFunctionWrapper[] {LootFunctionFactory.setMetadata(8, 8)},
             new ZenLootConditionWrapper[0],
             "qux");
@@ -360,7 +330,7 @@ public class ItemEntryAdditionTests
             .put("Name", new DataString("Super Bread")).build(), true);
         IData nbtData = new DataMap(ImmutableMap.<String, IData>builder()
             .put("display", displayData).build(), true);
-        barTweaks.addItemEntryHelper(iitemstack(Items.BREAD), 2, 1,
+        barTweaks.addItemEntry(iitemstack(Items.BREAD), 2, 1,
             new ZenLootFunctionWrapper[] {LootFunctionFactory.setNBT(nbtData)},
             new ZenLootConditionWrapper[0],
             "qux");

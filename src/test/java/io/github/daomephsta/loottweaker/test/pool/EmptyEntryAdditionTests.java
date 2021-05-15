@@ -4,9 +4,7 @@ import static io.github.daomephsta.loottweaker.test.TestLootConditionAccessors.i
 import static io.github.daomephsta.loottweaker.test.TestUtils.loadTable;
 import static io.github.daomephsta.loottweaker.test.assertion.LootTweakerAssertions.assertThat;
 
-import crafttweaker.api.data.IData;
 import io.github.daomephsta.loottweaker.test.TestUtils;
-import io.github.daomephsta.loottweaker.test.util.DataMapBuilder;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
 import leviathan143.loottweaker.common.zenscript.LootTableTweakManager;
@@ -66,35 +64,8 @@ public class EmptyEntryAdditionTests
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
-        barTweaks.addEmptyEntryHelper(2, 3,
+        barTweaks.addEmptyEntry(2, 3,
             new ZenLootConditionWrapper[] {LootConditionFactory.killedByPlayer()},
-            "corge");
-
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
-        assertThat(foo.getPool("bar"))
-            .extractEntry("corge")
-            .hasWeight(2)
-            .hasQuality(3)
-            .hasMatchingCondition(condition ->
-                condition instanceof KilledByPlayer && !isInverted((KilledByPlayer) condition),
-            "KilledByPlayer()")
-            .isEmptyEntry();
-    }
-
-    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void addEmptyEntryJson()
-    {
-        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
-        ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
-        ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
-        barTweaks.addEmptyEntryJson(2, 3,
-            new IData[]
-            {
-                new DataMapBuilder()
-                    .putString("condition", "minecraft:killed_by_player")
-                    .build()
-            },
             "corge");
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));

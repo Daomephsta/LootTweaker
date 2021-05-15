@@ -1,5 +1,12 @@
 package io.github.daomephsta.loottweaker.test.factory;
-import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.*;
+import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getBonusRange;
+import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getCountRange;
+import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getDamageRange;
+import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getEnchantments;
+import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getLevelRange;
+import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getLimit;
+import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getMetaRange;
+import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.isTreasure;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.InstanceOfAssertFactories.type;
@@ -9,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.api.Condition;
+
+import com.google.common.collect.ImmutableMap;
 
 import crafttweaker.api.data.DataMap;
 import crafttweaker.api.data.DataString;
@@ -174,9 +183,7 @@ public class LootFunctionFactoryTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void parse()
     {
-        Map<String, IData> data = new HashMap<>();
-        data.put("function", new DataString("minecraft:furnace_smelt"));
-        IData json = new DataMap(data , false);
+        Map<String, Object> json = ImmutableMap.of("function", "minecraft:furnace_smelt");
         assertThat(factory.parse(json))
             .is(VALID_FUNCTION)
             .extracting(ZenLootFunctionWrapper::unwrap)
@@ -186,9 +193,7 @@ public class LootFunctionFactoryTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void parseMalformed()
     {
-        Map<String, IData> data = new HashMap<>();
-        data.put("function", new DataString("garBaGe"));
-        IData json = new DataMap(data , false);
+        Map<String, Object> json = ImmutableMap.of("function", "garBaGe");
         assertThatThrownBy(() -> factory.parse(json))
             .isInstanceOf(LootTweakerException.class)
             .hasMessage("Unknown function 'minecraft:garbage'");
