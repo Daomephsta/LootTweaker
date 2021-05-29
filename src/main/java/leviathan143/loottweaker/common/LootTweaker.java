@@ -17,9 +17,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkCheckHandler;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 @Mod(modid = LootTweaker.MODID, name = LootTweaker.MODNAME, version = LootTweaker.VERSION, dependencies = LootTweaker.DEPENDENCIES)
 public class LootTweaker
@@ -59,6 +59,8 @@ public class LootTweaker
 	            remoteSide.name().toLowerCase(), remoteLTVersion, VERSION);
             return false;
 	    }
+        
+	    
         return true;
 	}
 

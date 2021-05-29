@@ -28,4 +28,6 @@ loottweaker.messages.info.locatingLootTables=All existing loot tables are being 
 loottweaker.config.warnings.category=Warnings
 loottweaker.config.warnings.deprecation=Deprecation
 loottweaker.config.warnings.newTableMinecraftNamespace=newTable() Minecraft Namespace
+loottweaker.config.workarounds.category=Workarounds
+loottweaker.config.workarounds.forceInitClasses=Classes to force initialise
 loottweaker.config.lastCfgVersion=Do not touch!
