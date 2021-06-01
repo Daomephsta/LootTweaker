@@ -1,4 +1,5 @@
 import loottweaker.LootTweaker;
+import loottweaker.vanilla.loot.Conditions;
 import loottweaker.vanilla.loot.Functions;
 
 Functions.enchantRandomly(["minecraft:thorns"]);
@@ -10,6 +11,7 @@ Functions.setMetadata(23, 45);
 Functions.setNBT({"foo": "bar"});
 Functions.smelt();
 Functions.parse({"function": "minecraft:furnace_smelt"});
+Functions.smelt().addConditions([Conditions.killedByPlayer()]);
 
 
 val foo = LootTweaker.getTable("loottweaker:foo");

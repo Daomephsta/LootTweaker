@@ -28,11 +28,15 @@ import io.github.daomephsta.loottweaker.test.TestUtils;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
 import leviathan143.loottweaker.common.zenscript.factory.LootFunctionFactoryImpl;
+import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootConditionWrapper;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootFunctionWrapper;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.RandomValueRange;
+import net.minecraft.world.storage.loot.conditions.KilledByPlayer;
+import net.minecraft.world.storage.loot.conditions.LootCondition;
+import net.minecraft.world.storage.loot.conditions.RandomChance;
 import net.minecraft.world.storage.loot.functions.*;
 
 public class LootFunctionFactoryTests
@@ -197,5 +201,18 @@ public class LootFunctionFactoryTests
         assertThatThrownBy(() -> factory.parse(json))
             .isInstanceOf(LootTweakerException.class)
             .hasMessage("Unknown function 'minecraft:garbage'");
+    }
+    
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    public void addConditions()
+    {
+        ZenLootFunctionWrapper function = new ZenLootFunctionWrapper(
+            new Smelt(new LootCondition[] {new RandomChance(0.5F)}));
+        ZenLootConditionWrapper condition = new ZenLootConditionWrapper(new KilledByPlayer(false));
+        function.addConditions(new ZenLootConditionWrapper[] {condition});
+        assertThat(function.unwrap().getConditions())
+            .hasSize(2)
+            .hasAtLeastOneElementOfType(RandomChance.class)
+            .hasAtLeastOneElementOfType(KilledByPlayer.class);
     }
 }

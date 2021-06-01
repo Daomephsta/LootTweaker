@@ -9,7 +9,7 @@ import leviathan143.loottweaker.common.LootTweaker;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.storage.loot.LootContext;
 import stanhebben.zenscript.annotations.ZenClass;
-import stanhebben.zenscript.annotations.ZenGetter;
+import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenRegister
 @ZenClass(LootTweaker.MODID + ".LootContext")
@@ -22,37 +22,37 @@ public class ZenLootContext
         this.delegate = delegate;
     }
 
-    @ZenGetter
+    @ZenMethod
     public IEntity lootedEntity()
     {
         return CraftTweakerMC.getIEntity(delegate.getLootedEntity());
     }
 
-    @ZenGetter
+    @ZenMethod
     public IPlayer killerPlayer()
     {
         return CraftTweakerMC.getIPlayer((EntityPlayer) delegate.getKillerPlayer());
     }
 
-    @ZenGetter
+    @ZenMethod
     public IEntity killer()
     {
         return CraftTweakerMC.getIEntity(delegate.getKiller());
     }
 
-    @ZenGetter
+    @ZenMethod
     public float luck()
     {
         return delegate.getLuck();
     }
 
-    @ZenGetter
+    @ZenMethod
     public IWorld world()
     {
         return CraftTweakerMC.getIWorld(delegate.getWorld());
     }
 
-    @ZenGetter
+    @ZenMethod
     public int lootingModifier()
     {
         return delegate.getLootingModifier();
