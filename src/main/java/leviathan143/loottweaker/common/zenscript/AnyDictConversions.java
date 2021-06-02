@@ -10,6 +10,7 @@ import com.google.gson.JsonSyntaxException;
 import crafttweaker.annotations.ZenRegister;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
+import leviathan143.loottweaker.common.lib.Arguments;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootConditionWrapper;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootFunctionWrapper;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
@@ -58,12 +59,14 @@ public class AnyDictConversions
         public ZenLootFunctionWrapper asLootFunction(Map<String, Object> json)
         {
             return parse(json, LootFunction.class)
-                .map(ZenLootFunctionWrapper::new)
+                .map(fn -> new ZenLootFunctionWrapper(fn, context))
                 .orElse(ZenLootFunctionWrapper.INVALID);
         }
 
         private <T> Optional<T> parse(Map<String, Object> data, Class<T> clazz)
         {
+            if (!Arguments.nonNull(context.getErrorHandler(), "json", data)) 
+                return Optional.empty();
             try
             {
                 return Optional.of(gson.fromJson(gson.toJsonTree(data), clazz));

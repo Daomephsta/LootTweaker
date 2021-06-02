@@ -27,6 +27,7 @@ import io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors;
 import io.github.daomephsta.loottweaker.test.TestUtils;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
+import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.factory.LootFunctionFactoryImpl;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootConditionWrapper;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootFunctionWrapper;
@@ -41,8 +42,10 @@ import net.minecraft.world.storage.loot.functions.*;
 
 public class LootFunctionFactoryTests
 {
-    private final Condition<ZenLootFunctionWrapper> VALID_FUNCTION = new Condition<>(ZenLootFunctionWrapper::isValid, "valid function");
-    private final LootFunctionFactoryImpl factory = TestUtils.context().createLootFunctionFactory();
+    private final Condition<ZenLootFunctionWrapper> VALID_FUNCTION = 
+        new Condition<>(ZenLootFunctionWrapper::isValid, "valid function");
+    private final LootTweakerContext context = TestUtils.context();
+    private final LootFunctionFactoryImpl factory = context.createLootFunctionFactory();
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void enchantRandomly()
@@ -207,7 +210,7 @@ public class LootFunctionFactoryTests
     public void addConditions()
     {
         ZenLootFunctionWrapper function = new ZenLootFunctionWrapper(
-            new Smelt(new LootCondition[] {new RandomChance(0.5F)}));
+            new Smelt(new LootCondition[] {new RandomChance(0.5F)}), context);
         ZenLootConditionWrapper condition = new ZenLootConditionWrapper(new KilledByPlayer(false));
         function.addConditions(new ZenLootConditionWrapper[] {condition});
         assertThat(function.unwrap().getConditions())
