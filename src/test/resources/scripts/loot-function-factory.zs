@@ -11,7 +11,8 @@ Functions.setMetadata(23, 45);
 Functions.setNBT({"foo": "bar"});
 Functions.smelt();
 Functions.parse({"function": "minecraft:furnace_smelt"});
-Functions.smelt().addConditions([Conditions.killedByPlayer()]);
+Functions.smelt().addConditionsHelper([Conditions.killedByPlayer()]);
+Functions.smelt().addConditionsJson([{"condition": "minecraft:killed_by_player"}]);
 
 
 val foo = LootTweaker.getTable("loottweaker:foo");

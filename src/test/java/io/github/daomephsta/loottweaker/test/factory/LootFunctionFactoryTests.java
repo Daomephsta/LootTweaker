@@ -14,6 +14,7 @@ import crafttweaker.api.data.DataMap;
 import crafttweaker.api.data.DataString;
 import crafttweaker.api.data.IData;
 import io.github.daomephsta.loottweaker.test.TestErrorHandler.LootTweakerException;
+import io.github.daomephsta.loottweaker.test.util.DataMapBuilder;
 import io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors;
 import io.github.daomephsta.loottweaker.test.TestUtils;
 import io.github.daomephsta.saddle.engine.SaddleTest;
@@ -202,12 +203,25 @@ public class LootFunctionFactoryTests
     }
     
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
-    public void addConditions()
+    public void addConditionsHelper()
     {
         ZenLootFunctionWrapper function = new ZenLootFunctionWrapper(
             new Smelt(new LootCondition[] {new RandomChance(0.5F)}), context);
         ZenLootConditionWrapper condition = new ZenLootConditionWrapper(new KilledByPlayer(false));
-        function.addConditions(new ZenLootConditionWrapper[] {condition});
+        function.addConditionsHelper(new ZenLootConditionWrapper[] {condition});
+        assertThat(function.unwrap().getConditions())
+            .hasSize(2)
+            .hasAtLeastOneElementOfType(RandomChance.class)
+            .hasAtLeastOneElementOfType(KilledByPlayer.class);
+    }
+    
+    @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
+    public void addConditionsJson()
+    {
+        ZenLootFunctionWrapper function = new ZenLootFunctionWrapper(
+            new Smelt(new LootCondition[] {new RandomChance(0.5F)}), context);
+        IData condition = new DataMapBuilder().putString("condition", "minecraft:killed_by_player").build();
+        function.addConditionsJson(new IData[] {condition});
         assertThat(function.unwrap().getConditions())
             .hasSize(2)
             .hasAtLeastOneElementOfType(RandomChance.class)
