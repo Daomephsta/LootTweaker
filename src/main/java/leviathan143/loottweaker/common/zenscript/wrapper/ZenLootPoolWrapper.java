@@ -12,14 +12,17 @@ import com.google.common.collect.Lists;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.data.DataMap;
+import crafttweaker.api.data.IData;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
-import leviathan143.loottweaker.common.DeprecationWarningManager;
+import leviathan143.loottweaker.common.ErrorHandler;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.lib.Arguments;
+import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
+import leviathan143.loottweaker.common.lib.DataParser;
+import leviathan143.loottweaker.common.lib.QualifiedPoolIdentifier;
 import leviathan143.loottweaker.common.lib.LootConditions;
 import leviathan143.loottweaker.common.lib.LootFunctions;
-import leviathan143.loottweaker.common.lib.QualifiedPoolIdentifier;
 import leviathan143.loottweaker.common.mutable_loot.MutableLootPool;
 import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntry;
 import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntryEmpty;
@@ -44,6 +47,7 @@ public class ZenLootPoolWrapper
     private static final int DEFAULT_QUALITY = 0;
     //Other state
     private final LootTweakerContext context;
+    private final DataParser loggingParser;
     private final List<LootPoolTweaker> tweakers = new ArrayList<>();
     //LootPool state
     private final QualifiedPoolIdentifier qualifiedId;
@@ -52,32 +56,37 @@ public class ZenLootPoolWrapper
     public ZenLootPoolWrapper(LootTweakerContext context, ResourceLocation parentTableId, String id)
     {
         this.context = context;
+        this.loggingParser = createDataParser(context.getErrorHandler());
         this.qualifiedId = new QualifiedPoolIdentifier(parentTableId, id);
     }
-    @ZenMethod
-    public void addConditions(ZenLootConditionWrapper[] conditions)
+
+    private DataParser createDataParser(ErrorHandler errorHandler)
     {
-        if (!Arguments.nonNull(context.getErrorHandler(), "conditions", conditions)) return;
-        List<LootCondition> parsedConditions = Arrays.stream(conditions)
+        return new DataParser(LootTableManagerAccessors.getGsonInstance(), 
+            e -> errorHandler.error(e.getMessage()));
+    }
+
+    @ZenMethod
+	public void addConditionsHelper(ZenLootConditionWrapper[] conditionWrappers)
+	{
+        List<LootCondition> parsedConditions = Arrays.stream(conditionWrappers)
             .filter(ZenLootConditionWrapper::isValid)
             .map(ZenLootConditionWrapper::unwrap)
             .collect(toList());
         enqueueTweaker(pool -> pool.addConditions(parsedConditions),
             "Added %d conditions to %s", parsedConditions.size(), qualifiedId);
-    }
-
-    @ZenMethod
-	public void addConditionsHelper(ZenLootConditionWrapper[] conditions)
-	{
-        DeprecationWarningManager.addWarning();
-        addConditions(conditions);
 	}
 
     @ZenMethod
-    public void addConditionsJson(ZenLootConditionWrapper[] conditions)
+    public void addConditionsJson(IData[] conditionsJson)
     {
-        DeprecationWarningManager.addWarning();
-        addConditions(conditions);
+        List<LootCondition> parsedConditions = Arrays.stream(conditionsJson)
+            .map(c -> loggingParser.parse(c, LootCondition.class))
+            .filter(java.util.Optional::isPresent)
+            .map(java.util.Optional::get)
+            .collect(toList());
+        enqueueTweaker(pool -> pool.addConditions(parsedConditions),
+            "Added %d conditions to %s", parsedConditions.size(), qualifiedId);
     }
 
 	@ZenMethod
@@ -118,34 +127,31 @@ public class ZenLootPoolWrapper
 		addItemEntryInternal(stack, weight, quality, LootFunctions.NONE, LootConditions.NONE, name);
 	}
 
-    @ZenMethod
-    public void addItemEntry(IItemStack stack, int weight, int quality, ZenLootFunctionWrapper[] functions, ZenLootConditionWrapper[] conditions, @Optional String name)
-    {
-        if (!Arguments.nonNull(context.getErrorHandler(), 
-            "stack", stack, "functions", functions, "conditions", conditions)) return;
-        LootFunction[] unwrappedFunctions = Arrays.stream(functions)
-            .filter(ZenLootFunctionWrapper::isValid)
-            .map(ZenLootFunctionWrapper::unwrap)
-            .toArray(LootFunction[]::new);
-        LootCondition[] unwrappedConditions = Arrays.stream(conditions)
-            .filter(ZenLootConditionWrapper::isValid)
-            .map(ZenLootConditionWrapper::unwrap)
-            .toArray(LootCondition[]::new);
-        addItemEntryInternal(stack, weight, quality, unwrappedFunctions, unwrappedConditions, name);
-    }
-
 	@ZenMethod
 	public void addItemEntryHelper(IItemStack stack, int weight, int quality, ZenLootFunctionWrapper[] functions, ZenLootConditionWrapper[] conditions, @Optional String name)
 	{
-	    DeprecationWarningManager.addWarning();
-		addItemEntry(stack, weight, quality, functions, conditions, name);
+		addItemEntryInternal(stack, weight, quality,
+            Arrays.stream(functions).filter(ZenLootFunctionWrapper::isValid).map(ZenLootFunctionWrapper::unwrap).toArray(LootFunction[]::new),
+            Arrays.stream(conditions).filter(ZenLootConditionWrapper::isValid).map(ZenLootConditionWrapper::unwrap).toArray(LootCondition[]::new),
+            name);
 	}
 
 	@ZenMethod
-	public void addItemEntryJson(IItemStack stack, int weight, int quality, ZenLootFunctionWrapper[] functions, ZenLootConditionWrapper[] conditions, @Optional String name)
+	public void addItemEntryJson(IItemStack stack, int weight, int quality, IData[] functions, IData[] conditions, @Optional String name)
 	{
-        DeprecationWarningManager.addWarning();
-        addItemEntry(stack, weight, quality, functions, conditions, name);
+	    LootFunction[] parsedFunctions = Arrays.stream(functions)
+	        .map(c -> loggingParser.parse(c, LootFunction.class))
+	        .filter(java.util.Optional::isPresent)
+	        .map(java.util.Optional::get)
+	        .toArray(LootFunction[]::new);
+	    LootCondition[] parsedConditions = Arrays.stream(conditions)
+	        .map(c -> loggingParser.parse(c, LootCondition.class))
+	        .filter(java.util.Optional::isPresent)
+	        .map(java.util.Optional::get)
+	        .toArray(LootCondition[]::new);
+	    addItemEntryInternal(stack, weight, quality,
+	        parsedFunctions,
+	        parsedConditions, name);
 	}
 
     private void addItemEntryInternal(IItemStack stack, int weight, int quality, LootFunction[] functions, LootCondition[] conditions, @Optional String name)
@@ -200,31 +206,25 @@ public class ZenLootPoolWrapper
         if (!Arguments.nonNull(context.getErrorHandler(), "table name", tableName)) return;
 		addLootTableEntryInternal(tableName, weight, quality, LootConditions.NONE, name);
 	}
-    
-    @ZenMethod
-    public void addLootTableEntry(String tableName, int weight, int quality, ZenLootConditionWrapper[] conditions, @Optional String name)
-    {
-        if (!Arguments.nonNull(context.getErrorHandler(), "table name", tableName, "conditions", conditions)) 
-            return;
-        LootCondition[] unwrappedConditions = Arrays.stream(conditions)
-            .filter(ZenLootConditionWrapper::isValid)
-            .map(ZenLootConditionWrapper::unwrap)
-            .toArray(LootCondition[]::new);
-        addLootTableEntryInternal(tableName, weight, quality, unwrappedConditions, name);
-    }
 
 	@ZenMethod
 	public void addLootTableEntryHelper(String tableName, int weight, int quality, ZenLootConditionWrapper[] conditions, @Optional String name)
 	{
-	    DeprecationWarningManager.addWarning();
-	    addLootTableEntry(tableName, weight, quality, conditions, name);
+	    addLootTableEntryInternal(tableName, weight, quality,
+	        Arrays.stream(conditions).filter(ZenLootConditionWrapper::isValid).map(ZenLootConditionWrapper::unwrap).toArray(LootCondition[]::new),
+	        name);
 	}
 
 	@ZenMethod
-	public void addLootTableEntryJson(String tableName, int weight, int quality, ZenLootConditionWrapper[] conditions, @Optional String name)
+	public void addLootTableEntryJson(String tableName, int weight, int quality, IData[] conditions, @Optional String name)
 	{
-	    DeprecationWarningManager.addWarning();
-		addLootTableEntry(tableName, weight, quality, conditions, name);
+		LootCondition[] parsedConditions = Arrays.stream(conditions)
+		    .map(c -> loggingParser.parse(c, LootCondition.class))
+            .filter(java.util.Optional::isPresent)
+            .map(java.util.Optional::get)
+		    .toArray(LootCondition[]::new);
+        addLootTableEntryInternal(tableName, weight, quality,
+		    parsedConditions, name);
 	}
 
 	private void addLootTableEntryInternal(String tableName, int weight, int quality, LootCondition[] conditions, @Optional String name)
@@ -244,31 +244,26 @@ public class ZenLootPoolWrapper
 	public void addEmptyEntry(int weight, int quality, @Optional String name)
 	{
 		addEmptyEntryInternal(weight, quality, LootConditions.NONE, name);
-	}  
-    
-    @ZenMethod
-    public void addEmptyEntry(int weight, int quality, ZenLootConditionWrapper[] conditions, @Optional String name)
-    {
-        if (!Arguments.nonNull(context.getErrorHandler(), "conditions", conditions)) return;
-        LootCondition[] unwrappedConditions = Arrays.stream(conditions)
-            .filter(ZenLootConditionWrapper::isValid)
-            .map(ZenLootConditionWrapper::unwrap)
-            .toArray(LootCondition[]::new);
-        addEmptyEntryInternal(weight, quality, unwrappedConditions, name);
-    }
+	}
 
 	@ZenMethod
 	public void addEmptyEntryHelper(int weight, int quality, ZenLootConditionWrapper[] conditions, @Optional String name)
 	{
-        DeprecationWarningManager.addWarning();
-        addEmptyEntry(weight, quality, conditions, name);
+	    addEmptyEntryInternal(weight, quality,
+            Arrays.stream(conditions).filter(ZenLootConditionWrapper::isValid).map(ZenLootConditionWrapper::unwrap).toArray(LootCondition[]::new),
+            name);
 	}
 
 	@ZenMethod
-	public void addEmptyEntryJson(int weight, int quality, ZenLootConditionWrapper[] conditions, @Optional String name)
+	public void addEmptyEntryJson(int weight, int quality, IData[] conditions, @Optional String name)
 	{
-	    DeprecationWarningManager.addWarning();
-		addEmptyEntry(weight, quality, conditions, name);
+		LootCondition[] parsedConditions = Arrays.stream(conditions)
+		    .map(c -> loggingParser.parse(c, LootCondition.class))
+            .filter(java.util.Optional::isPresent)
+            .map(java.util.Optional::get)
+		    .toArray(LootCondition[]::new);
+        addEmptyEntryInternal(weight, quality,
+		    parsedConditions, name);
 	}
 
 	private void addEmptyEntryInternal(int weight, int quality, LootCondition[] conditions, @Optional String name)

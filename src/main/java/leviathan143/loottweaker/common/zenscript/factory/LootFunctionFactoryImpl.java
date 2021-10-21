@@ -1,15 +1,15 @@
 package leviathan143.loottweaker.common.zenscript.factory;
 
 import java.util.List;
-import java.util.Map;
 
 import com.google.common.collect.Lists;
 
 import crafttweaker.api.data.IData;
 import crafttweaker.mc1120.data.NBTConverter;
 import leviathan143.loottweaker.common.lib.Arguments;
+import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
+import leviathan143.loottweaker.common.lib.DataParser;
 import leviathan143.loottweaker.common.lib.LootConditions;
-import leviathan143.loottweaker.common.zenscript.AnyDictConversions;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootFunctionWrapper;
 import net.minecraft.enchantment.Enchantment;
@@ -21,14 +21,15 @@ import net.minecraft.world.storage.loot.functions.*;
 public class LootFunctionFactoryImpl
 {
     private final LootTweakerContext context;
-    private final AnyDictConversions.Impl anyDictConversions;
+    private final DataParser loggingParser;
 
     public LootFunctionFactoryImpl(LootTweakerContext context)
     {
         this.context = context;
-        this.anyDictConversions = new AnyDictConversions.Impl(context);
+        this.loggingParser = new DataParser(LootTableManagerAccessors.getGsonInstance(), 
+            e -> context.getErrorHandler().error(e.getMessage()));
     }
-    
+
     public ZenLootFunctionWrapper enchantRandomly(String[] enchantIDList)
     {
         if (!Arguments.nonNull(context.getErrorHandler(), "enchantment IDs", enchantIDList))
@@ -98,9 +99,11 @@ public class LootFunctionFactoryImpl
         return new ZenLootFunctionWrapper(new Smelt(LootConditions.NONE), context);
     }
 
-    public ZenLootFunctionWrapper parse(Map<String, Object> json)
+    public ZenLootFunctionWrapper parse(IData json)
     {
-        return anyDictConversions.asLootFunction(json);
+        return loggingParser.parse(json, LootFunction.class)
+            .map(function -> new ZenLootFunctionWrapper(function, context))
+            .orElse(ZenLootFunctionWrapper.INVALID);
     }
 
     public ZenLootFunctionWrapper zenscript(ZenLambdaLootFunction.Delegate delegate)

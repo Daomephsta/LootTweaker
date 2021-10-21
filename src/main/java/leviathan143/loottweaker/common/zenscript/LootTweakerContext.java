@@ -28,7 +28,7 @@ public class LootTweakerContext
 
     public LootConditionFactoryImpl createLootConditionFactory()
     {
-        return new LootConditionFactoryImpl(this);
+        return new LootConditionFactoryImpl(errorHandler);
     }
 
     public LootFunctionFactoryImpl createLootFunctionFactory()

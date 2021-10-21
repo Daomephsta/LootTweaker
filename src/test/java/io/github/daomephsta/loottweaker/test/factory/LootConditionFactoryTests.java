@@ -7,12 +7,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.InstanceOfAssertFactories.type;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.assertj.core.api.Condition;
 
-import com.google.common.collect.ImmutableMap;
-
+import crafttweaker.api.data.DataMap;
+import crafttweaker.api.data.DataString;
+import crafttweaker.api.data.IData;
 import io.github.daomephsta.loottweaker.test.TestErrorHandler.LootTweakerException;
 import io.github.daomephsta.loottweaker.test.TestLootConditionAccessors;
 import io.github.daomephsta.loottweaker.test.TestUtils;
@@ -73,7 +75,9 @@ public class LootConditionFactoryTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void parse()
     {
-        Map<String, Object> json = ImmutableMap.of("condition", "minecraft:killed_by_player");
+        Map<String, IData> data = new HashMap<>();
+        data.put("condition", new DataString("minecraft:killed_by_player"));
+        IData json = new DataMap(data , false);
         assertThat(factory.parse(json))
             .is(VALID_CONDITION)
             .extracting(ZenLootConditionWrapper::unwrap)
@@ -84,7 +88,10 @@ public class LootConditionFactoryTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void parseMalformed()
     {
-        Map<String, Object> json = ImmutableMap.of("condition", "garBaGe");
+
+        Map<String, IData> data = new HashMap<>();
+        data.put("condition", new DataString("garBaGe"));
+        IData json = new DataMap(data , false);
         assertThatThrownBy(() -> factory.parse(json))
             .isInstanceOf(LootTweakerException.class)
             .hasMessage("Unknown condition 'minecraft:garbage'");

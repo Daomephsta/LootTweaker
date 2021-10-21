@@ -8,16 +8,11 @@ val foo_bar = foo.getPool("bar");
 foo_bar.addItemEntry(<minecraft:apple>, 2, "qux");
 //addItemEntryWithQuality
 foo_bar.addItemEntry(<minecraft:apple>, 2, 3, "quuz");
-//addItemEntry Helper
-foo_bar.addItemEntry(<minecraft:baked_potato>, 2, 3, [], [Conditions.killedByPlayer()], "corge");
-//addItemEntryHelper
-foo_bar.addItemEntryHelper(<minecraft:baked_potato>, 2, 3, [], [Conditions.killedByPlayer()], "corge_helper");
-//addItemEntry JSON
-foo_bar.addItemEntry(<minecraft:baked_potato>, 2, 3, 
-	[], [{"condition": "minecraft:killed_by_player"}], "grault");
+//addItemEntryWithCondition
+foo_bar.addItemEntryHelper(<minecraft:baked_potato>, 2, 3, [], [Conditions.killedByPlayer()], "corge");
 //addItemEntryJson
 foo_bar.addItemEntryJson(<minecraft:baked_potato>, 2, 3, 
-	[], [{"condition": "minecraft:killed_by_player"}], "grault_json");
+	[], [{"condition": "minecraft:killed_by_player"}], "grault");
 //addItemEntryWithImplicitSetCount
 foo_bar.addItemEntry(<minecraft:arrow> * 3, 2, "garply");
 //addItemEntryWithExplicitSetCount
