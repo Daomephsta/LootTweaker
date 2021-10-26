@@ -26,6 +26,13 @@ public class ZenscriptTests
     public static final CraftTweakerLoggerRedirect redirect = new CraftTweakerLoggerRedirect(LogManager.getFormatterLogger("Saddle.LootTweaker"));
 
     @SaddleTest(loadPhase = LoadPhase.INIT)
+    public void jsonTests()
+    {
+        ScriptRunner.run("scripts/json-tests.zs");
+        loadTweakedTables();
+    }
+
+    @SaddleTest(loadPhase = LoadPhase.INIT)
     public void itemEntryAddition()
     {
         ScriptRunner.run("scripts/item-entry-addition.zs");

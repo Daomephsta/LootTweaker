@@ -9,7 +9,7 @@ import crafttweaker.api.data.IData;
 import crafttweaker.mc1120.data.NBTConverter;
 import leviathan143.loottweaker.common.lib.Arguments;
 import leviathan143.loottweaker.common.lib.LootConditions;
-import leviathan143.loottweaker.common.zenscript.AnyDictConversions;
+import leviathan143.loottweaker.common.zenscript.JsonToLootObject;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootFunctionWrapper;
 import net.minecraft.enchantment.Enchantment;
@@ -21,12 +21,12 @@ import net.minecraft.world.storage.loot.functions.*;
 public class LootFunctionFactoryImpl
 {
     private final LootTweakerContext context;
-    private final AnyDictConversions.Impl anyDictConversions;
+    private final JsonToLootObject.Impl jsonToLootObject;
 
     public LootFunctionFactoryImpl(LootTweakerContext context)
     {
         this.context = context;
-        this.anyDictConversions = new AnyDictConversions.Impl(context);
+        this.jsonToLootObject = new JsonToLootObject.Impl(context);
     }
     
     public ZenLootFunctionWrapper enchantRandomly(String[] enchantIDList)
@@ -98,9 +98,9 @@ public class LootFunctionFactoryImpl
         return new ZenLootFunctionWrapper(new Smelt(LootConditions.NONE), context);
     }
 
-    public ZenLootFunctionWrapper parse(Map<String, Object> json)
+    public ZenLootFunctionWrapper parse(Map<String, ?> json)
     {
-        return anyDictConversions.asLootFunction(json);
+        return jsonToLootObject.asLootFunction(json);
     }
 
     public ZenLootFunctionWrapper zenscript(ZenLambdaLootFunction.Delegate delegate)

@@ -5,6 +5,7 @@ import java.util.Map;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.data.IData;
 import leviathan143.loottweaker.common.LootTweaker;
+import leviathan143.loottweaker.common.zenscript.JsonValue;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootFunctionWrapper;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -64,7 +65,7 @@ public class LootFunctionFactory
     }
 
     @ZenMethod
-    public static ZenLootFunctionWrapper parse(Map<String, Object> json)
+    public static ZenLootFunctionWrapper parse(Map<String, JsonValue> json)
     {
         return IMPLEMENTATION.parse(json);
     }

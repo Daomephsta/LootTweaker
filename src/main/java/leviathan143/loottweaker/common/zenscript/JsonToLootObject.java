@@ -4,8 +4,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
 
 import crafttweaker.annotations.ZenRegister;
 import leviathan143.loottweaker.common.LootTweaker;
@@ -20,27 +19,31 @@ import stanhebben.zenscript.annotations.ZenExpansion;
 
 @ZenRegister
 @ZenExpansion("any[any]")
-public class AnyDictConversions
+public class JsonToLootObject
 {
     private static Impl IMPLEMENTATION = new Impl(LootTweaker.CONTEXT);
 
     @ZenCaster
-    public static ZenLootConditionWrapper asLootCondition(Map<String, Object> data)
+    public static ZenLootConditionWrapper asLootCondition(Map<String, JsonValue> json)
     {
-        return IMPLEMENTATION.asLootCondition(data);
+        return IMPLEMENTATION.asLootCondition(json);
     }
 
     @ZenCaster
-    public static ZenLootFunctionWrapper asLootFunction(Map<String, Object> data)
+    public static ZenLootFunctionWrapper asLootFunction(Map<String, JsonValue> json)
     {
-        return IMPLEMENTATION.asLootFunction(data);
+        return IMPLEMENTATION.asLootFunction(json);
     }
 
     @VisibleForTesting
     public static class Impl
     {
         private final LootTweakerContext context;
-        private final Gson gson = LootTableManagerAccessors.getGsonInstance();
+        private final Gson
+            lootDeserialiser = LootTableManagerAccessors.getGsonInstance(),
+            jsonElementSerialiser = new GsonBuilder()
+                .registerTypeAdapter(JsonValue.class, (JsonSerializer<JsonValue>) JsonValue::serialize)
+                .create();
 
         public Impl(LootTweakerContext context)
         {
@@ -48,7 +51,7 @@ public class AnyDictConversions
         }
 
         @VisibleForTesting
-        public ZenLootConditionWrapper asLootCondition(Map<String, Object> json)
+        public ZenLootConditionWrapper asLootCondition(Map<String, ?> json)
         {
             return parse(json, LootCondition.class)
                 .map(ZenLootConditionWrapper::new)
@@ -56,20 +59,20 @@ public class AnyDictConversions
         }
 
         @VisibleForTesting
-        public ZenLootFunctionWrapper asLootFunction(Map<String, Object> json)
+        public ZenLootFunctionWrapper asLootFunction(Map<String, ?> json)
         {
             return parse(json, LootFunction.class)
                 .map(fn -> new ZenLootFunctionWrapper(fn, context))
                 .orElse(ZenLootFunctionWrapper.INVALID);
         }
 
-        private <T> Optional<T> parse(Map<String, Object> data, Class<T> clazz)
+        private <T> Optional<T> parse(Map<String, ?> data, Class<T> clazz)
         {
-            if (!Arguments.nonNull(context.getErrorHandler(), "json", data)) 
+            if (!Arguments.nonNull(context.getErrorHandler(), "json", data))
                 return Optional.empty();
             try
             {
-                return Optional.of(gson.fromJson(gson.toJsonTree(data), clazz));
+                return Optional.of(lootDeserialiser.fromJson(jsonElementSerialiser.toJsonTree(data), clazz));
             }
             catch (JsonSyntaxException e)
             {
