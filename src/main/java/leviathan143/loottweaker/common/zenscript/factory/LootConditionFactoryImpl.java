@@ -2,7 +2,7 @@ package leviathan143.loottweaker.common.zenscript.factory;
 
 import java.util.Map;
 
-import leviathan143.loottweaker.common.zenscript.JsonToLootObject;
+import leviathan143.loottweaker.common.zenscript.JsonMapConversions;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootConditionWrapper;
 import net.minecraft.world.storage.loot.conditions.KilledByPlayer;
@@ -11,11 +11,11 @@ import net.minecraft.world.storage.loot.conditions.RandomChanceWithLooting;
 
 public class LootConditionFactoryImpl
 {
-	private final JsonToLootObject.Impl jsonToLootObject;
+	private final JsonMapConversions.Impl jsonMapConversions;
 
     public LootConditionFactoryImpl(LootTweakerContext context)
     {
-        this.jsonToLootObject = new JsonToLootObject.Impl(context);
+        this.jsonMapConversions = new JsonMapConversions.Impl(context);
     }
 
     public ZenLootConditionWrapper randomChance(float chance)
@@ -40,7 +40,7 @@ public class LootConditionFactoryImpl
 
 	public ZenLootConditionWrapper parse(Map<String, ?> json)
 	{
-	    return jsonToLootObject.asLootCondition(json);
+	    return jsonMapConversions.asLootCondition(json);
 	}
 
 	public ZenLootConditionWrapper zenscript(ZenLambdaLootCondition.Delegate delegate)

@@ -4,12 +4,17 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSerializer;
+import com.google.gson.JsonSyntaxException;
 
 import crafttweaker.annotations.ZenRegister;
+import crafttweaker.api.data.IData;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
 import leviathan143.loottweaker.common.lib.Arguments;
+import leviathan143.loottweaker.common.lib.JsonConverter;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootConditionWrapper;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootFunctionWrapper;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
@@ -19,18 +24,18 @@ import stanhebben.zenscript.annotations.ZenExpansion;
 
 @ZenRegister
 @ZenExpansion("any[any]")
-public class JsonToLootObject
+public class JsonMapConversions
 {
-    private static Impl IMPLEMENTATION = new Impl(LootTweaker.CONTEXT);
+    public static Impl IMPLEMENTATION = new Impl(LootTweaker.CONTEXT);
 
     @ZenCaster
-    public static ZenLootConditionWrapper asLootCondition(Map<String, JsonValue> json)
+    public static ZenLootConditionWrapper asLootCondition(Map<String, IData> json)
     {
         return IMPLEMENTATION.asLootCondition(json);
     }
 
     @ZenCaster
-    public static ZenLootFunctionWrapper asLootFunction(Map<String, JsonValue> json)
+    public static ZenLootFunctionWrapper asLootFunction(Map<String, IData> json)
     {
         return IMPLEMENTATION.asLootFunction(json);
     }
@@ -39,11 +44,11 @@ public class JsonToLootObject
     public static class Impl
     {
         private final LootTweakerContext context;
-        private final Gson
-            lootDeserialiser = LootTableManagerAccessors.getGsonInstance(),
-            jsonElementSerialiser = new GsonBuilder()
-                .registerTypeAdapter(JsonValue.class, (JsonSerializer<JsonValue>) JsonValue::serialize)
-                .create();
+        private final Gson lootDeserialiser = LootTableManagerAccessors.getGsonInstance(),
+                           jsonElementSerialiser = new GsonBuilder()
+                               .registerTypeHierarchyAdapter(IData.class,
+                                   (JsonSerializer<IData>) (src, type, context) -> JsonConverter.from(src))
+                               .create();
 
         public Impl(LootTweakerContext context)
         {

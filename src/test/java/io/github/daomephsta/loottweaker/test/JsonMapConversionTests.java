@@ -14,7 +14,7 @@ import com.google.common.collect.ImmutableMap;
 import io.github.daomephsta.loottweaker.test.TestErrorHandler.LootTweakerException;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
-import leviathan143.loottweaker.common.zenscript.JsonToLootObject;
+import leviathan143.loottweaker.common.zenscript.JsonMapConversions;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootConditionWrapper;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootFunctionWrapper;
 import net.minecraft.world.storage.loot.LootContext.EntityTarget;
@@ -26,19 +26,19 @@ import net.minecraft.world.storage.loot.functions.Smelt;
 import net.minecraft.world.storage.loot.properties.EntityOnFire;
 import net.minecraft.world.storage.loot.properties.EntityProperty;
 
-public class JsonToLootObjectTests
+public class JsonMapConversionTests
 {
     private final Condition<ZenLootConditionWrapper> VALID_CONDITION =
         new Condition<>(ZenLootConditionWrapper::isValid, "valid condition");
     private final Condition<ZenLootFunctionWrapper> VALID_FUNCTION =
         new Condition<>(ZenLootFunctionWrapper::isValid, "valid function");
-    private final JsonToLootObject.Impl jsonToLootObject = new JsonToLootObject.Impl(TestUtils.context());
+    private final JsonMapConversions.Impl jsonMapConversions = new JsonMapConversions.Impl(TestUtils.context());
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void parseSimpleCondition()
     {
         Map<String, Object> json = ImmutableMap.of("condition", "minecraft:killed_by_player");
-        assertThat(jsonToLootObject.asLootCondition(json))
+        assertThat(jsonMapConversions.asLootCondition(json))
             .is(VALID_CONDITION)
             .extracting(ZenLootConditionWrapper::unwrap)
             .asInstanceOf(type(KilledByPlayer.class))
@@ -52,7 +52,7 @@ public class JsonToLootObjectTests
             "condition", "minecraft:entity_properties",
             "entity", "this",
             "properties", ImmutableMap.of("on_fire", true));
-        assertThat(jsonToLootObject.asLootCondition(json))
+        assertThat(jsonMapConversions.asLootCondition(json))
             .is(VALID_CONDITION)
             .extracting(ZenLootConditionWrapper::unwrap)
             .asInstanceOf(type(EntityHasProperty.class))
@@ -73,7 +73,7 @@ public class JsonToLootObjectTests
     public void parseMalformedCondition()
     {
         Map<String, Object> json = ImmutableMap.of("condition", "garBaGe");
-        assertThatThrownBy(() -> jsonToLootObject.asLootCondition(json))
+        assertThatThrownBy(() -> jsonMapConversions.asLootCondition(json))
             .isInstanceOf(LootTweakerException.class)
             .hasMessage("Unknown condition 'minecraft:garbage'");
     }
@@ -82,7 +82,7 @@ public class JsonToLootObjectTests
     public void parseSimpleFunction()
     {
         Map<String, Object> json = ImmutableMap.of("function", "minecraft:furnace_smelt");
-        assertThat(jsonToLootObject.asLootFunction(json))
+        assertThat(jsonMapConversions.asLootFunction(json))
             .is(VALID_FUNCTION)
             .extracting(ZenLootFunctionWrapper::unwrap)
             .isInstanceOf(Smelt.class);
@@ -94,7 +94,7 @@ public class JsonToLootObjectTests
         Map<String, Object> json = ImmutableMap.of(
             "function", "minecraft:set_count",
             "count", ImmutableMap.of("min", 0, "max", 2));
-        assertThat(jsonToLootObject.asLootFunction(json))
+        assertThat(jsonMapConversions.asLootFunction(json))
             .is(VALID_FUNCTION)
             .extracting(ZenLootFunctionWrapper::unwrap)
             .asInstanceOf(type(SetCount.class))
@@ -109,7 +109,7 @@ public class JsonToLootObjectTests
     public void parseMalformedFunction()
     {
         Map<String, Object> json = ImmutableMap.of("function", "garBaGe");
-        assertThatThrownBy(() -> jsonToLootObject.asLootFunction(json))
+        assertThatThrownBy(() -> jsonMapConversions.asLootFunction(json))
             .isInstanceOf(LootTweakerException.class)
             .hasMessage("Unknown function 'minecraft:garbage'");
     }
