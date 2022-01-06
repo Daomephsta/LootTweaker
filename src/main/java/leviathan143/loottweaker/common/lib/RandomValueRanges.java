@@ -7,8 +7,8 @@ public class RandomValueRanges
 {
     public static RandomValueRange checked(ErrorHandler errorHandler, float min, float max)
     {
-        if (min >= max)
-            errorHandler.error("Minimum (%d) must be less than maximum (%d)", min, max);
+        if (min > max)
+            errorHandler.error("Minimum (%f) must be less than or equal to maximum (%f)", min, max);
         return new RandomValueRange(min, max);
     }
 }
