@@ -9,12 +9,12 @@ import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ZenRegister;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.lib.LootTableFinder;
+import leviathan143.loottweaker.common.lib.RandomValueRanges;
 import leviathan143.loottweaker.common.mutable_loot.MutableLootPool;
 import leviathan143.loottweaker.common.mutable_loot.MutableLootTable;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTableList;
-import net.minecraft.world.storage.loot.RandomValueRange;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
@@ -66,7 +66,8 @@ public class ZenLootTableWrapper
                 return;
             }
             MutableLootPool newPool = new MutableLootPool(poolName, new HashMap<>(), new ArrayList<>(),
-                new RandomValueRange(minRolls, maxRolls), new RandomValueRange(minBonusRolls, maxBonusRolls));
+                RandomValueRanges.checked(context.getErrorHandler(), minRolls, maxRolls),
+                RandomValueRanges.checked(context.getErrorHandler(), minBonusRolls, maxBonusRolls));
             pool.tweak(newPool);
             table.addPool(newPool);
             CraftTweakerAPI.logInfo(String.format("Added new pool %s to table %s", poolName, id));

@@ -16,10 +16,7 @@ import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import leviathan143.loottweaker.common.DeprecationWarningManager;
 import leviathan143.loottweaker.common.LootTweaker;
-import leviathan143.loottweaker.common.lib.Arguments;
-import leviathan143.loottweaker.common.lib.LootConditions;
-import leviathan143.loottweaker.common.lib.LootFunctions;
-import leviathan143.loottweaker.common.lib.QualifiedPoolIdentifier;
+import leviathan143.loottweaker.common.lib.*;
 import leviathan143.loottweaker.common.mutable_loot.MutableLootPool;
 import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntry;
 import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntryEmpty;
@@ -121,7 +118,7 @@ public class ZenLootPoolWrapper
     @ZenMethod
     public void addItemEntry(IItemStack stack, int weight, int quality, ZenLootFunctionWrapper[] functions, ZenLootConditionWrapper[] conditions, @Optional String name)
     {
-        if (!Arguments.nonNull(context.getErrorHandler(), 
+        if (!Arguments.nonNull(context.getErrorHandler(),
             "stack", stack, "functions", functions, "conditions", conditions)) return;
         LootFunction[] unwrappedFunctions = Arrays.stream(functions)
             .filter(ZenLootFunctionWrapper::isValid)
@@ -200,11 +197,11 @@ public class ZenLootPoolWrapper
         if (!Arguments.nonNull(context.getErrorHandler(), "table name", tableName)) return;
 		addLootTableEntryInternal(tableName, weight, quality, LootConditions.NONE, name);
 	}
-    
+
     @ZenMethod
     public void addLootTableEntry(String tableName, int weight, int quality, ZenLootConditionWrapper[] conditions, @Optional String name)
     {
-        if (!Arguments.nonNull(context.getErrorHandler(), "table name", tableName, "conditions", conditions)) 
+        if (!Arguments.nonNull(context.getErrorHandler(), "table name", tableName, "conditions", conditions))
             return;
         LootCondition[] unwrappedConditions = Arrays.stream(conditions)
             .filter(ZenLootConditionWrapper::isValid)
@@ -233,7 +230,7 @@ public class ZenLootPoolWrapper
         addEntry(new MutableLootEntryTable(entryName, weight, quality, conditions, new ResourceLocation(tableName)),
             "Queued loot table entry '%s' for addition to %s", entryName, qualifiedId);
     }
-	
+
 	@ZenMethod
 	public void addEmptyEntry(int weight, @Optional String name)
 	{
@@ -244,8 +241,8 @@ public class ZenLootPoolWrapper
 	public void addEmptyEntry(int weight, int quality, @Optional String name)
 	{
 		addEmptyEntryInternal(weight, quality, LootConditions.NONE, name);
-	}  
-    
+	}
+
     @ZenMethod
     public void addEmptyEntry(int weight, int quality, ZenLootConditionWrapper[] conditions, @Optional String name)
     {
@@ -286,14 +283,14 @@ public class ZenLootPoolWrapper
 	@ZenMethod
 	public void setRolls(float minRolls, float maxRolls)
 	{
-	    enqueueTweaker(pool -> pool.setRolls(new RandomValueRange(minRolls, maxRolls)),
+	    enqueueTweaker(pool -> pool.setRolls(RandomValueRanges.checked(context.getErrorHandler(), minRolls, maxRolls)),
 	        "Rolls of %s will be set to (%.0f, %.0f)", qualifiedId, minRolls, maxRolls);
 	}
 
 	@ZenMethod
 	public void setBonusRolls(float minBonusRolls, float maxBonusRolls)
 	{
-	    enqueueTweaker(pool -> pool.setBonusRolls(new RandomValueRange(minBonusRolls, maxBonusRolls)),
+	    enqueueTweaker(pool -> pool.setBonusRolls(RandomValueRanges.checked(context.getErrorHandler(), minBonusRolls, maxBonusRolls)),
 	        "Bonus rolls of %s will be set to (%.0f, %.0f)", qualifiedId, minBonusRolls, maxBonusRolls);
 	}
 

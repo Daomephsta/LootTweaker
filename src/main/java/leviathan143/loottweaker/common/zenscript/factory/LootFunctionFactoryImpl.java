@@ -9,13 +9,13 @@ import crafttweaker.api.data.IData;
 import crafttweaker.mc1120.data.NBTConverter;
 import leviathan143.loottweaker.common.lib.Arguments;
 import leviathan143.loottweaker.common.lib.LootConditions;
+import leviathan143.loottweaker.common.lib.RandomValueRanges;
 import leviathan143.loottweaker.common.zenscript.JsonMapConversions;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootFunctionWrapper;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraft.world.storage.loot.functions.*;
 
 public class LootFunctionFactoryImpl
@@ -49,20 +49,20 @@ public class LootFunctionFactoryImpl
 
     public ZenLootFunctionWrapper enchantWithLevels(int min, int max, boolean isTreasure)
     {
-        return new ZenLootFunctionWrapper(new EnchantWithLevels(LootConditions.NONE, 
-            new RandomValueRange(min, max), isTreasure), context);
+        return new ZenLootFunctionWrapper(new EnchantWithLevels(LootConditions.NONE,
+            RandomValueRanges.checked(context.getErrorHandler(), min, max), isTreasure), context);
     }
 
     public ZenLootFunctionWrapper lootingEnchantBonus(int min, int max, int limit)
     {
-        return new ZenLootFunctionWrapper(new LootingEnchantBonus(LootConditions.NONE, 
-            new RandomValueRange(min, max), limit), context);
+        return new ZenLootFunctionWrapper(new LootingEnchantBonus(LootConditions.NONE,
+            RandomValueRanges.checked(context.getErrorHandler(), min, max), limit), context);
     }
 
     public ZenLootFunctionWrapper setCount(int min, int max)
     {
-        return new ZenLootFunctionWrapper(new SetCount(LootConditions.NONE, 
-            new RandomValueRange(min, max)), context);
+        return new ZenLootFunctionWrapper(new SetCount(LootConditions.NONE,
+            RandomValueRanges.checked(context.getErrorHandler(), min, max)), context);
     }
 
     public ZenLootFunctionWrapper setDamage(float min, float max)
@@ -72,14 +72,14 @@ public class LootFunctionFactoryImpl
             context.getErrorHandler().error("Items cannot recieve more than 100% damage!");
             return ZenLootFunctionWrapper.INVALID;
         }
-        return new ZenLootFunctionWrapper(new SetDamage(LootConditions.NONE, 
-            new RandomValueRange(min, max)), context);
+        return new ZenLootFunctionWrapper(new SetDamage(LootConditions.NONE,
+            RandomValueRanges.checked(context.getErrorHandler(), min, max)), context);
     }
 
     public ZenLootFunctionWrapper setMetadata(int min, int max)
     {
-        return new ZenLootFunctionWrapper(new SetMetadata(LootConditions.NONE, 
-            new RandomValueRange(min, max)), context);
+        return new ZenLootFunctionWrapper(new SetMetadata(LootConditions.NONE,
+            RandomValueRanges.checked(context.getErrorHandler(), min, max)), context);
     }
 
     public ZenLootFunctionWrapper setNBT(IData nbtData)
