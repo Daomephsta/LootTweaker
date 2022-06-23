@@ -3,6 +3,7 @@ package leviathan143.loottweaker.common.mutable_loot;
 import static java.util.stream.Collectors.toMap;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BinaryOperator;
@@ -28,7 +29,7 @@ public class MutableLootTable
     {
         this.id = id;
         List<LootPool> immutablePools = LootTableAccessors.getPools(table);
-        this.pools = new HashMap<>(immutablePools.size());
+        this.pools = new LinkedHashMap<>(immutablePools.size());
         int uniqueSuffix = 0;
         for (LootPool pool : immutablePools)
         {
