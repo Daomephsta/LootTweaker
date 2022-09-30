@@ -14,7 +14,6 @@ import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.data.DataMap;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
-import leviathan143.loottweaker.common.DeprecationWarningManager;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.lib.*;
 import leviathan143.loottweaker.common.mutable_loot.MutableLootPool;
@@ -63,20 +62,6 @@ public class ZenLootPoolWrapper
             .collect(toList());
         enqueueTweaker(pool -> pool.addConditions(parsedConditions), "Added %d conditions to %s",
             parsedConditions.size(), qualifiedId);
-    }
-
-    @ZenMethod
-    public void addConditionsHelper(ZenLootConditionWrapper[] conditions)
-    {
-        DeprecationWarningManager.addWarning();
-        addConditions(conditions);
-    }
-
-    @ZenMethod
-    public void addConditionsJson(ZenLootConditionWrapper[] conditions)
-    {
-        DeprecationWarningManager.addWarning();
-        addConditions(conditions);
     }
 
     @ZenMethod
@@ -133,24 +118,6 @@ public class ZenLootPoolWrapper
             .map(ZenLootConditionWrapper::unwrap)
             .toArray(LootCondition[]::new);
         addItemEntryInternal(stack, weight, quality, unwrappedFunctions, unwrappedConditions, name);
-    }
-
-    @ZenMethod
-    public void addItemEntryHelper(IItemStack stack, int weight, int quality, ZenLootFunctionWrapper[] functions,
-        ZenLootConditionWrapper[] conditions, @Optional
-        String name)
-    {
-        DeprecationWarningManager.addWarning();
-        addItemEntry(stack, weight, quality, functions, conditions, name);
-    }
-
-    @ZenMethod
-    public void addItemEntryJson(IItemStack stack, int weight, int quality, ZenLootFunctionWrapper[] functions,
-        ZenLootConditionWrapper[] conditions, @Optional
-        String name)
-    {
-        DeprecationWarningManager.addWarning();
-        addItemEntry(stack, weight, quality, functions, conditions, name);
     }
 
     private void addItemEntryInternal(IItemStack stack, int weight, int quality, LootFunction[] functions,
@@ -224,24 +191,6 @@ public class ZenLootPoolWrapper
         addLootTableEntryInternal(tableName, weight, quality, unwrappedConditions, name);
     }
 
-    @ZenMethod
-    public void addLootTableEntryHelper(String tableName, int weight, int quality,
-        ZenLootConditionWrapper[] conditions, @Optional
-        String name)
-    {
-        DeprecationWarningManager.addWarning();
-        addLootTableEntry(tableName, weight, quality, conditions, name);
-    }
-
-    @ZenMethod
-    public void addLootTableEntryJson(String tableName, int weight, int quality,
-        ZenLootConditionWrapper[] conditions, @Optional
-        String name)
-    {
-        DeprecationWarningManager.addWarning();
-        addLootTableEntry(tableName, weight, quality, conditions, name);
-    }
-
     private void addLootTableEntryInternal(String tableName, int weight, int quality, LootCondition[] conditions,
         @Optional
         String name)
@@ -276,22 +225,6 @@ public class ZenLootPoolWrapper
             .map(ZenLootConditionWrapper::unwrap)
             .toArray(LootCondition[]::new);
         addEmptyEntryInternal(weight, quality, unwrappedConditions, name);
-    }
-
-    @ZenMethod
-    public void addEmptyEntryHelper(int weight, int quality, ZenLootConditionWrapper[] conditions, @Optional
-    String name)
-    {
-        DeprecationWarningManager.addWarning();
-        addEmptyEntry(weight, quality, conditions, name);
-    }
-
-    @ZenMethod
-    public void addEmptyEntryJson(int weight, int quality, ZenLootConditionWrapper[] conditions, @Optional
-    String name)
-    {
-        DeprecationWarningManager.addWarning();
-        addEmptyEntry(weight, quality, conditions, name);
     }
 
     private void addEmptyEntryInternal(int weight, int quality, LootCondition[] conditions, @Optional

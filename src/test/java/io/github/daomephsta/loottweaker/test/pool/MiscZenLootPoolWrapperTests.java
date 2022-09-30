@@ -36,7 +36,7 @@ public class MiscZenLootPoolWrapperTests
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
-        barTweaks.addConditionsHelper(new ZenLootConditionWrapper[] { LootConditionFactory.killedByPlayer() });
+        barTweaks.addConditions(new ZenLootConditionWrapper[] { LootConditionFactory.killedByPlayer() });
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
         assertThat(foo.getPool("bar")).hasMatchingCondition(

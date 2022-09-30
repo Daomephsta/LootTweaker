@@ -64,7 +64,7 @@ public class LootTableEntryAdditionTests
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
-        barTweaks.addLootTableEntryHelper("loottweaker:qux", 2, 3,
+        barTweaks.addLootTableEntry("loottweaker:qux", 2, 3,
             new ZenLootConditionWrapper[] { LootConditionFactory.killedByPlayer() }, "corge");
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
