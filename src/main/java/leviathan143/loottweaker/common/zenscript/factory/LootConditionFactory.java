@@ -4,6 +4,7 @@ import java.util.Map;
 
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.data.IData;
+import leviathan143.loottweaker.common.DeprecationWarningManager;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootConditionWrapper;
 import stanhebben.zenscript.annotations.ZenClass;
@@ -44,6 +45,7 @@ public class LootConditionFactory
     @ZenMethod
     public static ZenLootConditionWrapper parse(Map<String, IData> json)
     {
+        DeprecationWarningManager.addWarning();
         return IMPLEMENTATION.parse(json);
     }
 
