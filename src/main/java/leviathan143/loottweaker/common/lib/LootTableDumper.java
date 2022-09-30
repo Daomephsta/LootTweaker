@@ -20,16 +20,16 @@ import net.minecraft.world.storage.loot.functions.LootFunction;
 
 public class LootTableDumper
 {
-    public static final LootTableDumper DEFAULT = new LootTableDumper(new File("dumps/loot_tables"),
-        new GsonBuilder().registerTypeAdapter(RandomValueRange.class, new RandomValueRange.Serializer())
-            .registerTypeAdapter(LootPool.class, new LootPool.Serializer())
-            .registerTypeAdapter(LootTable.class, new LootTable.Serializer())
-            .registerTypeHierarchyAdapter(LootEntry.class, new RobustLootEntrySerialiser())
-            .registerTypeHierarchyAdapter(LootFunction.class, new RobustLootFunctionSerialiser())
-            .registerTypeHierarchyAdapter(LootCondition.class, new RobustLootConditionSerialiser())
-            .registerTypeHierarchyAdapter(LootContext.EntityTarget.class,
-                new LootContext.EntityTarget.Serializer())
-            .create());
+    private static final Gson ROBUST_GSON = new GsonBuilder()
+        .registerTypeAdapter(RandomValueRange.class, new RandomValueRange.Serializer())
+        .registerTypeAdapter(LootPool.class, new RobustLootPoolSerialiser())
+        .registerTypeAdapter(LootTable.class, new LootTable.Serializer())
+        .registerTypeHierarchyAdapter(LootEntry.class, new RobustLootEntrySerialiser())
+        .registerTypeHierarchyAdapter(LootFunction.class, new RobustLootFunctionSerialiser())
+        .registerTypeHierarchyAdapter(LootCondition.class, new RobustLootConditionSerialiser())
+        .registerTypeHierarchyAdapter(LootContext.EntityTarget.class, new LootContext.EntityTarget.Serializer())
+        .create();
+    public static final LootTableDumper DEFAULT = new LootTableDumper(new File("dumps/loot_tables"), ROBUST_GSON);
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final File dumpFolder;
@@ -41,6 +41,11 @@ public class LootTableDumper
         this.dumpFolder = dumpFolder;
         this.dumpFolder.mkdirs();
         this.gsonInstance = gsonInstance;
+    }
+
+    public static LootTableDumper robust(File dumpFolder)
+    {
+        return new LootTableDumper(dumpFolder, ROBUST_GSON);
     }
 
     public File dump(World world, ResourceLocation tableId)

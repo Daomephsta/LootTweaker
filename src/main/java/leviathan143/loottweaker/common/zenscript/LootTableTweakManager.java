@@ -1,14 +1,15 @@
 package leviathan143.loottweaker.common.zenscript;
 
 import java.io.File;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import crafttweaker.CraftTweakerAPI;
 import leviathan143.loottweaker.common.LTConfig;
-import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
+import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.lib.LootTableDumper;
 import leviathan143.loottweaker.common.lib.LootTableFinder;
 import leviathan143.loottweaker.common.mutable_loot.MutableLootTable;
@@ -72,6 +73,11 @@ public class LootTableTweakManager
                     .warn("Table id '%s' implicitly uses the minecraft namespace, this is discouraged", id);
             }
         }
+        if (tableId.getNamespace().equals(LootTweaker.MODID))
+        {
+            context.getErrorHandler()
+                .warn("Table id '%s' uses the loottweaker namespace, this is discouraged", id);
+        }
         if (LootTableFinder.DEFAULT.exists(tableId))
         {
             context.getErrorHandler().error("Table id '%s' already in use", id);
@@ -88,7 +94,7 @@ public class LootTableTweakManager
     {
         File worldLootTables = server.getActiveAnvilConverter()
             .getFile(server.getFolderName(), "data/loot_tables");
-        LootTableDumper dumper = new LootTableDumper(worldLootTables, LootTableManagerAccessors.getGsonInstance());
+        LootTableDumper dumper = LootTableDumper.robust(worldLootTables);
         for (ZenLootTableWrapper builder : tableBuilders.values())
         {
             MutableLootTable mutableTable = new MutableLootTable(builder.getId(), new HashMap<>());
