@@ -51,8 +51,7 @@ public class ItemEntryAdditionTests
         barTweaks.addItemEntry(iitemstack(Items.APPLE), 2, "qux");
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
-        assertThat(foo.getPool("bar"))
-            .extractEntry("qux")
+        assertThat(foo.getPool("bar")).extractEntry("qux")
             .hasWeight(2)
             .hasNoLootConditions()
             .asItemEntry()
@@ -70,8 +69,7 @@ public class ItemEntryAdditionTests
         barTweaks.addItemEntry(iitemstack(Items.APPLE), 2, 3, "qux");
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
-        assertThat(foo.getPool("bar"))
-            .extractEntry("qux")
+        assertThat(foo.getPool("bar")).extractEntry("qux")
             .hasWeight(2)
             .hasQuality(3)
             .hasNoLootConditions()
@@ -87,19 +85,16 @@ public class ItemEntryAdditionTests
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
-        barTweaks.addItemEntry(iitemstack(Items.BAKED_POTATO), 2, 3,
-            new ZenLootFunctionWrapper[0],
-            new ZenLootConditionWrapper[] {LootConditionFactory.killedByPlayer()},
-            "qux");
+        barTweaks.addItemEntry(iitemstack(Items.BAKED_POTATO), 2, 3, new ZenLootFunctionWrapper[0],
+            new ZenLootConditionWrapper[] { LootConditionFactory.killedByPlayer() }, "qux");
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
-        assertThat(foo.getPool("bar"))
-            .extractEntry("qux")
+        assertThat(foo.getPool("bar")).extractEntry("qux")
             .hasWeight(2)
             .hasQuality(3)
-            .hasMatchingCondition(condition ->
-                condition instanceof KilledByPlayer && !isInverted((KilledByPlayer) condition),
-            "KilledByPlayer()")
+            .hasMatchingCondition(
+                condition -> condition instanceof KilledByPlayer && !isInverted((KilledByPlayer) condition),
+                "KilledByPlayer()")
             .asItemEntry()
             .spawnsItem(Items.BAKED_POTATO)
             .hasNoLootFunctions();
@@ -116,8 +111,7 @@ public class ItemEntryAdditionTests
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
         int expectedCount = 3;
-        assertThat(foo.getPool("bar"))
-            .extractEntry("qux")
+        assertThat(foo.getPool("bar")).extractEntry("qux")
             .hasWeight(2)
             .hasNoLootConditions()
             .asItemEntry()
@@ -141,14 +135,12 @@ public class ItemEntryAdditionTests
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addItemEntry(iitemstack(Items.ARROW), 2, 1,
-            new ZenLootFunctionWrapper[] {LootFunctionFactory.setCount(3, 3)},
-            new ZenLootConditionWrapper[0],
+            new ZenLootFunctionWrapper[] { LootFunctionFactory.setCount(3, 3) }, new ZenLootConditionWrapper[0],
             "qux");
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
         int expectedCount = 3;
-        assertThat(foo.getPool("bar"))
-            .extractEntry("qux")
+        assertThat(foo.getPool("bar")).extractEntry("qux")
             .hasWeight(2)
             .hasQuality(1)
             .hasNoLootConditions()
@@ -179,8 +171,7 @@ public class ItemEntryAdditionTests
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
         float expectedDamage = 0.5F;
-        assertThat(foo.getPool("bar"))
-            .extractEntry("qux")
+        assertThat(foo.getPool("bar")).extractEntry("qux")
             .hasWeight(2)
             .hasNoLootConditions()
             .asItemEntry()
@@ -205,14 +196,12 @@ public class ItemEntryAdditionTests
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         //set empty tag to work around weird Mojang code where items without NBT are undamageable
         barTweaks.addItemEntry(iitemstack(Items.BOW), 2, 1,
-            new ZenLootFunctionWrapper[] {LootFunctionFactory.setDamage(0.5F, 0.5F)},
-            new ZenLootConditionWrapper[0],
-            "qux");
+            new ZenLootFunctionWrapper[] { LootFunctionFactory.setDamage(0.5F, 0.5F) },
+            new ZenLootConditionWrapper[0], "qux");
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
         float expectedDamage = 0.5F;
-        assertThat(foo.getPool("bar"))
-            .extractEntry("qux")
+        assertThat(foo.getPool("bar")).extractEntry("qux")
             .hasWeight(2)
             .hasQuality(1)
             .hasNoLootConditions()
@@ -240,8 +229,7 @@ public class ItemEntryAdditionTests
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
         int expectedMetadata = 8;
-        assertThat(foo.getPool("bar"))
-            .extractEntry("qux")
+        assertThat(foo.getPool("bar")).extractEntry("qux")
             .hasWeight(2)
             .hasNoLootConditions()
             .asItemEntry()
@@ -265,14 +253,12 @@ public class ItemEntryAdditionTests
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addItemEntry(iitemstack(Items.DYE), 2, 1,
-            new ZenLootFunctionWrapper[] {LootFunctionFactory.setMetadata(8, 8)},
-            new ZenLootConditionWrapper[0],
+            new ZenLootFunctionWrapper[] { LootFunctionFactory.setMetadata(8, 8) }, new ZenLootConditionWrapper[0],
             "qux");
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
         int expectedMetadata = 8;
-        assertThat(foo.getPool("bar"))
-            .extractEntry("qux")
+        assertThat(foo.getPool("bar")).extractEntry("qux")
             .hasWeight(2)
             .hasQuality(1)
             .hasNoLootConditions()
@@ -305,16 +291,14 @@ public class ItemEntryAdditionTests
             display.setString("Name", "Super Bread");
             expectedTag.setTag("display", display);
         }
-        assertThat(foo.getPool("bar"))
-            .extractEntry("qux")
+        assertThat(foo.getPool("bar")).extractEntry("qux")
             .hasWeight(2)
             .hasNoLootConditions()
             .asItemEntry()
             .spawnsItem(Items.BREAD)
             .hasMatchingFunction(function ->
             {
-                if (function instanceof SetNBT)
-                    return expectedTag.equals(getTag((SetNBT) function));
+                if (function instanceof SetNBT) return expectedTag.equals(getTag((SetNBT) function));
                 return false;
             }, "SetNBT(%s)", expectedTag);
     }
@@ -326,13 +310,12 @@ public class ItemEntryAdditionTests
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
-        IData displayData = new DataMap(ImmutableMap.<String, IData>builder()
-            .put("Name", new DataString("Super Bread")).build(), true);
-        IData nbtData = new DataMap(ImmutableMap.<String, IData>builder()
-            .put("display", displayData).build(), true);
+        IData displayData = new DataMap(
+            ImmutableMap.<String, IData>builder().put("Name", new DataString("Super Bread")).build(), true);
+        IData nbtData = new DataMap(ImmutableMap.<String, IData>builder().put("display", displayData).build(),
+            true);
         barTweaks.addItemEntry(iitemstack(Items.BREAD), 2, 1,
-            new ZenLootFunctionWrapper[] {LootFunctionFactory.setNBT(nbtData)},
-            new ZenLootConditionWrapper[0],
+            new ZenLootFunctionWrapper[] { LootFunctionFactory.setNBT(nbtData) }, new ZenLootConditionWrapper[0],
             "qux");
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
@@ -342,8 +325,7 @@ public class ItemEntryAdditionTests
             display.setString("Name", "Super Bread");
             expectedTag.setTag("display", display);
         }
-        assertThat(foo.getPool("bar"))
-            .extractEntry("qux")
+        assertThat(foo.getPool("bar")).extractEntry("qux")
             .hasWeight(2)
             .hasQuality(1)
             .hasNoLootConditions()
@@ -351,8 +333,7 @@ public class ItemEntryAdditionTests
             .spawnsItem(Items.BREAD)
             .hasMatchingFunction(function ->
             {
-                if (function instanceof SetNBT)
-                    return expectedTag.equals(getTag((SetNBT) function));
+                if (function instanceof SetNBT) return expectedTag.equals(getTag((SetNBT) function));
                 return false;
             }, "SetNBT(%s)", expectedTag);
     }

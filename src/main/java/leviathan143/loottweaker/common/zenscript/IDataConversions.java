@@ -14,6 +14,7 @@ import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootFunctionWrapper;
 import stanhebben.zenscript.annotations.ZenCaster;
 import stanhebben.zenscript.annotations.ZenExpansion;
 
+
 @ZenRegister
 @ZenExpansion("crafttweaker.data.IData")
 public class IDataConversions
@@ -61,8 +62,8 @@ public class IDataConversions
             Map<String, IData> map = json.asMap();
             if (map == null)
             {
-                context.getErrorHandler().error("%s > Expected map, got %s",
-                    CraftTweakerAPI.getScriptFileAndLine(), json);
+                context.getErrorHandler()
+                    .error("%s > Expected map, got %s", CraftTweakerAPI.getScriptFileAndLine(), json);
                 return Collections.emptyMap();
             }
             return map;

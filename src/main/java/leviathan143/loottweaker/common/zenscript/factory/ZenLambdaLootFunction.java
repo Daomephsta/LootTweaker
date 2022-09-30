@@ -23,6 +23,7 @@ import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.functions.LootFunction;
 import stanhebben.zenscript.annotations.ZenClass;
 
+
 public class ZenLambdaLootFunction extends LootFunction
 {
     public static final LootFunction.Serializer<ZenLambdaLootFunction> SERIALISER = new Serialiser();
@@ -42,7 +43,7 @@ public class ZenLambdaLootFunction extends LootFunction
     public ItemStack apply(ItemStack stack, Random rand, LootContext context)
     {
         IItemStack stackIn = CraftTweakerMC.getIItemStack(stack),
-                   stackOut = delegate.apply(stackIn, new MCRandom(rand), new ZenLootContext(context));
+            stackOut = delegate.apply(stackIn, new MCRandom(rand), new ZenLootContext(context));
         return CraftTweakerMC.getItemStack(stackOut);
     }
 
@@ -68,7 +69,8 @@ public class ZenLambdaLootFunction extends LootFunction
         }
 
         @Override
-        public ZenLambdaLootFunction deserialize(JsonObject object, JsonDeserializationContext context, LootCondition[] conditions)
+        public ZenLambdaLootFunction deserialize(JsonObject object, JsonDeserializationContext context,
+            LootCondition[] conditions)
         {
             return INSTANCES.get(JsonUtils.getInt(object, "lambda_id"));
         }

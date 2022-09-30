@@ -21,6 +21,7 @@ import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 
+
 public class LootTableFinder
 {
     public static final LootTableFinder DEFAULT = new LootTableFinder();
@@ -31,8 +32,7 @@ public class LootTableFinder
 
     public boolean exists(ResourceLocation tableId)
     {
-        if (validIds.contains(tableId))
-            return true;
+        if (validIds.contains(tableId)) return true;
 
         //Cache
         String assetLocation = "assets/" + tableId.getNamespace() + "/loot_tables/" + tableId.getPath() + ".json";
@@ -76,14 +76,13 @@ public class LootTableFinder
                     Level level = mod.getModId().equals("minecraft") || mod.getModId().equals("mcp")
                         ? Level.DEBUG
                         : Level.INFO;
-                    LOGGER.log(level, "Skipped {} ({}) as it reported a nonexistent source {}",
-                        mod.getModId(), mod.getName(), mod.getSource().getAbsolutePath());
+                    LOGGER.log(level, "Skipped {} ({}) as it reported a nonexistent source {}", mod.getModId(),
+                        mod.getName(), mod.getSource().getAbsolutePath());
                     continue;
                 }
                 Path sourcePath = mod.getSource().toPath();
                 //Skip already visited sources
-                if (visitedSources.contains(sourcePath))
-                    continue;
+                if (visitedSources.contains(sourcePath)) continue;
                 LOGGER.debug("Visiting source of {} at {}", mod.getModId(), mod.getSource());
                 visitSource(modClassLoader, sourcePath, this::add);
                 visitedSources.add(sourcePath);
@@ -102,15 +101,13 @@ public class LootTableFinder
             {
                 FileSystem fs = FileSystems.getDefault();
                 Path assetsDir = fs.getPath("assets");
-                if (!Files.exists(assetsDir))
-                    return;
+                if (!Files.exists(assetsDir)) return;
                 walkAssetsDirectory(assetsDir, idSubmitter);
             }
             try (FileSystem fs = getFileSystem(modClassLoader, sourcePath))
             {
                 Path assetsDir = fs.getPath("assets");
-                if (!Files.exists(assetsDir))
-                    return;
+                if (!Files.exists(assetsDir)) return;
                 walkAssetsDirectory(assetsDir, idSubmitter);
             }
         }
@@ -132,19 +129,19 @@ public class LootTableFinder
         for (Path domain : (Iterable<Path>) Files.walk(assetsDir, 1).filter(not(assetsDir::equals))::iterator)
         {
             Path lootTablesDir = domain.resolve("loot_tables");
-            if (!Files.exists(lootTablesDir))
-                continue;
+            if (!Files.exists(lootTablesDir)) continue;
             walkLootTablesDirectory(lootTablesDir, idSubmitter);
         }
     }
 
-    private void walkLootTablesDirectory(Path lootTablesDir, Consumer<ResourceLocation> idSubmitter) throws IOException
+    private void walkLootTablesDirectory(Path lootTablesDir, Consumer<ResourceLocation> idSubmitter)
+        throws IOException
     {
-        for (Path lootTable : (Iterable<Path>) Files.walk(lootTablesDir).filter(not(lootTablesDir::equals))::iterator)
+        for (Path lootTable : (Iterable<Path>) Files.walk(lootTablesDir)
+            .filter(not(lootTablesDir::equals))::iterator)
         {
             //Just to be extra sure it's a loot table
-            if (!FilenameUtils.getExtension(lootTable.getFileName().toString()).equals("json"))
-                continue;
+            if (!FilenameUtils.getExtension(lootTable.getFileName().toString()).equals("json")) continue;
             String namespace = lootTablesDir.getName(1).toString();
             String path = FilenameUtils.removeExtension(lootTablesDir.relativize(lootTable).toString());
             idSubmitter.accept(new ResourceLocation(namespace, path));

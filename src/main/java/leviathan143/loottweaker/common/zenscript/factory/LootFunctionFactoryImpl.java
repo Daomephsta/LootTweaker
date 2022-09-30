@@ -18,6 +18,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.storage.loot.functions.*;
 
+
 public class LootFunctionFactoryImpl
 {
     private final LootTweakerContext context;
@@ -28,7 +29,7 @@ public class LootFunctionFactoryImpl
         this.context = context;
         this.jsonMapConversions = new JsonMapConversions.Impl(context);
     }
-    
+
     public ZenLootFunctionWrapper enchantRandomly(String[] enchantIDList)
     {
         if (!Arguments.nonNull(context.getErrorHandler(), "enchantment IDs", enchantIDList))
@@ -61,8 +62,9 @@ public class LootFunctionFactoryImpl
 
     public ZenLootFunctionWrapper setCount(int min, int max)
     {
-        return new ZenLootFunctionWrapper(new SetCount(LootConditions.NONE,
-            RandomValueRanges.checked(context.getErrorHandler(), min, max)), context);
+        return new ZenLootFunctionWrapper(
+            new SetCount(LootConditions.NONE, RandomValueRanges.checked(context.getErrorHandler(), min, max)),
+            context);
     }
 
     public ZenLootFunctionWrapper setDamage(float min, float max)
@@ -72,14 +74,16 @@ public class LootFunctionFactoryImpl
             context.getErrorHandler().error("Items cannot recieve more than 100% damage!");
             return ZenLootFunctionWrapper.INVALID;
         }
-        return new ZenLootFunctionWrapper(new SetDamage(LootConditions.NONE,
-            RandomValueRanges.checked(context.getErrorHandler(), min, max)), context);
+        return new ZenLootFunctionWrapper(
+            new SetDamage(LootConditions.NONE, RandomValueRanges.checked(context.getErrorHandler(), min, max)),
+            context);
     }
 
     public ZenLootFunctionWrapper setMetadata(int min, int max)
     {
-        return new ZenLootFunctionWrapper(new SetMetadata(LootConditions.NONE,
-            RandomValueRanges.checked(context.getErrorHandler(), min, max)), context);
+        return new ZenLootFunctionWrapper(
+            new SetMetadata(LootConditions.NONE, RandomValueRanges.checked(context.getErrorHandler(), min, max)),
+            context);
     }
 
     public ZenLootFunctionWrapper setNBT(IData nbtData)

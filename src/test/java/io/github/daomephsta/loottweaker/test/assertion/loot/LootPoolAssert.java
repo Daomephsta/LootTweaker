@@ -12,6 +12,7 @@ import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
+
 public class LootPoolAssert extends AbstractObjectAssert<LootPoolAssert, LootPool>
 {
     public LootPoolAssert(LootPool pool)
@@ -58,8 +59,8 @@ public class LootPoolAssert extends AbstractObjectAssert<LootPoolAssert, LootPoo
         isNotNull();
 
         List<LootCondition> actualConditions = LootPoolAccessors.getConditions(actual);
-        if (!actualConditions.isEmpty())
-            failWithMessage("Expected '%s' to have no loot conditions, has %s", actual.getName(), ArrayUtils.toString(actualConditions));
+        if (!actualConditions.isEmpty()) failWithMessage("Expected '%s' to have no loot conditions, has %s",
+            actual.getName(), ArrayUtils.toString(actualConditions));
         return this;
     }
 
@@ -69,8 +70,7 @@ public class LootPoolAssert extends AbstractObjectAssert<LootPoolAssert, LootPoo
         List<LootCondition> actualConditions = LootPoolAccessors.getConditions(actual);
         for (LootCondition condition : actualConditions)
         {
-            if (matcher.test(condition))
-                matches++;
+            if (matcher.test(condition)) matches++;
         }
         if (matches == 0)
         {

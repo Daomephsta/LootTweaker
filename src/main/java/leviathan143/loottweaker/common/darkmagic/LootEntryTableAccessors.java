@@ -5,6 +5,7 @@ import java.lang.invoke.MethodHandle;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootEntryTable;
 
+
 public class LootEntryTableAccessors extends AbstractAccessors
 {
     private static final MethodHandle LootEntryTable$tableGetter;

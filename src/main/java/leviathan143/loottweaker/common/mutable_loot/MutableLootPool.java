@@ -20,6 +20,7 @@ import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
+
 public class MutableLootPool
 {
     private static final Logger SANITY_LOGGER = LogManager.getLogger(LootTweaker.MODID + ".sanity_checks");
@@ -54,7 +55,8 @@ public class MutableLootPool
         this.bonusRolls = pool.getBonusRolls();
     }
 
-    public MutableLootPool(String name, Map<String, MutableLootEntry> entries, List<LootCondition> conditions, RandomValueRange rolls, RandomValueRange bonusRolls)
+    public MutableLootPool(String name, Map<String, MutableLootEntry> entries, List<LootCondition> conditions,
+        RandomValueRange rolls, RandomValueRange bonusRolls)
     {
         this.name = name;
         this.entries = entries;
@@ -72,14 +74,17 @@ public class MutableLootPool
                 "Unexpected duplicate entry '%s' while deep cloning mutable pool '%s'. Report this to the mod author",
                 a.getName(), getName()));
         };
-        Map<String, MutableLootEntry> entriesDeepClone = entries.entrySet().stream()
+        Map<String, MutableLootEntry> entriesDeepClone = entries.entrySet()
+            .stream()
             .collect(toMap(Map.Entry::getKey, e -> e.getValue().deepClone(), mergeFunction, HashMap::new));
-        return new MutableLootPool(name, entriesDeepClone, LootConditions.deepClone(conditions), rolls, bonusRolls);
+        return new MutableLootPool(name, entriesDeepClone, LootConditions.deepClone(conditions), rolls,
+            bonusRolls);
     }
 
     public LootPool toImmutable()
     {
-        LootEntry[] entriesArray = entries.values().stream()
+        LootEntry[] entriesArray = entries.values()
+            .stream()
             .map(MutableLootEntry::toImmutable)
             .toArray(LootEntry[]::new);
         return new LootPool(entriesArray, conditions.toArray(LootConditions.NONE), rolls, bonusRolls, name);
@@ -152,8 +157,8 @@ public class MutableLootPool
 
     public void addEntry(MutableLootEntry entry)
     {
-        if (entries.putIfAbsent(entry.getName(), entry) != null)
-            throw new IllegalArgumentException(String.format("Duplicate entry name '%s' in pool '%s'", entry.getName(), this.getName()));
+        if (entries.putIfAbsent(entry.getName(), entry) != null) throw new IllegalArgumentException(
+            String.format("Duplicate entry name '%s' in pool '%s'", entry.getName(), this.getName()));
     }
 
     public MutableLootEntry removeEntry(String name)

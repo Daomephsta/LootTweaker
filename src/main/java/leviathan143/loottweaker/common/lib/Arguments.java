@@ -5,14 +5,15 @@ import java.lang.reflect.Array;
 import crafttweaker.CraftTweakerAPI;
 import leviathan143.loottweaker.common.ErrorHandler;
 
+
 public class Arguments
 {
-    private Arguments() {}
+    private Arguments()
+    {}
 
     public static boolean nonNull(ErrorHandler errorHandler, Object... args)
     {
-        if (args.length % 2 != 0)
-            throw new IllegalArgumentException("Expected list of name value pairs");
+        if (args.length % 2 != 0) throw new IllegalArgumentException("Expected list of name value pairs");
         boolean argsNonNull = true;
         for (int i = 0; i < args.length; i += 2)
         {
@@ -29,8 +30,8 @@ public class Arguments
                 {
                     if (Array.get(value, j) == null)
                     {
-                        errorHandler.error("%s > %s[%d] cannot be null", 
-                            CraftTweakerAPI.getScriptFileAndLine(), name, j);
+                        errorHandler.error("%s > %s[%d] cannot be null", CraftTweakerAPI.getScriptFileAndLine(),
+                            name, j);
                         argsNonNull = false;
                     }
                 }

@@ -12,6 +12,7 @@ import net.minecraft.world.storage.loot.LootEntryItem;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.functions.LootFunction;
 
+
 public class MutableLootEntryItem extends AbstractMutableLootEntry
 {
     private Item item;
@@ -24,7 +25,8 @@ public class MutableLootEntryItem extends AbstractMutableLootEntry
         this.functions = Lists.newArrayList(LootEntryItemAccessors.getFunctions(entry));
     }
 
-    public MutableLootEntryItem(String name, int weight, int quality, List<LootCondition> conditions, Item item, List<LootFunction> functions)
+    public MutableLootEntryItem(String name, int weight, int quality, List<LootCondition> conditions, Item item,
+        List<LootFunction> functions)
     {
         super(name, weight, quality, conditions);
         this.item = item;

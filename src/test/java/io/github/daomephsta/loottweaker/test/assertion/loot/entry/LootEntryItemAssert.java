@@ -9,6 +9,7 @@ import net.minecraft.item.Item;
 import net.minecraft.world.storage.loot.LootEntryItem;
 import net.minecraft.world.storage.loot.functions.LootFunction;
 
+
 public class LootEntryItemAssert extends AbstractLootEntryAssert<LootEntryItemAssert, LootEntryItem>
 {
     public LootEntryItemAssert(LootEntryItem actual)
@@ -19,20 +20,20 @@ public class LootEntryItemAssert extends AbstractLootEntryAssert<LootEntryItemAs
     public LootEntryItemAssert spawnsItem(Item expectedItem)
     {
         isNotNull();
-        
+
         Item actualItem = TestLootEntryItemAccessors.getItem(actual);
-        if (actualItem != expectedItem)
-            failWithMessage("Expected <%s>, was <%s>", expectedItem.getRegistryName(), actualItem.getRegistryName());
+        if (actualItem != expectedItem) failWithMessage("Expected <%s>, was <%s>", expectedItem.getRegistryName(),
+            actualItem.getRegistryName());
         return this;
     }
 
     public LootEntryItemAssert hasNoLootFunctions()
     {
         isNotNull();
-        
+
         LootFunction[] actualFunctions = TestLootEntryItemAccessors.getFunctions(actual);
-        if (actualFunctions.length > 0)
-            failWithMessage("Expected '%s' to have no loot functions, has %s", actual.getEntryName(), ArrayUtils.toString(actualFunctions));
+        if (actualFunctions.length > 0) failWithMessage("Expected '%s' to have no loot functions, has %s",
+            actual.getEntryName(), ArrayUtils.toString(actualFunctions));
         return this;
     }
 
@@ -42,22 +43,21 @@ public class LootEntryItemAssert extends AbstractLootEntryAssert<LootEntryItemAs
         LootFunction[] actualFunctions = TestLootEntryItemAccessors.getFunctions(actual);
         for (LootFunction function : actualFunctions)
         {
-            if (matcher.test(function))
-                matches++;
+            if (matcher.test(function)) matches++;
         }
         if (matches == 0)
         {
-            failWithMessage("Expected exactly one function in %s to match %s, but none matched", 
+            failWithMessage("Expected exactly one function in %s to match %s, but none matched",
                 ArrayUtils.toString(actualFunctions), descriptor);
         }
         else if (matches > 1)
         {
-            failWithMessage("Expected exactly one function in %s to match %s, but %d matched", 
+            failWithMessage("Expected exactly one function in %s to match %s, but %d matched",
                 ArrayUtils.toString(actualFunctions), descriptor, matches);
         }
         return this;
     }
-    
+
     public LootEntryItemAssert hasMatchingFunction(Predicate<LootFunction> matcher, String format, Object... args)
     {
         return hasMatchingFunction(matcher, String.format(format, args));

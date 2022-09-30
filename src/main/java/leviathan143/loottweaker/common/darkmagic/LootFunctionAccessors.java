@@ -5,6 +5,7 @@ import java.lang.invoke.MethodHandle;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.functions.LootFunction;
 
+
 public class LootFunctionAccessors extends AbstractAccessors
 {
     private static final MethodHandle LootFunction$conditionsSetter;
@@ -19,7 +20,7 @@ public class LootFunctionAccessors extends AbstractAccessors
             throw new RuntimeException("Failed to initialize LootFunction accessor method handles", t);
         }
     }
-    
+
     public static void setConditions(LootFunction function, LootCondition[] conditions)
     {
         try

@@ -17,6 +17,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTable;
 
+
 public class LootTableTweakManager
 {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -29,21 +30,20 @@ public class LootTableTweakManager
         this.context = context;
     }
 
-	public ZenLootTableWrapper getTable(String tableName)
-	{
-	    return getTableInternal(tableName);
-	}
+    public ZenLootTableWrapper getTable(String tableName)
+    {
+        return getTableInternal(tableName);
+    }
 
-	public ZenLootTableWrapper getTableUnchecked(String tableName)
-	{
-	    return getTable(tableName);
-	}
+    public ZenLootTableWrapper getTableUnchecked(String tableName)
+    {
+        return getTable(tableName);
+    }
 
-	private ZenLootTableWrapper getTableInternal(String tableName)
+    private ZenLootTableWrapper getTableInternal(String tableName)
     {
         ResourceLocation tableId = new ResourceLocation(tableName);
-        if (tableBuilders.containsKey(tableId))
-            return tableBuilders.get(tableId);
+        if (tableBuilders.containsKey(tableId)) return tableBuilders.get(tableId);
         ZenLootTableWrapper wrapper = tweakedTables.get(tableId);
         if (wrapper == null)
         {
@@ -63,13 +63,13 @@ public class LootTableTweakManager
         {
             if (id.startsWith("minecraft"))
             {
-                context.getErrorHandler().warn(
-                    "Table id '%s' explicitly uses the minecraft namespace, this is discouraged", id);
+                context.getErrorHandler()
+                    .warn("Table id '%s' explicitly uses the minecraft namespace, this is discouraged", id);
             }
             else
             {
-                context.getErrorHandler().warn(
-                    "Table id '%s' implicitly uses the minecraft namespace, this is discouraged", id);
+                context.getErrorHandler()
+                    .warn("Table id '%s' implicitly uses the minecraft namespace, this is discouraged", id);
             }
         }
         if (LootTableFinder.DEFAULT.exists(tableId))
@@ -86,7 +86,8 @@ public class LootTableTweakManager
 
     public void onServerStart(MinecraftServer server)
     {
-        File worldLootTables = server.getActiveAnvilConverter().getFile(server.getFolderName(), "data/loot_tables");
+        File worldLootTables = server.getActiveAnvilConverter()
+            .getFile(server.getFolderName(), "data/loot_tables");
         LootTableDumper dumper = new LootTableDumper(worldLootTables, LootTableManagerAccessors.getGsonInstance());
         for (ZenLootTableWrapper builder : tableBuilders.values())
         {

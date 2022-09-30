@@ -9,6 +9,7 @@ import com.google.gson.JsonElement;
 import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
 import net.minecraft.world.storage.loot.functions.LootFunction;
 
+
 public class LootFunctions
 {
     public static final LootFunction[] NONE = {};

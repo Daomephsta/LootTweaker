@@ -11,15 +11,12 @@ import net.minecraft.world.storage.loot.conditions.RandomChanceWithLooting;
 import net.minecraft.world.storage.loot.properties.EntityOnFire;
 import net.minecraft.world.storage.loot.properties.EntityProperty;
 
+
 public class TestLootConditionAccessors extends AbstractAccessors
 {
-    private static final MethodHandle KilledByPlayer$inverseGetter,
-                                      RandomChance$chanceGetter,
-                                      RandomChanceWithLooting$chanceGetter,
-                                      RandomChanceWithLooting$lootingMultiplierGetter,
-                                      EntityHasProperty$targetGetter,
-                                      EntityHasProperty$propertiesGetter,
-                                      EntityOnFire$onFireGetter;
+    private static final MethodHandle KilledByPlayer$inverseGetter, RandomChance$chanceGetter,
+        RandomChanceWithLooting$chanceGetter, RandomChanceWithLooting$lootingMultiplierGetter,
+        EntityHasProperty$targetGetter, EntityHasProperty$propertiesGetter, EntityOnFire$onFireGetter;
     static
     {
         try
@@ -27,7 +24,8 @@ public class TestLootConditionAccessors extends AbstractAccessors
             KilledByPlayer$inverseGetter = createFieldGetter(KilledByPlayer.class, "inverse");
             RandomChance$chanceGetter = createFieldGetter(RandomChance.class, "chance");
             RandomChanceWithLooting$chanceGetter = createFieldGetter(RandomChanceWithLooting.class, "chance");
-            RandomChanceWithLooting$lootingMultiplierGetter = createFieldGetter(RandomChanceWithLooting.class, "lootingMultiplier");
+            RandomChanceWithLooting$lootingMultiplierGetter = createFieldGetter(RandomChanceWithLooting.class,
+                "lootingMultiplier");
             EntityHasProperty$targetGetter = createFieldGetter(EntityHasProperty.class, "target");
             EntityHasProperty$propertiesGetter = createFieldGetter(EntityHasProperty.class, "properties");
             EntityOnFire$onFireGetter = createFieldGetter(EntityOnFire.class, "onFire");
@@ -82,7 +80,8 @@ public class TestLootConditionAccessors extends AbstractAccessors
         }
         catch (Throwable e)
         {
-            throw new RuntimeException("Could not invoke RandomChanceWithLooting lootingMultiplier getter method handle", e);
+            throw new RuntimeException(
+                "Could not invoke RandomChanceWithLooting lootingMultiplier getter method handle", e);
         }
     }
 

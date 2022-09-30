@@ -6,6 +6,7 @@ import leviathan143.loottweaker.common.darkmagic.AbstractAccessors;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootEntryTable;
 
+
 public class TestLootEntryTableAccessors extends AbstractAccessors
 {
     private static final MethodHandle LootEntryTable$tableGetter;

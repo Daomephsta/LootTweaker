@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
+
 @ZenRegister
 @ZenClass(LootTweaker.MODID + ".LootTweaker")
 @Mod.EventBusSubscriber(modid = LootTweaker.MODID)

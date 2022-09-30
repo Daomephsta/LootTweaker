@@ -26,20 +26,20 @@ import net.minecraft.world.storage.loot.functions.Smelt;
 import net.minecraft.world.storage.loot.properties.EntityOnFire;
 import net.minecraft.world.storage.loot.properties.EntityProperty;
 
+
 public class JsonMapConversionTests
 {
-    private final Condition<ZenLootConditionWrapper> VALID_CONDITION =
-        new Condition<>(ZenLootConditionWrapper::isValid, "valid condition");
-    private final Condition<ZenLootFunctionWrapper> VALID_FUNCTION =
-        new Condition<>(ZenLootFunctionWrapper::isValid, "valid function");
+    private final Condition<ZenLootConditionWrapper> VALID_CONDITION = new Condition<>(
+        ZenLootConditionWrapper::isValid, "valid condition");
+    private final Condition<ZenLootFunctionWrapper> VALID_FUNCTION = new Condition<>(
+        ZenLootFunctionWrapper::isValid, "valid function");
     private final JsonMapConversions.Impl jsonMapConversions = new JsonMapConversions.Impl(TestUtils.context());
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void parseSimpleCondition()
     {
         Map<String, Object> json = ImmutableMap.of("condition", "minecraft:killed_by_player");
-        assertThat(jsonMapConversions.asLootCondition(json))
-            .is(VALID_CONDITION)
+        assertThat(jsonMapConversions.asLootCondition(json)).is(VALID_CONDITION)
             .extracting(ZenLootConditionWrapper::unwrap)
             .asInstanceOf(type(KilledByPlayer.class))
             .satisfies(new Condition<>(not(TestLootConditionAccessors::isInverted), "KilledByPlayer()"));
@@ -48,21 +48,16 @@ public class JsonMapConversionTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void parseNestingCondition()
     {
-        Map<String, Object> json = ImmutableMap.of(
-            "condition", "minecraft:entity_properties",
-            "entity", "this",
+        Map<String, Object> json = ImmutableMap.of("condition", "minecraft:entity_properties", "entity", "this",
             "properties", ImmutableMap.of("on_fire", true));
-        assertThat(jsonMapConversions.asLootCondition(json))
-            .is(VALID_CONDITION)
+        assertThat(jsonMapConversions.asLootCondition(json)).is(VALID_CONDITION)
             .extracting(ZenLootConditionWrapper::unwrap)
             .asInstanceOf(type(EntityHasProperty.class))
             .satisfies(new Condition<>(entityHasProperty ->
             {
-                if (TestLootConditionAccessors.getTarget(entityHasProperty) != EntityTarget.THIS)
-                    return false;
+                if (TestLootConditionAccessors.getTarget(entityHasProperty) != EntityTarget.THIS) return false;
                 EntityProperty[] properties = TestLootConditionAccessors.getProperties(entityHasProperty);
-                if (properties.length != 1)
-                    return false;
+                if (properties.length != 1) return false;
                 if (properties[0] instanceof EntityOnFire)
                     return TestLootConditionAccessors.isOnFire((EntityOnFire) properties[0]);
                 return false;
@@ -73,8 +68,7 @@ public class JsonMapConversionTests
     public void parseMalformedCondition()
     {
         Map<String, Object> json = ImmutableMap.of("condition", "garBaGe");
-        assertThatThrownBy(() -> jsonMapConversions.asLootCondition(json))
-            .isInstanceOf(LootTweakerException.class)
+        assertThatThrownBy(() -> jsonMapConversions.asLootCondition(json)).isInstanceOf(LootTweakerException.class)
             .hasMessage("Unknown condition 'minecraft:garbage'");
     }
 
@@ -82,8 +76,7 @@ public class JsonMapConversionTests
     public void parseSimpleFunction()
     {
         Map<String, Object> json = ImmutableMap.of("function", "minecraft:furnace_smelt");
-        assertThat(jsonMapConversions.asLootFunction(json))
-            .is(VALID_FUNCTION)
+        assertThat(jsonMapConversions.asLootFunction(json)).is(VALID_FUNCTION)
             .extracting(ZenLootFunctionWrapper::unwrap)
             .isInstanceOf(Smelt.class);
     }
@@ -91,11 +84,9 @@ public class JsonMapConversionTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void parseNestingFunction()
     {
-        Map<String, Object> json = ImmutableMap.of(
-            "function", "minecraft:set_count",
-            "count", ImmutableMap.of("min", 0, "max", 2));
-        assertThat(jsonMapConversions.asLootFunction(json))
-            .is(VALID_FUNCTION)
+        Map<String, Object> json = ImmutableMap.of("function", "minecraft:set_count", "count",
+            ImmutableMap.of("min", 0, "max", 2));
+        assertThat(jsonMapConversions.asLootFunction(json)).is(VALID_FUNCTION)
             .extracting(ZenLootFunctionWrapper::unwrap)
             .asInstanceOf(type(SetCount.class))
             .satisfies(new Condition<>(setCount ->
@@ -109,8 +100,7 @@ public class JsonMapConversionTests
     public void parseMalformedFunction()
     {
         Map<String, Object> json = ImmutableMap.of("function", "garBaGe");
-        assertThatThrownBy(() -> jsonMapConversions.asLootFunction(json))
-            .isInstanceOf(LootTweakerException.class)
+        assertThatThrownBy(() -> jsonMapConversions.asLootFunction(json)).isInstanceOf(LootTweakerException.class)
             .hasMessage("Unknown function 'minecraft:garbage'");
     }
 }

@@ -6,15 +6,11 @@ import leviathan143.loottweaker.common.lib.LootConditions;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
+
 public class LootEntryAccessors extends AbstractAccessors
 {
-    private static final MethodHandle LootEntry$weightGetter,
-                                      LootEntry$weightSetter,
-                                      LootEntry$qualityGetter,
-                                      LootEntry$qualitySetter,
-                                      LootEntry$conditionsGetter,
-                                      LootEntry$conditionsSetter,
-                                      LootEntry$nameSetter;
+    private static final MethodHandle LootEntry$weightGetter, LootEntry$weightSetter, LootEntry$qualityGetter,
+        LootEntry$qualitySetter, LootEntry$conditionsGetter, LootEntry$conditionsSetter, LootEntry$nameSetter;
     static
     {
         try

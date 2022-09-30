@@ -9,17 +9,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraft.world.storage.loot.functions.*;
 
+
 public class TestLootFunctionAccessors extends AbstractAccessors
 {
-    private static final MethodHandle SetCount$countRangeGetter,
-                                      SetDamage$damageRangeGetter,
-                                      SetMetadata$metaRangeGetter,
-                                      SetNBT$tagGetterGetter,
-                                      EnchantRandomly$enchantmentsGetter,
-                                      EnchantWithLevels$randomLevelGetter,
-                                      EnchantWithLevels$isTreasureGetter,
-                                      LootingEnchantBonus$countGetter,
-                                      LootingEnchantBonus$limitGetter;
+    private static final MethodHandle SetCount$countRangeGetter, SetDamage$damageRangeGetter,
+        SetMetadata$metaRangeGetter, SetNBT$tagGetterGetter, EnchantRandomly$enchantmentsGetter,
+        EnchantWithLevels$randomLevelGetter, EnchantWithLevels$isTreasureGetter, LootingEnchantBonus$countGetter,
+        LootingEnchantBonus$limitGetter;
     static
     {
         try

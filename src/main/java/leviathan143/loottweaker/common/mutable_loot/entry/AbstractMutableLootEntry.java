@@ -8,6 +8,7 @@ import leviathan143.loottweaker.common.darkmagic.LootEntryAccessors;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
+
 public abstract class AbstractMutableLootEntry implements MutableLootEntry
 {
     private String name;

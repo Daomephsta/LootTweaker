@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class LTConfig
 {
     private static final Logger LOGGER = LogManager.getLogger(LootTweaker.MODNAME);
-    
+
     @LangKey(LootTweaker.MODID + ".config.warnings.category")
     public static Warnings warnings = new Warnings();
 
@@ -34,9 +34,10 @@ public class LTConfig
         @LangKey(LootTweaker.MODID + ".config.warnings.newTableMinecraftNamespace")
         public boolean newTableMinecraftNamespace = true;
     }
-    
+
     @LangKey(LootTweaker.MODID + ".config.workarounds.category")
     public static Workarounds workarounds = new Workarounds();
+
     public static class Workarounds
     {
         @Comment("Classes to force initialise during pre-init. Use only if directed to by LootTweaker author.")

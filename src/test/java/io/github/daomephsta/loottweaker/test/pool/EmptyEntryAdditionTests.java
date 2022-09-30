@@ -32,11 +32,7 @@ public class EmptyEntryAdditionTests
         barTweaks.addEmptyEntry(2, "corge");
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
-        assertThat(foo.getPool("bar"))
-            .extractEntry("corge")
-            .hasWeight(2)
-            .hasNoLootConditions()
-            .isEmptyEntry();
+        assertThat(foo.getPool("bar")).extractEntry("corge").hasWeight(2).hasNoLootConditions().isEmptyEntry();
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
@@ -49,8 +45,7 @@ public class EmptyEntryAdditionTests
         barTweaks.addEmptyEntry(2, 3, "corge");
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
-        assertThat(foo.getPool("bar"))
-            .extractEntry("corge")
+        assertThat(foo.getPool("bar")).extractEntry("corge")
             .hasWeight(2)
             .hasQuality(3)
             .hasNoLootConditions()
@@ -64,18 +59,16 @@ public class EmptyEntryAdditionTests
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
-        barTweaks.addEmptyEntry(2, 3,
-            new ZenLootConditionWrapper[] {LootConditionFactory.killedByPlayer()},
+        barTweaks.addEmptyEntry(2, 3, new ZenLootConditionWrapper[] { LootConditionFactory.killedByPlayer() },
             "corge");
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
-        assertThat(foo.getPool("bar"))
-            .extractEntry("corge")
+        assertThat(foo.getPool("bar")).extractEntry("corge")
             .hasWeight(2)
             .hasQuality(3)
-            .hasMatchingCondition(condition ->
-                condition instanceof KilledByPlayer && !isInverted((KilledByPlayer) condition),
-            "KilledByPlayer()")
+            .hasMatchingCondition(
+                condition -> condition instanceof KilledByPlayer && !isInverted((KilledByPlayer) condition),
+                "KilledByPlayer()")
             .isEmptyEntry();
     }
 }

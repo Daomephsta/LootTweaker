@@ -7,6 +7,7 @@ import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
+
 @Deprecated
 @ZenRegister
 @ZenClass(LootTweaker.MODID + ".vanilla.loot.LootTables")

@@ -32,8 +32,7 @@ public class LootTableEntryAdditionTests
         barTweaks.addLootTableEntry("loottweaker:qux", 2, "corge");
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
-        assertThat(foo.getPool("bar"))
-            .extractEntry("corge")
+        assertThat(foo.getPool("bar")).extractEntry("corge")
             .hasWeight(2)
             .hasNoLootConditions()
             .asLootTableEntry()
@@ -50,8 +49,7 @@ public class LootTableEntryAdditionTests
         barTweaks.addLootTableEntry("loottweaker:qux", 2, 3, "corge");
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
-        assertThat(foo.getPool("bar"))
-            .extractEntry("corge")
+        assertThat(foo.getPool("bar")).extractEntry("corge")
             .hasWeight(2)
             .hasQuality(3)
             .hasNoLootConditions()
@@ -67,17 +65,15 @@ public class LootTableEntryAdditionTests
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addLootTableEntryHelper("loottweaker:qux", 2, 3,
-            new ZenLootConditionWrapper[] {LootConditionFactory.killedByPlayer()},
-            "corge");
+            new ZenLootConditionWrapper[] { LootConditionFactory.killedByPlayer() }, "corge");
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
-        assertThat(foo.getPool("bar"))
-            .extractEntry("corge")
+        assertThat(foo.getPool("bar")).extractEntry("corge")
             .hasWeight(2)
             .hasQuality(3)
-            .hasMatchingCondition(condition ->
-                condition instanceof KilledByPlayer && !isInverted((KilledByPlayer) condition),
-            "KilledByPlayer()")
+            .hasMatchingCondition(
+                condition -> condition instanceof KilledByPlayer && !isInverted((KilledByPlayer) condition),
+                "KilledByPlayer()")
             .asLootTableEntry()
             .spawnsFromTable("loottweaker:qux");
     }

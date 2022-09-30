@@ -14,8 +14,11 @@ import net.minecraft.util.text.TextComponentTranslation;
 public class CommandLootTables extends CraftTweakerCommand
 {
     private final Map<String, Subcommand> subcommands = ImmutableMap.<String, Subcommand>builder()
-        .put("all", new SubcommandDumpAll()).put("byName", new SubcommandDumpNamed()).put("target", new SubcommandDumpTargetsLootTable())
-        .put("list", new SubcommandListLootTables()).build();
+        .put("all", new SubcommandDumpAll())
+        .put("byName", new SubcommandDumpNamed())
+        .put("target", new SubcommandDumpTargetsLootTable())
+        .put("list", new SubcommandListLootTables())
+        .build();
 
     public CommandLootTables()
     {
@@ -42,6 +45,7 @@ public class CommandLootTables extends CraftTweakerCommand
             subcommand.execute(server, sender, args);
         }
         else
-            sender.sendMessage(new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.unknownSubcommand", args[0]));
+            sender.sendMessage(
+                new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.unknownSubcommand", args[0]));
     }
 }

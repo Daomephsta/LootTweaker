@@ -6,6 +6,7 @@ import leviathan143.loottweaker.common.lib.LootConditions;
 import net.minecraft.world.storage.loot.LootEntryEmpty;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
+
 public class MutableLootEntryEmpty extends AbstractMutableLootEntry
 {
     MutableLootEntryEmpty(LootEntryEmpty entry)
@@ -33,6 +34,7 @@ public class MutableLootEntryEmpty extends AbstractMutableLootEntry
     @Override
     public LootEntryEmpty toImmutable()
     {
-        return new LootEntryEmpty(getWeight(), getQuality(), getConditions().toArray(LootConditions.NONE), getName());
+        return new LootEntryEmpty(getWeight(), getQuality(), getConditions().toArray(LootConditions.NONE),
+            getName());
     }
 }

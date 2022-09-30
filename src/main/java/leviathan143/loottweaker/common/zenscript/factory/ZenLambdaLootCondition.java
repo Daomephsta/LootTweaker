@@ -19,6 +19,7 @@ import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import stanhebben.zenscript.annotations.ZenClass;
 
+
 public class ZenLambdaLootCondition implements LootCondition
 {
     public static final LootCondition.Serializer<ZenLambdaLootCondition> SERIALISER = new Serialiser();

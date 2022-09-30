@@ -15,6 +15,7 @@ import crafttweaker.runtime.CrTTweaker;
 import crafttweaker.runtime.providers.ScriptProviderCustom;
 import crafttweaker.socket.SingleError;
 
+
 public class ScriptRunner
 {
     public static void run(String scriptPath)
@@ -29,16 +30,16 @@ public class ScriptRunner
                 switch (error.level)
                 {
                 case INFO:
-                    CraftTweakerAPI.logInfo(String.format("%s@%d[%d] %s",
-                        error.fileName, error.line, error.offset, error.explanation));
+                    CraftTweakerAPI.logInfo(String.format("%s@%d[%d] %s", error.fileName, error.line, error.offset,
+                        error.explanation));
                     break;
                 case WARN:
-                    CraftTweakerAPI.logWarning(String.format("%s@%d[%d] %s",
-                        error.fileName, error.line, error.offset, error.explanation));
+                    CraftTweakerAPI.logWarning(String.format("%s@%d[%d] %s", error.fileName, error.line,
+                        error.offset, error.explanation));
                     break;
                 case ERROR:
-                    CraftTweakerAPI.logError(String.format("%s@%d[%d] %s",
-                        error.fileName, error.line, error.offset, error.explanation));
+                    CraftTweakerAPI.logError(String.format("%s@%d[%d] %s", error.fileName, error.line,
+                        error.offset, error.explanation));
                     break;
                 }
 
@@ -54,8 +55,7 @@ public class ScriptRunner
         tweaker.setScriptProvider(provider);
         try (InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream(scriptPath))
         {
-            if (stream == null)
-                throw new IllegalArgumentException("No script found at " + scriptPath);
+            if (stream == null) throw new IllegalArgumentException("No script found at " + scriptPath);
             provider.add(scriptPath, ByteStreams.toByteArray(stream));
         }
         catch (IOException e)

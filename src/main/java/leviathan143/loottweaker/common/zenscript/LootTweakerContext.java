@@ -7,6 +7,7 @@ import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootPoolWrapper;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
 import net.minecraft.util.ResourceLocation;
 
+
 public class LootTweakerContext
 {
     private final ErrorHandler errorHandler;

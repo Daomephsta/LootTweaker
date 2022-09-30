@@ -9,6 +9,7 @@ import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootFunctionWrapper;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
+
 @ZenRegister
 @ZenClass(LootTweaker.MODID + ".vanilla.loot.Functions")
 public class LootFunctionFactory

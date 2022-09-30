@@ -14,16 +14,20 @@ import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
+
 /**
- * Checks that all classes and methods are registered with and callable by Zenscript.
- * Functionality is tested elsewhere using the backing Java methods directly.
+ * Checks that all classes and methods are registered with and callable by
+ * Zenscript. Functionality is tested elsewhere using the backing Java methods
+ * directly.
+ * 
  * @author Daomephsta
  *
  */
 public class ZenscriptTests
 {
     @RegisterExtension
-    public static final CraftTweakerLoggerRedirect redirect = new CraftTweakerLoggerRedirect(LogManager.getFormatterLogger("Saddle.LootTweaker"));
+    public static final CraftTweakerLoggerRedirect redirect = new CraftTweakerLoggerRedirect(
+        LogManager.getFormatterLogger("Saddle.LootTweaker"));
 
     @SaddleTest(loadPhase = LoadPhase.INIT)
     public void jsonTests()
@@ -90,8 +94,10 @@ public class ZenscriptTests
 
     private void loadTweakedTables()
     {
-        LootTableTweakManager tweakManager = ObfuscationReflectionHelper.getPrivateValue(ZenLootTableTweakManager.class, null, "TWEAK_MANAGER");
-        Map<ResourceLocation, ZenLootTableWrapper> tweakedTables = ObfuscationReflectionHelper.getPrivateValue(LootTableTweakManager.class, tweakManager, "tweakedTables");
+        LootTableTweakManager tweakManager = ObfuscationReflectionHelper
+            .getPrivateValue(ZenLootTableTweakManager.class, null, "TWEAK_MANAGER");
+        Map<ResourceLocation, ZenLootTableWrapper> tweakedTables = ObfuscationReflectionHelper
+            .getPrivateValue(LootTableTweakManager.class, tweakManager, "tweakedTables");
         for (ResourceLocation tweakedTable : tweakedTables.keySet())
             tweakManager.tweakTable(tweakedTable, TestUtils.loadTable(tweakedTable));
     }

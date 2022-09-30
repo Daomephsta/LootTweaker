@@ -2,8 +2,10 @@ package leviathan143.loottweaker.common.lib;
 
 import net.minecraft.util.ResourceLocation;
 
+
 /**
  * The "path" to a specific loot pool
+ * 
  * @author Daomephsta
  */
 public class QualifiedPoolIdentifier

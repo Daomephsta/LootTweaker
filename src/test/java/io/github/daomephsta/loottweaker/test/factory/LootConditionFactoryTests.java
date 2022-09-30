@@ -24,16 +24,17 @@ import net.minecraft.world.storage.loot.conditions.KilledByPlayer;
 import net.minecraft.world.storage.loot.conditions.RandomChance;
 import net.minecraft.world.storage.loot.conditions.RandomChanceWithLooting;
 
+
 public class LootConditionFactoryTests
 {
-    private final Condition<ZenLootConditionWrapper> VALID_CONDITION = new Condition<>(ZenLootConditionWrapper::isValid, "valid condition");
+    private final Condition<ZenLootConditionWrapper> VALID_CONDITION = new Condition<>(
+        ZenLootConditionWrapper::isValid, "valid condition");
     private final LootConditionFactoryImpl factory = TestUtils.context().createLootConditionFactory();
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void randomChance()
     {
-        assertThat(factory.randomChance(0.21F))
-            .is(VALID_CONDITION)
+        assertThat(factory.randomChance(0.21F)).is(VALID_CONDITION)
             .extracting(ZenLootConditionWrapper::unwrap)
             .asInstanceOf(type(RandomChance.class))
             .satisfies(new Condition<>(rc -> getChance(rc) == 0.21F, "RandomChance(0.21)"));
@@ -42,8 +43,7 @@ public class LootConditionFactoryTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void randomChanceWithLooting()
     {
-        assertThat(factory.randomChanceWithLooting(0.35F, 1.2F))
-            .is(VALID_CONDITION)
+        assertThat(factory.randomChanceWithLooting(0.35F, 1.2F)).is(VALID_CONDITION)
             .extracting(ZenLootConditionWrapper::unwrap)
             .asInstanceOf(type(RandomChanceWithLooting.class))
             .satisfies(new Condition<>(rcwl -> getChance(rcwl) == 0.35F && getLootingMultiplier(rcwl) == 1.2F,
@@ -53,8 +53,7 @@ public class LootConditionFactoryTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void killedByPlayer()
     {
-        assertThat(factory.killedByPlayer())
-            .is(VALID_CONDITION)
+        assertThat(factory.killedByPlayer()).is(VALID_CONDITION)
             .extracting(ZenLootConditionWrapper::unwrap)
             .asInstanceOf(type(KilledByPlayer.class))
             .satisfies(new Condition<>(not(TestLootConditionAccessors::isInverted), "KilledByPlayer()"));
@@ -63,8 +62,7 @@ public class LootConditionFactoryTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void killedByNonPlayer()
     {
-        assertThat(factory.killedByNonPlayer())
-            .is(VALID_CONDITION)
+        assertThat(factory.killedByNonPlayer()).is(VALID_CONDITION)
             .extracting(ZenLootConditionWrapper::unwrap)
             .asInstanceOf(type(KilledByPlayer.class))
             .satisfies(new Condition<>(TestLootConditionAccessors::isInverted, "KilledByNonPlayer()"));
@@ -74,8 +72,7 @@ public class LootConditionFactoryTests
     public void parse()
     {
         Map<String, Object> json = ImmutableMap.of("condition", "minecraft:killed_by_player");
-        assertThat(factory.parse(json))
-            .is(VALID_CONDITION)
+        assertThat(factory.parse(json)).is(VALID_CONDITION)
             .extracting(ZenLootConditionWrapper::unwrap)
             .asInstanceOf(type(KilledByPlayer.class))
             .satisfies(new Condition<>(not(TestLootConditionAccessors::isInverted), "KilledByPlayer()"));
@@ -85,8 +82,7 @@ public class LootConditionFactoryTests
     public void parseMalformed()
     {
         Map<String, Object> json = ImmutableMap.of("condition", "garBaGe");
-        assertThatThrownBy(() -> factory.parse(json))
-            .isInstanceOf(LootTweakerException.class)
+        assertThatThrownBy(() -> factory.parse(json)).isInstanceOf(LootTweakerException.class)
             .hasMessage("Unknown condition 'minecraft:garbage'");
     }
 }

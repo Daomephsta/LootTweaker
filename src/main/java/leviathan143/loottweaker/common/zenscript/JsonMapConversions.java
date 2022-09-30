@@ -22,6 +22,7 @@ import net.minecraft.world.storage.loot.functions.LootFunction;
 import stanhebben.zenscript.annotations.ZenCaster;
 import stanhebben.zenscript.annotations.ZenExpansion;
 
+
 @ZenRegister
 @ZenExpansion("any[any]")
 public class JsonMapConversions
@@ -44,11 +45,12 @@ public class JsonMapConversions
     public static class Impl
     {
         private final LootTweakerContext context;
-        private final Gson lootDeserialiser = LootTableManagerAccessors.getGsonInstance(),
-                           jsonElementSerialiser = new GsonBuilder()
-                               .registerTypeHierarchyAdapter(IData.class,
-                                   (JsonSerializer<IData>) (src, type, context) -> JsonConverter.from(src))
-                               .create();
+        private final Gson
+            lootDeserialiser = LootTableManagerAccessors.getGsonInstance(),
+            jsonElementSerialiser = new GsonBuilder()
+                .registerTypeHierarchyAdapter(IData.class,
+                    (JsonSerializer<IData>) (src, type, context) -> JsonConverter.from(src))
+                .create();
 
         public Impl(LootTweakerContext context)
         {
@@ -58,23 +60,20 @@ public class JsonMapConversions
         @VisibleForTesting
         public ZenLootConditionWrapper asLootCondition(Map<String, ?> json)
         {
-            return parse(json, LootCondition.class)
-                .map(ZenLootConditionWrapper::new)
+            return parse(json, LootCondition.class).map(ZenLootConditionWrapper::new)
                 .orElse(ZenLootConditionWrapper.INVALID);
         }
 
         @VisibleForTesting
         public ZenLootFunctionWrapper asLootFunction(Map<String, ?> json)
         {
-            return parse(json, LootFunction.class)
-                .map(fn -> new ZenLootFunctionWrapper(fn, context))
+            return parse(json, LootFunction.class).map(fn -> new ZenLootFunctionWrapper(fn, context))
                 .orElse(ZenLootFunctionWrapper.INVALID);
         }
 
         private <T> Optional<T> parse(Map<String, ?> data, Class<T> clazz)
         {
-            if (!Arguments.nonNull(context.getErrorHandler(), "json", data))
-                return Optional.empty();
+            if (!Arguments.nonNull(context.getErrorHandler(), "json", data)) return Optional.empty();
             try
             {
                 return Optional.of(lootDeserialiser.fromJson(jsonElementSerialiser.toJsonTree(data), clazz));

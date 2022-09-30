@@ -15,9 +15,11 @@ import net.minecraft.world.storage.loot.LootTable;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
+
 public class TestUtils
 {
-    private TestUtils() {}
+    private TestUtils()
+    {}
 
     public static LootTweakerContext context()
     {
@@ -49,14 +51,14 @@ public class TestUtils
         String location = "assets/" + name.getNamespace() + "/loot_tables/" + name.getPath() + ".json";
         StringBuilder dataBuilder = new StringBuilder();
         InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream(location);
-        if (stream == null)
-            throw new IllegalArgumentException("No such loot table " + name);
-        try(Scanner tableSource = new Scanner(stream))
+        if (stream == null) throw new IllegalArgumentException("No such loot table " + name);
+        try (Scanner tableSource = new Scanner(stream))
         {
-            while(tableSource.hasNextLine())
+            while (tableSource.hasNextLine())
                 dataBuilder.append(tableSource.nextLine());
         }
-        LootTable table = ForgeHooks.loadLootTable(LootTableManagerAccessors.getGsonInstance(), name, dataBuilder.toString(), true, null);
+        LootTable table = ForgeHooks.loadLootTable(LootTableManagerAccessors.getGsonInstance(), name,
+            dataBuilder.toString(), true, null);
         // Unfreeze table & pools, because doing tests will be a PITA otherwise
         ObfuscationReflectionHelper.setPrivateValue(LootTable.class, table, false, "isFrozen");
         for (LootPool pool : LootTableAccessors.getPools(table))

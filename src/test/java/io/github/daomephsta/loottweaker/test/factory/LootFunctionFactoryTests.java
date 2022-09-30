@@ -1,4 +1,5 @@
 package io.github.daomephsta.loottweaker.test.factory;
+
 import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getBonusRange;
 import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getCountRange;
 import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getDamageRange;
@@ -40,18 +41,18 @@ import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.conditions.RandomChance;
 import net.minecraft.world.storage.loot.functions.*;
 
+
 public class LootFunctionFactoryTests
 {
-    private final Condition<ZenLootFunctionWrapper> VALID_FUNCTION = 
-        new Condition<>(ZenLootFunctionWrapper::isValid, "valid function");
+    private final Condition<ZenLootFunctionWrapper> VALID_FUNCTION = new Condition<>(
+        ZenLootFunctionWrapper::isValid, "valid function");
     private final LootTweakerContext context = TestUtils.context();
     private final LootFunctionFactoryImpl factory = context.createLootFunctionFactory();
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void enchantRandomly()
     {
-        assertThat(factory.enchantRandomly(new String[] {"minecraft:thorns"}))
-            .is(VALID_FUNCTION)
+        assertThat(factory.enchantRandomly(new String[] { "minecraft:thorns" })).is(VALID_FUNCTION)
             .extracting(ZenLootFunctionWrapper::unwrap)
             .asInstanceOf(type(EnchantRandomly.class))
             .satisfies(new Condition<>(enchantRandomly ->
@@ -65,7 +66,7 @@ public class LootFunctionFactoryTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void enchantRandomlyInvalidId()
     {
-        assertThatThrownBy(() -> factory.enchantRandomly(new String[] {"minecraft:garbage"}))
+        assertThatThrownBy(() -> factory.enchantRandomly(new String[] { "minecraft:garbage" }))
             .isInstanceOf(LootTweakerException.class)
             .hasMessage("minecraft:garbage is not a valid enchantment id");
     }
@@ -73,8 +74,7 @@ public class LootFunctionFactoryTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void enchantWithLevels()
     {
-        assertThat(factory.enchantWithLevels(11, 26, false))
-            .is(VALID_FUNCTION)
+        assertThat(factory.enchantWithLevels(11, 26, false)).is(VALID_FUNCTION)
             .extracting(ZenLootFunctionWrapper::unwrap)
             .asInstanceOf(type(EnchantWithLevels.class))
             .satisfies(new Condition<>(enchantWithLevels ->
@@ -88,8 +88,7 @@ public class LootFunctionFactoryTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void lootingEnchantBonus()
     {
-        assertThat(factory.lootingEnchantBonus(1, 2, 3))
-            .is(VALID_FUNCTION)
+        assertThat(factory.lootingEnchantBonus(1, 2, 3)).is(VALID_FUNCTION)
             .extracting(ZenLootFunctionWrapper::unwrap)
             .asInstanceOf(type(LootingEnchantBonus.class))
             .satisfies(new Condition<>(lootingEnchantBonus ->
@@ -103,8 +102,7 @@ public class LootFunctionFactoryTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void setCount()
     {
-        assertThat(factory.setCount(1, 3))
-            .is(VALID_FUNCTION)
+        assertThat(factory.setCount(1, 3)).is(VALID_FUNCTION)
             .extracting(ZenLootFunctionWrapper::unwrap)
             .asInstanceOf(type(SetCount.class))
             .satisfies(new Condition<>(setCount ->
@@ -117,8 +115,7 @@ public class LootFunctionFactoryTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void setDamage()
     {
-        assertThat(factory.setDamage(0.2F, 0.8F))
-            .is(VALID_FUNCTION)
+        assertThat(factory.setDamage(0.2F, 0.8F)).is(VALID_FUNCTION)
             .extracting(ZenLootFunctionWrapper::unwrap)
             .asInstanceOf(type(SetDamage.class))
             .satisfies(new Condition<>(setDamage ->
@@ -131,16 +128,14 @@ public class LootFunctionFactoryTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void setDamageInvalidRange()
     {
-        assertThatThrownBy(() -> factory.setDamage(0.2F, 1.8F))
-            .isInstanceOf(LootTweakerException.class)
+        assertThatThrownBy(() -> factory.setDamage(0.2F, 1.8F)).isInstanceOf(LootTweakerException.class)
             .hasMessage("Items cannot recieve more than 100% damage!");
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void setMetadata()
     {
-        assertThat(factory.setMetadata(23, 45))
-            .is(VALID_FUNCTION)
+        assertThat(factory.setMetadata(23, 45)).is(VALID_FUNCTION)
             .extracting(ZenLootFunctionWrapper::unwrap)
             .asInstanceOf(type(SetMetadata.class))
             .satisfies(new Condition<>(setMetadata ->
@@ -155,13 +150,12 @@ public class LootFunctionFactoryTests
     {
         Map<String, IData> data = new HashMap<>();
         data.put("foo", new DataString("bar"));
-        IData nbtData = new DataMap(data , false);
+        IData nbtData = new DataMap(data, false);
 
         NBTTagCompound expectedTag = new NBTTagCompound();
         expectedTag.setString("foo", "bar");
 
-        assertThat(factory.setNBT(nbtData ))
-            .is(VALID_FUNCTION)
+        assertThat(factory.setNBT(nbtData)).is(VALID_FUNCTION)
             .extracting(ZenLootFunctionWrapper::unwrap)
             .asInstanceOf(type(SetNBT.class))
             .satisfies(new Condition<>(setNbt -> TestLootFunctionAccessors.getTag(setNbt).equals(expectedTag),
@@ -173,16 +167,14 @@ public class LootFunctionFactoryTests
     {
 
         DataString invalidData = new DataString("bar");
-        assertThatThrownBy(() -> factory.setNBT(invalidData))
-            .isInstanceOf(LootTweakerException.class)
+        assertThatThrownBy(() -> factory.setNBT(invalidData)).isInstanceOf(LootTweakerException.class)
             .hasMessage("Expected compound nbt tag, got %s", invalidData);
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void smelt()
     {
-        assertThat(factory.smelt())
-            .is(VALID_FUNCTION)
+        assertThat(factory.smelt()).is(VALID_FUNCTION)
             .extracting(ZenLootFunctionWrapper::unwrap)
             .isInstanceOf(Smelt.class);
     }
@@ -191,8 +183,7 @@ public class LootFunctionFactoryTests
     public void parse()
     {
         Map<String, Object> json = ImmutableMap.of("function", "minecraft:furnace_smelt");
-        assertThat(factory.parse(json))
-            .is(VALID_FUNCTION)
+        assertThat(factory.parse(json)).is(VALID_FUNCTION)
             .extracting(ZenLootFunctionWrapper::unwrap)
             .isInstanceOf(Smelt.class);
     }
@@ -201,20 +192,18 @@ public class LootFunctionFactoryTests
     public void parseMalformed()
     {
         Map<String, Object> json = ImmutableMap.of("function", "garBaGe");
-        assertThatThrownBy(() -> factory.parse(json))
-            .isInstanceOf(LootTweakerException.class)
+        assertThatThrownBy(() -> factory.parse(json)).isInstanceOf(LootTweakerException.class)
             .hasMessage("Unknown function 'minecraft:garbage'");
     }
-    
+
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void addConditions()
     {
         ZenLootFunctionWrapper function = new ZenLootFunctionWrapper(
-            new Smelt(new LootCondition[] {new RandomChance(0.5F)}), context);
+            new Smelt(new LootCondition[] { new RandomChance(0.5F) }), context);
         ZenLootConditionWrapper condition = new ZenLootConditionWrapper(new KilledByPlayer(false));
-        function.addConditions(new ZenLootConditionWrapper[] {condition});
-        assertThat(function.unwrap().getConditions())
-            .hasSize(2)
+        function.addConditions(new ZenLootConditionWrapper[] { condition });
+        assertThat(function.unwrap().getConditions()).hasSize(2)
             .hasAtLeastOneElementOfType(RandomChance.class)
             .hasAtLeastOneElementOfType(KilledByPlayer.class);
     }

@@ -14,10 +14,11 @@ import net.minecraft.world.storage.loot.LootEntryItem;
 import net.minecraft.world.storage.loot.LootEntryTable;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
+
 /**
- * @author Daomephsta
- * A loot entry serialiser that "serialises" non-vanilla loot entries type in a best effort manner
- * intended to provide users with info, falling back to vanilla for vanilla types.
+ * @author Daomephsta A loot entry serialiser that "serialises" non-vanilla loot
+ *         entries type in a best effort manner intended to provide users with
+ *         info, falling back to vanilla for vanilla types.
  */
 public class RobustLootEntrySerialiser implements JsonSerializer<LootEntry>
 {
@@ -30,14 +31,12 @@ public class RobustLootEntrySerialiser implements JsonSerializer<LootEntry>
             return vanilla.serialize(patch(value), type, context);
 
         JsonObject json = new JsonObject();
-        if (value.getEntryName() != null)
-            json.addProperty("entryName", value.getEntryName());
+        if (value.getEntryName() != null) json.addProperty("entryName", value.getEntryName());
         json.addProperty("weight", LootEntryAccessors.getWeight(value));
         json.addProperty("quality", LootEntryAccessors.getQuality(value));
         json.addProperty("type", "loottweaker:best_effort");
         LootCondition[] conditions = LootEntryAccessors.getConditions(value);
-        if (conditions.length > 0)
-            json.add("conditions", context.serialize(conditions));
+        if (conditions.length > 0) json.add("conditions", context.serialize(conditions));
         json.addProperty("_comment", "A best effort serialisation of a non-serialisable entry");
         json.addProperty("class", value.getClass().getName());
         return json;

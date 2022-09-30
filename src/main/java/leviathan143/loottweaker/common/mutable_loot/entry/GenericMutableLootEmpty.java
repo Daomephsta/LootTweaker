@@ -10,6 +10,7 @@ import leviathan143.loottweaker.common.lib.LootConditions;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
+
 public class GenericMutableLootEmpty implements MutableLootEntry
 {
     private final LootEntry entry;
@@ -22,8 +23,9 @@ public class GenericMutableLootEmpty implements MutableLootEntry
     @Override
     public MutableLootEntry deepClone()
     {
-        throw new UnsupportedOperationException(String.format("Could not deep copy entry '%s' as it is a non-vanilla loot entry type (%s)",
-            getName(), entry.getClass().getName()));
+        throw new UnsupportedOperationException(
+            String.format("Could not deep copy entry '%s' as it is a non-vanilla loot entry type (%s)", getName(),
+                entry.getClass().getName()));
     }
 
     @Override
@@ -71,7 +73,8 @@ public class GenericMutableLootEmpty implements MutableLootEntry
     @Override
     public void addCondition(LootCondition condition)
     {
-        LootEntryAccessors.setConditions(entry, ArrayUtils.add(LootEntryAccessors.getConditions(entry), condition));
+        LootEntryAccessors.setConditions(entry,
+            ArrayUtils.add(LootEntryAccessors.getConditions(entry), condition));
     }
 
     @Override

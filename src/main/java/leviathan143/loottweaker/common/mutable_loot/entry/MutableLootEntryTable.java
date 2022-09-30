@@ -8,6 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootEntryTable;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
+
 public class MutableLootEntryTable extends AbstractMutableLootEntry
 {
     private ResourceLocation delegateTableId;
@@ -18,13 +19,15 @@ public class MutableLootEntryTable extends AbstractMutableLootEntry
         this.delegateTableId = LootEntryTableAccessors.getTable(entry);
     }
 
-    public MutableLootEntryTable(String name, int weight, int quality, LootCondition[] conditions, ResourceLocation delegateTableId)
+    public MutableLootEntryTable(String name, int weight, int quality, LootCondition[] conditions,
+        ResourceLocation delegateTableId)
     {
         super(name, weight, quality, conditions);
         this.delegateTableId = delegateTableId;
     }
 
-    public MutableLootEntryTable(String name, int weight, int quality, List<LootCondition> conditions, ResourceLocation delegateTableId)
+    public MutableLootEntryTable(String name, int weight, int quality, List<LootCondition> conditions,
+        ResourceLocation delegateTableId)
     {
         super(name, weight, quality, conditions);
         this.delegateTableId = delegateTableId;

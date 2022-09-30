@@ -6,11 +6,10 @@ import leviathan143.loottweaker.common.darkmagic.AbstractAccessors;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
+
 public class TestLootEntryAccessors extends AbstractAccessors
 {
-    private static final MethodHandle LootEntry$weightGetter,
-                                      LootEntry$qualityGetter,
-                                      LootEntry$conditionsGetter;
+    private static final MethodHandle LootEntry$weightGetter, LootEntry$qualityGetter, LootEntry$conditionsGetter;
     static
     {
         try

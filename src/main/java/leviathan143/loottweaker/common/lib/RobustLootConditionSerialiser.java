@@ -15,6 +15,7 @@ import leviathan143.loottweaker.common.darkmagic.LootConditionManagerAccessors;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 
+
 public class RobustLootConditionSerialiser implements JsonSerializer<LootCondition>
 {
     private static final Logger SANITY_LOGGER = LogManager.getLogger(LootTweaker.MODID + ".sanity_checks");
@@ -23,8 +24,7 @@ public class RobustLootConditionSerialiser implements JsonSerializer<LootConditi
     @Override
     public JsonElement serialize(LootCondition condition, Type type, JsonSerializationContext context)
     {
-        if (checkSerialisable(condition))
-            return vanilla.serialize(condition, type, context);
+        if (checkSerialisable(condition)) return vanilla.serialize(condition, type, context);
 
         JsonObject json = new JsonObject();
         json.addProperty("_comment", "A best effort serialisation of a non-serialisable loot condition");

@@ -15,6 +15,7 @@ import leviathan143.loottweaker.common.darkmagic.LootFunctionManagerAccessors;
 import net.minecraft.world.storage.loot.functions.LootFunction;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 
+
 public class RobustLootFunctionSerialiser implements JsonSerializer<LootFunction>
 {
     private static final Logger SANITY_LOGGER = LogManager.getLogger(LootTweaker.MODID + ".sanity_checks");
@@ -23,8 +24,7 @@ public class RobustLootFunctionSerialiser implements JsonSerializer<LootFunction
     @Override
     public JsonElement serialize(LootFunction function, Type type, JsonSerializationContext context)
     {
-        if (checkSerialisable(function))
-            return vanilla.serialize(function, type, context);
+        if (checkSerialisable(function)) return vanilla.serialize(function, type, context);
 
         JsonObject json = new JsonObject();
         json.addProperty("_comment", "A best effort serialisation of a non-serialisable loot function");

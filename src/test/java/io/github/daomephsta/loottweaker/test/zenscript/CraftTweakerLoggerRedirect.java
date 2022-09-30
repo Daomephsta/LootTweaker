@@ -13,6 +13,7 @@ import crafttweaker.CrafttweakerImplementationAPI;
 import crafttweaker.api.player.IPlayer;
 import crafttweaker.runtime.ILogger;
 
+
 public class CraftTweakerLoggerRedirect implements BeforeAllCallback, AfterAllCallback
 {
     private static final String ADAPTER_KEY = "CraftTweakerLoggerRedirect.adapter";
@@ -94,8 +95,7 @@ public class CraftTweakerLoggerRedirect implements BeforeAllCallback, AfterAllCa
         @Override
         public void logDefault(String message)
         {
-            if (!isLogDisabled())
-                logInfo(message);
+            if (!isLogDisabled()) logInfo(message);
         }
 
         @Override
@@ -107,7 +107,7 @@ public class CraftTweakerLoggerRedirect implements BeforeAllCallback, AfterAllCa
         @Override
         public void setLogDisabled(boolean logDisabled)
         {
-            this.defaultLevelDisabled  = logDisabled;
+            this.defaultLevelDisabled = logDisabled;
         }
     }
 

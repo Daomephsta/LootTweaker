@@ -19,6 +19,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
 
+
 public class MutableLootTable
 {
     private static final Logger SANITY_LOGGER = LogManager.getLogger(LootTweaker.MODID + ".sanity_checks");
@@ -63,16 +64,15 @@ public class MutableLootTable
                 "Unexpected duplicate pool '%s' while deep cloning mutable table '%s'. Report this to the mod author",
                 a.getName(), id));
         };
-        Map<String, MutableLootPool> poolsDeepClone = pools.entrySet().stream()
+        Map<String, MutableLootPool> poolsDeepClone = pools.entrySet()
+            .stream()
             .collect(toMap(Map.Entry::getKey, e -> e.getValue().deepClone(), mergeFunction, HashMap::new));
         return new MutableLootTable(id, poolsDeepClone);
     }
 
     public LootTable toImmutable()
     {
-        LootPool[] poolsArray = pools.values().stream()
-            .map(MutableLootPool::toImmutable)
-            .toArray(LootPool[]::new);
+        LootPool[] poolsArray = pools.values().stream().map(MutableLootPool::toImmutable).toArray(LootPool[]::new);
         return new LootTable(poolsArray);
     }
 
@@ -94,8 +94,8 @@ public class MutableLootTable
 
     public void addPool(MutableLootPool pool)
     {
-        if (pools.putIfAbsent(pool.getName(), pool) != null)
-            throw new IllegalArgumentException(String.format("Duplicate pool name '%s' in table '%s'", pool.getName(), id));
+        if (pools.putIfAbsent(pool.getName(), pool) != null) throw new IllegalArgumentException(
+            String.format("Duplicate pool name '%s' in table '%s'", pool.getName(), id));
     }
 
     public MutableLootPool removePool(String name)

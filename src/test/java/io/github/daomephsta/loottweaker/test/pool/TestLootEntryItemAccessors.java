@@ -7,10 +7,10 @@ import net.minecraft.item.Item;
 import net.minecraft.world.storage.loot.LootEntryItem;
 import net.minecraft.world.storage.loot.functions.LootFunction;
 
+
 public class TestLootEntryItemAccessors extends AbstractAccessors
 {
-    private static final MethodHandle LootEntryItem$itemGetter,
-                                      LootEntryItem$functionsGetter;
+    private static final MethodHandle LootEntryItem$itemGetter, LootEntryItem$functionsGetter;
     static
     {
         try

@@ -9,10 +9,11 @@ import io.github.daomephsta.loottweaker.test.pool.TestLootEntryAccessors;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
-public class AbstractLootEntryAssert<SELF extends AbstractLootEntryAssert<SELF, ACTUAL>, ACTUAL extends LootEntry> 
+
+public class AbstractLootEntryAssert<SELF extends AbstractLootEntryAssert<SELF, ACTUAL>, ACTUAL extends LootEntry>
     extends AbstractObjectAssert<SELF, ACTUAL>
 {
-    public AbstractLootEntryAssert(ACTUAL actual, Class<? extends AbstractLootEntryAssert<SELF,ACTUAL>> selfType)
+    public AbstractLootEntryAssert(ACTUAL actual, Class<? extends AbstractLootEntryAssert<SELF, ACTUAL>> selfType)
     {
         super(actual, selfType);
     }
@@ -25,7 +26,7 @@ public class AbstractLootEntryAssert<SELF extends AbstractLootEntryAssert<SELF, 
             failWithMessage("Expected weight to be <%d>, but was <%d>", expectedWeight, actualWeight);
         return myself;
     }
-    
+
     public SELF hasQuality(int expectedQuality)
     {
         isNotNull();
@@ -38,10 +39,10 @@ public class AbstractLootEntryAssert<SELF extends AbstractLootEntryAssert<SELF, 
     public SELF hasNoLootConditions()
     {
         isNotNull();
-        
+
         LootCondition[] actualConditions = TestLootEntryAccessors.getConditions(actual);
-        if (actualConditions.length > 0)
-            failWithMessage("Expected '%s' to have no loot conditions, has %s", actual.getEntryName(), ArrayUtils.toString(actualConditions));
+        if (actualConditions.length > 0) failWithMessage("Expected '%s' to have no loot conditions, has %s",
+            actual.getEntryName(), ArrayUtils.toString(actualConditions));
         return myself;
     }
 
@@ -51,22 +52,21 @@ public class AbstractLootEntryAssert<SELF extends AbstractLootEntryAssert<SELF, 
         LootCondition[] actualConditions = TestLootEntryAccessors.getConditions(actual);
         for (LootCondition condition : actualConditions)
         {
-            if (matcher.test(condition))
-                matches++;
+            if (matcher.test(condition)) matches++;
         }
         if (matches == 0)
         {
-            failWithMessage("Expected exactly one condition in %s to match %s, but none matched", 
+            failWithMessage("Expected exactly one condition in %s to match %s, but none matched",
                 ArrayUtils.toString(actualConditions), descriptor);
         }
         else if (matches > 1)
         {
-            failWithMessage("Expected exactly one condition in %s to match %s, but %d matched", 
+            failWithMessage("Expected exactly one condition in %s to match %s, but %d matched",
                 ArrayUtils.toString(actualConditions), descriptor, matches);
         }
         return myself;
     }
-    
+
     public SELF hasMatchingCondition(Predicate<LootCondition> matcher, String format, Object... args)
     {
         return hasMatchingCondition(matcher, String.format(format, args));

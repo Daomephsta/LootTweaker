@@ -26,6 +26,7 @@ import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.ILootContainer;
 
+
 public class SubcommandDumpTargetsLootTable implements Subcommand
 {
     @Override
@@ -42,16 +43,19 @@ public class SubcommandDumpTargetsLootTable implements Subcommand
                 if (te instanceof ILootContainer)
                     tableId = ((ILootContainer) te).getLootTable();
                 else
-                    sender.sendMessage(new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.target.noTable"));
+                    sender.sendMessage(
+                        new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.target.noTable"));
                 break;
             case ENTITY:
                 if (target.entityHit instanceof EntityLiving)
                     tableId = EntityLivingAccessors.getLootTable((EntityLiving) target.entityHit);
                 else
-                    sender.sendMessage(new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.target.noTable"));
+                    sender.sendMessage(
+                        new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.target.noTable"));
                 break;
             case MISS:
-                sender.sendMessage(new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.target.noTarget"));
+                sender.sendMessage(
+                    new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.target.noTarget"));
                 return;
             default:
                 return;
@@ -59,15 +63,16 @@ public class SubcommandDumpTargetsLootTable implements Subcommand
             //E.g. chest with no loot table tag
             if (tableId == null)
             {
-                sender.sendMessage(new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.target.noTable"));
+                sender.sendMessage(
+                    new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.target.noTable"));
                 return;
             }
             File dump = LootTableDumper.DEFAULT.dump(sender.getEntityWorld(), tableId);
-            if (!server.isDedicatedServer())
-                linkDumpFileInChat(sender, dump, tableId);
+            if (!server.isDedicatedServer()) linkDumpFileInChat(sender, dump, tableId);
         }
         else
-            sender.sendMessage(new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.target.senderNotEntity"));
+            sender.sendMessage(
+                new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.target.senderNotEntity"));
     }
 
     private static RayTraceResult getLookTarget(Entity observer, double distance)
@@ -81,17 +86,15 @@ public class SubcommandDumpTargetsLootTable implements Subcommand
                                         // hit
         if (result != null) blockHitDistance = result.hitVec.distanceTo(eyePos);
 
-        // Encloses the entire area where entities that could collide with this
-        // ray exist
-        AxisAlignedBB entitySearchArea = new AxisAlignedBB(eyePos.x, eyePos.y, eyePos.z,
-                lookTarget.x, lookTarget.y, lookTarget.z);
+        // Encloses the entire area where entities that could collide with this ray exist
+        AxisAlignedBB entitySearchArea = new AxisAlignedBB(eyePos.x, eyePos.y, eyePos.z, lookTarget.x,
+            lookTarget.y, lookTarget.z);
         Entity hitEntity = null; // The closest entity that was hit
-        double entityHitDistance = 0.0D; // The squared distance to the closest
-                                            // entity that was hit
-        for (Entity candidate : world.getEntitiesInAABBexcluding(observer, entitySearchArea, EntitySelectors.NOT_SPECTATING))
+        double entityHitDistance = 0.0D; // The squared distance to the closest entity that was hit
+        for (Entity candidate : world.getEntitiesInAABBexcluding(observer, entitySearchArea,
+            EntitySelectors.NOT_SPECTATING))
         {
-            // The collision AABB of the entity expanded by the collision border
-            // size
+            // The collision AABB of the entity expanded by the collision border size
             AxisAlignedBB collisionBB = candidate.getEntityBoundingBox().grow(candidate.getCollisionBorderSize());
             RayTraceResult intercept = collisionBB.calculateIntercept(eyePos, lookTarget);
             if (intercept != null)
@@ -99,7 +102,7 @@ public class SubcommandDumpTargetsLootTable implements Subcommand
                 double distance1 = eyePos.distanceTo(intercept.hitVec);
 
                 if ((distance1 < blockHitDistance || blockHitDistance == 0)
-                        && (distance1 < entityHitDistance || entityHitDistance == 0.0D))
+                    && (distance1 < entityHitDistance || entityHitDistance == 0.0D))
                 {
                     entityHitDistance = distance1;
                     hitEntity = candidate;
@@ -115,9 +118,13 @@ public class SubcommandDumpTargetsLootTable implements Subcommand
 
     private static void linkDumpFileInChat(ICommandSender sender, File dump, ResourceLocation tableLoc)
     {
-        ITextComponent message = new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.dumpLink", tableLoc);
+        ITextComponent message = new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.dumpLink",
+            tableLoc);
         ITextComponent link = new TextComponentString(dump.toString());
-        link.getStyle().setClickEvent(new ClickEvent(Action.OPEN_FILE, dump.toString())).setUnderlined(true).setColor(TextFormatting.AQUA);
+        link.getStyle()
+            .setClickEvent(new ClickEvent(Action.OPEN_FILE, dump.toString()))
+            .setUnderlined(true)
+            .setColor(TextFormatting.AQUA);
         sender.sendMessage(message.appendSibling(link));
     }
 }

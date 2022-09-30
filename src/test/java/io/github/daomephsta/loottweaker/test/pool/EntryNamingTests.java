@@ -15,6 +15,7 @@ import net.minecraft.init.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTable;
 
+
 public class EntryNamingTests
 {
     private final LootTweakerContext context = TestUtils.context();
@@ -30,9 +31,7 @@ public class EntryNamingTests
         barTweaks.addItemEntry(iitemstack(Items.DYE, 1), 2, null);
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
-        assertThat(foo.getPool("bar"))
-            .hasEntry("loottweaker#1")
-            .hasEntry("loottweaker#2");
+        assertThat(foo.getPool("bar")).hasEntry("loottweaker#1").hasEntry("loottweaker#2");
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
@@ -46,9 +45,7 @@ public class EntryNamingTests
         barTweaks.addItemEntry(iitemstack(Items.DYE, 1), 2, null);
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
-        assertThat(foo.getPool("bar"))
-            .hasEntry("loottweaker#1")
-            .hasEntry("garple");
+        assertThat(foo.getPool("bar")).hasEntry("loottweaker#1").hasEntry("garple");
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
@@ -62,9 +59,7 @@ public class EntryNamingTests
         barTweaks.addLootTableEntry("loottweaker:bar", 2, null);
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
-        assertThat(foo.getPool("bar"))
-            .hasEntry("loottweaker#1")
-            .hasEntry("loottweaker#2");
+        assertThat(foo.getPool("bar")).hasEntry("loottweaker#1").hasEntry("loottweaker#2");
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
@@ -78,9 +73,7 @@ public class EntryNamingTests
         barTweaks.addLootTableEntry("loottweaker:bar", 2, null);
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
-        assertThat(foo.getPool("bar"))
-            .hasEntry("loottweaker#1")
-            .hasEntry("garple");
+        assertThat(foo.getPool("bar")).hasEntry("loottweaker#1").hasEntry("garple");
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
@@ -94,9 +87,7 @@ public class EntryNamingTests
         barTweaks.addEmptyEntry(2, null);
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
-        assertThat(foo.getPool("bar"))
-            .hasEntry("loottweaker#1")
-            .hasEntry("loottweaker#2");
+        assertThat(foo.getPool("bar")).hasEntry("loottweaker#1").hasEntry("loottweaker#2");
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
@@ -110,8 +101,6 @@ public class EntryNamingTests
         barTweaks.addEmptyEntry(2, null);
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
-        assertThat(foo.getPool("bar"))
-            .hasEntry("loottweaker#1")
-            .hasEntry("garple");
+        assertThat(foo.getPool("bar")).hasEntry("loottweaker#1").hasEntry("garple");
     }
 }

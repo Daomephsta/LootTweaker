@@ -6,6 +6,7 @@ import java.util.Map;
 
 import crafttweaker.api.data.*;
 
+
 public class DataMapBuilder
 {
     private final Map<String, IData> data = new HashMap<>();

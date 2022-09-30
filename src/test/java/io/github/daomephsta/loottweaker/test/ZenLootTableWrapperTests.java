@@ -16,6 +16,7 @@ import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
 import net.minecraft.world.storage.loot.RandomValueRange;
 
+
 public class ZenLootTableWrapperTests
 {
     private final LootTweakerContext context = TestUtils.context();
@@ -97,11 +98,12 @@ public class ZenLootTableWrapperTests
         ZenLootTableWrapper fooTweaks = tweakManager.getTable("loottweaker:foo");
         assertThat(fooTweaks.getPool("bar")).isNotNull();
         assertThat(fooTweaks.getPool("bar"))
-            .withFailMessage("Different invocations of getPool() returned different objects for the pool named 'bar'")
+            .withFailMessage(
+                "Different invocations of getPool() returned different objects for the pool named 'bar'")
             .isEqualTo(fooTweaks.getPool("bar"));
         ZenLootPoolWrapper qux = fooTweaks.addPool("qux", 1, 1, 0, 0);
-        assertThat(fooTweaks.getPool("qux"))
-            .withFailMessage("Wrapper returned by addPool() for added pool 'qux' was not returned by subsequent invocation of getPool()")
+        assertThat(fooTweaks.getPool("qux")).withFailMessage(
+            "Wrapper returned by addPool() for added pool 'qux' was not returned by subsequent invocation of getPool()")
             .isEqualTo(qux);
     }
 }

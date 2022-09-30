@@ -23,25 +23,30 @@ public class SubcommandDumpNamed implements Subcommand
     {
         if (args.length < 2)
         {
-            sender.sendMessage(new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.byName.missingName"));
+            sender.sendMessage(
+                new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.byName.missingName"));
             return;
         }
         ResourceLocation tableId = new ResourceLocation(args[1]);
         if (!LootTableFinder.DEFAULT.exists(tableId))
         {
-            sender.sendMessage(new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.byName.invalidName"));
+            sender.sendMessage(
+                new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.byName.invalidName"));
             return;
         }
         File dump = LootTableDumper.DEFAULT.dump(sender.getEntityWorld(), tableId);
-        if (!server.isDedicatedServer())
-            linkDumpFileInChat(sender, dump, tableId);
+        if (!server.isDedicatedServer()) linkDumpFileInChat(sender, dump, tableId);
     }
 
     private static void linkDumpFileInChat(ICommandSender sender, File dump, ResourceLocation tableLoc)
     {
-        ITextComponent message = new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.dumpLink", tableLoc);
+        ITextComponent message = new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.dumpLink",
+            tableLoc);
         ITextComponent link = new TextComponentString(dump.toString());
-        link.getStyle().setClickEvent(new ClickEvent(Action.OPEN_FILE, dump.toString())).setUnderlined(true).setColor(TextFormatting.AQUA);
+        link.getStyle()
+            .setClickEvent(new ClickEvent(Action.OPEN_FILE, dump.toString()))
+            .setUnderlined(true)
+            .setColor(TextFormatting.AQUA);
         sender.sendMessage(message.appendSibling(link));
     }
 }

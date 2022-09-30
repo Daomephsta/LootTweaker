@@ -2,6 +2,7 @@ package leviathan143.loottweaker.common;
 
 import crafttweaker.CraftTweakerAPI;
 
+
 public class CTLoggingErrorHandler implements ErrorHandler
 {
     @Override

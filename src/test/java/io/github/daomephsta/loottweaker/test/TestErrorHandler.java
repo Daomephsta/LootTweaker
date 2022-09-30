@@ -2,6 +2,7 @@ package io.github.daomephsta.loottweaker.test;
 
 import leviathan143.loottweaker.common.ErrorHandler;
 
+
 public class TestErrorHandler implements ErrorHandler
 {
     public static class LootTweakerException extends RuntimeException

@@ -11,6 +11,7 @@ import net.minecraft.world.storage.loot.LootContext;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
+
 @ZenRegister
 @ZenClass(LootTweaker.MODID + ".LootContext")
 public class ZenLootContext

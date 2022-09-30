@@ -10,6 +10,7 @@ import leviathan143.loottweaker.common.zenscript.LootTableTweakManager;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import net.minecraft.util.ResourceLocation;
 
+
 public class LootTableTweakManagerTests
 {
     private final LootTweakerContext context = TestUtils.context();
@@ -43,8 +44,7 @@ public class LootTableTweakManagerTests
     public void newTable()
     {
         LootTableTweakManager tableTweakManager = context.createLootTableTweakManager();
-        assertThat(tableTweakManager.newTable("loottweaker:qux"))
-            .isNotNull();
+        assertThat(tableTweakManager.newTable("loottweaker:qux")).isNotNull();
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)

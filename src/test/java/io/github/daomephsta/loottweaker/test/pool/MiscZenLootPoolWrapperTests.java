@@ -24,6 +24,7 @@ import net.minecraft.world.storage.loot.LootTable;
 import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraft.world.storage.loot.conditions.KilledByPlayer;
 
+
 public class MiscZenLootPoolWrapperTests
 {
     private final LootTweakerContext context = TestUtils.context();
@@ -35,12 +36,12 @@ public class MiscZenLootPoolWrapperTests
         ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
-        barTweaks.addConditionsHelper(new ZenLootConditionWrapper[] {LootConditionFactory.killedByPlayer()});
+        barTweaks.addConditionsHelper(new ZenLootConditionWrapper[] { LootConditionFactory.killedByPlayer() });
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
-        assertThat(foo.getPool("bar")).hasMatchingCondition(condition ->
-            condition instanceof KilledByPlayer && !isInverted((KilledByPlayer) condition),
-        "KilledByPlayer()");
+        assertThat(foo.getPool("bar")).hasMatchingCondition(
+            condition -> condition instanceof KilledByPlayer && !isInverted((KilledByPlayer) condition),
+            "KilledByPlayer()");
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)

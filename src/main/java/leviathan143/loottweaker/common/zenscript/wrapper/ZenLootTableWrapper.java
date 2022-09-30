@@ -18,14 +18,15 @@ import net.minecraft.world.storage.loot.LootTableList;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
+
 @ZenRegister
 @ZenClass(LootTweaker.MODID + ".vanilla.loot.LootTable")
 public class ZenLootTableWrapper
 {
-	private final ResourceLocation id;
-	private final List<LootTableTweaker> tweaks = new ArrayList<>();
-	private final Map<String, ZenLootPoolWrapper> tweakedPools = new HashMap<>();
-	private final LootTweakerContext context;
+    private final ResourceLocation id;
+    private final List<LootTableTweaker> tweaks = new ArrayList<>();
+    private final Map<String, ZenLootPoolWrapper> tweakedPools = new HashMap<>();
+    private final LootTweakerContext context;
 
     public ZenLootTableWrapper(LootTweakerContext context, ResourceLocation id)
     {
@@ -36,8 +37,7 @@ public class ZenLootTableWrapper
     @ZenMethod
     public ZenLootPoolWrapper getPool(String poolName)
     {
-        if (tweakedPools.containsKey(poolName))
-            return tweakedPools.get(poolName);
+        if (tweakedPools.containsKey(poolName)) return tweakedPools.get(poolName);
 
         ZenLootPoolWrapper pool = context.wrapPool(id, poolName);
         tweakedPools.put(poolName, pool);
@@ -53,7 +53,8 @@ public class ZenLootTableWrapper
     }
 
     @ZenMethod
-    public ZenLootPoolWrapper addPool(String poolName, float minRolls, float maxRolls, float minBonusRolls, float maxBonusRolls)
+    public ZenLootPoolWrapper addPool(String poolName, float minRolls, float maxRolls, float minBonusRolls,
+        float maxBonusRolls)
     {
         ZenLootPoolWrapper pool = context.wrapPool(id, poolName);
         enqueueTweaker(table ->
@@ -61,8 +62,9 @@ public class ZenLootTableWrapper
             MutableLootPool existing = table.getPool(poolName);
             if (existing != null)
             {
-                context.getErrorHandler().error("Cannot add pool '%s' to table '%s'. Pool names must be unique within their table.",
-                    poolName, id);
+                context.getErrorHandler()
+                    .error("Cannot add pool '%s' to table '%s'. Pool names must be unique within their table.",
+                        poolName, id);
                 return;
             }
             MutableLootPool newPool = new MutableLootPool(poolName, new HashMap<>(), new ArrayList<>(),
@@ -74,16 +76,17 @@ public class ZenLootTableWrapper
         }, "Queued pool %s for addition to table %s", poolName, id);
         if (tweakedPools.putIfAbsent(poolName, pool) != null)
         {
-            context.getErrorHandler().error("Cannot add pool '%s' to table '%s'. Pool names must be unique within their table.",
-                poolName, id);
+            context.getErrorHandler()
+                .error("Cannot add pool '%s' to table '%s'. Pool names must be unique within their table.",
+                    poolName, id);
             return pool;
         }
         return pool;
     }
 
-	@ZenMethod
-	public void removePool(String poolName)
-	{
+    @ZenMethod
+    public void removePool(String poolName)
+    {
         enqueueTweaker((table) ->
         {
             if (table.getPool(poolName) == null)
@@ -93,7 +96,7 @@ public class ZenLootTableWrapper
             }
             table.removePool(poolName);
         }, "Queued pool %s of table %s for removal", poolName, id);
-	}
+    }
 
     @ZenMethod
     public void clear()
@@ -113,20 +116,20 @@ public class ZenLootTableWrapper
             tweaker.tweak(mutableTable);
     }
 
-	public ResourceLocation getId()
+    public ResourceLocation getId()
     {
         return id;
     }
 
-	public boolean isValid()
-	{
-	    //Use LootTableList as backup, just in case
-	    return LootTableFinder.DEFAULT.exists(id) || LootTableList.getAll().contains(id);
-	}
+    public boolean isValid()
+    {
+        //Use LootTableList as backup, just in case
+        return LootTableFinder.DEFAULT.exists(id) || LootTableList.getAll().contains(id);
+    }
 
-	@FunctionalInterface
-	public interface LootTableTweaker
-	{
-	    public void tweak(MutableLootTable mutableTable);
-	}
+    @FunctionalInterface
+    public interface LootTableTweaker
+    {
+        public void tweak(MutableLootTable mutableTable);
+    }
 }
