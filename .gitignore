@@ -7,6 +7,7 @@
 /libs/*
 /deps/*
 /run/*
+/test/*
 /.settings/*
 *.psd
 *.iml

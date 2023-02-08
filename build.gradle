@@ -1,89 +1,127 @@
-
 // For those who want the bleeding edge
-buildscript {
-    repositories {
-    	maven { url = 'https://sizableshrimp.me/maven' }
-        jcenter()
-		maven {
-			url 'https://plugins.gradle.org/m2/'
-		}
-        maven {
-            name = "forge"
-            url "https://maven.minecraftforge.net/"
-        }
-    }
-    dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-    }
-}
-apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'maven-publish'
-
-/*
-// for people who want stable - not yet functional for MC 1.8.8 - we require the forgegradle 2.1 snapshot
 plugins {
-    id "net.minecraftforge.gradle.forge" version "2.0.2"
+    id 'eclipse'
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'wtf.gofancy.fancygradle' version '1.1.+'
 }
-*/
+// Strip Java 9-specific info from dependencies so Forge doesn't excrete bricks
+apply from: 'java8ify.gradle'
+
 version = "${project.modVersion}+MC${project.minecraftVersion}"
-group= "leviathan143.loottweaker" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = "leviathan143.loottweaker" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "LootTweaker"
 
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+
 minecraft {
-    version = "${project.minecraftVersion}-${project.forgeVersion}"
-    runDir = "run"
-	
-    mappings = project.mappingsVersion
-    makeObfSourceJar = false
-    
-    replace 'GRADLE:VERSION', project.modVersion
+    mappings channel: 'stable', version: project.mappingsVersion
+
+    runs {
+        client {
+            taskName "$archivesBaseName Client"
+            workingDirectory project.file('run/client')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            property 'saddle.disable', 'true'
+            environment 'MC_VERSION', project.minecraftVersion
+        }
+
+        server {
+            taskName "$archivesBaseName Server"
+            workingDirectory project.file('run/server')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            property 'saddle.disable', 'true'
+            environment 'MC_VERSION', project.minecraftVersion
+        }
+
+        testClient {
+            taskName "$archivesBaseName Client Tests"
+            workingDirectory project.file('test/client')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            environment 'MC_VERSION', project.minecraftVersion
+        }
+
+        testServer {
+            taskName "$archivesBaseName Server Tests"
+            workingDirectory project.file('test/server')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            environment 'MC_VERSION', project.minecraftVersion
+        }
+    }
 }
 
-repositories 
+fancyGradle {
+    patches {
+        resources
+        coremods
+    }
+}
+
+// FancyGradle isn't quite enough
+configurations.all {
+    resolutionStrategy {
+        dependencySubstitution {
+            substitute module('net.minecraftforge:legacydev') using module('net.minecraftforge:legacydev:0.2.4.0') because 'Fixes ATs'
+        }
+    }
+}
+
+repositories
 {
     mavenCentral()
     maven
     {
-    	name "Jared"
-    	url "http://maven.blamejared.com"
+        name "Jared"
+        url "https://maven.blamejared.com"
     }
-    maven 
-    { 
-    	name 'JitPack'
-    	url 'https://jitpack.io' 
+    maven
+    {
+        name 'JitPack'
+        url 'https://jitpack.io'
+    }
+    maven
+    {
+        name 'Su5ed LegacyDev Fork'
+        url = 'https://su5ed.jfrog.io/artifactory/maven/'
     }
 }
-dependencies 
+
+dependencies
 {
- 	deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:${project.crafttweakerVersion}"
- 	
- 	testImplementation 'com.github.Daomephsta:Saddle:0.0.3'
- 	testImplementation 'org.assertj:assertj-core:3.13.2'
- 	// Use JUnit test framework
+    minecraft "net.minecraftforge:forge:${project.minecraftVersion}-${project.forgeVersion}"
+
+    implementation "CraftTweaker2:ZenScript:${project.crafttweakerVersion}"
+    implementation fg.deobf("CraftTweaker2:CraftTweaker2-API:${project.crafttweakerVersion}")
+    implementation fg.deobf("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${project.crafttweakerVersion}")
+
+
+    testImplementation 'com.github.Daomephsta:Saddle:0.0.3'
+    testImplementation 'org.assertj:assertj-core:3.13.2'
+    // Use JUnit test framework
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
-	testImplementation 'org.junit.platform:junit-platform-launcher:1.5.2'
-	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
+    testImplementation 'org.junit.platform:junit-platform-launcher:1.5.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
 }
 
 test {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
 
-processResources
-{
-    // this will ensure that this task is redone when the versions change.
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
-
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-                
-        // replace version and mcversion
-        expand 'version': project.modVersion, 'mcversion': project.minecraft.version
+jar {
+    manifest {
+        attributes([
+            "Specification-Title": "LootTweaker",
+            "Specification-Vendor": "Daomephsta",
+            "Specification-Version": "1", // We are version 1 of ourselves
+            "Implementation-Title": project.name,
+            "Implementation-Version": "${version}",
+            "Implementation-Vendor": "loottweaker",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
     }
-        
-    // copy everything else, thats not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
+    finalizedBy('reobfJar')
 }

@@ -1,0 +1,50 @@
+import java.util.jar.JarFile;
+import java.util.jar.JarOutputStream;
+import org.gradle.api.artifacts.transform.TransformParameters;
+
+def java8ified = Attribute.of('java8ified', Boolean)
+
+configurations.all {
+    attributes.attribute(java8ified, true)
+}
+
+dependencies {
+    attributesSchema.attribute(java8ified)
+    artifactTypes.getByName("jar") {
+        attributes.attribute(java8ified, false)
+    }
+
+    registerTransform(Java8ify) {
+        from.attribute(java8ified, false)
+        to.attribute(java8ified, true)
+    }
+}
+
+abstract class Java8ify implements TransformAction<TransformParameters.None> {
+    @InputArtifact
+    abstract Provider<FileSystemLocation> getInputArtifact()
+
+    @Override
+    void transform(TransformOutputs outputs) {
+        def inputFile = inputArtifact.get().asFile
+        def inputJar = new JarFile(inputFile)
+        // Skip JARs without module info files
+        if (!inputJar.stream().filter({entry -> entry.name.endsWith("module-info.class")}).findAny().isPresent()) {
+            outputs.file(inputArtifact)
+            return
+        }
+        println "java8ifying ${inputFile.name}"
+        def outputFile = outputs.file("java8ified/${inputFile.name}")
+        outputFile.withOutputStream { out ->
+             def outputJar = new JarOutputStream(out)
+             inputJar.entries().each { entry ->
+                 if (entry.name.endsWith('module-info.class') || entry.name.startsWith('META-INF/versions/9'))
+                     return
+                outputJar.putNextEntry(entry)
+                outputJar << inputJar.getInputStream(entry)
+                outputJar.closeEntry()
+             }
+             outputJar.finish()
+        }
+    }
+}
