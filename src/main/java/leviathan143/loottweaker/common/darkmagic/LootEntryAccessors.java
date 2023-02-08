@@ -2,6 +2,9 @@ package leviathan143.loottweaker.common.darkmagic;
 
 import java.lang.invoke.MethodHandle;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
+
 import leviathan143.loottweaker.common.lib.LootConditions;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
@@ -10,7 +13,8 @@ import net.minecraft.world.storage.loot.conditions.LootCondition;
 public class LootEntryAccessors extends AbstractAccessors
 {
     private static final MethodHandle LootEntry$weightGetter, LootEntry$weightSetter, LootEntry$qualityGetter,
-        LootEntry$qualitySetter, LootEntry$conditionsGetter, LootEntry$conditionsSetter, LootEntry$nameSetter;
+        LootEntry$qualitySetter, LootEntry$conditionsGetter, LootEntry$conditionsSetter, LootEntry$nameSetter,
+        LootEntry$serialize;
     static
     {
         try
@@ -22,6 +26,8 @@ public class LootEntryAccessors extends AbstractAccessors
             LootEntry$conditionsGetter = createFieldGetter(LootEntry.class, "field_186366_e", "conditions");
             LootEntry$conditionsSetter = createFieldSetter(LootEntry.class, "field_186366_e", "conditions");
             LootEntry$nameSetter = createFieldSetter(LootEntry.class, "entryName");
+            LootEntry$serialize = createMethodInvoker(LootEntry.class, "func_186362_a ", "serialize",
+                JsonObject.class, JsonSerializationContext.class);
         }
         catch (Throwable t)
         {
@@ -116,6 +122,18 @@ public class LootEntryAccessors extends AbstractAccessors
         catch (Throwable e)
         {
             throw new RuntimeException("Could not invoke LootEntry name setter method handle", e);
+        }
+    }
+
+    public static void serialise(LootEntry entry, JsonObject json, JsonSerializationContext context)
+    {
+        try
+        {
+            LootEntry$serialize.invokeExact(entry, json, context);
+        }
+        catch (Throwable e)
+        {
+            throw new RuntimeException("Could not invoke LootEntry.serialize method handle", e);
         }
     }
 }

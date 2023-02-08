@@ -25,21 +25,31 @@ public class RobustLootEntrySerialiser implements JsonSerializer<LootEntry>
     private final JsonSerializer<LootEntry> vanilla = new LootEntry.Serializer();
 
     @Override
-    public JsonElement serialize(LootEntry value, Type type, JsonSerializationContext context)
+    public JsonElement serialize(LootEntry entry, Type type, JsonSerializationContext context)
     {
-        if (value instanceof LootEntryItem || value instanceof LootEntryTable || value instanceof LootEntryEmpty)
-            return vanilla.serialize(patch(value), type, context);
+        if (entry instanceof LootEntryItem || entry instanceof LootEntryTable || entry instanceof LootEntryEmpty)
+            return vanilla.serialize(patch(entry), type, context);
 
         JsonObject json = new JsonObject();
-        if (value.getEntryName() != null) json.addProperty("entryName", value.getEntryName());
-        json.addProperty("weight", LootEntryAccessors.getWeight(value));
-        json.addProperty("quality", LootEntryAccessors.getQuality(value));
+        json.addProperty("weight", LootEntryAccessors.getWeight(entry));
+        json.addProperty("quality", LootEntryAccessors.getQuality(entry));
         json.addProperty("type", "loottweaker:best_effort");
-        LootCondition[] conditions = LootEntryAccessors.getConditions(value);
+        LootCondition[] conditions = LootEntryAccessors.getConditions(entry);
         if (conditions.length > 0) json.add("conditions", context.serialize(conditions));
-        json.addProperty("_comment", "A best effort serialisation of a non-serialisable entry");
-        json.addProperty("class", value.getClass().getName());
+        if (trySerialise(entry, json, context))
+            json.addProperty("loottweaker:comment", "A best effort serialisation of a mod-added serialisable entry type");
+        else
+            json.addProperty("loottweaker:comment", "A best effort serialisation of a mod-added non-serialisable entry type");
+        json.addProperty("loottweaker:class", entry.getClass().getName());
         return json;
+    }
+
+    private boolean trySerialise(LootEntry entry, JsonObject json, JsonSerializationContext context)
+    {
+        int before = json.size();
+        // Attempt serialisation with LootEntry.serialize
+        LootEntryAccessors.serialise(entry, json, context);
+        return json.size() != before;
     }
 
     /** Mutates an entry to avoid bugs in the vanilla serialiser **/
