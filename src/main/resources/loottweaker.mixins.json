@@ -1,0 +1,13 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "leviathan143.loottweaker.common.mixin",
+	"compatibilityLevel": "JAVA_8",
+	"mixins": 
+	[
+	],
+	"injectors": {
+	 	"defaultRequire": 1
+	},
+	"refmap": "mixins.loottweaker.refmap.json"
+ }
