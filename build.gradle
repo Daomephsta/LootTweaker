@@ -1,9 +1,11 @@
 // For those who want the bleeding edge
 plugins {
-    id 'eclipse'
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '5.1.+'
     id 'wtf.gofancy.fancygradle' version '1.1.+'
+    // See hack in settings.gradle for why this works
+    id 'org.spongepowered.mixin' version '0.7.+'
+    id 'eclipse'
 }
 // Strip Java 9-specific info from dependencies so Forge doesn't excrete bricks
 apply from: 'java8ify.gradle'
@@ -14,6 +16,13 @@ archivesBaseName = "LootTweaker"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
+ext.MIXIN_LOADER_CLASS = 'leviathan143.loottweaker.common.MixinLoader'
+
+def mixins(runConfig) {
+	runConfig.jvmArg "-Dfml.coreMods.load=$MIXIN_LOADER_CLASS"
+	runConfig.jvmArg '-Dmixin.hotSwap=true'
+}
+
 minecraft {
     mappings channel: 'stable', version: project.mappingsVersion
 
@@ -21,6 +30,7 @@ minecraft {
         client {
             taskName "$archivesBaseName Client"
             workingDirectory project.file('run/client')
+            mixins(it)
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             property 'saddle.disable', 'true'
@@ -29,6 +39,7 @@ minecraft {
 
         server {
             taskName "$archivesBaseName Server"
+            mixins(it)
             workingDirectory project.file('run/server')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
@@ -38,6 +49,7 @@ minecraft {
 
         testClient {
             taskName "$archivesBaseName Client Tests"
+            mixins(it)
             workingDirectory project.file('test/client')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
@@ -46,6 +58,7 @@ minecraft {
 
         testServer {
             taskName "$archivesBaseName Server Tests"
+            mixins(it)
             workingDirectory project.file('test/server')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
@@ -59,6 +72,11 @@ fancyGradle {
         resources
         coremods
     }
+}
+
+mixin {
+    add sourceSets.main, 'mixins.loottweaker.refmap.json'
+    config 'loottweaker.mixins.json'
 }
 
 // FancyGradle isn't quite enough
@@ -88,6 +106,10 @@ repositories
         name 'Su5ed LegacyDev Fork'
         url = 'https://su5ed.jfrog.io/artifactory/maven/'
     }
+	maven {
+		url = 'https://repo.spongepowered.org/repository/maven-public/'
+		content { includeGroup 'org.spongepowered' }
+	}
 }
 
 dependencies
@@ -98,6 +120,8 @@ dependencies
     implementation fg.deobf("CraftTweaker2:CraftTweaker2-API:${project.crafttweakerVersion}")
     implementation fg.deobf("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${project.crafttweakerVersion}")
 
+    implementation "org.spongepowered:mixin:0.8.5"
+    annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
 
     testImplementation 'com.github.Daomephsta:Saddle:0.0.3'
     testImplementation 'org.assertj:assertj-core:3.13.2'
@@ -120,7 +144,10 @@ jar {
             "Implementation-Title": project.name,
             "Implementation-Version": "${version}",
             "Implementation-Vendor": "loottweaker",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+			"FMLCorePlugin": MIXIN_LOADER_CLASS,
+			"FMLCorePluginContainsFMLMod": "true",
+            "TweakClass": "org.spongepowered.asm.launch.MixinTweaker"
         ])
     }
     finalizedBy('reobfJar')
