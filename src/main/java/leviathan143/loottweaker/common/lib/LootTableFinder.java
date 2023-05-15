@@ -10,12 +10,16 @@ import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.collect.Sets;
+
+import leviathan143.loottweaker.common.compatibility.PlaceboCompatibility;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.fml.common.Loader;
@@ -26,13 +30,15 @@ public class LootTableFinder
 {
     public static final LootTableFinder DEFAULT = new LootTableFinder();
     private static final Logger LOGGER = LogManager.getLogger();
-    //Initialise with vanilla loot tables, plus whatever other tables are registered whenever the class is initialised
-    private final Set<ResourceLocation> validIds = new HashSet<>(LootTableList.getAll());
+    private final Set<ResourceLocation> fileBacked = new HashSet<>();
     private boolean fullScanPerformed = false;
 
     public boolean exists(ResourceLocation tableId)
     {
-        if (validIds.contains(tableId)) return true;
+        if (fileBacked.contains(tableId) ||
+            LootTableList.getAll().contains(tableId) ||
+            PlaceboCompatibility.tableExists(tableId))
+            return true;
 
         //Cache
         String assetLocation = "assets/" + tableId.getNamespace() + "/loot_tables/" + tableId.getPath() + ".json";
@@ -47,7 +53,7 @@ public class LootTableFinder
 
     private boolean add(ResourceLocation tableId)
     {
-        return validIds.add(tableId);
+        return fileBacked.add(tableId);
     }
 
     public boolean fullScanPerformed()
@@ -90,7 +96,9 @@ public class LootTableFinder
             LOGGER.info("All existing loot tables located");
             fullScanPerformed = true;
         }
-        return validIds;
+        return Stream.of(fileBacked, LootTableList.getAll(), PlaceboCompatibility.getAll())
+            .reduce(Sets::union)
+            .get(); // Optional cannot be empty as the stream is non-empty
     }
 
     private void visitSource(ClassLoader modClassLoader, Path sourcePath, Consumer<ResourceLocation> idSubmitter)
