@@ -1,17 +1,16 @@
 package io.github.daomephsta.loottweaker.test.pool;
 
-import static io.github.daomephsta.loottweaker.test.TestLootConditionAccessors.isInverted;
 import static io.github.daomephsta.loottweaker.test.TestUtils.loadTable;
 import static io.github.daomephsta.loottweaker.test.assertion.LootTweakerAssertions.assertThat;
-import static leviathan143.loottweaker.common.accessors.LootPoolAccessors.getConditions;
-import static leviathan143.loottweaker.common.accessors.LootPoolAccessors.getEntries;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.github.daomephsta.loottweaker.test.TestErrorHandler.LootTweakerException;
 import io.github.daomephsta.loottweaker.test.TestUtils;
+import io.github.daomephsta.loottweaker.test.mixin.condition.TestKilledByPlayerAccessors;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
+import leviathan143.loottweaker.common.mixin.LootPoolAccessors;
 import leviathan143.loottweaker.common.zenscript.LootTableTweakManager;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.factory.LootConditionFactory;
@@ -40,7 +39,7 @@ public class MiscZenLootPoolWrapperTests
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
         assertThat(foo.getPool("bar")).hasMatchingCondition(
-            condition -> condition instanceof KilledByPlayer && !isInverted((KilledByPlayer) condition),
+            condition -> condition instanceof KilledByPlayer && !((TestKilledByPlayerAccessors) condition).isInverse(),
             "KilledByPlayer()");
     }
 
@@ -80,11 +79,11 @@ public class MiscZenLootPoolWrapperTests
         ResourceLocation barId = new ResourceLocation("loottweaker_test", "bar");
         ZenLootTableWrapper barTweaks = tweakManager.getTable(barId.toString());
         LootTable barOriginal = loadTable(barId);
-        assertThat(getConditions(barOriginal.getPool("baz"))).isNotEmpty();
+        assertThat(((LootPoolAccessors) barOriginal.getPool("baz")).getConditions()).isNotEmpty();
         ZenLootPoolWrapper bazTweaks = barTweaks.getPool("baz");
         bazTweaks.clearConditions();
         LootTable barNew = tweakManager.tweakTable(barId, barOriginal);
-        assertThat(getConditions(barNew.getPool("baz"))).isEmpty();
+        assertThat(((LootPoolAccessors) barNew.getPool("baz")).getConditions()).isEmpty();
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
@@ -94,11 +93,11 @@ public class MiscZenLootPoolWrapperTests
         ResourceLocation barId = new ResourceLocation("loottweaker_test", "bar");
         ZenLootTableWrapper barTweaks = tweakManager.getTable(barId.toString());
         LootTable barOriginal = loadTable(barId);
-        assertThat(getEntries(barOriginal.getPool("baz"))).isNotEmpty();
+        assertThat(((LootPoolAccessors) barOriginal.getPool("baz")).getEntries()).isNotEmpty();
         ZenLootPoolWrapper bazTweaks = barTweaks.getPool("baz");
         bazTweaks.clearEntries();
         LootTable barNew = tweakManager.tweakTable(barId, barOriginal);
-        assertThat(getEntries(barNew.getPool("baz"))).isEmpty();
+        assertThat(((LootPoolAccessors) barNew.getPool("baz")).getEntries()).isEmpty();
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)

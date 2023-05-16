@@ -1,20 +1,19 @@
 package io.github.daomephsta.loottweaker.test.pool;
 
-import static io.github.daomephsta.loottweaker.test.TestLootConditionAccessors.isInverted;
-import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getCountRange;
-import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getDamageRange;
-import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getMetaRange;
-import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getTag;
 import static io.github.daomephsta.loottweaker.test.TestUtils.iitemstack;
 import static io.github.daomephsta.loottweaker.test.TestUtils.loadTable;
 import static io.github.daomephsta.loottweaker.test.assertion.LootTweakerAssertions.assertThat;
-
 import com.google.common.collect.ImmutableMap;
 
 import crafttweaker.api.data.DataMap;
 import crafttweaker.api.data.DataString;
 import crafttweaker.api.data.IData;
 import io.github.daomephsta.loottweaker.test.TestUtils;
+import io.github.daomephsta.loottweaker.test.mixin.condition.TestKilledByPlayerAccessors;
+import io.github.daomephsta.loottweaker.test.mixin.function.TestSetCountAccessors;
+import io.github.daomephsta.loottweaker.test.mixin.function.TestSetDamageAccessors;
+import io.github.daomephsta.loottweaker.test.mixin.function.TestSetMetadataAccessors;
+import io.github.daomephsta.loottweaker.test.mixin.function.TestSetNBTAccessors;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
 import leviathan143.loottweaker.common.zenscript.LootTableTweakManager;
@@ -93,7 +92,7 @@ public class ItemEntryAdditionTests
             .hasWeight(2)
             .hasQuality(3)
             .hasMatchingCondition(
-                condition -> condition instanceof KilledByPlayer && !isInverted((KilledByPlayer) condition),
+                condition -> condition instanceof KilledByPlayer && !((TestKilledByPlayerAccessors) condition).isInverse(),
                 "KilledByPlayer()")
             .asItemEntry()
             .spawnsItem(Items.BAKED_POTATO)
@@ -120,7 +119,7 @@ public class ItemEntryAdditionTests
             {
                 if (function instanceof SetCount)
                 {
-                    RandomValueRange countRange = getCountRange((SetCount) function);
+                    RandomValueRange countRange = ((TestSetCountAccessors) function).getCountRange();
                     return countRange.getMin() == expectedCount && countRange.getMax() == expectedCount;
                 }
                 return false;
@@ -150,7 +149,7 @@ public class ItemEntryAdditionTests
             {
                 if (function instanceof SetCount)
                 {
-                    RandomValueRange countRange = getCountRange((SetCount) function);
+                    RandomValueRange countRange = ((TestSetCountAccessors) function).getCountRange();
                     return countRange.getMin() == expectedCount && countRange.getMax() == expectedCount;
                 }
                 return false;
@@ -180,7 +179,7 @@ public class ItemEntryAdditionTests
             {
                 if (function instanceof SetDamage)
                 {
-                    RandomValueRange damageRange = getDamageRange((SetDamage) function);
+                    RandomValueRange damageRange = ((TestSetDamageAccessors) function).getDamageRange();
                     return damageRange.getMin() == expectedDamage && damageRange.getMax() == expectedDamage;
                 }
                 return false;
@@ -211,7 +210,7 @@ public class ItemEntryAdditionTests
             {
                 if (function instanceof SetDamage)
                 {
-                    RandomValueRange damageRange = getDamageRange((SetDamage) function);
+                    RandomValueRange damageRange = ((TestSetDamageAccessors) function).getDamageRange();
                     return damageRange.getMin() == expectedDamage && damageRange.getMax() == expectedDamage;
                 }
                 return false;
@@ -238,7 +237,7 @@ public class ItemEntryAdditionTests
             {
                 if (function instanceof SetMetadata)
                 {
-                    RandomValueRange metaRange = getMetaRange((SetMetadata) function);
+                    RandomValueRange metaRange = ((TestSetMetadataAccessors) function).getMetaRange();
                     return metaRange.getMin() == expectedMetadata && metaRange.getMax() == expectedMetadata;
                 }
                 return false;
@@ -268,7 +267,7 @@ public class ItemEntryAdditionTests
             {
                 if (function instanceof SetMetadata)
                 {
-                    RandomValueRange metaRange = getMetaRange((SetMetadata) function);
+                    RandomValueRange metaRange = ((TestSetMetadataAccessors) function).getMetaRange();
                     return metaRange.getMin() == expectedMetadata && metaRange.getMax() == expectedMetadata;
                 }
                 return false;
@@ -298,7 +297,8 @@ public class ItemEntryAdditionTests
             .spawnsItem(Items.BREAD)
             .hasMatchingFunction(function ->
             {
-                if (function instanceof SetNBT) return expectedTag.equals(getTag((SetNBT) function));
+                if (function instanceof SetNBT)
+                    return expectedTag.equals(((TestSetNBTAccessors) function).getTag());
                 return false;
             }, "SetNBT(%s)", expectedTag);
     }
@@ -333,7 +333,8 @@ public class ItemEntryAdditionTests
             .spawnsItem(Items.BREAD)
             .hasMatchingFunction(function ->
             {
-                if (function instanceof SetNBT) return expectedTag.equals(getTag((SetNBT) function));
+                if (function instanceof SetNBT)
+                    return expectedTag.equals(((TestSetNBTAccessors) function).getTag());
                 return false;
             }, "SetNBT(%s)", expectedTag);
     }

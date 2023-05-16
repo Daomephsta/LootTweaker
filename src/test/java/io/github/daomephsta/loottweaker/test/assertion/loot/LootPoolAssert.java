@@ -58,7 +58,7 @@ public class LootPoolAssert extends AbstractObjectAssert<LootPoolAssert, LootPoo
     {
         isNotNull();
 
-        List<LootCondition> actualConditions = LootPoolAccessors.getConditions(actual);
+        List<LootCondition> actualConditions = ((LootPoolAccessors) actual).getConditions();
         if (!actualConditions.isEmpty()) failWithMessage("Expected '%s' to have no loot conditions, has %s",
             actual.getName(), ArrayUtils.toString(actualConditions));
         return this;
@@ -67,7 +67,7 @@ public class LootPoolAssert extends AbstractObjectAssert<LootPoolAssert, LootPoo
     public LootPoolAssert hasMatchingCondition(Predicate<LootCondition> matcher, String descriptor)
     {
         int matches = 0;
-        List<LootCondition> actualConditions = LootPoolAccessors.getConditions(actual);
+        List<LootCondition> actualConditions = ((LootPoolAccessors) actual).getConditions();
         for (LootCondition condition : actualConditions)
         {
             if (matcher.test(condition)) matches++;
