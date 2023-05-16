@@ -24,7 +24,7 @@ public class EntryNamingTests
     public void identicalItems()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addItemEntry(iitemstack(Items.DYE, 2), 5, null);
@@ -38,7 +38,7 @@ public class EntryNamingTests
     public void customNamedItemEntry()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addItemEntry(iitemstack(Items.DYE, 2), 5, "garple");
@@ -52,11 +52,11 @@ public class EntryNamingTests
     public void identicalTableReferences()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
-        barTweaks.addLootTableEntry("loottweaker:bar", 5, null);
-        barTweaks.addLootTableEntry("loottweaker:bar", 2, null);
+        barTweaks.addLootTableEntry("loottweaker_test:bar", 5, null);
+        barTweaks.addLootTableEntry("loottweaker_test:bar", 2, null);
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
         assertThat(foo.getPool("bar")).hasEntry("loottweaker#1").hasEntry("loottweaker#2");
@@ -66,11 +66,11 @@ public class EntryNamingTests
     public void customNamedTableReference()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
-        barTweaks.addLootTableEntry("loottweaker:bar", 5, "garple");
-        barTweaks.addLootTableEntry("loottweaker:bar", 2, null);
+        barTweaks.addLootTableEntry("loottweaker_test:bar", 5, "garple");
+        barTweaks.addLootTableEntry("loottweaker_test:bar", 2, null);
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
         assertThat(foo.getPool("bar")).hasEntry("loottweaker#1").hasEntry("garple");
@@ -80,7 +80,7 @@ public class EntryNamingTests
     public void multipleEmpties()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addEmptyEntry(5, null);
@@ -94,7 +94,7 @@ public class EntryNamingTests
     public void customNamedEmpty()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addEmptyEntry(5, "garple");

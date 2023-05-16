@@ -1,6 +1,5 @@
 package io.github.daomephsta.loottweaker.test;
 
-import static com.google.common.base.Predicates.not;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.InstanceOfAssertFactories.type;
@@ -8,10 +7,15 @@ import static org.assertj.core.api.InstanceOfAssertFactories.type;
 import java.util.Map;
 
 import org.assertj.core.api.Condition;
+import org.junit.jupiter.api.BeforeAll;
 
 import com.google.common.collect.ImmutableMap;
 
 import io.github.daomephsta.loottweaker.test.TestErrorHandler.LootTweakerException;
+import io.github.daomephsta.loottweaker.test.mixin.condition.TestEntityHasPropertyAccessors;
+import io.github.daomephsta.loottweaker.test.mixin.condition.TestEntityOnFireAccessors;
+import io.github.daomephsta.loottweaker.test.mixin.condition.TestKilledByPlayerAccessors;
+import io.github.daomephsta.loottweaker.test.mixin.function.TestSetCountAccessors;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
 import leviathan143.loottweaker.common.zenscript.JsonMapConversions;
@@ -33,7 +37,13 @@ public class JsonMapConversionTests
         ZenLootConditionWrapper::isValid, "valid condition");
     private final Condition<ZenLootFunctionWrapper> VALID_FUNCTION = new Condition<>(
         ZenLootFunctionWrapper::isValid, "valid function");
-    private final JsonMapConversions.Impl jsonMapConversions = new JsonMapConversions.Impl(TestUtils.context());
+    private static JsonMapConversions.Impl jsonMapConversions;
+
+    @BeforeAll
+    public static void setup()
+    {
+        jsonMapConversions = new JsonMapConversions.Impl(TestUtils.context());
+    }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void parseSimpleCondition()
@@ -42,7 +52,7 @@ public class JsonMapConversionTests
         assertThat(jsonMapConversions.asLootCondition(json)).is(VALID_CONDITION)
             .extracting(ZenLootConditionWrapper::unwrap)
             .asInstanceOf(type(KilledByPlayer.class))
-            .satisfies(new Condition<>(not(TestLootConditionAccessors::isInverted), "KilledByPlayer()"));
+            .satisfies(new Condition<>(x -> !((TestKilledByPlayerAccessors) x).isInverse(), "KilledByPlayer()"));
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
@@ -55,11 +65,11 @@ public class JsonMapConversionTests
             .asInstanceOf(type(EntityHasProperty.class))
             .satisfies(new Condition<>(entityHasProperty ->
             {
-                if (TestLootConditionAccessors.getTarget(entityHasProperty) != EntityTarget.THIS) return false;
-                EntityProperty[] properties = TestLootConditionAccessors.getProperties(entityHasProperty);
+                if (((TestEntityHasPropertyAccessors) entityHasProperty).getTarget() != EntityTarget.THIS) return false;
+                EntityProperty[] properties = ((TestEntityHasPropertyAccessors) entityHasProperty).getProperties();
                 if (properties.length != 1) return false;
                 if (properties[0] instanceof EntityOnFire)
-                    return TestLootConditionAccessors.isOnFire((EntityOnFire) properties[0]);
+                    return ((TestEntityOnFireAccessors) properties[0]).isOnFire();
                 return false;
             }, "EntityHasProperty(on_fire = true)"));
     }
@@ -91,7 +101,7 @@ public class JsonMapConversionTests
             .asInstanceOf(type(SetCount.class))
             .satisfies(new Condition<>(setCount ->
             {
-                RandomValueRange countRange = TestLootFunctionAccessors.getCountRange(setCount);
+                RandomValueRange countRange = ((TestSetCountAccessors) setCount).getCountRange();
                 return countRange.getMin() == 0F && countRange.getMax() == 2F;
             }, "SetCount(min = 0, max = 2)"));
     }

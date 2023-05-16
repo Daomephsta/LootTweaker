@@ -1,20 +1,19 @@
 package io.github.daomephsta.loottweaker.test.pool;
 
-import static io.github.daomephsta.loottweaker.test.TestLootConditionAccessors.isInverted;
-import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getCountRange;
-import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getDamageRange;
-import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getMetaRange;
-import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getTag;
 import static io.github.daomephsta.loottweaker.test.TestUtils.iitemstack;
 import static io.github.daomephsta.loottweaker.test.TestUtils.loadTable;
 import static io.github.daomephsta.loottweaker.test.assertion.LootTweakerAssertions.assertThat;
-
 import com.google.common.collect.ImmutableMap;
 
 import crafttweaker.api.data.DataMap;
 import crafttweaker.api.data.DataString;
 import crafttweaker.api.data.IData;
 import io.github.daomephsta.loottweaker.test.TestUtils;
+import io.github.daomephsta.loottweaker.test.mixin.condition.TestKilledByPlayerAccessors;
+import io.github.daomephsta.loottweaker.test.mixin.function.TestSetCountAccessors;
+import io.github.daomephsta.loottweaker.test.mixin.function.TestSetDamageAccessors;
+import io.github.daomephsta.loottweaker.test.mixin.function.TestSetMetadataAccessors;
+import io.github.daomephsta.loottweaker.test.mixin.function.TestSetNBTAccessors;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
 import leviathan143.loottweaker.common.zenscript.LootTableTweakManager;
@@ -45,7 +44,7 @@ public class ItemEntryAdditionTests
     public void addItemEntry()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addItemEntry(iitemstack(Items.APPLE), 2, "qux");
@@ -63,7 +62,7 @@ public class ItemEntryAdditionTests
     public void addItemEntryWithQuality()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addItemEntry(iitemstack(Items.APPLE), 2, 3, "qux");
@@ -82,7 +81,7 @@ public class ItemEntryAdditionTests
     public void addItemEntryWithCondition()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addItemEntry(iitemstack(Items.BAKED_POTATO), 2, 3, new ZenLootFunctionWrapper[0],
@@ -93,7 +92,7 @@ public class ItemEntryAdditionTests
             .hasWeight(2)
             .hasQuality(3)
             .hasMatchingCondition(
-                condition -> condition instanceof KilledByPlayer && !isInverted((KilledByPlayer) condition),
+                condition -> condition instanceof KilledByPlayer && !((TestKilledByPlayerAccessors) condition).isInverse(),
                 "KilledByPlayer()")
             .asItemEntry()
             .spawnsItem(Items.BAKED_POTATO)
@@ -104,7 +103,7 @@ public class ItemEntryAdditionTests
     public void addItemEntryWithImplicitSetCount()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addItemEntry(iitemstack(Items.ARROW, 3), 2, "qux");
@@ -120,7 +119,7 @@ public class ItemEntryAdditionTests
             {
                 if (function instanceof SetCount)
                 {
-                    RandomValueRange countRange = getCountRange((SetCount) function);
+                    RandomValueRange countRange = ((TestSetCountAccessors) function).getCountRange();
                     return countRange.getMin() == expectedCount && countRange.getMax() == expectedCount;
                 }
                 return false;
@@ -131,7 +130,7 @@ public class ItemEntryAdditionTests
     public void addItemEntryWithExplicitSetCount()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addItemEntry(iitemstack(Items.ARROW), 2, 1,
@@ -150,7 +149,7 @@ public class ItemEntryAdditionTests
             {
                 if (function instanceof SetCount)
                 {
-                    RandomValueRange countRange = getCountRange((SetCount) function);
+                    RandomValueRange countRange = ((TestSetCountAccessors) function).getCountRange();
                     return countRange.getMin() == expectedCount && countRange.getMax() == expectedCount;
                 }
                 return false;
@@ -161,7 +160,7 @@ public class ItemEntryAdditionTests
     public void addItemEntryWithImplicitSetDamage()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         @SuppressWarnings("deprecation")
@@ -180,7 +179,7 @@ public class ItemEntryAdditionTests
             {
                 if (function instanceof SetDamage)
                 {
-                    RandomValueRange damageRange = getDamageRange((SetDamage) function);
+                    RandomValueRange damageRange = ((TestSetDamageAccessors) function).getDamageRange();
                     return damageRange.getMin() == expectedDamage && damageRange.getMax() == expectedDamage;
                 }
                 return false;
@@ -191,7 +190,7 @@ public class ItemEntryAdditionTests
     public void addItemEntryWithExplicitSetDamage()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         //set empty tag to work around weird Mojang code where items without NBT are undamageable
@@ -211,7 +210,7 @@ public class ItemEntryAdditionTests
             {
                 if (function instanceof SetDamage)
                 {
-                    RandomValueRange damageRange = getDamageRange((SetDamage) function);
+                    RandomValueRange damageRange = ((TestSetDamageAccessors) function).getDamageRange();
                     return damageRange.getMin() == expectedDamage && damageRange.getMax() == expectedDamage;
                 }
                 return false;
@@ -222,7 +221,7 @@ public class ItemEntryAdditionTests
     public void addItemEntryWithImplicitSetMetadata()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addItemEntry(iitemstack(Items.DYE, 1, 8), 2, "qux");
@@ -238,7 +237,7 @@ public class ItemEntryAdditionTests
             {
                 if (function instanceof SetMetadata)
                 {
-                    RandomValueRange metaRange = getMetaRange((SetMetadata) function);
+                    RandomValueRange metaRange = ((TestSetMetadataAccessors) function).getMetaRange();
                     return metaRange.getMin() == expectedMetadata && metaRange.getMax() == expectedMetadata;
                 }
                 return false;
@@ -249,7 +248,7 @@ public class ItemEntryAdditionTests
     public void addItemEntryWithExplicitSetMetadata()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addItemEntry(iitemstack(Items.DYE), 2, 1,
@@ -268,7 +267,7 @@ public class ItemEntryAdditionTests
             {
                 if (function instanceof SetMetadata)
                 {
-                    RandomValueRange metaRange = getMetaRange((SetMetadata) function);
+                    RandomValueRange metaRange = ((TestSetMetadataAccessors) function).getMetaRange();
                     return metaRange.getMin() == expectedMetadata && metaRange.getMax() == expectedMetadata;
                 }
                 return false;
@@ -279,7 +278,7 @@ public class ItemEntryAdditionTests
     public void addItemEntryWithImplicitSetNBT()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addItemEntry(iitemstack(Items.BREAD).withDisplayName("Super Bread"), 2, "qux");
@@ -298,7 +297,8 @@ public class ItemEntryAdditionTests
             .spawnsItem(Items.BREAD)
             .hasMatchingFunction(function ->
             {
-                if (function instanceof SetNBT) return expectedTag.equals(getTag((SetNBT) function));
+                if (function instanceof SetNBT)
+                    return expectedTag.equals(((TestSetNBTAccessors) function).getTag());
                 return false;
             }, "SetNBT(%s)", expectedTag);
     }
@@ -307,7 +307,7 @@ public class ItemEntryAdditionTests
     public void addItemEntryWithExplicitSetNBT()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         IData displayData = new DataMap(
@@ -333,7 +333,8 @@ public class ItemEntryAdditionTests
             .spawnsItem(Items.BREAD)
             .hasMatchingFunction(function ->
             {
-                if (function instanceof SetNBT) return expectedTag.equals(getTag((SetNBT) function));
+                if (function instanceof SetNBT)
+                    return expectedTag.equals(((TestSetNBTAccessors) function).getTag());
                 return false;
             }, "SetNBT(%s)", expectedTag);
     }

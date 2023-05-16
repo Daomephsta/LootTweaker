@@ -14,9 +14,9 @@ Functions.parse({"function": "minecraft:furnace_smelt"});
 Functions.smelt().addConditions([Conditions.killedByPlayer()]);
 
 
-val foo = LootTweaker.getTable("loottweaker:foo");
+val foo = LootTweaker.getTable("loottweaker_test:foo");
 val foo_bar = foo.getPool("bar");
-foo_bar.addItemEntryHelper(<minecraft:stick>, 1, 0, 
+foo_bar.addItemEntry(<minecraft:stick>, 1, 0, 
 [
     Functions.zenscript(function(stack, random, context)
     {

@@ -52,6 +52,7 @@ minecraft {
             taskName "$archivesBaseName Client Tests"
             workingDirectory project.file('test/client')
             property 'saddle.disable', 'false'
+            args '--mixin.config', 'loottweaker_test.mixins.json'
         }
 
         testServer {
@@ -59,6 +60,7 @@ minecraft {
             taskName "$archivesBaseName Server Tests"
             workingDirectory project.file('test/server')
             property 'saddle.disable', 'false'
+            args '--mixin.config', 'loottweaker_test.mixins.json'
         }
     }
 }
@@ -125,10 +127,6 @@ dependencies
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
     testImplementation 'org.junit.platform:junit-platform-launcher:1.5.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
-}
-
-test {
-    useJUnitPlatform()
 }
 
 jar {
