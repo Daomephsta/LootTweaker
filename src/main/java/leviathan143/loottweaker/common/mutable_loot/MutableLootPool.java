@@ -12,8 +12,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import leviathan143.loottweaker.common.LootTweaker;
-import leviathan143.loottweaker.common.darkmagic.LootPoolAccessors;
 import leviathan143.loottweaker.common.lib.LootConditions;
+import leviathan143.loottweaker.common.mixin.LootPoolAccessors;
 import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntry;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootPool;
@@ -32,7 +32,7 @@ public class MutableLootPool
     MutableLootPool(LootPool pool)
     {
         this.name = pool.getName();
-        List<LootEntry> immutableEntries = LootPoolAccessors.getEntries(pool);
+        List<LootEntry> immutableEntries = ((LootPoolAccessors) pool).getEntries();
         this.entries = new LinkedHashMap<>(immutableEntries.size());
         int uniqueSuffix = 0;
         for (LootEntry entry : immutableEntries)
@@ -50,7 +50,7 @@ public class MutableLootPool
             else
                 entries.put(mutableEntry.getName(), mutableEntry);
         }
-        this.conditions = LootPoolAccessors.getConditions(pool);
+        this.conditions = ((LootPoolAccessors) pool).getConditions();
         this.rolls = pool.getRolls();
         this.bonusRolls = pool.getBonusRolls();
     }

@@ -5,17 +5,17 @@ import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import leviathan143.loottweaker.common.darkmagic.LootEntryAccessors;
 import leviathan143.loottweaker.common.lib.LootConditions;
+import leviathan143.loottweaker.common.mixin.LootEntryAccessors;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
 
-public class GenericMutableLootEmpty implements MutableLootEntry
+public class GenericMutableLootEntry implements MutableLootEntry
 {
     private final LootEntry entry;
 
-    GenericMutableLootEmpty(LootEntry entry)
+    GenericMutableLootEntry(LootEntry entry)
     {
         this.entry = entry;
     }
@@ -37,50 +37,50 @@ public class GenericMutableLootEmpty implements MutableLootEntry
     @Override
     public int getWeight()
     {
-        return LootEntryAccessors.getWeight(entry);
+        return ((LootEntryAccessors) entry).getWeight();
     }
 
     @Override
     public void setWeight(int weight)
     {
-        LootEntryAccessors.setWeight(entry, weight);
+        ((LootEntryAccessors) entry).setWeight(weight);
     }
 
     @Override
     public int getQuality()
     {
-        return LootEntryAccessors.getQuality(entry);
+        return ((LootEntryAccessors) entry).getQuality();
     }
 
     @Override
     public void setQuality(int quality)
     {
-        LootEntryAccessors.setQuality(entry, quality);
+        ((LootEntryAccessors) entry).setQuality(quality);
     }
 
     @Override
     public List<LootCondition> getConditions()
     {
-        return Arrays.asList(LootEntryAccessors.getConditions(entry));
+        return Arrays.asList(LootConditions.get(entry));
     }
 
     @Override
     public void setConditions(List<LootCondition> conditions)
     {
-        LootEntryAccessors.setConditions(entry, conditions.toArray(LootConditions.NONE));
+        ((LootEntryAccessors) entry).setConditions(conditions.toArray(LootConditions.NONE));
     }
 
     @Override
     public void addCondition(LootCondition condition)
     {
-        LootEntryAccessors.setConditions(entry,
-            ArrayUtils.add(LootEntryAccessors.getConditions(entry), condition));
+        ((LootEntryAccessors) entry).setConditions(
+            ArrayUtils.add(LootConditions.get(entry), condition));
     }
 
     @Override
     public void clearConditions()
     {
-        LootEntryAccessors.setConditions(entry, new LootCondition[0]);
+        ((LootEntryAccessors) entry).setConditions(new LootCondition[0]);
     }
 
     @Override
@@ -92,6 +92,6 @@ public class GenericMutableLootEmpty implements MutableLootEntry
     @Override
     public void setName(String name)
     {
-        LootEntryAccessors.setName(entry, name);
+        ((LootEntryAccessors) entry).setName(name);
     }
 }

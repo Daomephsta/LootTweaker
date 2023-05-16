@@ -4,7 +4,8 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import leviathan143.loottweaker.common.darkmagic.LootEntryAccessors;
+import leviathan143.loottweaker.common.lib.LootConditions;
+import leviathan143.loottweaker.common.mixin.LootEntryAccessors;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
@@ -18,9 +19,9 @@ public abstract class AbstractMutableLootEntry implements MutableLootEntry
     protected AbstractMutableLootEntry(LootEntry entry)
     {
         this.name = entry.getEntryName();
-        this.weight = LootEntryAccessors.getWeight(entry);
-        this.quality = LootEntryAccessors.getQuality(entry);
-        this.conditions = Lists.newArrayList(LootEntryAccessors.getConditions(entry));
+        this.weight = ((LootEntryAccessors) entry).getWeight();
+        this.quality = ((LootEntryAccessors) entry).getQuality();
+        this.conditions = Lists.newArrayList(LootConditions.get(entry));
     }
 
     protected AbstractMutableLootEntry(String name, int weight, int quality, LootCondition[] conditions)

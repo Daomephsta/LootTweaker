@@ -3,8 +3,8 @@ package leviathan143.loottweaker.common.command;
 import java.io.File;
 
 import leviathan143.loottweaker.common.LootTweaker;
-import leviathan143.loottweaker.common.darkmagic.EntityLivingAccessors;
 import leviathan143.loottweaker.common.lib.LootTableDumper;
+import leviathan143.loottweaker.common.mixin.EntityLivingAccessors;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -48,7 +48,7 @@ public class SubcommandDumpTargetsLootTable implements Subcommand
                 break;
             case ENTITY:
                 if (target.entityHit instanceof EntityLiving)
-                    tableId = EntityLivingAccessors.getLootTable((EntityLiving) target.entityHit);
+                    tableId = ((EntityLivingAccessors) target.entityHit).callGetLootTable();
                 else
                     sender.sendMessage(
                         new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.target.noTable"));

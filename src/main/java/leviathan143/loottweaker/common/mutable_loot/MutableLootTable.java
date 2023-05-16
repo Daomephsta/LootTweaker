@@ -14,7 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import leviathan143.loottweaker.common.LootTweaker;
-import leviathan143.loottweaker.common.darkmagic.LootTableAccessors;
+import leviathan143.loottweaker.common.mixin.LootTableAccessors;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
@@ -29,7 +29,7 @@ public class MutableLootTable
     public MutableLootTable(LootTable table, ResourceLocation id)
     {
         this.id = id;
-        List<LootPool> immutablePools = LootTableAccessors.getPools(table);
+        List<LootPool> immutablePools = ((LootTableAccessors) table).getPools();
         this.pools = new LinkedHashMap<>(immutablePools.size());
         int uniqueSuffix = 0;
         for (LootPool pool : immutablePools)
