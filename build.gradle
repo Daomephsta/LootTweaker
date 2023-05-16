@@ -39,8 +39,8 @@ minecraft {
 
         server {
             taskName "$archivesBaseName Server"
-            mixins(it)
             workingDirectory project.file('run/server')
+            mixins(it)
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             property 'saddle.disable', 'true'
@@ -48,21 +48,17 @@ minecraft {
         }
 
         testClient {
+            parent runs.client
             taskName "$archivesBaseName Client Tests"
-            mixins(it)
             workingDirectory project.file('test/client')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            environment 'MC_VERSION', project.minecraftVersion
+            property 'saddle.disable', 'false'
         }
 
         testServer {
+            parent runs.server
             taskName "$archivesBaseName Server Tests"
-            mixins(it)
             workingDirectory project.file('test/server')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            environment 'MC_VERSION', project.minecraftVersion
+            property 'saddle.disable', 'false'
         }
     }
 }
