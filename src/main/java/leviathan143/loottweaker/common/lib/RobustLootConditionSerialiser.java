@@ -11,7 +11,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import leviathan143.loottweaker.common.LootTweaker;
-import leviathan143.loottweaker.common.accessors.LootConditionManagerAccessors;
+import leviathan143.loottweaker.common.mixin.LootConditionManagerAccessors;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 

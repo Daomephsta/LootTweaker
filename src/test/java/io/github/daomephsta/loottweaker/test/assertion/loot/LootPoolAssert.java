@@ -7,7 +7,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.assertj.core.api.AbstractObjectAssert;
 
 import io.github.daomephsta.loottweaker.test.assertion.loot.entry.LootEntryAssert;
-import leviathan143.loottweaker.common.accessors.LootPoolAccessors;
+import leviathan143.loottweaker.common.mixin.LootPoolAccessors;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.conditions.LootCondition;

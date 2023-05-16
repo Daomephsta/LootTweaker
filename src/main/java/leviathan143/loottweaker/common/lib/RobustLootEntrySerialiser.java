@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.*;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,7 +14,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-import leviathan143.loottweaker.common.accessors.LootEntryAccessors;
+import leviathan143.loottweaker.common.mixin.LootEntryAccessors;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.storage.loot.LootEntry;
@@ -42,10 +43,10 @@ public class RobustLootEntrySerialiser implements JsonSerializer<LootEntry>
 
         JsonObject json = new JsonObject();
         json.addProperty("entryName", entry.getEntryName());
-        json.addProperty("weight", LootEntryAccessors.getWeight(entry));
-        json.addProperty("quality", LootEntryAccessors.getQuality(entry));
+        json.addProperty("weight", ((LootEntryAccessors) entry).getWeight());
+        json.addProperty("quality", ((LootEntryAccessors) entry).getQuality());
         json.addProperty("type", "loottweaker:best_effort");
-        LootCondition[] conditions = LootEntryAccessors.getConditions(entry);
+        LootCondition[] conditions = LootConditions.get(entry);
         if (conditions.length > 0) json.add("conditions", context.serialize(conditions));
         JsonObject bestEffort = new JsonObject();
         if (trySerialise(entry, json, context))
@@ -64,15 +65,15 @@ public class RobustLootEntrySerialiser implements JsonSerializer<LootEntry>
     {
         int before = json.size();
         // Attempt serialisation with LootEntry.serialize
-        LootEntryAccessors.serialise(entry, json, context);
+        ((LootEntryAccessors) entry).callSerialize(json, context);
         return json.size() != before;
     }
 
     /** Mutates an entry to avoid bugs in the vanilla serialiser **/
     private LootEntry patch(LootEntry entry)
     {
-        if (LootEntryAccessors.getConditionsUnsafe(entry) == null)
-            LootEntryAccessors.setConditions(entry, LootConditions.NONE);
+        if (((LootEntryAccessors) entry).getConditionsUnsafe() == null)
+            ((LootEntryAccessors) entry).setConditions(LootConditions.NONE);
         return entry;
     }
 
