@@ -155,3 +155,11 @@ jar {
     }
     finalizedBy('reobfJar')
 }
+
+processResources {
+	inputs.property 'version', project.modVersion
+
+	filesMatching('mcmod.info') {
+		expand 'version': project.modVersion
+	}
+}
