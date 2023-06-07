@@ -131,7 +131,6 @@ dependencies
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
 }
 
-<<<<<<< HEAD
 def perDevProperties = new Properties()
 file("per-dev.properties").withInputStream(perDevProperties.&load)
 
@@ -144,8 +143,7 @@ tasks.register('deploy', Copy) {
     into file(perDevProperties.deployDirectory)
 }
 
-=======
->>>>>>> 57bf677 (Replace MethodHandles with mixins in src/test/java)
+
 jar {
     manifest {
         attributes([
@@ -166,10 +164,24 @@ jar {
 
 processResources {
 	inputs.property 'version', project.modVersion
-
 	filesMatching('mcmod.info') {
 		expand 'version': project.modVersion
 	}
+}
+
+import org.apache.tools.ant.filters.ReplaceTokens
+
+task processSource(type: Sync) {
+    from sourceSets.main.java
+    inputs.property 'version', project.modVersion
+    filesMatching('leviathan143/loottweaker/common/LootTweaker.java') {
+		filter(ReplaceTokens, tokens: ['VERSION': project.modVersion])
+	}
+    into "$buildDir/src"
+}
+
+compileJava {
+    source = processSource.outputs
 }
 
 //When Forge 1.12 loads mods from a directory that's been put on the classpath, it expects to find resources in the same directory.

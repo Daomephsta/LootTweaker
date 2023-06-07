@@ -21,7 +21,7 @@ public class LootTweaker
 {
     public static final String MODNAME = "LootTweaker";
     public static final String MODID = "loottweaker";
-    public static final String VERSION = "GRADLE:VERSION";
+    public static final String VERSION = "@VERSION@";
     public static final String DEPENDENCIES = "required-after:crafttweaker@[4.1.20,); before:jeresources; required:forge@[14.23.5.2779,);";
     public static final LootTweakerContext CONTEXT = new LootTweakerContext(new CTLoggingErrorHandler());
 
