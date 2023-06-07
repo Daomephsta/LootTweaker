@@ -19,8 +19,8 @@ sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = co
 ext.MIXIN_LOADER_CLASS = 'leviathan143.loottweaker.common.MixinLoader'
 
 def mixins(runConfig) {
-	runConfig.jvmArg "-Dfml.coreMods.load=$MIXIN_LOADER_CLASS"
-	runConfig.jvmArg '-Dmixin.hotSwap=true'
+    runConfig.jvmArg "-Dfml.coreMods.load=$MIXIN_LOADER_CLASS"
+    runConfig.jvmArg '-Dmixin.hotSwap=true'
 }
 
 minecraft {
@@ -77,11 +77,14 @@ mixin {
     config 'loottweaker.mixins.json'
 }
 
-// FancyGradle isn't quite enough
-configurations.all {
-    resolutionStrategy {
-        dependencySubstitution {
-            substitute module('net.minecraftforge:legacydev') using module('net.minecraftforge:legacydev:0.2.4.0') because 'Fixes ATs'
+configurations {
+    embed
+    // FancyGradle isn't quite enough
+    all {
+        resolutionStrategy {
+            dependencySubstitution {
+                substitute module('net.minecraftforge:legacydev') using module('net.minecraftforge:legacydev:0.2.4.0') because 'Fixes ATs'
+            }
         }
     }
 }
@@ -104,10 +107,10 @@ repositories
         name 'Su5ed LegacyDev Fork'
         url = 'https://su5ed.jfrog.io/artifactory/maven/'
     }
-	maven {
-		url = 'https://repo.spongepowered.org/repository/maven-public/'
-		content { includeGroup 'org.spongepowered' }
-	}
+    maven {
+        url = 'https://repo.spongepowered.org/repository/maven-public/'
+        content { includeGroup 'org.spongepowered' }
+    }
 }
 
 dependencies
@@ -119,6 +122,9 @@ dependencies
     implementation fg.deobf("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${project.crafttweakerVersion}")
 
     implementation "org.spongepowered:mixin:0.8.5"
+    embed("org.spongepowered:mixin:0.8.5") {
+        transitive = false
+    }
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
 
     testImplementation 'com.github.Daomephsta:Saddle:0.0.3'
@@ -130,6 +136,9 @@ dependencies
 }
 
 jar {
+    from(provider({ configurations.embed.collect(project.&zipTree) })) {
+        exclude "LICENSE.txt", "META-INF/MANIFSET.MF", "META-INF/maven/**", "META-INF/*.RSA", "META-INF/*.SF"
+    }
     manifest {
         attributes([
             "Specification-Title": "LootTweaker",
@@ -139,8 +148,8 @@ jar {
             "Implementation-Version": "${version}",
             "Implementation-Vendor": "loottweaker",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-			"FMLCorePlugin": MIXIN_LOADER_CLASS,
-			"FMLCorePluginContainsFMLMod": "true",
+            "FMLCorePlugin": MIXIN_LOADER_CLASS,
+            "FMLCorePluginContainsFMLMod": "true",
             "TweakClass": "org.spongepowered.asm.launch.MixinTweaker"
         ])
     }
