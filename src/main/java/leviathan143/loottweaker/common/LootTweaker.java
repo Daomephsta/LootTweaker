@@ -6,6 +6,7 @@ import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.ZenLootTableTweakManager;
 import leviathan143.loottweaker.common.zenscript.factory.ZenLambdaLootCondition;
 import leviathan143.loottweaker.common.zenscript.factory.ZenLambdaLootFunction;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.fml.common.Mod;
@@ -49,5 +50,10 @@ public class LootTweaker
     public void serverStarted(FMLServerStartedEvent event)
     {
         DeprecationWarningManager.printDeprecationWarnings();
+    }
+
+    public static TextComponentTranslation translation(String keySuffix, Object... args)
+    {
+        return new TextComponentTranslation(MODID + keySuffix, args);
     }
 }

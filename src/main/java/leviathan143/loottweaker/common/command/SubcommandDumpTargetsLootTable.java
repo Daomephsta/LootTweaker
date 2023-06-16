@@ -5,6 +5,7 @@ import java.io.File;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.darkmagic.EntityLivingAccessors;
 import leviathan143.loottweaker.common.lib.LootTableDumper;
+import leviathan143.loottweaker.common.lib.Texts;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -17,12 +18,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.ILootContainer;
 
@@ -43,19 +38,16 @@ public class SubcommandDumpTargetsLootTable implements Subcommand
                 if (te instanceof ILootContainer)
                     tableId = ((ILootContainer) te).getLootTable();
                 else
-                    sender.sendMessage(
-                        new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.target.noTable"));
+                    sender.sendMessage(LootTweaker.translation(".commands.dump.target.noTable"));
                 break;
             case ENTITY:
                 if (target.entityHit instanceof EntityLiving)
                     tableId = EntityLivingAccessors.getLootTable((EntityLiving) target.entityHit);
                 else
-                    sender.sendMessage(
-                        new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.target.noTable"));
+                    sender.sendMessage(LootTweaker.translation(".commands.dump.target.noTable"));
                 break;
             case MISS:
-                sender.sendMessage(
-                    new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.target.noTarget"));
+                sender.sendMessage(LootTweaker.translation(".commands.dump.target.noTarget"));
                 return;
             default:
                 return;
@@ -63,16 +55,14 @@ public class SubcommandDumpTargetsLootTable implements Subcommand
             //E.g. chest with no loot table tag
             if (tableId == null)
             {
-                sender.sendMessage(
-                    new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.target.noTable"));
+                sender.sendMessage(LootTweaker.translation(".commands.dump.target.noTable"));
                 return;
             }
             File dump = LootTableDumper.DEFAULT.dump(sender.getEntityWorld(), tableId);
-            if (!server.isDedicatedServer()) linkDumpFileInChat(sender, dump, tableId);
+            linkDumpFileInChat(sender, dump, tableId);
         }
         else
-            sender.sendMessage(
-                new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.target.senderNotEntity"));
+            sender.sendMessage(LootTweaker.translation(".commands.dump.target.senderNotEntity"));
     }
 
     private static RayTraceResult getLookTarget(Entity observer, double distance)
@@ -116,15 +106,9 @@ public class SubcommandDumpTargetsLootTable implements Subcommand
         return result;
     }
 
-    private static void linkDumpFileInChat(ICommandSender sender, File dump, ResourceLocation tableLoc)
+    private static void linkDumpFileInChat(ICommandSender sender, File dump, ResourceLocation tableId)
     {
-        ITextComponent message = new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.dumpLink",
-            tableLoc);
-        ITextComponent link = new TextComponentString(dump.toString());
-        link.getStyle()
-            .setClickEvent(new ClickEvent(Action.OPEN_FILE, dump.toString()))
-            .setUnderlined(true)
-            .setColor(TextFormatting.AQUA);
-        sender.sendMessage(message.appendSibling(link));
+        sender.sendMessage(LootTweaker.translation(".commands.dump.dumpLink",
+            Texts.styledAsString(tableId, style -> style.setUnderlined(true)), Texts.fileLink(dump)));
     }
 }

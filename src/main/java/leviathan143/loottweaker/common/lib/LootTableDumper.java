@@ -48,6 +48,11 @@ public class LootTableDumper
         return new LootTableDumper(dumpFolder, ROBUST_GSON);
     }
 
+    public File getFolder()
+    {
+        return dumpFolder;
+    }
+
     public File dump(World world, ResourceLocation tableId)
     {
         return dump(world.getLootTableManager().getLootTableFromLocation(tableId), tableId);

@@ -8,7 +8,6 @@ import crafttweaker.mc1120.commands.CraftTweakerCommand;
 import leviathan143.loottweaker.common.LootTweaker;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TextComponentTranslation;
 
 
 public class CommandLootTables extends CraftTweakerCommand
@@ -28,7 +27,7 @@ public class CommandLootTables extends CraftTweakerCommand
     @Override
     protected void init()
     {
-        setDescription(new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.desc"));
+        setDescription(LootTweaker.translation(".commands.dump.desc"));
     }
 
     @Override
@@ -36,7 +35,7 @@ public class CommandLootTables extends CraftTweakerCommand
     {
         if (args.length < 1)
         {
-            sender.sendMessage(new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.usage"));
+            sender.sendMessage(LootTweaker.translation(".commands.dump.usage"));
             return;
         }
         Subcommand subcommand = subcommands.get(args[0]);
@@ -45,7 +44,6 @@ public class CommandLootTables extends CraftTweakerCommand
             subcommand.execute(server, sender, args);
         }
         else
-            sender.sendMessage(
-                new TextComponentTranslation(LootTweaker.MODID + ".commands.dump.unknownSubcommand", args[0]));
+            sender.sendMessage(LootTweaker.translation(".commands.dump.unknownSubcommand", args[0]));
     }
 }
