@@ -1,11 +1,9 @@
 // For those who want the bleeding edge
 plugins {
+    id 'eclipse'
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '5.1.+'
     id 'wtf.gofancy.fancygradle' version '1.1.+'
-    // See hack in settings.gradle for why this works
-    id 'org.spongepowered.mixin' version '0.7.+'
-    id 'eclipse'
 }
 // Strip Java 9-specific info from dependencies so Forge doesn't excrete bricks
 apply from: 'java8ify.gradle'
@@ -16,13 +14,6 @@ archivesBaseName = "LootTweaker"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
-ext.MIXIN_LOADER_CLASS = 'leviathan143.loottweaker.common.MixinLoader'
-
-def mixins(runConfig) {
-    runConfig.jvmArg "-Dfml.coreMods.load=$MIXIN_LOADER_CLASS"
-    runConfig.jvmArg '-Dmixin.hotSwap=true'
-}
-
 minecraft {
     mappings channel: 'stable', version: project.mappingsVersion
 
@@ -30,7 +21,6 @@ minecraft {
         client {
             taskName "$archivesBaseName Client"
             workingDirectory project.file('run/client')
-            mixins(it)
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             property 'saddle.disable', 'true'
@@ -40,7 +30,6 @@ minecraft {
         server {
             taskName "$archivesBaseName Server"
             workingDirectory project.file('run/server')
-            mixins(it)
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             property 'saddle.disable', 'true'
@@ -52,7 +41,6 @@ minecraft {
             taskName "$archivesBaseName Client Tests"
             workingDirectory project.file('test/client')
             property 'saddle.disable', 'false'
-            args '--mixin.config', 'loottweaker_test.mixins.json'
         }
 
         testServer {
@@ -60,7 +48,6 @@ minecraft {
             taskName "$archivesBaseName Server Tests"
             workingDirectory project.file('test/server')
             property 'saddle.disable', 'false'
-            args '--mixin.config', 'loottweaker_test.mixins.json'
         }
     }
 }
@@ -72,19 +59,11 @@ fancyGradle {
     }
 }
 
-mixin {
-    add sourceSets.main, 'mixins.loottweaker.refmap.json'
-    config 'loottweaker.mixins.json'
-}
-
-configurations {
-    embed
-    // FancyGradle isn't quite enough
-    all {
-        resolutionStrategy {
-            dependencySubstitution {
-                substitute module('net.minecraftforge:legacydev') using module('net.minecraftforge:legacydev:0.2.4.0') because 'Fixes ATs'
-            }
+// FancyGradle isn't quite enough
+configurations.all {
+    resolutionStrategy {
+        dependencySubstitution {
+            substitute module('net.minecraftforge:legacydev') using module('net.minecraftforge:legacydev:0.2.4.0') because 'Fixes ATs'
         }
     }
 }
@@ -107,10 +86,6 @@ repositories
         name 'Su5ed LegacyDev Fork'
         url = 'https://su5ed.jfrog.io/artifactory/maven/'
     }
-    maven {
-        url = 'https://repo.spongepowered.org/repository/maven-public/'
-        content { includeGroup 'org.spongepowered' }
-    }
 }
 
 dependencies
@@ -121,11 +96,6 @@ dependencies
     implementation fg.deobf("CraftTweaker2:CraftTweaker2-API:${project.crafttweakerVersion}")
     implementation fg.deobf("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${project.crafttweakerVersion}")
 
-    implementation "org.spongepowered:mixin:0.8.5"
-    embed("org.spongepowered:mixin:0.8.5") {
-        transitive = false
-    }
-    annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
 
     testImplementation 'com.github.Daomephsta:Saddle:0.0.3'
     testImplementation 'org.assertj:assertj-core:3.13.2'
@@ -135,10 +105,11 @@ dependencies
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
 }
 
+test {
+    useJUnitPlatform()
+}
+
 jar {
-    from(provider({ configurations.embed.collect(project.&zipTree) })) {
-        exclude "LICENSE.txt", "META-INF/MANIFSET.MF", "META-INF/maven/**", "META-INF/*.RSA", "META-INF/*.SF"
-    }
     manifest {
         attributes([
             "Specification-Title": "LootTweaker",
@@ -147,10 +118,7 @@ jar {
             "Implementation-Title": project.name,
             "Implementation-Version": "${version}",
             "Implementation-Vendor": "loottweaker",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-            "FMLCorePlugin": MIXIN_LOADER_CLASS,
-            "FMLCorePluginContainsFMLMod": "true",
-            "TweakClass": "org.spongepowered.asm.launch.MixinTweaker"
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
     finalizedBy('reobfJar')

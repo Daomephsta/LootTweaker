@@ -8,9 +8,9 @@ Conditions.killedByNonPlayer();
 Conditions.parse({"condition": "minecraft:killed_by_player"});
 
 
-val foo = LootTweaker.getTable("loottweaker_test:foo");
+val foo = LootTweaker.getTable("loottweaker:foo");
 val foo_bar = foo.getPool("bar");
-foo_bar.addItemEntry(<minecraft:stick>, 1, 0, 
+foo_bar.addItemEntryHelper(<minecraft:stick>, 1, 0, 
 [], 
 [
 	Conditions.zenscript(function(random, context)

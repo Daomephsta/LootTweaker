@@ -1,5 +1,8 @@
 package io.github.daomephsta.loottweaker.test.factory;
 
+import static com.google.common.base.Predicates.not;
+import static io.github.daomephsta.loottweaker.test.TestLootConditionAccessors.getChance;
+import static io.github.daomephsta.loottweaker.test.TestLootConditionAccessors.getLootingMultiplier;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.InstanceOfAssertFactories.type;
@@ -11,9 +14,7 @@ import org.assertj.core.api.Condition;
 import com.google.common.collect.ImmutableMap;
 
 import io.github.daomephsta.loottweaker.test.TestErrorHandler.LootTweakerException;
-import io.github.daomephsta.loottweaker.test.mixin.condition.TestKilledByPlayerAccessors;
-import io.github.daomephsta.loottweaker.test.mixin.condition.TestRandomChanceAccessors;
-import io.github.daomephsta.loottweaker.test.mixin.condition.TestRandomChanceWithLootingAccessors;
+import io.github.daomephsta.loottweaker.test.TestLootConditionAccessors;
 import io.github.daomephsta.loottweaker.test.TestUtils;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
@@ -36,7 +37,7 @@ public class LootConditionFactoryTests
         assertThat(factory.randomChance(0.21F)).is(VALID_CONDITION)
             .extracting(ZenLootConditionWrapper::unwrap)
             .asInstanceOf(type(RandomChance.class))
-            .satisfies(new Condition<>(rc -> ((TestRandomChanceAccessors) rc).getChance() == 0.21F, "RandomChance(0.21)"));
+            .satisfies(new Condition<>(rc -> getChance(rc) == 0.21F, "RandomChance(0.21)"));
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
@@ -45,8 +46,7 @@ public class LootConditionFactoryTests
         assertThat(factory.randomChanceWithLooting(0.35F, 1.2F)).is(VALID_CONDITION)
             .extracting(ZenLootConditionWrapper::unwrap)
             .asInstanceOf(type(RandomChanceWithLooting.class))
-            .satisfies(new Condition<>(rcwl -> ((TestRandomChanceWithLootingAccessors) rcwl).getChance() == 0.35F &&
-                ((TestRandomChanceWithLootingAccessors) rcwl).getLootingMultiplier() == 1.2F,
+            .satisfies(new Condition<>(rcwl -> getChance(rcwl) == 0.35F && getLootingMultiplier(rcwl) == 1.2F,
                 "RandomChanceWithLooting(0.35, 1.2)"));
     }
 
@@ -56,7 +56,7 @@ public class LootConditionFactoryTests
         assertThat(factory.killedByPlayer()).is(VALID_CONDITION)
             .extracting(ZenLootConditionWrapper::unwrap)
             .asInstanceOf(type(KilledByPlayer.class))
-            .satisfies(new Condition<>(condition -> condition instanceof KilledByPlayer && !((TestKilledByPlayerAccessors) condition).isInverse(), "KilledByPlayer()"));
+            .satisfies(new Condition<>(not(TestLootConditionAccessors::isInverted), "KilledByPlayer()"));
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
@@ -65,7 +65,7 @@ public class LootConditionFactoryTests
         assertThat(factory.killedByNonPlayer()).is(VALID_CONDITION)
             .extracting(ZenLootConditionWrapper::unwrap)
             .asInstanceOf(type(KilledByPlayer.class))
-            .satisfies(new Condition<>(condition -> condition instanceof KilledByPlayer && ((TestKilledByPlayerAccessors) condition).isInverse(), "KilledByNonPlayer()"));
+            .satisfies(new Condition<>(TestLootConditionAccessors::isInverted, "KilledByNonPlayer()"));
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
@@ -75,7 +75,7 @@ public class LootConditionFactoryTests
         assertThat(factory.parse(json)).is(VALID_CONDITION)
             .extracting(ZenLootConditionWrapper::unwrap)
             .asInstanceOf(type(KilledByPlayer.class))
-            .satisfies(new Condition<>(condition -> condition instanceof KilledByPlayer && !((TestKilledByPlayerAccessors) condition).isInverse(), "KilledByPlayer()"));
+            .satisfies(new Condition<>(not(TestLootConditionAccessors::isInverted), "KilledByPlayer()"));
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)

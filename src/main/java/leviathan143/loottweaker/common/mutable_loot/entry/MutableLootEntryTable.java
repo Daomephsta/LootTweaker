@@ -2,8 +2,8 @@ package leviathan143.loottweaker.common.mutable_loot.entry;
 
 import java.util.List;
 
+import leviathan143.loottweaker.common.darkmagic.LootEntryTableAccessors;
 import leviathan143.loottweaker.common.lib.LootConditions;
-import leviathan143.loottweaker.common.mixin.LootEntryTableAccessors;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootEntryTable;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
@@ -16,7 +16,7 @@ public class MutableLootEntryTable extends AbstractMutableLootEntry
     MutableLootEntryTable(LootEntryTable entry)
     {
         super(entry);
-        this.delegateTableId = ((LootEntryTableAccessors) entry).getTable();
+        this.delegateTableId = LootEntryTableAccessors.getTable(entry);
     }
 
     public MutableLootEntryTable(String name, int weight, int quality, LootCondition[] conditions,

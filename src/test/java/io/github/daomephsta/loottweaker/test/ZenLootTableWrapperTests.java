@@ -25,7 +25,7 @@ public class ZenLootTableWrapperTests
     public void getExistingPool()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         LootTable fooOriginal = loadTable(fooId);
         assertThat(fooOriginal.getPool("bar")).isNotNull();
@@ -37,7 +37,7 @@ public class ZenLootTableWrapperTests
     public void getNonExistentPool()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         LootTable fooOriginal = loadTable(fooId);
         fooTweaks.getPool("quuz");
@@ -50,7 +50,7 @@ public class ZenLootTableWrapperTests
     public void removeExistingPool()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         LootTable fooOriginal = loadTable(fooId);
         assertThat(fooOriginal.getPool("bar")).isNotNull();
@@ -63,7 +63,7 @@ public class ZenLootTableWrapperTests
     public void removeNonExistentPool()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         LootTable fooOriginal = loadTable(fooId);
         assertThat(fooOriginal.getPool("quuz")).isNull();
@@ -77,7 +77,7 @@ public class ZenLootTableWrapperTests
     public void addPool()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         LootTable fooOriginal = loadTable(fooId);
         assertThat(fooOriginal.getPool("qux")).isNull();
@@ -95,7 +95,7 @@ public class ZenLootTableWrapperTests
     public void poolWrapperCaching()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ZenLootTableWrapper fooTweaks = tweakManager.getTable("loottweaker_test:foo");
+        ZenLootTableWrapper fooTweaks = tweakManager.getTable("loottweaker:foo");
         assertThat(fooTweaks.getPool("bar")).isNotNull();
         assertThat(fooTweaks.getPool("bar"))
             .withFailMessage(

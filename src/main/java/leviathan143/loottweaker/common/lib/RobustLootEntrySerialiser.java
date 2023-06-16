@@ -13,7 +13,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-import leviathan143.loottweaker.common.mixin.LootEntryAccessors;
+import leviathan143.loottweaker.common.darkmagic.LootEntryAccessors;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.storage.loot.LootEntry;
@@ -42,10 +42,10 @@ public class RobustLootEntrySerialiser implements JsonSerializer<LootEntry>
 
         JsonObject json = new JsonObject();
         json.addProperty("entryName", entry.getEntryName());
-        json.addProperty("weight", ((LootEntryAccessors) entry).getWeight());
-        json.addProperty("quality", ((LootEntryAccessors) entry).getQuality());
+        json.addProperty("weight", LootEntryAccessors.getWeight(entry));
+        json.addProperty("quality", LootEntryAccessors.getQuality(entry));
         json.addProperty("type", "loottweaker:best_effort");
-        LootCondition[] conditions = LootConditions.get(entry);
+        LootCondition[] conditions = LootEntryAccessors.getConditions(entry);
         if (conditions.length > 0) json.add("conditions", context.serialize(conditions));
         JsonObject bestEffort = new JsonObject();
         if (trySerialise(entry, json, context))
@@ -64,15 +64,15 @@ public class RobustLootEntrySerialiser implements JsonSerializer<LootEntry>
     {
         int before = json.size();
         // Attempt serialisation with LootEntry.serialize
-        ((LootEntryAccessors) entry).callSerialize(json, context);
+        LootEntryAccessors.serialise(entry, json, context);
         return json.size() != before;
     }
 
     /** Mutates an entry to avoid bugs in the vanilla serialiser **/
     private LootEntry patch(LootEntry entry)
     {
-        if (((LootEntryAccessors) entry).getConditionsUnsafe() == null)
-            ((LootEntryAccessors) entry).setConditions(LootConditions.NONE);
+        if (LootEntryAccessors.getConditionsUnsafe(entry) == null)
+            LootEntryAccessors.setConditions(entry, LootConditions.NONE);
         return entry;
     }
 

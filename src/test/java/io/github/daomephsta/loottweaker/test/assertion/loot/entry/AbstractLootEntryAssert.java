@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 import org.apache.commons.lang3.ArrayUtils;
 import org.assertj.core.api.AbstractObjectAssert;
 
-import io.github.daomephsta.loottweaker.test.mixin.entry.TestLootEntryAccessors;
+import io.github.daomephsta.loottweaker.test.pool.TestLootEntryAccessors;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
@@ -21,7 +21,7 @@ public class AbstractLootEntryAssert<SELF extends AbstractLootEntryAssert<SELF, 
     public SELF hasWeight(int expectedWeight)
     {
         isNotNull();
-        int actualWeight = ((TestLootEntryAccessors) actual).getWeight();
+        int actualWeight = TestLootEntryAccessors.getWeight(actual);
         if (actualWeight != expectedWeight)
             failWithMessage("Expected weight to be <%d>, but was <%d>", expectedWeight, actualWeight);
         return myself;
@@ -30,7 +30,7 @@ public class AbstractLootEntryAssert<SELF extends AbstractLootEntryAssert<SELF, 
     public SELF hasQuality(int expectedQuality)
     {
         isNotNull();
-        int actualQuality = ((TestLootEntryAccessors) actual).getQuality();
+        int actualQuality = TestLootEntryAccessors.getQuality(actual);
         if (actualQuality != expectedQuality)
             failWithMessage("Expected quality to be <%d>, but was <%d>", expectedQuality, actualQuality);
         return myself;
@@ -40,7 +40,7 @@ public class AbstractLootEntryAssert<SELF extends AbstractLootEntryAssert<SELF, 
     {
         isNotNull();
 
-        LootCondition[] actualConditions = ((TestLootEntryAccessors) actual).getConditions();
+        LootCondition[] actualConditions = TestLootEntryAccessors.getConditions(actual);
         if (actualConditions.length > 0) failWithMessage("Expected '%s' to have no loot conditions, has %s",
             actual.getEntryName(), ArrayUtils.toString(actualConditions));
         return myself;
@@ -49,7 +49,7 @@ public class AbstractLootEntryAssert<SELF extends AbstractLootEntryAssert<SELF, 
     public SELF hasMatchingCondition(Predicate<LootCondition> matcher, String descriptor)
     {
         int matches = 0;
-        LootCondition[] actualConditions = ((TestLootEntryAccessors) actual).getConditions();
+        LootCondition[] actualConditions = TestLootEntryAccessors.getConditions(actual);
         for (LootCondition condition : actualConditions)
         {
             if (matcher.test(condition)) matches++;

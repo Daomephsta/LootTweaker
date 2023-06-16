@@ -1,6 +1,6 @@
 package io.github.daomephsta.loottweaker.test.assertion.loot.entry;
 
-import io.github.daomephsta.loottweaker.test.mixin.entry.TestLootEntryTableAccessors;
+import io.github.daomephsta.loottweaker.test.pool.TestLootEntryTableAccessors;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootEntryTable;
 
@@ -16,7 +16,7 @@ public class LootEntryTableAssert extends AbstractLootEntryAssert<LootEntryTable
     {
         isNotNull();
 
-        ResourceLocation actualTable = ((TestLootEntryTableAccessors) actual).getTable();
+        ResourceLocation actualTable = TestLootEntryTableAccessors.getTable(actual);
         if (!actualTable.equals(new ResourceLocation(expectedTable)))
             failWithMessage("Expected <%s>, was <%s>", expectedTable, actualTable);
         return this;

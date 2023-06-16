@@ -26,7 +26,7 @@ public interface MutableLootEntry
         else if (entry instanceof LootEntryEmpty)
             return new MutableLootEntryEmpty((LootEntryEmpty) entry);
         else
-            return new GenericMutableLootEntry(entry);
+            return new GenericMutableLootEmpty(entry);
     }
 
     public MutableLootEntry deepClone();

@@ -1,9 +1,10 @@
 package io.github.daomephsta.loottweaker.test.pool;
 
+import static io.github.daomephsta.loottweaker.test.TestLootConditionAccessors.isInverted;
 import static io.github.daomephsta.loottweaker.test.TestUtils.loadTable;
 import static io.github.daomephsta.loottweaker.test.assertion.LootTweakerAssertions.assertThat;
+
 import io.github.daomephsta.loottweaker.test.TestUtils;
-import io.github.daomephsta.loottweaker.test.mixin.condition.TestKilledByPlayerAccessors;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
 import leviathan143.loottweaker.common.zenscript.LootTableTweakManager;
@@ -25,7 +26,7 @@ public class EmptyEntryAdditionTests
     public void addEmptyEntry()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addEmptyEntry(2, "corge");
@@ -38,7 +39,7 @@ public class EmptyEntryAdditionTests
     public void addEmptyEntryWithQuality()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addEmptyEntry(2, 3, "corge");
@@ -55,7 +56,7 @@ public class EmptyEntryAdditionTests
     public void addEmptyEntryWithCondition()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addEmptyEntry(2, 3, new ZenLootConditionWrapper[] { LootConditionFactory.killedByPlayer() },
@@ -66,7 +67,7 @@ public class EmptyEntryAdditionTests
             .hasWeight(2)
             .hasQuality(3)
             .hasMatchingCondition(
-                condition -> condition instanceof KilledByPlayer && !((TestKilledByPlayerAccessors) condition).isInverse(),
+                condition -> condition instanceof KilledByPlayer && !isInverted((KilledByPlayer) condition),
                 "KilledByPlayer()")
             .isEmptyEntry();
     }

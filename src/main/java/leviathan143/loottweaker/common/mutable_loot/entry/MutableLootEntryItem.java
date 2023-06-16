@@ -4,9 +4,9 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
+import leviathan143.loottweaker.common.darkmagic.LootEntryItemAccessors;
 import leviathan143.loottweaker.common.lib.LootConditions;
 import leviathan143.loottweaker.common.lib.LootFunctions;
-import leviathan143.loottweaker.common.mixin.LootEntryItemAccessors;
 import net.minecraft.item.Item;
 import net.minecraft.world.storage.loot.LootEntryItem;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
@@ -21,8 +21,8 @@ public class MutableLootEntryItem extends AbstractMutableLootEntry
     MutableLootEntryItem(LootEntryItem entry)
     {
         super(entry);
-        this.item = ((LootEntryItemAccessors) entry).getItem();
-        this.functions = Lists.newArrayList(LootFunctions.get((LootEntryItem) ((LootEntryItemAccessors) entry)));
+        this.item = LootEntryItemAccessors.getItem(entry);
+        this.functions = Lists.newArrayList(LootEntryItemAccessors.getFunctions(entry));
     }
 
     public MutableLootEntryItem(String name, int weight, int quality, List<LootCondition> conditions, Item item,

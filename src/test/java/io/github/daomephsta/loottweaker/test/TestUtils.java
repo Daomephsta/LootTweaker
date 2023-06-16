@@ -5,8 +5,8 @@ import java.util.Scanner;
 
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
-import leviathan143.loottweaker.common.mixin.LootTableAccessors;
-import leviathan143.loottweaker.common.mixin.LootTableManagerAccessors;
+import leviathan143.loottweaker.common.darkmagic.LootTableAccessors;
+import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
@@ -61,7 +61,7 @@ public class TestUtils
             dataBuilder.toString(), true, null);
         // Unfreeze table & pools, because doing tests will be a PITA otherwise
         ObfuscationReflectionHelper.setPrivateValue(LootTable.class, table, false, "isFrozen");
-        for (LootPool pool : ((LootTableAccessors) table).getPools())
+        for (LootPool pool : LootTableAccessors.getPools(table))
             ObfuscationReflectionHelper.setPrivateValue(LootPool.class, pool, false, "isFrozen");
         return table;
     }

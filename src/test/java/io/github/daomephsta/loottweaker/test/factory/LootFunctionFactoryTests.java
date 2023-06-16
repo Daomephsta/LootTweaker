@@ -1,5 +1,13 @@
 package io.github.daomephsta.loottweaker.test.factory;
 
+import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getBonusRange;
+import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getCountRange;
+import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getDamageRange;
+import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getEnchantments;
+import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getLevelRange;
+import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getLimit;
+import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.getMetaRange;
+import static io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors.isTreasure;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.InstanceOfAssertFactories.type;
@@ -16,8 +24,8 @@ import crafttweaker.api.data.DataMap;
 import crafttweaker.api.data.DataString;
 import crafttweaker.api.data.IData;
 import io.github.daomephsta.loottweaker.test.TestErrorHandler.LootTweakerException;
+import io.github.daomephsta.loottweaker.test.TestLootFunctionAccessors;
 import io.github.daomephsta.loottweaker.test.TestUtils;
-import io.github.daomephsta.loottweaker.test.mixin.function.*;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
@@ -49,7 +57,7 @@ public class LootFunctionFactoryTests
             .asInstanceOf(type(EnchantRandomly.class))
             .satisfies(new Condition<>(enchantRandomly ->
             {
-                List<Enchantment> enchantments = ((TestEnchantRandomlyAccessors) enchantRandomly).getEnchantments();
+                List<Enchantment> enchantments = getEnchantments(enchantRandomly);
                 return enchantments.size() == 1
                     && enchantments.get(0).getRegistryName().equals(new ResourceLocation("minecraft:thorns"));
             }, "LootingEnchantBonus([1, 3])"));
@@ -71,9 +79,9 @@ public class LootFunctionFactoryTests
             .asInstanceOf(type(EnchantWithLevels.class))
             .satisfies(new Condition<>(enchantWithLevels ->
             {
-                RandomValueRange levelRange = ((TestEnchantWithLevelsAccessors) enchantWithLevels).getLevelRange();
+                RandomValueRange levelRange = getLevelRange(enchantWithLevels);
                 return levelRange.getMin() == 11.0F && levelRange.getMax() == 26.0F
-                    && !((TestEnchantWithLevelsAccessors) enchantWithLevels).isTreasure();
+                    && !isTreasure(enchantWithLevels);
             }, "EnchantWithLevels([11, 26], isTreasure: false)"));
     }
 
@@ -85,9 +93,9 @@ public class LootFunctionFactoryTests
             .asInstanceOf(type(LootingEnchantBonus.class))
             .satisfies(new Condition<>(lootingEnchantBonus ->
             {
-                RandomValueRange bonusRange = ((TestLootingEnchantBonusAccessors) lootingEnchantBonus).getBonusRange();
+                RandomValueRange bonusRange = getBonusRange(lootingEnchantBonus);
                 return bonusRange.getMin() == 1.0F && bonusRange.getMax() == 2.0F
-                    && ((TestLootingEnchantBonusAccessors) lootingEnchantBonus).getLimit() == 3;
+                    && getLimit(lootingEnchantBonus) == 3;
             }, "LootingEnchantBonus([1, 2], limit: 3)"));
     }
 
@@ -99,7 +107,7 @@ public class LootFunctionFactoryTests
             .asInstanceOf(type(SetCount.class))
             .satisfies(new Condition<>(setCount ->
             {
-                RandomValueRange countRange = ((TestSetCountAccessors) setCount).getCountRange();
+                RandomValueRange countRange = getCountRange(setCount);
                 return countRange.getMin() == 1.0F && countRange.getMax() == 3.0F;
             }, "SetCount([1, 3])"));
     }
@@ -112,7 +120,7 @@ public class LootFunctionFactoryTests
             .asInstanceOf(type(SetDamage.class))
             .satisfies(new Condition<>(setDamage ->
             {
-                RandomValueRange damageRange = ((TestSetDamageAccessors) setDamage).getDamageRange();
+                RandomValueRange damageRange = getDamageRange(setDamage);
                 return damageRange.getMin() == 0.2F && damageRange.getMax() == 0.8F;
             }, "SetDamage([0.2, 0.8])"));
     }
@@ -132,7 +140,7 @@ public class LootFunctionFactoryTests
             .asInstanceOf(type(SetMetadata.class))
             .satisfies(new Condition<>(setMetadata ->
             {
-                RandomValueRange metaRange = ((TestSetMetadataAccessors) setMetadata).getMetaRange();
+                RandomValueRange metaRange = getMetaRange(setMetadata);
                 return metaRange.getMin() == 23.0F && metaRange.getMax() == 45.0F;
             }, "SetMetadata([23, 45])"));
     }
@@ -150,7 +158,7 @@ public class LootFunctionFactoryTests
         assertThat(factory.setNBT(nbtData)).is(VALID_FUNCTION)
             .extracting(ZenLootFunctionWrapper::unwrap)
             .asInstanceOf(type(SetNBT.class))
-            .satisfies(new Condition<>(setNbt -> ((TestSetNBTAccessors) setNbt).getTag().equals(expectedTag),
+            .satisfies(new Condition<>(setNbt -> TestLootFunctionAccessors.getTag(setNbt).equals(expectedTag),
                 "SetNBT(%s)", expectedTag));
     }
 

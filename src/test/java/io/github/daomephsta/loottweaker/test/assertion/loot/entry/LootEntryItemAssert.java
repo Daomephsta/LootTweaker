@@ -4,7 +4,7 @@ import java.util.function.Predicate;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import io.github.daomephsta.loottweaker.test.mixin.entry.TestLootEntryItemAccessors;
+import io.github.daomephsta.loottweaker.test.pool.TestLootEntryItemAccessors;
 import net.minecraft.item.Item;
 import net.minecraft.world.storage.loot.LootEntryItem;
 import net.minecraft.world.storage.loot.functions.LootFunction;
@@ -21,7 +21,7 @@ public class LootEntryItemAssert extends AbstractLootEntryAssert<LootEntryItemAs
     {
         isNotNull();
 
-        Item actualItem = ((TestLootEntryItemAccessors) actual).getItem();
+        Item actualItem = TestLootEntryItemAccessors.getItem(actual);
         if (actualItem != expectedItem) failWithMessage("Expected <%s>, was <%s>", expectedItem.getRegistryName(),
             actualItem.getRegistryName());
         return this;
@@ -31,7 +31,7 @@ public class LootEntryItemAssert extends AbstractLootEntryAssert<LootEntryItemAs
     {
         isNotNull();
 
-        LootFunction[] actualFunctions = ((TestLootEntryItemAccessors) actual).getFunctions();
+        LootFunction[] actualFunctions = TestLootEntryItemAccessors.getFunctions(actual);
         if (actualFunctions.length > 0) failWithMessage("Expected '%s' to have no loot functions, has %s",
             actual.getEntryName(), ArrayUtils.toString(actualFunctions));
         return this;
@@ -40,7 +40,7 @@ public class LootEntryItemAssert extends AbstractLootEntryAssert<LootEntryItemAs
     public LootEntryItemAssert hasMatchingFunction(Predicate<LootFunction> matcher, String descriptor)
     {
         int matches = 0;
-        LootFunction[] actualFunctions = ((TestLootEntryItemAccessors) actual).getFunctions();
+        LootFunction[] actualFunctions = TestLootEntryItemAccessors.getFunctions(actual);
         for (LootFunction function : actualFunctions)
         {
             if (matcher.test(function)) matches++;
