@@ -63,7 +63,7 @@ fancyGradle {
 configurations.all {
     resolutionStrategy {
         dependencySubstitution {
-            substitute module('net.minecraftforge:legacydev') using module('net.minecraftforge:legacydev:0.2.4.0') because 'Fixes ATs'
+            substitute module('net.minecraftforge:legacydev') using module('net.minecraftforge:legacydev:0.2.4.+') because 'Fixes ATs'
         }
     }
 }
@@ -84,7 +84,7 @@ repositories
     maven
     {
         name 'Su5ed LegacyDev Fork'
-        url = 'https://su5ed.jfrog.io/artifactory/maven/'
+        url = 'https://maven.su5ed.dev/releases'
     }
 }
 
