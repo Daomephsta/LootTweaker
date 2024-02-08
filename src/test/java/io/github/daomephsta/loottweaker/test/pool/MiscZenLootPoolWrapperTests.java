@@ -33,7 +33,7 @@ public class MiscZenLootPoolWrapperTests
     public void addConditions()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addConditions(new ZenLootConditionWrapper[] { LootConditionFactory.killedByPlayer() });
@@ -48,7 +48,7 @@ public class MiscZenLootPoolWrapperTests
     public void removeExistingEntry()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation barId = new ResourceLocation("loottweaker", "bar");
+        ResourceLocation barId = new ResourceLocation("loottweaker_test", "bar");
         ZenLootTableWrapper barTweaks = tweakManager.getTable(barId.toString());
         LootTable barOriginal = loadTable(barId);
         assertThat(barOriginal.getPool("baz").getEntry("qux")).isNotNull();
@@ -62,7 +62,7 @@ public class MiscZenLootPoolWrapperTests
     public void removeNonExistentEntry()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation barId = new ResourceLocation("loottweaker", "bar");
+        ResourceLocation barId = new ResourceLocation("loottweaker_test", "bar");
         ZenLootTableWrapper barTweaks = tweakManager.getTable(barId.toString());
         LootTable barOriginal = loadTable(barId);
         assertThat(barOriginal.getPool("baz").getEntry("quuz")).isNull();
@@ -70,14 +70,14 @@ public class MiscZenLootPoolWrapperTests
         bazTweaks.removeEntry("quuz");
         assertThatThrownBy(() -> tweakManager.tweakTable(barId, barOriginal))
             .isInstanceOf(LootTweakerException.class)
-            .hasMessage("No entry with name quuz exists in pool 'baz' of table 'loottweaker:bar'");
+            .hasMessage("No entry with name quuz exists in pool 'baz' of table 'loottweaker_test:bar'");
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void clearConditions()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation barId = new ResourceLocation("loottweaker", "bar");
+        ResourceLocation barId = new ResourceLocation("loottweaker_test", "bar");
         ZenLootTableWrapper barTweaks = tweakManager.getTable(barId.toString());
         LootTable barOriginal = loadTable(barId);
         assertThat(getConditions(barOriginal.getPool("baz"))).isNotEmpty();
@@ -91,7 +91,7 @@ public class MiscZenLootPoolWrapperTests
     public void clearEntries()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation barId = new ResourceLocation("loottweaker", "bar");
+        ResourceLocation barId = new ResourceLocation("loottweaker_test", "bar");
         ZenLootTableWrapper barTweaks = tweakManager.getTable(barId.toString());
         LootTable barOriginal = loadTable(barId);
         assertThat(getEntries(barOriginal.getPool("baz"))).isNotEmpty();
@@ -105,7 +105,7 @@ public class MiscZenLootPoolWrapperTests
     public void setRolls()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.setRolls(2.0F, 5.0F);
@@ -120,7 +120,7 @@ public class MiscZenLootPoolWrapperTests
     public void setBonusRolls()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.setBonusRolls(1.0F, 3.0F);

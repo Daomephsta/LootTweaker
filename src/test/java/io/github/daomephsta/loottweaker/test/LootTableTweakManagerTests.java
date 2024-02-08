@@ -18,7 +18,7 @@ public class LootTableTweakManagerTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void getTableCheckExisting()
     {
-        ResourceLocation existingTableId = new ResourceLocation("loottweaker", "bar");
+        ResourceLocation existingTableId = new ResourceLocation("loottweaker_test", "bar");
         LootTableTweakManager tableTweakManager = context.createLootTableTweakManager();
         tableTweakManager.getTable(existingTableId.toString());
     }
@@ -26,7 +26,7 @@ public class LootTableTweakManagerTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void getTableCheckNonExistent()
     {
-        ResourceLocation nonExistentTableId = new ResourceLocation("loottweaker", "non_existent_table");
+        ResourceLocation nonExistentTableId = new ResourceLocation("loottweaker_test", "non_existent_table");
         LootTableTweakManager tableTweakManager = context.createLootTableTweakManager();
         assertThatThrownBy(() -> tableTweakManager.getTable(nonExistentTableId.toString()))
             .isInstanceOf(LootTweakerException.class)
@@ -37,20 +37,20 @@ public class LootTableTweakManagerTests
     public void tableWrapperCaching()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        assertThat(tweakManager.getTable("loottweaker:foo")).isNotNull();
-        assertThat(tweakManager.getTable("loottweaker:foo")).isEqualTo(tweakManager.getTable("loottweaker:foo"));
+        assertThat(tweakManager.getTable("loottweaker_test:foo")).isNotNull();
+        assertThat(tweakManager.getTable("loottweaker_test:foo")).isEqualTo(tweakManager.getTable("loottweaker_test:foo"));
     }
 
     public void newTable()
     {
         LootTableTweakManager tableTweakManager = context.createLootTableTweakManager();
-        assertThat(tableTweakManager.newTable("loottweaker:qux")).isNotNull();
+        assertThat(tableTweakManager.newTable("loottweaker_test:qux")).isNotNull();
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void newTableCollision()
     {
-        String existingTableId = "loottweaker:foo";
+        String existingTableId = "loottweaker_test:foo";
         LootTableTweakManager tableTweakManager = context.createLootTableTweakManager();
         assertThatThrownBy(() -> tableTweakManager.newTable(existingTableId))
             .isInstanceOf(LootTweakerException.class)
@@ -61,7 +61,7 @@ public class LootTableTweakManagerTests
     public void newTableGettable()
     {
         LootTableTweakManager tableTweakManager = context.createLootTableTweakManager();
-        String tableName = "loottweaker:qux";
+        String tableName = "loottweaker_test:qux";
         tableTweakManager.newTable(tableName);
         tableTweakManager.getTable(tableName);
     }

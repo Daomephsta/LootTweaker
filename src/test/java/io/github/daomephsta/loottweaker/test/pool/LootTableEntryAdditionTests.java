@@ -26,27 +26,27 @@ public class LootTableEntryAdditionTests
     public void addLootTableEntry()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
-        barTweaks.addLootTableEntry("loottweaker:qux", 2, "corge");
+        barTweaks.addLootTableEntry("loottweaker_test:qux", 2, "corge");
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
         assertThat(foo.getPool("bar")).extractEntry("corge")
             .hasWeight(2)
             .hasNoLootConditions()
             .asLootTableEntry()
-            .spawnsFromTable("loottweaker:qux");
+            .spawnsFromTable("loottweaker_test:qux");
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void addLootTableEntryWithQuality()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
-        barTweaks.addLootTableEntry("loottweaker:qux", 2, 3, "corge");
+        barTweaks.addLootTableEntry("loottweaker_test:qux", 2, 3, "corge");
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
         assertThat(foo.getPool("bar")).extractEntry("corge")
@@ -54,17 +54,17 @@ public class LootTableEntryAdditionTests
             .hasQuality(3)
             .hasNoLootConditions()
             .asLootTableEntry()
-            .spawnsFromTable("loottweaker:qux");
+            .spawnsFromTable("loottweaker_test:qux");
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void addLootTableEntryWithCondition()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
-        barTweaks.addLootTableEntry("loottweaker:qux", 2, 3,
+        barTweaks.addLootTableEntry("loottweaker_test:qux", 2, 3,
             new ZenLootConditionWrapper[] { LootConditionFactory.killedByPlayer() }, "corge");
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
@@ -75,6 +75,6 @@ public class LootTableEntryAdditionTests
                 condition -> condition instanceof KilledByPlayer && !isInverted((KilledByPlayer) condition),
                 "KilledByPlayer()")
             .asLootTableEntry()
-            .spawnsFromTable("loottweaker:qux");
+            .spawnsFromTable("loottweaker_test:qux");
     }
 }

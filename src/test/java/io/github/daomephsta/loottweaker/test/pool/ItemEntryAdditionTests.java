@@ -45,7 +45,7 @@ public class ItemEntryAdditionTests
     public void addItemEntry()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addItemEntry(iitemstack(Items.APPLE), 2, "qux");
@@ -63,7 +63,7 @@ public class ItemEntryAdditionTests
     public void addItemEntryWithQuality()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addItemEntry(iitemstack(Items.APPLE), 2, 3, "qux");
@@ -82,7 +82,7 @@ public class ItemEntryAdditionTests
     public void addItemEntryWithCondition()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addItemEntry(iitemstack(Items.BAKED_POTATO), 2, 3, new ZenLootFunctionWrapper[0],
@@ -104,7 +104,7 @@ public class ItemEntryAdditionTests
     public void addItemEntryWithImplicitSetCount()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addItemEntry(iitemstack(Items.ARROW, 3), 2, "qux");
@@ -131,7 +131,7 @@ public class ItemEntryAdditionTests
     public void addItemEntryWithExplicitSetCount()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addItemEntry(iitemstack(Items.ARROW), 2, 1,
@@ -161,7 +161,7 @@ public class ItemEntryAdditionTests
     public void addItemEntryWithImplicitSetDamage()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         @SuppressWarnings("deprecation")
@@ -191,7 +191,7 @@ public class ItemEntryAdditionTests
     public void addItemEntryWithExplicitSetDamage()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         //set empty tag to work around weird Mojang code where items without NBT are undamageable
@@ -222,7 +222,7 @@ public class ItemEntryAdditionTests
     public void addItemEntryWithImplicitSetMetadata()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addItemEntry(iitemstack(Items.DYE, 1, 8), 2, "qux");
@@ -249,7 +249,7 @@ public class ItemEntryAdditionTests
     public void addItemEntryWithExplicitSetMetadata()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addItemEntry(iitemstack(Items.DYE), 2, 1,
@@ -279,7 +279,7 @@ public class ItemEntryAdditionTests
     public void addItemEntryWithImplicitSetNBT()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addItemEntry(iitemstack(Items.BREAD).withDisplayName("Super Bread"), 2, "qux");
@@ -307,7 +307,7 @@ public class ItemEntryAdditionTests
     public void addItemEntryWithExplicitSetNBT()
     {
         LootTableTweakManager tweakManager = context.createLootTableTweakManager();
-        ResourceLocation fooId = new ResourceLocation("loottweaker", "foo");
+        ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         IData displayData = new DataMap(
