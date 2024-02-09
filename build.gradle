@@ -19,8 +19,8 @@ sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = co
 ext.MIXIN_LOADER_CLASS = 'leviathan143.loottweaker.common.MixinLoader'
 
 def mixins(runConfig) {
-	runConfig.jvmArg "-Dfml.coreMods.load=$MIXIN_LOADER_CLASS"
-	runConfig.jvmArg '-Dmixin.hotSwap=true'
+    runConfig.jvmArg "-Dfml.coreMods.load=$MIXIN_LOADER_CLASS"
+    runConfig.jvmArg '-Dmixin.hotSwap=true'
 }
 
 minecraft {
@@ -120,8 +120,8 @@ dependencies
     implementation fg.deobf("CraftTweaker2:CraftTweaker2-API:${project.crafttweakerVersion}")
     implementation fg.deobf("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${project.crafttweakerVersion}")
 
-    implementation "org.spongepowered:mixin:0.8.5"
-    annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
+    implementation "org.spongepowered:mixin:0.8.4-SNAPSHOT"
+    annotationProcessor "org.spongepowered:mixin:0.8.4-SNAPSHOT:processor"
 
     testImplementation 'com.github.Daomephsta:Saddle:0.0.3'
     testImplementation 'org.assertj:assertj-core:3.13.2'
@@ -143,7 +143,6 @@ tasks.register('deploy', Copy) {
     into file(perDevProperties.deployDirectory)
 }
 
-
 jar {
     manifest {
         attributes([
@@ -154,8 +153,9 @@ jar {
             "Implementation-Version": "${version}",
             "Implementation-Vendor": "loottweaker",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-			"FMLCorePlugin": MIXIN_LOADER_CLASS,
-			"FMLCorePluginContainsFMLMod": "true",
+            "FMLCorePlugin": MIXIN_LOADER_CLASS,
+            "FMLCorePluginContainsFMLMod": "true",
+            "ForceLoadAsMod": true,
             "TweakClass": "org.spongepowered.asm.launch.MixinTweaker"
         ])
     }

@@ -10,11 +10,6 @@ foo_bar.addItemEntry(<minecraft:apple>, 2, "qux");
 foo_bar.addItemEntry(<minecraft:apple>, 2, 3, "quuz");
 //addItemEntry Helper
 foo_bar.addItemEntry(<minecraft:baked_potato>, 2, 3, [], [Conditions.killedByPlayer()], "corge");
-<<<<<<< HEAD
-=======
-//addItemEntry
-foo_bar.addItemEntry(<minecraft:baked_potato>, 2, 3, [], [Conditions.killedByPlayer()], "corge_");
->>>>>>> 57bf677 (Replace MethodHandles with mixins in src/test/java)
 //addItemEntry JSON
 foo_bar.addItemEntry(<minecraft:baked_potato>, 2, 3, 
 	[], [{"condition": "minecraft:killed_by_player"}], "grault");
