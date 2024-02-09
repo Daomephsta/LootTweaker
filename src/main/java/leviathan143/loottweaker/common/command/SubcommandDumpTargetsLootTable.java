@@ -3,6 +3,7 @@ package leviathan143.loottweaker.common.command;
 import java.io.File;
 
 import leviathan143.loottweaker.common.LootTweaker;
+import leviathan143.loottweaker.common.duck.LootTweakerGeneratedFrom;
 import leviathan143.loottweaker.common.lib.LootTableDumper;
 import leviathan143.loottweaker.common.lib.Texts;
 import leviathan143.loottweaker.common.mixin.EntityLivingAccessors;
@@ -36,13 +37,21 @@ public class SubcommandDumpTargetsLootTable implements Subcommand
             case BLOCK:
                 TileEntity te = sender.getEntityWorld().getTileEntity(target.getBlockPos());
                 if (te instanceof ILootContainer)
+                {
                     tableId = ((ILootContainer) te).getLootTable();
+                    if (tableId == null && te instanceof LootTweakerGeneratedFrom)
+                        tableId = ((LootTweakerGeneratedFrom) te).loottweaker_getGeneratedFrom();
+                }
                 else
                     sender.sendMessage(LootTweaker.translation(".commands.dump.target.noTable"));
                 break;
             case ENTITY:
                 if (target.entityHit instanceof EntityLiving)
+                {
                     tableId = ((EntityLivingAccessors) target.entityHit).callGetLootTable();
+                    if (tableId == null && target.entityHit instanceof LootTweakerGeneratedFrom)
+                        tableId = ((LootTweakerGeneratedFrom) target.entityHit).loottweaker_getGeneratedFrom();
+                }
                 else
                     sender.sendMessage(LootTweaker.translation(".commands.dump.target.noTable"));
                 break;

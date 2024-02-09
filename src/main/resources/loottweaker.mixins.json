@@ -6,6 +6,7 @@
 	"mixins": 
 	[
 		"EntityLivingAccessors",
+		"EntityMinecartContainerMixin",
 		"LootConditionManagerAccessors",
 		"LootEntryAccessors",
 		"LootEntryItemAccessors",
@@ -14,7 +15,8 @@
 		"LootFunctionManagerAccessors",
 		"LootPoolAccessors",
 		"LootTableAccessors",
-		"LootTableManagerAccessors"
+		"LootTableManagerAccessors",
+		"TileEntityLockableLootMixin"
 	],
 	"injectors": {
 	 	"defaultRequire": 1
