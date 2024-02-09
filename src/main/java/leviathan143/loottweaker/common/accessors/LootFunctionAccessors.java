@@ -13,7 +13,7 @@ public class LootFunctionAccessors extends AbstractAccessors
     {
         try
         {
-            LootFunction$conditionsSetter = createFieldSetter(LootFunction.class, "field_186555_a", "conditions");
+            LootFunction$conditionsSetter = field(LootFunction.class, "field_186555_a").setter();
         }
         catch (Throwable t)
         {

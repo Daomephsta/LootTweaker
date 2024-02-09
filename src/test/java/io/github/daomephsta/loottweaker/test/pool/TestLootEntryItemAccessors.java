@@ -15,8 +15,8 @@ public class TestLootEntryItemAccessors extends AbstractAccessors
     {
         try
         {
-            LootEntryItem$itemGetter = createFieldGetter(LootEntryItem.class, "item");
-            LootEntryItem$functionsGetter = createFieldGetter(LootEntryItem.class, "functions");
+            LootEntryItem$itemGetter = field(LootEntryItem.class, "item").getter();
+            LootEntryItem$functionsGetter = field(LootEntryItem.class, "functions").getter();
         }
         catch (Throwable t)
         {

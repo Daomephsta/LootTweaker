@@ -4,81 +4,102 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 
 public abstract class AbstractAccessors
 {
-    protected static MethodHandle createFieldGetter(Class<?> clazz, String fieldMappedName)
-        throws IllegalAccessException, NoSuchFieldException, SecurityException
+    public static class FieldReflector
     {
-        Field f = clazz.getDeclaredField(fieldMappedName);
-        f.setAccessible(true);
-        return MethodHandles.lookup().unreflectGetter(f);
-    }
+        private final Class<?> owner;
+        private final String name;
+        private boolean remap = true;
 
-    protected static MethodHandle createFieldGetter(Class<?> clazz, String fieldSrgName, String fieldMappedName)
-        throws IllegalAccessException, NoSuchFieldException, SecurityException
-    {
-        return MethodHandles.lookup().unreflectGetter(findField(clazz, fieldSrgName, fieldMappedName));
-    }
-
-    protected static MethodHandle createFieldSetter(Class<?> clazz, String fieldMappedName)
-        throws IllegalAccessException, NoSuchFieldException, SecurityException
-    {
-        Field f = clazz.getDeclaredField(fieldMappedName);
-        f.setAccessible(true);
-        return MethodHandles.lookup().unreflectSetter(f);
-    }
-
-    protected static MethodHandle createFieldSetter(Class<?> clazz, String fieldSrgName, String fieldMappedName)
-        throws IllegalAccessException, NoSuchFieldException, SecurityException
-    {
-        return MethodHandles.lookup().unreflectSetter(findField(clazz, fieldSrgName, fieldMappedName));
-    }
-
-    private static Field findField(Class<?> clazz, String fieldSrgName, String fieldMappedName)
-        throws NoSuchFieldException, SecurityException
-    {
-        Field f;
-        try
+        private FieldReflector(Class<?> owner, String name)
         {
-            f = clazz.getDeclaredField(fieldSrgName);
+            this.owner = owner;
+            this.name = name;
         }
-        catch (NoSuchFieldException e)
+
+        public FieldReflector remap(boolean remap)
         {
-            f = clazz.getDeclaredField(fieldMappedName);
+            this.remap = remap;
+            return this;
         }
-        f.setAccessible(true);
-        return f;
+
+        private Field find() throws NoSuchFieldException
+        {
+            Field f;
+            if (remap)
+                f = ObfuscationReflectionHelper.findField(owner, name);
+            else
+                f = owner.getDeclaredField(name);
+            f.setAccessible(true);
+            return f;
+        }
+
+        public MethodHandle getter() throws IllegalAccessException, NoSuchFieldException, SecurityException
+        {
+            return MethodHandles.lookup().unreflectGetter(find());
+        }
+
+        public MethodHandle setter() throws IllegalAccessException, NoSuchFieldException, SecurityException
+        {
+            return MethodHandles.lookup().unreflectSetter(find());
+        }
     }
 
-    protected static MethodHandle createMethodInvoker(Class<?> clazz, String mappedName,
-        Class<?>... parameterTypes) throws IllegalAccessException, NoSuchMethodException, SecurityException
+    protected static FieldReflector field(Class<?> owner, String name)
     {
-        Method m = clazz.getDeclaredMethod(mappedName, parameterTypes);
-        m.setAccessible(true);
-        return MethodHandles.lookup().unreflect(m);
+        return new FieldReflector(owner, name);
     }
 
-    protected static MethodHandle createMethodInvoker(Class<?> clazz, String srgName, String mappedName,
-        Class<?>... parameterTypes) throws IllegalAccessException, NoSuchMethodException, SecurityException
+    public static class MethodReflector
     {
-        return MethodHandles.lookup().unreflect(findMethod(clazz, srgName, mappedName, parameterTypes));
+        private final Class<?> owner;
+        private final String name;
+        private final Class<?>[] parameterTypes;
+        private Class<?> returnType = Void.TYPE;
+        private boolean remap = true;
+
+        private MethodReflector(Class<?> owner, String name, Class<?>... parameterTypes)
+        {
+            this.owner = owner;
+            this.name = name;
+            this.parameterTypes = parameterTypes;
+        }
+
+        public MethodReflector remap(boolean remap)
+        {
+            this.remap = remap;
+            return this;
+        }
+
+        public MethodReflector returnType(Class<?> returnType)
+        {
+            this.returnType = returnType;
+            return this;
+        }
+
+        private Method find() throws NoSuchMethodException
+        {
+            Method m;
+            if (remap)
+                m = ObfuscationReflectionHelper.findMethod(owner, name, returnType, parameterTypes);
+            else
+                m = owner.getDeclaredMethod(name, parameterTypes);
+            m.setAccessible(true);
+            return m;
+        }
+
+        public MethodHandle invoker() throws IllegalAccessException, NoSuchMethodException, SecurityException
+        {
+            return MethodHandles.lookup().unreflect(find());
+        }
     }
 
-    private static Method findMethod(Class<?> clazz, String srgName, String mappedName, Class<?>[] parameterTypes)
-        throws NoSuchMethodException, SecurityException
+    protected static MethodReflector method(Class<?> owner, String name, Class<?>... parameterTypes)
     {
-        Method m;
-        try
-        {
-            m = clazz.getDeclaredMethod(srgName, parameterTypes);
-        }
-        catch (NoSuchMethodException e)
-        {
-            m = clazz.getDeclaredMethod(mappedName, parameterTypes);
-        }
-        m.setAccessible(true);
-        return m;
+        return new MethodReflector(owner, name, parameterTypes);
     }
 }

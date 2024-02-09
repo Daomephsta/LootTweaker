@@ -20,15 +20,15 @@ public class TestLootFunctionAccessors extends AbstractAccessors
     {
         try
         {
-            SetCount$countRangeGetter = createFieldGetter(SetCount.class, "countRange");
-            SetDamage$damageRangeGetter = createFieldGetter(SetDamage.class, "damageRange");
-            SetMetadata$metaRangeGetter = createFieldGetter(SetMetadata.class, "metaRange");
-            SetNBT$tagGetterGetter = createFieldGetter(SetNBT.class, "tag");
-            EnchantRandomly$enchantmentsGetter = createFieldGetter(EnchantRandomly.class, "enchantments");
-            EnchantWithLevels$randomLevelGetter = createFieldGetter(EnchantWithLevels.class, "randomLevel");
-            EnchantWithLevels$isTreasureGetter = createFieldGetter(EnchantWithLevels.class, "isTreasure");
-            LootingEnchantBonus$countGetter = createFieldGetter(LootingEnchantBonus.class, "count");
-            LootingEnchantBonus$limitGetter = createFieldGetter(LootingEnchantBonus.class, "limit");
+            SetCount$countRangeGetter = field(SetCount.class, "countRange").getter();
+            SetDamage$damageRangeGetter = field(SetDamage.class, "damageRange").getter();
+            SetMetadata$metaRangeGetter = field(SetMetadata.class, "metaRange").getter();
+            SetNBT$tagGetterGetter = field(SetNBT.class, "tag").getter();
+            EnchantRandomly$enchantmentsGetter = field(EnchantRandomly.class, "enchantments").getter();
+            EnchantWithLevels$randomLevelGetter = field(EnchantWithLevels.class, "randomLevel").getter();
+            EnchantWithLevels$isTreasureGetter = field(EnchantWithLevels.class, "isTreasure").getter();
+            LootingEnchantBonus$countGetter = field(LootingEnchantBonus.class, "count").getter();
+            LootingEnchantBonus$limitGetter = field(LootingEnchantBonus.class, "limit").getter();
         }
         catch (Throwable t)
         {

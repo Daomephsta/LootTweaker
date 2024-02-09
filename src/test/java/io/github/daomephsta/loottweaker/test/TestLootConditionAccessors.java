@@ -21,14 +21,13 @@ public class TestLootConditionAccessors extends AbstractAccessors
     {
         try
         {
-            KilledByPlayer$inverseGetter = createFieldGetter(KilledByPlayer.class, "inverse");
-            RandomChance$chanceGetter = createFieldGetter(RandomChance.class, "chance");
-            RandomChanceWithLooting$chanceGetter = createFieldGetter(RandomChanceWithLooting.class, "chance");
-            RandomChanceWithLooting$lootingMultiplierGetter = createFieldGetter(RandomChanceWithLooting.class,
-                "lootingMultiplier");
-            EntityHasProperty$targetGetter = createFieldGetter(EntityHasProperty.class, "target");
-            EntityHasProperty$propertiesGetter = createFieldGetter(EntityHasProperty.class, "properties");
-            EntityOnFire$onFireGetter = createFieldGetter(EntityOnFire.class, "onFire");
+            KilledByPlayer$inverseGetter = field(KilledByPlayer.class, "inverse").getter();
+            RandomChance$chanceGetter = field(RandomChance.class, "chance").getter();
+            RandomChanceWithLooting$chanceGetter = field(RandomChanceWithLooting.class, "chance").getter();
+            RandomChanceWithLooting$lootingMultiplierGetter = field(RandomChanceWithLooting.class, "lootingMultiplier").getter();
+            EntityHasProperty$targetGetter = field(EntityHasProperty.class, "target").getter();
+            EntityHasProperty$propertiesGetter = field(EntityHasProperty.class, "properties").getter();
+            EntityOnFire$onFireGetter = field(EntityOnFire.class, "onFire").getter();
         }
         catch (Throwable t)
         {

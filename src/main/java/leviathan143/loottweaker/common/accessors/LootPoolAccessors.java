@@ -16,8 +16,8 @@ public class LootPoolAccessors extends AbstractAccessors
     {
         try
         {
-            lootPool$poolConditionsGetter = createFieldGetter(LootPool.class, "field_186454_b", "poolConditions");
-            LootPool$lootEntriesGetter = createFieldGetter(LootPool.class, "field_186453_a", "lootEntries");
+            lootPool$poolConditionsGetter = field(LootPool.class, "field_186454_b").getter();
+            LootPool$lootEntriesGetter = field(LootPool.class, "field_186453_a").getter();
         }
         catch (Throwable t)
         {

@@ -4,6 +4,7 @@ import java.lang.invoke.MethodHandle;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.storage.loot.LootTable;
 
 
 public class EntityLivingAccessors extends AbstractAccessors
@@ -14,7 +15,8 @@ public class EntityLivingAccessors extends AbstractAccessors
     {
         try
         {
-            entityLiving$getLootTable = createMethodInvoker(EntityLiving.class, "func_184647_J", "getLootTable");
+            entityLiving$getLootTable = method(EntityLiving.class, "func_184647_J").returnType(LootTable.class)
+                .invoker();
         }
         catch (Throwable t)
         {

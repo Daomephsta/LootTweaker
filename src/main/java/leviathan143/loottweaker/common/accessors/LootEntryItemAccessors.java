@@ -15,8 +15,8 @@ public class LootEntryItemAccessors extends AbstractAccessors
     {
         try
         {
-            LootEntryItem$itemGetter = createFieldGetter(LootEntryItem.class, "field_186368_a", "item");
-            LootEntryItem$functionsGetter = createFieldGetter(LootEntryItem.class, "field_186369_b", "functions");
+            LootEntryItem$itemGetter = field(LootEntryItem.class, "field_186368_a").getter();
+            LootEntryItem$functionsGetter = field(LootEntryItem.class, "field_186369_b").getter();
         }
         catch (Throwable t)
         {

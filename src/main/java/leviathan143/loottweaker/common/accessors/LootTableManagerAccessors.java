@@ -15,8 +15,7 @@ public class LootTableManagerAccessors extends AbstractAccessors
     {
         try
         {
-            lootTableManager$GSON_INSTANCEGetter = createFieldGetter(LootTableManager.class, "field_186526_b",
-                "GSON_INSTANCE");
+            lootTableManager$GSON_INSTANCEGetter = field(LootTableManager.class, "field_186526_b").getter();
         }
         catch (Throwable t)
         {

@@ -15,8 +15,7 @@ public class LootFunctionManagerAccessors extends AbstractAccessors
     {
         try
         {
-            LootFunctionManager$CLASS_TO_SERIALIZER_MAPGetter = createFieldGetter(LootFunctionManager.class,
-                "field_186585_b", "CLASS_TO_SERIALIZER_MAP");
+            LootFunctionManager$CLASS_TO_SERIALIZER_MAPGetter = field(LootFunctionManager.class, "field_186585_b").getter();
         }
         catch (Throwable t)
         {

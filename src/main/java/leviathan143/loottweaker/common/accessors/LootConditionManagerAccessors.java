@@ -15,8 +15,7 @@ public class LootConditionManagerAccessors extends AbstractAccessors
     {
         try
         {
-            LootConditionManager$CLASS_TO_SERIALIZER_MAPGetter = createFieldGetter(LootConditionManager.class,
-                "field_186643_b", "CLASS_TO_SERIALIZER_MAP");
+            LootConditionManager$CLASS_TO_SERIALIZER_MAPGetter = field(LootConditionManager.class, "field_186643_b").getter();
         }
         catch (Throwable t)
         {

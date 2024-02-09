@@ -19,15 +19,15 @@ public class LootEntryAccessors extends AbstractAccessors
     {
         try
         {
-            LootEntry$weightGetter = createFieldGetter(LootEntry.class, "field_186364_c", "weight");
-            LootEntry$weightSetter = createFieldSetter(LootEntry.class, "field_186364_c", "weight");
-            LootEntry$qualityGetter = createFieldGetter(LootEntry.class, "field_186365_d", "quality");
-            LootEntry$qualitySetter = createFieldSetter(LootEntry.class, "field_186365_d", "quality");
-            LootEntry$conditionsGetter = createFieldGetter(LootEntry.class, "field_186366_e", "conditions");
-            LootEntry$conditionsSetter = createFieldSetter(LootEntry.class, "field_186366_e", "conditions");
-            LootEntry$nameSetter = createFieldSetter(LootEntry.class, "entryName");
-            LootEntry$serialize = createMethodInvoker(LootEntry.class, "func_186362_a", "serialize",
-                JsonObject.class, JsonSerializationContext.class);
+            LootEntry$weightGetter = field(LootEntry.class, "field_186364_c").getter();
+            LootEntry$weightSetter = field(LootEntry.class, "field_186364_c").setter();
+            LootEntry$qualityGetter = field(LootEntry.class, "field_186365_d").getter();
+            LootEntry$qualitySetter = field(LootEntry.class, "field_186365_d").setter();
+            LootEntry$conditionsGetter = field(LootEntry.class, "field_186366_e").getter();
+            LootEntry$conditionsSetter = field(LootEntry.class, "field_186366_e").setter();
+            LootEntry$nameSetter = field(LootEntry.class, "entryName").remap(false).setter();
+            LootEntry$serialize = method(LootEntry.class, "func_186362_a",
+                JsonObject.class, JsonSerializationContext.class).invoker();
         }
         catch (Throwable t)
         {

@@ -13,7 +13,7 @@ public class LootEntryTableAccessors extends AbstractAccessors
     {
         try
         {
-            LootEntryTable$tableGetter = createFieldGetter(LootEntryTable.class, "field_186371_a", "table");
+            LootEntryTable$tableGetter = field(LootEntryTable.class, "field_186371_a").getter();
         }
         catch (Throwable t)
         {

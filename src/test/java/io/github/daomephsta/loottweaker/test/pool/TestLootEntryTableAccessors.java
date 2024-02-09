@@ -14,7 +14,7 @@ public class TestLootEntryTableAccessors extends AbstractAccessors
     {
         try
         {
-            LootEntryTable$tableGetter = createFieldGetter(LootEntryTable.class, "table");
+            LootEntryTable$tableGetter = field(LootEntryTable.class, "table").getter();
         }
         catch (Throwable t)
         {

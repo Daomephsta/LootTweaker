@@ -14,9 +14,9 @@ public class TestLootEntryAccessors extends AbstractAccessors
     {
         try
         {
-            LootEntry$weightGetter = createFieldGetter(LootEntry.class, "weight");
-            LootEntry$qualityGetter = createFieldGetter(LootEntry.class, "quality");
-            LootEntry$conditionsGetter = createFieldGetter(LootEntry.class, "conditions");
+            LootEntry$weightGetter = field(LootEntry.class, "weight").getter();
+            LootEntry$qualityGetter = field(LootEntry.class, "quality").getter();
+            LootEntry$conditionsGetter = field(LootEntry.class, "conditions").getter();
         }
         catch (Throwable t)
         {
