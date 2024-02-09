@@ -3,7 +3,7 @@ package leviathan143.loottweaker.common.command;
 import java.io.File;
 
 import leviathan143.loottweaker.common.LootTweaker;
-import leviathan143.loottweaker.common.darkmagic.EntityLivingAccessors;
+import leviathan143.loottweaker.common.accessors.EntityLivingAccessors;
 import leviathan143.loottweaker.common.lib.LootTableDumper;
 import leviathan143.loottweaker.common.lib.Texts;
 import net.minecraft.command.ICommandSender;

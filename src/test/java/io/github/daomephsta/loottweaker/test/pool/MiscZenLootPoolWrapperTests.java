@@ -3,8 +3,8 @@ package io.github.daomephsta.loottweaker.test.pool;
 import static io.github.daomephsta.loottweaker.test.TestLootConditionAccessors.isInverted;
 import static io.github.daomephsta.loottweaker.test.TestUtils.loadTable;
 import static io.github.daomephsta.loottweaker.test.assertion.LootTweakerAssertions.assertThat;
-import static leviathan143.loottweaker.common.darkmagic.LootPoolAccessors.getConditions;
-import static leviathan143.loottweaker.common.darkmagic.LootPoolAccessors.getEntries;
+import static leviathan143.loottweaker.common.accessors.LootPoolAccessors.getConditions;
+import static leviathan143.loottweaker.common.accessors.LootPoolAccessors.getEntries;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

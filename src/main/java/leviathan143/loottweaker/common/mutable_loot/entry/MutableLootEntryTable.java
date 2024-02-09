@@ -2,7 +2,7 @@ package leviathan143.loottweaker.common.mutable_loot.entry;
 
 import java.util.List;
 
-import leviathan143.loottweaker.common.darkmagic.LootEntryTableAccessors;
+import leviathan143.loottweaker.common.accessors.LootEntryTableAccessors;
 import leviathan143.loottweaker.common.lib.LootConditions;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootEntryTable;

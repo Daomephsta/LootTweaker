@@ -12,7 +12,7 @@ import com.google.gson.JsonSyntaxException;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.data.IData;
 import leviathan143.loottweaker.common.LootTweaker;
-import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
+import leviathan143.loottweaker.common.accessors.LootTableManagerAccessors;
 import leviathan143.loottweaker.common.lib.Arguments;
 import leviathan143.loottweaker.common.lib.JsonConverter;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootConditionWrapper;

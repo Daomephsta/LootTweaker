@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import leviathan143.loottweaker.common.darkmagic.LootEntryItemAccessors;
+import leviathan143.loottweaker.common.accessors.LootEntryItemAccessors;
 import leviathan143.loottweaker.common.lib.LootConditions;
 import leviathan143.loottweaker.common.lib.LootFunctions;
 import net.minecraft.item.Item;

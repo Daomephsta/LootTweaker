@@ -2,7 +2,7 @@ package io.github.daomephsta.loottweaker.test.pool;
 
 import java.lang.invoke.MethodHandle;
 
-import leviathan143.loottweaker.common.darkmagic.AbstractAccessors;
+import leviathan143.loottweaker.common.accessors.AbstractAccessors;
 import net.minecraft.item.Item;
 import net.minecraft.world.storage.loot.LootEntryItem;
 import net.minecraft.world.storage.loot.functions.LootFunction;

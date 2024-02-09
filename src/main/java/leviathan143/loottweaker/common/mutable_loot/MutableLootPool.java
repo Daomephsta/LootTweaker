@@ -12,7 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import leviathan143.loottweaker.common.LootTweaker;
-import leviathan143.loottweaker.common.darkmagic.LootPoolAccessors;
+import leviathan143.loottweaker.common.accessors.LootPoolAccessors;
 import leviathan143.loottweaker.common.lib.LootConditions;
 import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntry;
 import net.minecraft.world.storage.loot.LootEntry;

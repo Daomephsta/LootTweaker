@@ -5,7 +5,7 @@ import java.util.stream.Stream;
 
 import crafttweaker.annotations.ZenRegister;
 import leviathan143.loottweaker.common.LootTweaker;
-import leviathan143.loottweaker.common.darkmagic.LootFunctionAccessors;
+import leviathan143.loottweaker.common.accessors.LootFunctionAccessors;
 import leviathan143.loottweaker.common.lib.Arguments;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import net.minecraft.world.storage.loot.conditions.LootCondition;

@@ -5,8 +5,8 @@ import java.util.Scanner;
 
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
-import leviathan143.loottweaker.common.darkmagic.LootTableAccessors;
-import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
+import leviathan143.loottweaker.common.accessors.LootTableAccessors;
+import leviathan143.loottweaker.common.accessors.LootTableManagerAccessors;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;

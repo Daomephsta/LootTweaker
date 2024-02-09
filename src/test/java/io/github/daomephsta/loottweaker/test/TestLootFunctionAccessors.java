@@ -3,7 +3,7 @@ package io.github.daomephsta.loottweaker.test;
 import java.lang.invoke.MethodHandle;
 import java.util.List;
 
-import leviathan143.loottweaker.common.darkmagic.AbstractAccessors;
+import leviathan143.loottweaker.common.accessors.AbstractAccessors;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.storage.loot.RandomValueRange;

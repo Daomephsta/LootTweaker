@@ -6,7 +6,7 @@ import java.util.List;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
-import leviathan143.loottweaker.common.darkmagic.LootTableManagerAccessors;
+import leviathan143.loottweaker.common.accessors.LootTableManagerAccessors;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
 

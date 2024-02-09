@@ -1,4 +1,4 @@
-package leviathan143.loottweaker.common.darkmagic;
+package leviathan143.loottweaker.common.accessors;
 
 import java.lang.invoke.MethodHandle;
 
@@ -26,12 +26,12 @@ public class LootEntryAccessors extends AbstractAccessors
             LootEntry$conditionsGetter = createFieldGetter(LootEntry.class, "field_186366_e", "conditions");
             LootEntry$conditionsSetter = createFieldSetter(LootEntry.class, "field_186366_e", "conditions");
             LootEntry$nameSetter = createFieldSetter(LootEntry.class, "entryName");
-            LootEntry$serialize = createMethodInvoker(LootEntry.class, "func_186362_a ", "serialize",
+            LootEntry$serialize = createMethodInvoker(LootEntry.class, "func_186362_a", "serialize",
                 JsonObject.class, JsonSerializationContext.class);
         }
         catch (Throwable t)
         {
-            throw new RuntimeException("Failed to initialize test LootEntry accessor method handles", t);
+            throw new RuntimeException("Failed to initialize LootEntry accessor method handles", t);
         }
     }
 

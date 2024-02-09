@@ -13,7 +13,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-import leviathan143.loottweaker.common.darkmagic.LootEntryAccessors;
+import leviathan143.loottweaker.common.accessors.LootEntryAccessors;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.storage.loot.LootEntry;
