@@ -31,3 +31,4 @@
 /.apt_generated/
 #Test logs
 /logs/
+/per-dev.properties

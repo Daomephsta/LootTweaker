@@ -104,6 +104,18 @@ dependencies
     testImplementation 'org.junit.platform:junit-platform-launcher:1.5.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
 }
+
+def perDevProperties = new Properties()
+file("per-dev.properties").withInputStream(perDevProperties.&load)
+
+tasks.register('deploy', Copy) {
+    group 'build'
+    description 'Copies the JAR into a production environment specified in per-dev.properties'
+	dependsOn 'build'
+    from jar.archiveFile
+    into file(perDevProperties.deployDirectory)
+}
+
 jar {
     manifest {
         attributes([
