@@ -1,7 +1,7 @@
 // For those who want the bleeding edge
 plugins {
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'net.minecraftforge.gradle' version '6.0.+'
     id 'wtf.gofancy.fancygradle' version '1.1.+'
     // See hack in settings.gradle for why this works
     id 'org.spongepowered.mixin' version '0.7.+'
