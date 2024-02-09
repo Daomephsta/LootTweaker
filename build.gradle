@@ -112,6 +112,7 @@ tasks.register('deploy', Copy) {
     group 'build'
     description 'Copies the JAR into a production environment specified in per-dev.properties'
 	dependsOn 'build'
+	mustRunAfter 'build'
     from jar.archiveFile
     into file(perDevProperties.deployDirectory)
 }
