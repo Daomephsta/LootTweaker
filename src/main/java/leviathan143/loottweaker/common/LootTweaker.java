@@ -1,6 +1,7 @@
 package leviathan143.loottweaker.common;
 
 import crafttweaker.mc1120.commands.CTChatCommand;
+import crafttweaker.zenscript.GlobalRegistry;
 import leviathan143.loottweaker.common.command.CommandLootTables;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.ZenLootTableTweakManager;
@@ -14,6 +15,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import stanhebben.zenscript.symbols.SymbolPackage;
 
 
 @Mod(modid = LootTweaker.MODID, name = LootTweaker.MODNAME, version = LootTweaker.VERSION, dependencies = LootTweaker.DEPENDENCIES)
@@ -32,6 +34,19 @@ public class LootTweaker
         LTConfig.onLoad();
         LootFunctionManager.registerFunction(ZenLambdaLootFunction.SERIALISER);
         LootConditionManager.registerCondition(ZenLambdaLootCondition.SERIALISER);
+        registerAliases("Conditions", "Functions", "LootCondition", "LootFunction", "LootPool", "LootTable");
+    }
+
+    private void registerAliases(String... aliased)
+    {
+        SymbolPackage loottweaker = (SymbolPackage) GlobalRegistry.getRoot().get(LootTweaker.MODID);
+        SymbolPackage loottweakerVanilla = new SymbolPackage("loottweaker.vanilla");
+        loottweaker.put("vanilla", loottweakerVanilla, GlobalRegistry.getErrors());
+        SymbolPackage loottweakerVanillaLoot = new SymbolPackage("loottweaker.vanilla.loot");
+        loottweakerVanilla.put("loot", loottweakerVanillaLoot, GlobalRegistry.getErrors());
+
+        for (String simpleName : aliased)
+            loottweakerVanillaLoot.put(simpleName, loottweaker.get(simpleName), GlobalRegistry.getErrors());
     }
 
     @Mod.EventHandler

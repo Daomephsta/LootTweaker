@@ -7,7 +7,7 @@ import stanhebben.zenscript.annotations.ZenClass;
 
 
 @ZenRegister
-@ZenClass(LootTweaker.MODID + ".vanilla.loot.LootCondition")
+@ZenClass(LootTweaker.MODID + ".LootCondition")
 public class ZenLootConditionWrapper
 {
     public static final ZenLootConditionWrapper INVALID = new ZenLootConditionWrapper(null);

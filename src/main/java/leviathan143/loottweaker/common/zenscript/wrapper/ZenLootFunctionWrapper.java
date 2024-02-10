@@ -15,7 +15,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 
 
 @ZenRegister
-@ZenClass(LootTweaker.MODID + ".vanilla.loot.LootFunction")
+@ZenClass(LootTweaker.MODID + ".LootFunction")
 public class ZenLootFunctionWrapper
 {
     public static final ZenLootFunctionWrapper INVALID = new ZenLootFunctionWrapper(null, null);

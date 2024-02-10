@@ -34,7 +34,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 
 
 @ZenRegister
-@ZenClass(LootTweaker.MODID + ".vanilla.loot.LootPool")
+@ZenClass(LootTweaker.MODID + ".LootPool")
 public class ZenLootPoolWrapper
 {
     private static final String ENTRY_NAME_PREFIX = "loottweaker#";

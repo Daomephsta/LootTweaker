@@ -12,7 +12,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 
 
 @ZenRegister
-@ZenClass(LootTweaker.MODID + ".vanilla.loot.Conditions")
+@ZenClass(LootTweaker.MODID + ".Conditions")
 public class LootConditionFactory
 {
     private static final LootConditionFactoryImpl IMPLEMENTATION = LootTweaker.CONTEXT

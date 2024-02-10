@@ -12,7 +12,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 
 
 @ZenRegister
-@ZenClass(LootTweaker.MODID + ".vanilla.loot.Functions")
+@ZenClass(LootTweaker.MODID + ".Functions")
 public class LootFunctionFactory
 {
     private static final LootFunctionFactoryImpl IMPLEMENTATION = LootTweaker.CONTEXT.createLootFunctionFactory();

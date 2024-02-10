@@ -20,7 +20,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 
 
 @ZenRegister
-@ZenClass(LootTweaker.MODID + ".vanilla.loot.LootTable")
+@ZenClass(LootTweaker.MODID + ".LootTable")
 public class ZenLootTableWrapper
 {
     private final ResourceLocation id;
