@@ -1,7 +1,6 @@
 package leviathan143.loottweaker.common.command;
 
 import java.io.File;
-
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.duck.LootTweakerGeneratedFrom;
 import leviathan143.loottweaker.common.lib.LootTableDumper;
