@@ -8,10 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BinaryOperator;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.lib.LootConditions;
 import leviathan143.loottweaker.common.mixin.LootPoolAccessors;
 import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntry;
@@ -23,7 +19,6 @@ import net.minecraft.world.storage.loot.conditions.LootCondition;
 
 public class MutableLootPool
 {
-    private static final Logger SANITY_LOGGER = LogManager.getLogger(LootTweaker.MODID + ".sanity_checks");
     private String name;
     private Map<String, MutableLootEntry> entries;
     private List<LootCondition> conditions;
@@ -34,21 +29,10 @@ public class MutableLootPool
         this.name = pool.getName();
         List<LootEntry> immutableEntries = ((LootPoolAccessors) pool).getEntries();
         this.entries = new LinkedHashMap<>(immutableEntries.size());
-        int uniqueSuffix = 0;
         for (LootEntry entry : immutableEntries)
         {
             MutableLootEntry mutableEntry = MutableLootEntry.from(entry);
-            MutableLootEntry existing = entries.get(mutableEntry.getName());
-            if (existing != null)
-            {
-                String newName = mutableEntry.getName() + uniqueSuffix++;
-                SANITY_LOGGER.error("Unexpected duplicate entry name '{}' in pool '{}'. Duplicate added as '{}'."
-                    + "\nReport this to the loot adder.", mutableEntry.getName(), getName(), newName);
-                mutableEntry.setName(newName);
-                entries.put(newName, mutableEntry);
-            }
-            else
-                entries.put(mutableEntry.getName(), mutableEntry);
+            entries.put(mutableEntry.getName(), mutableEntry);
         }
         this.conditions = ((LootPoolAccessors) pool).getConditions();
         this.rolls = pool.getRolls();

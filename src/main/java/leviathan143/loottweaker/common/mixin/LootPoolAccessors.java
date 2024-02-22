@@ -18,4 +18,7 @@ public interface LootPoolAccessors
 
     @Accessor("lootEntries")
     public List<LootEntry> getEntries();
+
+    @Accessor(remap = false)
+    public void setName(String name);
 }

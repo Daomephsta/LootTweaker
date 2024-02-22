@@ -10,10 +10,6 @@ import java.util.function.BinaryOperator;
 
 import javax.annotation.Nullable;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.mixin.LootTableAccessors;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
@@ -22,7 +18,6 @@ import net.minecraft.world.storage.loot.LootTable;
 
 public class MutableLootTable
 {
-    private static final Logger SANITY_LOGGER = LogManager.getLogger(LootTweaker.MODID + ".sanity_checks");
     private final ResourceLocation id;
     private Map<String, MutableLootPool> pools;
 
@@ -31,21 +26,10 @@ public class MutableLootTable
         this.id = id;
         List<LootPool> immutablePools = ((LootTableAccessors) table).getPools();
         this.pools = new LinkedHashMap<>(immutablePools.size());
-        int uniqueSuffix = 0;
         for (LootPool pool : immutablePools)
         {
             MutableLootPool mutablePool = new MutableLootPool(pool);
-            MutableLootPool existing = pools.get(pool.getName());
-            if (existing != null)
-            {
-                String newName = mutablePool.getName() + uniqueSuffix++;
-                SANITY_LOGGER.error("Unexpected duplicate pool name '{}' in table '{}'. Duplicate added as '{}'."
-                    + "\nReport this to the loot adder.", mutablePool.getName(), getId(), newName);
-                mutablePool.setName(newName);
-                pools.put(newName, mutablePool);
-            }
-            else
-                pools.put(mutablePool.getName(), mutablePool);
+            pools.put(mutablePool.getName(), mutablePool);
         }
     }
 
