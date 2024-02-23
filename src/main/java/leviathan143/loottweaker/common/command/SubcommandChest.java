@@ -4,6 +4,7 @@ import java.util.List;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.lib.LootTableFinder;
 import net.minecraft.block.BlockChest;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
@@ -45,7 +46,8 @@ public class SubcommandChest implements Subcommand
 
     private TileEntityChest placeChest(World world, Entity placer, RayTraceResult target)
     {
-        BlockPos pos = target.getBlockPos();
+        BlockPos pos = choosePosition(world, target);
+        // Reuse existing chests
         if (world.getBlockState(pos).getBlock() != Blocks.CHEST)
         {
             world.destroyBlock(pos, false);
@@ -54,6 +56,23 @@ public class SubcommandChest implements Subcommand
         }
         TileEntity te = world.getTileEntity(pos);
         return (TileEntityChest) te;
+    }
+
+    private BlockPos choosePosition(World world, RayTraceResult target)
+    {
+        IBlockState state = world.getBlockState(target.getBlockPos());
+        // Reuse existing chests
+        if (state.getBlock() == Blocks.CHEST)
+            return target.getBlockPos();
+        if (!state.getBlock().isReplaceable(world, target.getBlockPos()))
+        {
+            // Try the adjacent block towards the player
+            BlockPos offset = target.getBlockPos().offset(target.sideHit);
+            state = world.getBlockState(offset);
+            if (state.getBlock().isReplaceable(world, offset))
+                return offset;
+        }
+        return target.getBlockPos();
     }
 
     @Override
