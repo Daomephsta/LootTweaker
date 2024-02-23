@@ -24,8 +24,11 @@ public interface Subcommand
         return Collections.emptyList();
     }
 
-    public static List<String> suggestTableIds(String prompt)
+    public static List<String> suggestTableIds(String promptIn)
     {
+        final String prompt = promptIn.contains(":")
+            ? promptIn
+            : "minecraft:" + promptIn;
         return Streams.stream(LootTableFinder.DEFAULT.findAll())
             .map(ResourceLocation::toString)
             .filter(id -> id.startsWith(prompt))
