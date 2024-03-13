@@ -2,6 +2,7 @@ package leviathan143.loottweaker.common.lib;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.util.Map.Entry;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,11 +10,17 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.*;
+import net.minecraft.world.storage.loot.LootContext;
+import net.minecraft.world.storage.loot.LootEntry;
+import net.minecraft.world.storage.loot.LootPool;
+import net.minecraft.world.storage.loot.LootTable;
+import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.functions.LootFunction;
 
@@ -61,6 +68,7 @@ public class LootTableDumper
     public File dump(LootTable lootTable, ResourceLocation tableId)
     {
         Preconditions.checkNotNull(lootTable);
+        
         File dump = new File(dumpFolder, tableId.getNamespace() + '/' + tableId.getPath() + ".json");
         try
         {
@@ -70,7 +78,9 @@ public class LootTableDumper
             {
                 JsonWriter dumper = gsonInstance.newJsonWriter(writer);
                 dumper.setIndent("  ");
-                gsonInstance.toJson(lootTable, lootTable.getClass(), dumper);
+                JsonObject json = (JsonObject) gsonInstance.toJsonTree(lootTable);
+                json = withInfo(json, lootTable, tableId);
+                gsonInstance.toJson(json, dumper);
             }
             LOGGER.info("Loot table {} saved to {}", tableId, dump.getCanonicalPath());
             return dump;
@@ -80,5 +90,17 @@ public class LootTableDumper
             LOGGER.warn("Failed to dump loot table {}", tableId, t);
         }
         return null;
+    }
+
+    private JsonObject withInfo(JsonObject old, LootTable lootTable, ResourceLocation tableId)
+    {
+        JsonObject info = new JsonObject();
+        info.addProperty("id", tableId.toString());
+        // Put info at the top for ease of access
+        JsonObject json = new JsonObject();
+        json.add("loottweaker:dump_info", info);
+        for (Entry<String, JsonElement> entry : old.entrySet())
+            json.add(entry.getKey(), entry.getValue());
+        return json;
     }
 }
