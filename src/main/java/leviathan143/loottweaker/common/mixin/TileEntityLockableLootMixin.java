@@ -41,7 +41,7 @@ public class TileEntityLockableLootMixin implements LootTweakerGeneratedFrom
     }
 
     @Inject(method = "fillWithLoot", at = @At(value = "FIELD",
-        target = "lootTable:Lnet/minecraft/util/ResourceLocation;", opcode = Opcodes.PUTFIELD))
+        target = "Lnet/minecraft/tileentity/TileEntityLockableLoot;lootTable:Lnet/minecraft/util/ResourceLocation;", opcode = Opcodes.PUTFIELD))
     private void loottweaker$setGeneratedFrom(@Nullable EntityPlayer player, CallbackInfo info)
     {
         this.loottweaker_generatedFrom = this.lootTable;

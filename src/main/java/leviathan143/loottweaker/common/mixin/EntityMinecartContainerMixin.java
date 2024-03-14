@@ -39,7 +39,7 @@ public class EntityMinecartContainerMixin implements LootTweakerGeneratedFrom
     }
 
     @Inject(method = "addLoot", at = @At(value = "FIELD",
-        target = "lootTable:Lnet/minecraft/util/ResourceLocation;", opcode = Opcodes.PUTFIELD))
+        target = "Lnet/minecraft/entity/item/EntityMinecartContainer;lootTable:Lnet/minecraft/util/ResourceLocation;", opcode = Opcodes.PUTFIELD))
     private void loottweaker$setGeneratedFrom(@Nullable EntityPlayer player, CallbackInfo info)
     {
         this.loottweaker_generatedFrom = this.lootTable;
