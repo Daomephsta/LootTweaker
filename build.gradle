@@ -53,6 +53,7 @@ minecraft {
             mixins(it)
             workingDirectory project.file('test/client')
             property 'saddle.disable', 'false'
+            property 'saddle.exitOnTestCompletion', 'true'
             args '--mixin.config', 'loottweaker_test.mixins.json'
         }
 
@@ -62,6 +63,7 @@ minecraft {
             mixins(it)
             workingDirectory project.file('test/server')
             property 'saddle.disable', 'false'
+            property 'saddle.exitOnTestCompletion', 'true'
             args '--mixin.config', 'loottweaker_test.mixins.json'
         }
     }
