@@ -1,8 +1,10 @@
 package leviathan143.loottweaker.common;
 
+import crafttweaker.CraftTweakerAPI;
 import crafttweaker.mc1120.commands.CTChatCommand;
 import crafttweaker.zenscript.GlobalRegistry;
 import leviathan143.loottweaker.common.command.CommandLootTables;
+import leviathan143.loottweaker.common.lib.EventBusInspector;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.ZenLootTableTweakManager;
 import leviathan143.loottweaker.common.zenscript.factory.ZenLambdaLootCondition;
@@ -10,11 +12,14 @@ import leviathan143.loottweaker.common.zenscript.factory.ZenLambdaLootFunction;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import stanhebben.zenscript.symbols.SymbolPackage;
 
 
@@ -64,6 +69,24 @@ public class LootTweaker
     @Mod.EventHandler
     public void serverStarted(FMLServerStartedEvent event)
     {
+        EventBusInspector.getListeners(MinecraftForge.EVENT_BUS)
+            .filter(listener ->
+            {
+                boolean whitelisted = listener.owner.getModId().equals("loottweaker") ||
+                    listener.owner.getModId().equals("zen_loot_tables");
+                return !whitelisted && listener.eventType == LootTableLoadEvent.class &&
+                    listener.priority == EventPriority.LOWEST;
+            })
+            .peek(listener ->
+            {
+                CraftTweakerAPI.logInfo(String.format("Found listener for LootTableLoadEvent at lowest priority: %s", listener));
+            })
+            .map(listener -> listener.owner)
+            .distinct()
+            .forEach(mod ->
+            {
+                CraftTweakerAPI.logInfo(String.format("%1$s listens to LootTableLoadEvent at lowest priority. Any loot added by %1$s cannot be edited by LootTweaker.", mod.getName()));
+            });
         DeprecationWarningManager.printDeprecationWarnings();
     }
 
