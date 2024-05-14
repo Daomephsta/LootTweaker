@@ -10,6 +10,9 @@ loottweaker.commands.dump.target.noTable=The target does not have a loot table
 loottweaker.commands.dump.target.noTarget=Nothing in range
 loottweaker.commands.dump.target.senderNotEntity=This command can only be executed by entities
 loottweaker.commands.dump.dumpLink=Dumped loot table %s to %s
+loottweaker.commands.generate.type=Type not specified, specify chest or entity as additional argument
+loottweaker.commands.generate.missingEntityId=An entity ID must be specified
+loottweaker.commands.generate.invalidEntityId=No entity with ID %s exists
 
 //Deliberately left in for future implementation in a side safe manner
 loottweaker.messages.error.invalidTableName=No loot table with name %s exists!

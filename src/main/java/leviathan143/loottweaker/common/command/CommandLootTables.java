@@ -23,7 +23,7 @@ public class CommandLootTables extends CraftTweakerCommand
         .put("byName", new SubcommandDumpNamed())
         .put("target", new SubcommandDumpTargetsLootTable())
         .put("list", new SubcommandListLootTables())
-        .put("chest", new SubcommandChest())
+        .put("generate", new SubcommandGenerate())
         .build();
 
     public CommandLootTables()
