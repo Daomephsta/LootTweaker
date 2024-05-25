@@ -1,14 +1,18 @@
 package leviathan143.loottweaker.common;
 
+import java.util.function.Consumer;
+
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.mc1120.commands.CTChatCommand;
 import crafttweaker.zenscript.GlobalRegistry;
 import leviathan143.loottweaker.common.command.CommandLootTables;
 import leviathan143.loottweaker.common.lib.EventBusInspector;
+import leviathan143.loottweaker.common.lib.Texts;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.ZenLootTableTweakManager;
 import leviathan143.loottweaker.common.zenscript.factory.ZenLambdaLootCondition;
 import leviathan143.loottweaker.common.zenscript.factory.ZenLambdaLootFunction;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
@@ -93,5 +97,10 @@ public class LootTweaker
     public static TextComponentTranslation translation(String keySuffix, Object... args)
     {
         return new TextComponentTranslation(MODID + keySuffix, args);
+    }
+
+    public static TextComponentTranslation translation(String keySuffix, Consumer<Style> styler, Object... args)
+    {
+        return Texts.styled(new TextComponentTranslation(MODID + keySuffix, args), styler);
     }
 }

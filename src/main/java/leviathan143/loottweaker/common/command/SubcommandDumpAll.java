@@ -7,6 +7,7 @@ import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.lib.LootTableDumper;
 import leviathan143.loottweaker.common.lib.LootTableFinder;
 import leviathan143.loottweaker.common.lib.Texts;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
@@ -17,7 +18,7 @@ public class SubcommandDumpAll implements Subcommand
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args)
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (!LootTableFinder.DEFAULT.fullScanPerformed())
             sender.sendMessage(LootTweaker.translation(".messages.info.locatingLootTables"));
@@ -44,5 +45,11 @@ public class SubcommandDumpAll implements Subcommand
         while (unwrapped.getCause() != null && unwrapped.getMessage().equals(unwrapped.getCause().toString()))
             unwrapped = unwrapped.getCause();
         return unwrapped;
+    }
+    
+    @Override
+    public int getMaxArguments()
+    {
+        return 0;
     }
 }

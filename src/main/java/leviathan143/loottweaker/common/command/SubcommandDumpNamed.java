@@ -7,6 +7,7 @@ import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.lib.LootTableDumper;
 import leviathan143.loottweaker.common.lib.LootTableFinder;
 import leviathan143.loottweaker.common.lib.Texts;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
@@ -16,7 +17,7 @@ import net.minecraft.util.math.BlockPos;
 public class SubcommandDumpNamed implements Subcommand
 {
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args)
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length < 2)
         {
@@ -44,5 +45,11 @@ public class SubcommandDumpNamed implements Subcommand
         BlockPos targetPos)
     {
         return Subcommand.suggestTableIds(args[0]);
+    }
+    
+    @Override
+    public int getMaxArguments()
+    {
+        return 1;
     }
 }

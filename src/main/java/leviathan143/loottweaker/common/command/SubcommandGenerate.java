@@ -6,9 +6,11 @@ import java.util.List;
 
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.lib.LootTableFinder;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -30,25 +32,19 @@ import net.minecraft.world.chunk.storage.AnvilChunkLoader;
 public class SubcommandGenerate implements Subcommand
 {
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args)
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length < 2)
-        {
-            sender.sendMessage(LootTweaker.translation(".commands.generate.type"));
-            return;
-        }
+            throw Subcommand.wrongUsage(".commands.generate.type.missing");
+
         String type = args[1];
-        if (args.length < 3)
-        {
-            sender.sendMessage(LootTweaker.translation(".commands.missingName"));
-            return;
-        }
+        if (!type.equals("chest") && !type.equals("entity"))
+            throw Subcommand.wrongUsage(".commands.generate.type.unknown", type);
+
         ResourceLocation tableId = new ResourceLocation(args[2]);
+
         if (!LootTableFinder.DEFAULT.exists(tableId))
-        {
-            sender.sendMessage(LootTweaker.translation(".messages.error.invalidTableName", tableId));
-            return;
-        }
+            throw Subcommand.wrongUsage(".messages.error.invalidTableName", tableId);
 
         RayTraceResult target = sender.getCommandSenderEntity().rayTrace(8.0F, 1.0F);
         if (target.typeOfHit == RayTraceResult.Type.BLOCK)
@@ -70,13 +66,10 @@ public class SubcommandGenerate implements Subcommand
     }
 
     private void generateEntity(ICommandSender sender, String[] args, World world, BlockPos pos,
-        ResourceLocation tableId)
+        ResourceLocation tableId) throws CommandException
     {
         if (args.length < 4)
-        {
-            sender.sendMessage(LootTweaker.translation(".commands.generate.missingEntityId"));
-            return;
-        }
+            throw Subcommand.wrongUsage(".commands.generate.missingEntityId");
         boolean hasNbt = false;
         NBTTagCompound nbt;
         if (args.length == 5)
@@ -99,10 +92,7 @@ public class SubcommandGenerate implements Subcommand
             nbt = new NBTTagCompound();
         String id = args[3];
         if (!EntityList.isRegistered(new ResourceLocation(id)))
-        {
-            sender.sendMessage(LootTweaker.translation(".commands.generate.invalidEntityId", id));
-            return;
-        }
+            throw Subcommand.wrongUsage(".commands.generate.invalidEntityId", id);
         // Set both, as unused entity NBT keys are simply discarded 
         nbt.setString("LootTable", tableId.toString());
         nbt.setString("DeathLootTable", tableId.toString());
@@ -122,11 +112,17 @@ public class SubcommandGenerate implements Subcommand
     private TileEntityChest placeChest(World world, Entity placer, BlockPos pos)
     {
         // Reuse existing chests
-        if (world.getBlockState(pos).getBlock() != Blocks.CHEST)
+        IBlockState state = world.getBlockState(pos);
+        if (state.getBlock() != Blocks.CHEST)
         {
             world.destroyBlock(pos, false);
             world.setBlockState(pos, Blocks.CHEST.getDefaultState()
                 .withProperty(BlockChest.FACING, placer.getHorizontalFacing().getOpposite()));
+        }
+        else 
+        {
+            // Play destroy effects without destroying the block, to signal that contents have been replaced
+            world.playEvent(2001, pos, Block.getStateId(state));
         }
         TileEntity te = world.getTileEntity(pos);
         return (TileEntityChest) te;
@@ -153,7 +149,6 @@ public class SubcommandGenerate implements Subcommand
     public List<String> getCompletions(MinecraftServer server, ICommandSender sender, String[] args,
         BlockPos targetPos)
     {
-        System.out.println(args);
         switch (args.length)
         {
         case 1:
@@ -166,5 +161,11 @@ public class SubcommandGenerate implements Subcommand
         default:
             return Collections.emptyList();
         }
+    }
+    
+    @Override
+    public int getMaxArguments()
+    {
+        return 3;
     }
 }

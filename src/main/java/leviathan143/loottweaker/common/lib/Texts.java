@@ -25,13 +25,30 @@ public class Texts
 
     public static ITextComponent styledString(String text, Consumer<Style> styler)
     {
-        ITextComponent styled = new TextComponentString(text);
-        styler.accept(styled.getStyle());
-        return styled;
+        return styled(new TextComponentString(text), styler);
     }
 
     public static ITextComponent styledAsString(Object text, Consumer<Style> styler)
     {
         return styledString(text.toString(), styler);
+    }
+
+    public static <T extends ITextComponent> T styled(T text, Consumer<Style> styler)
+    {
+        styler.accept(text.getStyle());
+        return text;
+    }
+
+    public static class Styles
+    {
+        public static Consumer<Style> urlLink(String url)
+        {
+            return style ->
+            {
+                style.setClickEvent(new ClickEvent(Action.OPEN_URL, url))
+                    .setUnderlined(true)
+                    .setColor(TextFormatting.AQUA);
+            };
+        }
     }
 }
