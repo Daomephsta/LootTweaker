@@ -28,7 +28,7 @@ minecraft {
 
     runs {
         client {
-            taskName "$archivesBaseName Client"
+            taskName "$archivesBaseName-client"
             workingDirectory project.file('run/client')
             mixins(it)
             property 'forge.logging.markers', 'REGISTRIES'
@@ -38,7 +38,7 @@ minecraft {
         }
 
         server {
-            taskName "$archivesBaseName Server"
+            taskName "$archivesBaseName-server"
             mixins(it)
             workingDirectory project.file('run/server')
             property 'forge.logging.markers', 'REGISTRIES'
@@ -49,7 +49,7 @@ minecraft {
 
         testClient {
             parent runs.client
-            taskName "$archivesBaseName Client Tests"
+            taskName "$archivesBaseName-client-tests"
             mixins(it)
             workingDirectory project.file('test/client')
             property 'saddle.disable', 'false'
@@ -59,7 +59,7 @@ minecraft {
 
         testServer {
             parent runs.server
-            taskName "$archivesBaseName Server Tests"
+            taskName "$archivesBaseName-server-tests"
             mixins(it)
             workingDirectory project.file('test/server')
             property 'saddle.disable', 'false'
