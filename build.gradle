@@ -85,6 +85,13 @@ mixin {
     config 'loottweaker.mixins.json'
 }
 
+configurations {
+    //Jars to package using ContainedDeps
+    containedDep {
+        transitive = false
+    }
+}
+
 // FancyGradle isn't quite enough
 configurations.all {
     resolutionStrategy {
@@ -112,10 +119,10 @@ repositories
         name 'Su5ed LegacyDev Fork'
         url = 'https://maven.su5ed.dev/releases'
     }
-	maven {
-		url = 'https://repo.spongepowered.org/repository/maven-public/'
-		content { includeGroup 'org.spongepowered' }
-	}
+    maven {
+        url = 'https://repo.spongepowered.org/repository/maven-public/'
+        content { includeGroup 'org.spongepowered' }
+    }
 }
 
 dependencies
@@ -126,7 +133,7 @@ dependencies
     implementation fg.deobf("CraftTweaker2:CraftTweaker2-API:${project.crafttweakerVersion}")
     implementation fg.deobf("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${project.crafttweakerVersion}")
 
-    implementation project(':Daomephsta Loot Shared')
+    implementation(containedDep(project(':Daomephsta Loot Shared')))
 
     implementation "org.spongepowered:mixin:0.8.4-SNAPSHOT"
     annotationProcessor "org.spongepowered:mixin:0.8.4-SNAPSHOT:processor"
@@ -146,12 +153,36 @@ if (file("per-machine.properties").exists()) {
     tasks.register('deploy', Copy) {
         group 'build'
         description 'Copies the JAR into a production environment specified in per-dev.properties'
-    	dependsOn 'build'
-    	mustRunAfter 'build'
+        dependsOn 'build'
+        mustRunAfter 'build'
         from jar.archiveFile
         into file(perMachine.deployDirectory)
     }
 }
+
+import java.util.jar.*
+boolean hasContainedDepMetadata(File file)
+{
+    def jar = new JarFile(file)
+    if (jar.manifest == null) return;
+    def hasMetadata = jar.manifest.mainAttributes.containsKey(new Attributes.Name('Maven-Artifact'))
+    jar.close()
+    return hasMetadata
+}
+
+task generateDependencyMetaFiles {doLast{
+    //Delete any previous meta files
+    file("${buildDir}/dependencyMeta").deleteDir()
+    //Generate new meta files
+    configurations.containedDep.resolvedConfiguration.resolvedArtifacts.each {
+        //Ignore files that define the dependency metadata themselves
+        if (hasContainedDepMetadata(it.file)) return;
+        def metaFile = file("${buildDir}/dependencyMeta/${it.file.name}.meta")
+        metaFile.parentFile.mkdirs()
+        //The newline is very important
+        metaFile.text = "Maven-Artifact: ${it.moduleVersion.id}\n"
+    }
+}}
 
 jar {
     manifest {
@@ -166,17 +197,27 @@ jar {
             "FMLCorePlugin": MIXIN_LOADER_CLASS,
             "FMLCorePluginContainsFMLMod": "true",
             "ForceLoadAsMod": true,
-            "TweakClass": "org.spongepowered.asm.launch.MixinTweaker"
+            "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
+            //Add contained dependencies to the manifest
+            'ContainedDeps': fileTree("${buildDir}/dependencyMeta").collect { 
+            	it.name[0..<it.name.lastIndexOf('.')] 
+            }
+            .join(' ')
         ])
     }
+    //Package contained dependencies
+    into('/META-INF/libraries') {
+        from configurations.containedDep, file("${buildDir}/dependencyMeta")
+    }
+    dependsOn generateDependencyMetaFiles
     finalizedBy('reobfJar')
 }
 
 processResources {
-	inputs.property 'version', project.modVersion
-	filesMatching('mcmod.info') {
-		expand 'version': project.modVersion
-	}
+    inputs.property 'version', project.modVersion
+    filesMatching('mcmod.info') {
+        expand 'version': project.modVersion
+    }
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens
@@ -185,8 +226,8 @@ task processSource(type: Sync) {
     from sourceSets.main.java
     inputs.property 'version', project.modVersion
     filesMatching('leviathan143/loottweaker/common/LootTweaker.java') {
-		filter(ReplaceTokens, tokens: ['VERSION': project.modVersion])
-	}
+        filter(ReplaceTokens, tokens: ['VERSION': project.modVersion])
+    }
     into "$buildDir/src"
 }
 
