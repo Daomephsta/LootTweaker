@@ -1,6 +1,7 @@
 package leviathan143.loottweaker.common;
 
 import crafttweaker.CraftTweakerAPI;
+import daomephsta.loot_shared.ErrorHandler;
 
 
 public class CTLoggingErrorHandler implements ErrorHandler

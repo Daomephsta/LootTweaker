@@ -7,9 +7,9 @@ import java.util.Map;
 
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ZenRegister;
+import daomephsta.loot_shared.utility.RandomValueRanges;
+import daomephsta.loot_shared.utility.loot.LootTableFinder;
 import leviathan143.loottweaker.common.LootTweaker;
-import leviathan143.loottweaker.common.lib.LootTableFinder;
-import leviathan143.loottweaker.common.lib.RandomValueRanges;
 import leviathan143.loottweaker.common.mutable_loot.MutableLootPool;
 import leviathan143.loottweaker.common.mutable_loot.MutableLootTable;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;

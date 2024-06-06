@@ -3,6 +3,7 @@ package io.github.daomephsta.loottweaker.test.pool;
 import static io.github.daomephsta.loottweaker.test.TestUtils.iitemstack;
 import static io.github.daomephsta.loottweaker.test.TestUtils.loadTable;
 import static io.github.daomephsta.loottweaker.test.assertion.LootTweakerAssertions.assertThat;
+
 import com.google.common.collect.ImmutableMap;
 
 import crafttweaker.api.data.DataMap;

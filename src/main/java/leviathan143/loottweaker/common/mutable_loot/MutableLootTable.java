@@ -10,7 +10,8 @@ import java.util.function.BinaryOperator;
 
 import javax.annotation.Nullable;
 
-import leviathan143.loottweaker.common.mixin.LootTableAccessors;
+import daomephsta.loot_shared.mixin.LootTableAccessors;
+import daomephsta.loot_shared.utility.loot.fix.LootFixer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
@@ -23,6 +24,7 @@ public class MutableLootTable
 
     public MutableLootTable(LootTable table, ResourceLocation id)
     {
+        table = LootFixer.fixTable(table, id);
         this.id = id;
         List<LootPool> immutablePools = ((LootTableAccessors) table).getPools();
         this.pools = new LinkedHashMap<>(immutablePools.size());

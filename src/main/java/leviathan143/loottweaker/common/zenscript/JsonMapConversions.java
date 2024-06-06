@@ -11,10 +11,9 @@ import com.google.gson.JsonSyntaxException;
 
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.data.IData;
+import daomephsta.loot_shared.mixin.LootTableManagerAccessors;
+import daomephsta.loot_shared.utility.JsonConverter;
 import leviathan143.loottweaker.common.LootTweaker;
-import leviathan143.loottweaker.common.lib.Arguments;
-import leviathan143.loottweaker.common.lib.JsonConverter;
-import leviathan143.loottweaker.common.mixin.LootTableManagerAccessors;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootConditionWrapper;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootFunctionWrapper;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
@@ -73,7 +72,8 @@ public class JsonMapConversions
 
         private <T> Optional<T> parse(Map<String, ?> data, Class<T> clazz)
         {
-            if (!Arguments.nonNull(context.getErrorHandler(), "json", data)) return Optional.empty();
+            Object[] args = { "json", data };
+			if (!context.getErrorHandler().nonNull(args)) return Optional.empty();
             try
             {
                 return Optional.of(lootDeserialiser.fromJson(jsonElementSerialiser.toJsonTree(data), clazz));

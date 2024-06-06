@@ -17,7 +17,13 @@ import crafttweaker.api.data.DataString;
 import crafttweaker.api.data.IData;
 import io.github.daomephsta.loottweaker.test.TestErrorHandler.LootTweakerException;
 import io.github.daomephsta.loottweaker.test.TestUtils;
-import io.github.daomephsta.loottweaker.test.mixin.function.*;
+import io.github.daomephsta.loottweaker.test.mixin.function.TestEnchantRandomlyAccessors;
+import io.github.daomephsta.loottweaker.test.mixin.function.TestEnchantWithLevelsAccessors;
+import io.github.daomephsta.loottweaker.test.mixin.function.TestLootingEnchantBonusAccessors;
+import io.github.daomephsta.loottweaker.test.mixin.function.TestSetCountAccessors;
+import io.github.daomephsta.loottweaker.test.mixin.function.TestSetDamageAccessors;
+import io.github.daomephsta.loottweaker.test.mixin.function.TestSetMetadataAccessors;
+import io.github.daomephsta.loottweaker.test.mixin.function.TestSetNBTAccessors;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
@@ -31,7 +37,14 @@ import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraft.world.storage.loot.conditions.KilledByPlayer;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.conditions.RandomChance;
-import net.minecraft.world.storage.loot.functions.*;
+import net.minecraft.world.storage.loot.functions.EnchantRandomly;
+import net.minecraft.world.storage.loot.functions.EnchantWithLevels;
+import net.minecraft.world.storage.loot.functions.LootingEnchantBonus;
+import net.minecraft.world.storage.loot.functions.SetCount;
+import net.minecraft.world.storage.loot.functions.SetDamage;
+import net.minecraft.world.storage.loot.functions.SetMetadata;
+import net.minecraft.world.storage.loot.functions.SetNBT;
+import net.minecraft.world.storage.loot.functions.Smelt;
 
 
 public class LootFunctionFactoryTests

@@ -3,11 +3,9 @@ package leviathan143.loottweaker.common;
 import java.util.function.Consumer;
 
 import crafttweaker.CraftTweakerAPI;
-import crafttweaker.mc1120.commands.CTChatCommand;
 import crafttweaker.zenscript.GlobalRegistry;
-import leviathan143.loottweaker.common.command.CommandLootTables;
-import leviathan143.loottweaker.common.lib.EventBusInspector;
-import leviathan143.loottweaker.common.lib.Texts;
+import daomephsta.loot_shared.utility.EventBusInspector;
+import daomephsta.loot_shared.utility.Texts;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.ZenLootTableTweakManager;
 import leviathan143.loottweaker.common.zenscript.factory.ZenLambdaLootCondition;
@@ -19,7 +17,6 @@ import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
@@ -56,12 +53,6 @@ public class LootTweaker
 
         for (String simpleName : aliased)
             loottweakerVanillaLoot.put(simpleName, loottweaker.get(simpleName), GlobalRegistry.getErrors());
-    }
-
-    @Mod.EventHandler
-    public void init(FMLInitializationEvent event)
-    {
-        CTChatCommand.registerCommand(new CommandLootTables());
     }
 
     @Mod.EventHandler

@@ -1,6 +1,6 @@
 package leviathan143.loottweaker.common.zenscript;
 
-import leviathan143.loottweaker.common.ErrorHandler;
+import daomephsta.loot_shared.ErrorHandler;
 import leviathan143.loottweaker.common.zenscript.factory.LootConditionFactoryImpl;
 import leviathan143.loottweaker.common.zenscript.factory.LootFunctionFactoryImpl;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootPoolWrapper;

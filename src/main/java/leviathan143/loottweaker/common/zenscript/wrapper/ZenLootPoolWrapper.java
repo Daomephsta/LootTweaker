@@ -14,8 +14,11 @@ import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.data.DataMap;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
+import daomephsta.loot_shared.utility.RandomValueRanges;
+import daomephsta.loot_shared.utility.loot.LootConditions;
+import daomephsta.loot_shared.utility.loot.LootFunctions;
 import leviathan143.loottweaker.common.LootTweaker;
-import leviathan143.loottweaker.common.lib.*;
+import leviathan143.loottweaker.common.lib.QualifiedPoolIdentifier;
 import leviathan143.loottweaker.common.mutable_loot.MutableLootPool;
 import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntry;
 import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntryEmpty;
@@ -27,7 +30,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
-import net.minecraft.world.storage.loot.functions.*;
+import net.minecraft.world.storage.loot.functions.LootFunction;
+import net.minecraft.world.storage.loot.functions.SetCount;
+import net.minecraft.world.storage.loot.functions.SetDamage;
+import net.minecraft.world.storage.loot.functions.SetMetadata;
+import net.minecraft.world.storage.loot.functions.SetNBT;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -55,7 +62,8 @@ public class ZenLootPoolWrapper
     @ZenMethod
     public void addConditions(ZenLootConditionWrapper[] conditions)
     {
-        if (!Arguments.nonNull(context.getErrorHandler(), "conditions", conditions)) return;
+        Object[] args = { "conditions", conditions };
+		if (!context.getErrorHandler().nonNull(args)) return;
         List<LootCondition> parsedConditions = Arrays.stream(conditions)
             .filter(ZenLootConditionWrapper::isValid)
             .map(ZenLootConditionWrapper::unwrap)
@@ -90,7 +98,8 @@ public class ZenLootPoolWrapper
     public void addItemEntry(IItemStack stack, int weight, @Optional
     String name)
     {
-        if (!Arguments.nonNull(context.getErrorHandler(), "stack", stack)) return;
+        Object[] args = { "stack", stack };
+		if (!context.getErrorHandler().nonNull(args)) return;
         addItemEntryInternal(stack, weight, DEFAULT_QUALITY, LootFunctions.NONE, LootConditions.NONE, name);
     }
 
@@ -98,7 +107,8 @@ public class ZenLootPoolWrapper
     public void addItemEntry(IItemStack stack, int weight, int quality, @Optional
     String name)
     {
-        if (!Arguments.nonNull(context.getErrorHandler(), "stack", stack)) return;
+        Object[] args = { "stack", stack };
+		if (!context.getErrorHandler().nonNull(args)) return;
         addItemEntryInternal(stack, weight, quality, LootFunctions.NONE, LootConditions.NONE, name);
     }
 
@@ -107,8 +117,8 @@ public class ZenLootPoolWrapper
         ZenLootConditionWrapper[] conditions, @Optional
         String name)
     {
-        if (!Arguments.nonNull(context.getErrorHandler(), "stack", stack, "functions", functions, "conditions",
-            conditions)) return;
+        Object[] args = { "stack", stack, "functions", functions, "conditions", conditions };
+		if (!context.getErrorHandler().nonNull(args)) return;
         LootFunction[] unwrappedFunctions = Arrays.stream(functions)
             .filter(ZenLootFunctionWrapper::isValid)
             .map(ZenLootFunctionWrapper::unwrap)
@@ -173,7 +183,8 @@ public class ZenLootPoolWrapper
     public void addLootTableEntry(String tableName, int weight, int quality, @Optional
     String name)
     {
-        if (!Arguments.nonNull(context.getErrorHandler(), "table name", tableName)) return;
+        Object[] args = { "table name", tableName };
+		if (!context.getErrorHandler().nonNull(args)) return;
         addLootTableEntryInternal(tableName, weight, quality, LootConditions.NONE, name);
     }
 
@@ -182,7 +193,8 @@ public class ZenLootPoolWrapper
         @Optional
         String name)
     {
-        if (!Arguments.nonNull(context.getErrorHandler(), "table name", tableName, "conditions", conditions))
+        Object[] args = { "table name", tableName, "conditions", conditions };
+		if (!context.getErrorHandler().nonNull(args))
             return;
         LootCondition[] unwrappedConditions = Arrays.stream(conditions)
             .filter(ZenLootConditionWrapper::isValid)
@@ -219,7 +231,8 @@ public class ZenLootPoolWrapper
     public void addEmptyEntry(int weight, int quality, ZenLootConditionWrapper[] conditions, @Optional
     String name)
     {
-        if (!Arguments.nonNull(context.getErrorHandler(), "conditions", conditions)) return;
+        Object[] args = { "conditions", conditions };
+		if (!context.getErrorHandler().nonNull(args)) return;
         LootCondition[] unwrappedConditions = Arrays.stream(conditions)
             .filter(ZenLootConditionWrapper::isValid)
             .map(ZenLootConditionWrapper::unwrap)

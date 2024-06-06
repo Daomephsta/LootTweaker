@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BinaryOperator;
 
-import leviathan143.loottweaker.common.lib.LootConditions;
-import leviathan143.loottweaker.common.mixin.LootPoolAccessors;
+import daomephsta.loot_shared.mixin.LootPoolAccessors;
+import daomephsta.loot_shared.utility.loot.LootConditions;
 import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntry;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootPool;

@@ -8,10 +8,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import crafttweaker.CraftTweakerAPI;
+import daomephsta.loot_shared.utility.loot.LootTableFinder;
+import daomephsta.loot_shared.utility.loot.dump.LootTableDumper;
 import leviathan143.loottweaker.common.LTConfig;
 import leviathan143.loottweaker.common.LootTweaker;
-import leviathan143.loottweaker.common.lib.LootTableDumper;
-import leviathan143.loottweaker.common.lib.LootTableFinder;
 import leviathan143.loottweaker.common.mutable_loot.MutableLootTable;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
 import net.minecraft.server.MinecraftServer;

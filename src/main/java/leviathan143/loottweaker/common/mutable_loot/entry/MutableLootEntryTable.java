@@ -2,8 +2,8 @@ package leviathan143.loottweaker.common.mutable_loot.entry;
 
 import java.util.List;
 
-import leviathan143.loottweaker.common.lib.LootConditions;
-import leviathan143.loottweaker.common.mixin.LootEntryTableAccessors;
+import daomephsta.loot_shared.mixin.LootEntryTableAccessors;
+import daomephsta.loot_shared.utility.loot.LootConditions;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootEntryTable;
 import net.minecraft.world.storage.loot.conditions.LootCondition;

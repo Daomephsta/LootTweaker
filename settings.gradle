@@ -20,4 +20,5 @@ pluginManagement {
             content { includeGroup 'org.spongepowered' }
         }
     }
+    includeFlat 'Daomephsta Loot Shared'
 }

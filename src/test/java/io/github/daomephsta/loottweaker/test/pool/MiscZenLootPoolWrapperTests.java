@@ -5,12 +5,12 @@ import static io.github.daomephsta.loottweaker.test.assertion.LootTweakerAsserti
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import daomephsta.loot_shared.mixin.LootPoolAccessors;
 import io.github.daomephsta.loottweaker.test.TestErrorHandler.LootTweakerException;
 import io.github.daomephsta.loottweaker.test.TestUtils;
 import io.github.daomephsta.loottweaker.test.mixin.condition.TestKilledByPlayerAccessors;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
-import leviathan143.loottweaker.common.mixin.LootPoolAccessors;
 import leviathan143.loottweaker.common.zenscript.LootTableTweakManager;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.factory.LootConditionFactory;

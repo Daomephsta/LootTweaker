@@ -5,7 +5,6 @@ import java.util.stream.Stream;
 
 import crafttweaker.annotations.ZenRegister;
 import leviathan143.loottweaker.common.LootTweaker;
-import leviathan143.loottweaker.common.lib.Arguments;
 import leviathan143.loottweaker.common.mixin.LootFunctionAccessors;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
@@ -34,7 +33,8 @@ public class ZenLootFunctionWrapper
     {
         // Will be null for INVALID
         if (function == null) return this;
-        if (!Arguments.nonNull(context.getErrorHandler(), "conditions", conditions)) return INVALID;
+		Object[] args = { "conditions", conditions };
+        if (!context.getErrorHandler().nonNull(args)) return INVALID;
         ((LootFunctionAccessors) function).setConditions(
             Stream.concat(Arrays.stream(function.getConditions()),
                     Arrays.stream(conditions)

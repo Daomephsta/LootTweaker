@@ -11,10 +11,10 @@ import org.assertj.core.api.Condition;
 import com.google.common.collect.ImmutableMap;
 
 import io.github.daomephsta.loottweaker.test.TestErrorHandler.LootTweakerException;
+import io.github.daomephsta.loottweaker.test.TestUtils;
 import io.github.daomephsta.loottweaker.test.mixin.condition.TestKilledByPlayerAccessors;
 import io.github.daomephsta.loottweaker.test.mixin.condition.TestRandomChanceAccessors;
 import io.github.daomephsta.loottweaker.test.mixin.condition.TestRandomChanceWithLootingAccessors;
-import io.github.daomephsta.loottweaker.test.TestUtils;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
 import leviathan143.loottweaker.common.zenscript.factory.LootConditionFactoryImpl;

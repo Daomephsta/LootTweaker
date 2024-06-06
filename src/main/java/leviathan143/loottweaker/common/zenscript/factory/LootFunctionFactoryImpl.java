@@ -7,16 +7,22 @@ import com.google.common.collect.Lists;
 
 import crafttweaker.api.data.IData;
 import crafttweaker.mc1120.data.NBTConverter;
-import leviathan143.loottweaker.common.lib.Arguments;
-import leviathan143.loottweaker.common.lib.LootConditions;
-import leviathan143.loottweaker.common.lib.RandomValueRanges;
+import daomephsta.loot_shared.utility.RandomValueRanges;
+import daomephsta.loot_shared.utility.loot.LootConditions;
 import leviathan143.loottweaker.common.zenscript.JsonMapConversions;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootFunctionWrapper;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.storage.loot.functions.*;
+import net.minecraft.world.storage.loot.functions.EnchantRandomly;
+import net.minecraft.world.storage.loot.functions.EnchantWithLevels;
+import net.minecraft.world.storage.loot.functions.LootingEnchantBonus;
+import net.minecraft.world.storage.loot.functions.SetCount;
+import net.minecraft.world.storage.loot.functions.SetDamage;
+import net.minecraft.world.storage.loot.functions.SetMetadata;
+import net.minecraft.world.storage.loot.functions.SetNBT;
+import net.minecraft.world.storage.loot.functions.Smelt;
 
 
 public class LootFunctionFactoryImpl
@@ -32,7 +38,8 @@ public class LootFunctionFactoryImpl
 
     public ZenLootFunctionWrapper enchantRandomly(String[] enchantIDList)
     {
-        if (!Arguments.nonNull(context.getErrorHandler(), "enchantment IDs", enchantIDList))
+        Object[] args = { "enchantment IDs", enchantIDList };
+		if (!context.getErrorHandler().nonNull(args))
             return ZenLootFunctionWrapper.INVALID;
         List<Enchantment> enchantments = Lists.newArrayListWithCapacity(enchantIDList.length);
         for (String id : enchantIDList)

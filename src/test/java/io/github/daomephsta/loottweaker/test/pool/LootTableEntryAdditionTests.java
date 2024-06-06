@@ -2,6 +2,7 @@ package io.github.daomephsta.loottweaker.test.pool;
 
 import static io.github.daomephsta.loottweaker.test.TestUtils.loadTable;
 import static io.github.daomephsta.loottweaker.test.assertion.LootTweakerAssertions.assertThat;
+
 import io.github.daomephsta.loottweaker.test.TestUtils;
 import io.github.daomephsta.loottweaker.test.mixin.condition.TestKilledByPlayerAccessors;
 import io.github.daomephsta.saddle.engine.SaddleTest;

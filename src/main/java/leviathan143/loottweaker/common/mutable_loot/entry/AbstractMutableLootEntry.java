@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import leviathan143.loottweaker.common.lib.LootConditions;
-import leviathan143.loottweaker.common.mixin.LootEntryAccessors;
+import daomephsta.loot_shared.mixin.LootEntryAccessors;
+import daomephsta.loot_shared.utility.loot.LootConditions;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 

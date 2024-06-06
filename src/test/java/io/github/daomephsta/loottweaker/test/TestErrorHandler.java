@@ -1,7 +1,6 @@
 package io.github.daomephsta.loottweaker.test;
 
-import leviathan143.loottweaker.common.ErrorHandler;
-
+import daomephsta.loot_shared.ErrorHandler;
 
 public class TestErrorHandler implements ErrorHandler
 {

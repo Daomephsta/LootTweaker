@@ -14,7 +14,11 @@ version = "${project.modVersion}+MC${project.minecraftVersion}"
 group = "leviathan143.loottweaker" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "LootTweaker"
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
 
 ext.MIXIN_LOADER_CLASS = 'leviathan143.loottweaker.common.MixinLoader'
 
@@ -28,7 +32,7 @@ minecraft {
 
     runs {
         client {
-            taskName "$archivesBaseName-client"
+            taskName "$archivesBaseName-Client"
             workingDirectory project.file('run/client')
             mixins(it)
             property 'forge.logging.markers', 'REGISTRIES'
@@ -38,7 +42,7 @@ minecraft {
         }
 
         server {
-            taskName "$archivesBaseName-server"
+            taskName "$archivesBaseName-Server"
             mixins(it)
             workingDirectory project.file('run/server')
             property 'forge.logging.markers', 'REGISTRIES'
@@ -49,7 +53,7 @@ minecraft {
 
         testClient {
             parent runs.client
-            taskName "$archivesBaseName-client-tests"
+            taskName "$archivesBaseName-Client-Tests"
             mixins(it)
             workingDirectory project.file('test/client')
             property 'saddle.disable', 'false'
@@ -59,7 +63,7 @@ minecraft {
 
         testServer {
             parent runs.server
-            taskName "$archivesBaseName-server-tests"
+            taskName "$archivesBaseName-Server-Tests"
             mixins(it)
             workingDirectory project.file('test/server')
             property 'saddle.disable', 'false'
@@ -121,6 +125,8 @@ dependencies
     implementation "CraftTweaker2:ZenScript:${project.crafttweakerVersion}"
     implementation fg.deobf("CraftTweaker2:CraftTweaker2-API:${project.crafttweakerVersion}")
     implementation fg.deobf("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${project.crafttweakerVersion}")
+
+    implementation project(':Daomephsta Loot Shared')
 
     implementation "org.spongepowered:mixin:0.8.4-SNAPSHOT"
     annotationProcessor "org.spongepowered:mixin:0.8.4-SNAPSHOT:processor"

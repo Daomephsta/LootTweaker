@@ -2,7 +2,7 @@ package leviathan143.loottweaker.common.mutable_loot.entry;
 
 import java.util.List;
 
-import leviathan143.loottweaker.common.lib.LootConditions;
+import daomephsta.loot_shared.utility.loot.LootConditions;
 import net.minecraft.world.storage.loot.LootEntryEmpty;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 
