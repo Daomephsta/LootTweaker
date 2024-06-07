@@ -10,7 +10,7 @@ plugins {
 // Strip Java 9-specific info from dependencies so Forge doesn't excrete bricks
 apply from: 'java8ify.gradle'
 
-version = "${project.modVersion}+MC${project.minecraftVersion}"
+version = project.modVersion
 group = "leviathan143.loottweaker" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "LootTweaker"
 
@@ -185,6 +185,10 @@ task generateDependencyMetaFiles {doLast{
 }}
 
 jar {
+	archiveVersion = provider {
+		def dlsMajorVersion = (project(':Daomephsta Loot Shared').version =~ /^\d+/)[0]
+		return "${project.version}+MC${project.minecraftVersion}-DLS${dlsMajorVersion}"
+	}
     manifest {
         attributes([
             "Specification-Title": "LootTweaker",
