@@ -2,7 +2,9 @@ package leviathan143.loottweaker.common.zenscript;
 
 import crafttweaker.annotations.ZenRegister;
 import leviathan143.loottweaker.common.LootTweaker;
+import leviathan143.loottweaker.common.lib.LootFixer;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
+import net.minecraft.world.storage.loot.LootTable;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
@@ -40,6 +42,7 @@ public class ZenLootTableTweakManager
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onTableLoad(LootTableLoadEvent event)
     {
-        event.setTable(TWEAK_MANAGER.tweakTable(event.getName(), event.getTable()));
+        LootTable table = LootFixer.fixTable(event.getTable(), event.getName());
+		event.setTable(TWEAK_MANAGER.tweakTable(event.getName(), table));
     }
 }

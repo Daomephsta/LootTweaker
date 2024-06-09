@@ -68,6 +68,7 @@ public class LootTableDumper
     public File dump(LootTable lootTable, ResourceLocation tableId)
     {
         Preconditions.checkNotNull(lootTable);
+        lootTable = LootFixer.fixTable(lootTable, tableId);
         
         File dump = new File(dumpFolder, tableId.getNamespace() + '/' + tableId.getPath() + ".json");
         try

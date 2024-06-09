@@ -14,10 +14,7 @@
 		"LootFunctionAccessors",
 		"LootFunctionManagerAccessors",
 		"LootPoolAccessors",
-		"LootPoolMixin",
 		"LootTableAccessors",
-		"LootTableManagerLoaderMixin",
-		"LootTableMixin",
 		"LootTableManagerAccessors",
 		"TileEntityLockableLootMixin"
 	],
