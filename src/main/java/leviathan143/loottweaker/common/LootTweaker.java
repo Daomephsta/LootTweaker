@@ -2,6 +2,9 @@ package leviathan143.loottweaker.common;
 
 import java.util.function.Consumer;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.mc1120.commands.CTChatCommand;
 import crafttweaker.zenscript.GlobalRegistry;
@@ -35,6 +38,7 @@ public class LootTweaker
     public static final String VERSION = "@VERSION@";
     public static final String DEPENDENCIES = "required-after:crafttweaker@[4.1.20,); before:jeresources; required:forge@[14.23.5.2779,);";
     public static final LootTweakerContext CONTEXT = new LootTweakerContext(new CTLoggingErrorHandler());
+    private static final Logger LOGGER = LogManager.getLogger(LootTweaker.MODNAME);
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
@@ -76,6 +80,16 @@ public class LootTweaker
         EventBusInspector.getListeners(MinecraftForge.EVENT_BUS)
             .filter(listener ->
             {
+            	if (listener.owner == null)
+            	{
+            		LOGGER.error("Null owning mod container for listener {}", listener);
+            		return false;
+            	}
+            	if (listener.owner.getModId() == null)
+            	{
+            		LOGGER.error("Null mod id for owning mod container {} of listener {}", listener.owner, listener);
+            		return false;
+            	}
                 boolean whitelisted = listener.owner.getModId().equals("loottweaker") ||
                     listener.owner.getModId().equals("zen_loot_tables");
                 return !whitelisted && listener.eventType == LootTableLoadEvent.class &&
