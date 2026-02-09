@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import stanhebben.zenscript.symbols.SymbolPackage;
 
 
 @Mod(modid = LootTweaker.MODID, name = LootTweaker.MODNAME, version = LootTweaker.VERSION, dependencies = LootTweaker.DEPENDENCIES)
@@ -27,7 +28,7 @@ public class LootTweaker
         LootTweakerNetworkChecker.install();
         LTConfig.onLoad();
         registerDLSAliases("LootCondition", "CustomLootCondition", "LootFunction", "CustomLootFunction");
-        registerVanillaLootAliases("Conditions", "Functions", "LootCondition", "LootFunction", "LootPool", "LootTable");
+        registerLegacyAliases("Conditions", "Functions", "LootCondition", "LootFunction", "LootPool", "LootTable");
     }
 
     private void registerDLSAliases(String... aliased)
@@ -36,12 +37,11 @@ public class LootTweaker
             ZenClasses.registerAlias(ZEN_PACKAGE + "." + simpleName, DaomephstaLootShared.ZEN_PACKAGE + "." + simpleName);
     }
 
-    private void registerVanillaLootAliases(String... aliased)
+    private void registerLegacyAliases(String... aliased)
     {
-    	String oldZenPackage = "loottweaker.vanilla.loot";
-        ZenSymbols.createPackage(oldZenPackage);
+    	SymbolPackage legacyPackage = ZenSymbols.createPackage("loottweaker.vanilla.loot");
         for (String simpleName : aliased)
-            ZenClasses.registerAlias(oldZenPackage + "." + simpleName, ZEN_PACKAGE + "." + simpleName);
+            ZenClasses.registerAlias(legacyPackage.getName() + "." + simpleName, ZEN_PACKAGE + "." + simpleName);
     }
 
     @Mod.EventHandler
