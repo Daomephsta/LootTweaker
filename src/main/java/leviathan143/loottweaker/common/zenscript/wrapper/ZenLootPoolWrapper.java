@@ -1,9 +1,6 @@
 package leviathan143.loottweaker.common.zenscript.wrapper;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,16 +11,17 @@ import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.data.DataMap;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
-import daomephsta.loot_shared.utility.RandomValueRanges;
 import daomephsta.loot_shared.utility.loot.LootConditions;
 import daomephsta.loot_shared.utility.loot.LootFunctions;
+import daomephsta.loot_shared.zenscript.api.ZenLootCondition;
+import daomephsta.loot_shared.zenscript.api.ZenLootFunction;
+import daomephsta.loot_shared.zenscript.impl.MutableLootPool;
+import daomephsta.loot_shared.zenscript.impl.MutableLootPool.QualifiedPoolIdentifier;
+import daomephsta.loot_shared.zenscript.impl.entry.MutableLootEntry;
+import daomephsta.loot_shared.zenscript.impl.entry.MutableLootEntryEmpty;
+import daomephsta.loot_shared.zenscript.impl.entry.MutableLootEntryItem;
+import daomephsta.loot_shared.zenscript.impl.entry.MutableLootEntryTable;
 import leviathan143.loottweaker.common.LootTweaker;
-import leviathan143.loottweaker.common.lib.QualifiedPoolIdentifier;
-import leviathan143.loottweaker.common.mutable_loot.MutableLootPool;
-import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntry;
-import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntryEmpty;
-import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntryItem;
-import leviathan143.loottweaker.common.mutable_loot.entry.MutableLootEntryTable;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -60,16 +58,11 @@ public class ZenLootPoolWrapper
     }
 
     @ZenMethod
-    public void addConditions(ZenLootConditionWrapper[] conditions)
+    public void addConditions(ZenLootCondition[] conditions)
     {
-        Object[] args = { "conditions", conditions };
-		if (!context.getErrorHandler().nonNull(args)) return;
-        List<LootCondition> parsedConditions = Arrays.stream(conditions)
-            .filter(ZenLootConditionWrapper::isValid)
-            .map(ZenLootConditionWrapper::unwrap)
-            .collect(toList());
-        enqueueTweaker(pool -> pool.addConditions(parsedConditions), "Added %d conditions to %s",
-            parsedConditions.size(), qualifiedId);
+        if (!context.getErrorHandler().nonNull("conditions", conditions)) return;
+        enqueueTweaker(pool -> pool.addConditions(conditions), "Added %d conditions to %s",
+        		conditions.length, qualifiedId);
     }
 
     @ZenMethod
@@ -113,21 +106,13 @@ public class ZenLootPoolWrapper
     }
 
     @ZenMethod
-    public void addItemEntry(IItemStack stack, int weight, int quality, ZenLootFunctionWrapper[] functions,
-        ZenLootConditionWrapper[] conditions, @Optional
+    public void addItemEntry(IItemStack stack, int weight, int quality, ZenLootFunction[] functions,
+        ZenLootCondition[] conditions, @Optional
         String name)
     {
         Object[] args = { "stack", stack, "functions", functions, "conditions", conditions };
 		if (!context.getErrorHandler().nonNull(args)) return;
-        LootFunction[] unwrappedFunctions = Arrays.stream(functions)
-            .filter(ZenLootFunctionWrapper::isValid)
-            .map(ZenLootFunctionWrapper::unwrap)
-            .toArray(LootFunction[]::new);
-        LootCondition[] unwrappedConditions = Arrays.stream(conditions)
-            .filter(ZenLootConditionWrapper::isValid)
-            .map(ZenLootConditionWrapper::unwrap)
-            .toArray(LootCondition[]::new);
-        addItemEntryInternal(stack, weight, quality, unwrappedFunctions, unwrappedConditions, name);
+        addItemEntryInternal(stack, weight, quality, ZenLootFunction.toVanilla(functions), ZenLootCondition.toVanilla(conditions), name);
     }
 
     private void addItemEntryInternal(IItemStack stack, int weight, int quality, LootFunction[] functions,
@@ -137,8 +122,8 @@ public class ZenLootPoolWrapper
         if (stack == null) return;
         String entryName = name != null ? name : generateName();
         Item item = CraftTweakerMC.getItemStack(stack).getItem();
-        MutableLootEntryItem entry = new MutableLootEntryItem(entryName, weight, quality,
-            Lists.newArrayList(conditions), item, withStackFunctions(stack, functions));
+        MutableLootEntryItem entry = new MutableLootEntryItem(item, weight, quality,
+            Lists.newArrayList(conditions), withStackFunctions(stack, functions), entryName);
         addEntry(entry, "Queued item entry '%s' for addition to %s", entryName, qualifiedId);
     }
 
@@ -189,18 +174,12 @@ public class ZenLootPoolWrapper
     }
 
     @ZenMethod
-    public void addLootTableEntry(String tableName, int weight, int quality, ZenLootConditionWrapper[] conditions,
-        @Optional
-        String name)
+    public void addLootTableEntry(String tableName, int weight, int quality, ZenLootCondition[] conditions, @Optional String name)
     {
         Object[] args = { "table name", tableName, "conditions", conditions };
 		if (!context.getErrorHandler().nonNull(args))
             return;
-        LootCondition[] unwrappedConditions = Arrays.stream(conditions)
-            .filter(ZenLootConditionWrapper::isValid)
-            .map(ZenLootConditionWrapper::unwrap)
-            .toArray(LootCondition[]::new);
-        addLootTableEntryInternal(tableName, weight, quality, unwrappedConditions, name);
+        addLootTableEntryInternal(tableName, weight, quality, ZenLootCondition.toVanilla(conditions), name);
     }
 
     private void addLootTableEntryInternal(String tableName, int weight, int quality, LootCondition[] conditions,
@@ -228,16 +207,11 @@ public class ZenLootPoolWrapper
     }
 
     @ZenMethod
-    public void addEmptyEntry(int weight, int quality, ZenLootConditionWrapper[] conditions, @Optional
-    String name)
+    public void addEmptyEntry(int weight, int quality, ZenLootCondition[] conditions, @Optional String name)
     {
         Object[] args = { "conditions", conditions };
 		if (!context.getErrorHandler().nonNull(args)) return;
-        LootCondition[] unwrappedConditions = Arrays.stream(conditions)
-            .filter(ZenLootConditionWrapper::isValid)
-            .map(ZenLootConditionWrapper::unwrap)
-            .toArray(LootCondition[]::new);
-        addEmptyEntryInternal(weight, quality, unwrappedConditions, name);
+        addEmptyEntryInternal(weight, quality, ZenLootCondition.toVanilla(conditions), name);
     }
 
     private void addEmptyEntryInternal(int weight, int quality, LootCondition[] conditions, @Optional
@@ -256,17 +230,14 @@ public class ZenLootPoolWrapper
     @ZenMethod
     public void setRolls(float minRolls, float maxRolls)
     {
-        enqueueTweaker(
-            pool -> pool.setRolls(RandomValueRanges.checked(context.getErrorHandler(), minRolls, maxRolls)),
+        enqueueTweaker(pool -> pool.setRolls(minRolls, maxRolls),
             "Rolls of %s will be set to (%.0f, %.0f)", qualifiedId, minRolls, maxRolls);
     }
 
     @ZenMethod
     public void setBonusRolls(float minBonusRolls, float maxBonusRolls)
     {
-        enqueueTweaker(
-            pool -> pool
-                .setBonusRolls(RandomValueRanges.checked(context.getErrorHandler(), minBonusRolls, maxBonusRolls)),
+        enqueueTweaker(pool -> pool.setBonusRolls(minBonusRolls, maxBonusRolls),
             "Bonus rolls of %s will be set to (%.0f, %.0f)", qualifiedId, minBonusRolls, maxBonusRolls);
     }
 

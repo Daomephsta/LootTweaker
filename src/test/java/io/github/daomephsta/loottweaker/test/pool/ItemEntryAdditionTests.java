@@ -9,6 +9,8 @@ import com.google.common.collect.ImmutableMap;
 import crafttweaker.api.data.DataMap;
 import crafttweaker.api.data.DataString;
 import crafttweaker.api.data.IData;
+import daomephsta.loot_shared.zenscript.api.ZenLootCondition;
+import daomephsta.loot_shared.zenscript.api.ZenLootFunction;
 import io.github.daomephsta.loottweaker.test.TestUtils;
 import io.github.daomephsta.loottweaker.test.mixin.condition.TestKilledByPlayerAccessors;
 import io.github.daomephsta.loottweaker.test.mixin.function.TestSetCountAccessors;
@@ -19,10 +21,8 @@ import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
 import leviathan143.loottweaker.common.zenscript.LootTableTweakManager;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
-import leviathan143.loottweaker.common.zenscript.factory.LootConditionFactory;
-import leviathan143.loottweaker.common.zenscript.factory.LootFunctionFactory;
-import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootConditionWrapper;
-import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootFunctionWrapper;
+import leviathan143.loottweaker.common.zenscript.factory.StaticLootConditionFactory;
+import leviathan143.loottweaker.common.zenscript.factory.StaticLootFunctionFactory;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootPoolWrapper;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
 import net.minecraft.init.Items;
@@ -85,8 +85,8 @@ public class ItemEntryAdditionTests
         ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
-        barTweaks.addItemEntry(iitemstack(Items.BAKED_POTATO), 2, 3, new ZenLootFunctionWrapper[0],
-            new ZenLootConditionWrapper[] { LootConditionFactory.killedByPlayer() }, "qux");
+        barTweaks.addItemEntry(iitemstack(Items.BAKED_POTATO), 2, 3, new ZenLootFunction[0],
+            new ZenLootCondition[] { StaticLootConditionFactory.killedByPlayer() }, "qux");
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
         assertThat(foo.getPool("bar")).extractEntry("qux")
@@ -135,7 +135,7 @@ public class ItemEntryAdditionTests
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addItemEntry(iitemstack(Items.ARROW), 2, 1,
-            new ZenLootFunctionWrapper[] { LootFunctionFactory.setCount(3, 3) }, new ZenLootConditionWrapper[0],
+            new ZenLootFunction[] { StaticLootFunctionFactory.setCount(3, 3) }, new ZenLootCondition[0],
             "qux");
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
@@ -196,8 +196,8 @@ public class ItemEntryAdditionTests
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         //set empty tag to work around weird Mojang code where items without NBT are undamageable
         barTweaks.addItemEntry(iitemstack(Items.BOW), 2, 1,
-            new ZenLootFunctionWrapper[] { LootFunctionFactory.setDamage(0.5F, 0.5F) },
-            new ZenLootConditionWrapper[0], "qux");
+            new ZenLootFunction[] { StaticLootFunctionFactory.setDamage(0.5F, 0.5F) },
+            new ZenLootCondition[0], "qux");
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
         float expectedDamage = 0.5F;
@@ -253,7 +253,7 @@ public class ItemEntryAdditionTests
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addItemEntry(iitemstack(Items.DYE), 2, 1,
-            new ZenLootFunctionWrapper[] { LootFunctionFactory.setMetadata(8, 8) }, new ZenLootConditionWrapper[0],
+            new ZenLootFunction[] { StaticLootFunctionFactory.setMetadata(8, 8) }, new ZenLootCondition[0],
             "qux");
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
@@ -316,7 +316,7 @@ public class ItemEntryAdditionTests
         IData nbtData = new DataMap(ImmutableMap.<String, IData>builder().put("display", displayData).build(),
             true);
         barTweaks.addItemEntry(iitemstack(Items.BREAD), 2, 1,
-            new ZenLootFunctionWrapper[] { LootFunctionFactory.setNBT(nbtData) }, new ZenLootConditionWrapper[0],
+            new ZenLootFunction[] { StaticLootFunctionFactory.setNBT(nbtData) }, new ZenLootCondition[0],
             "qux");
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));

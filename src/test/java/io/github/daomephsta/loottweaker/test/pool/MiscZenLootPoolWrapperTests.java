@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import daomephsta.loot_shared.mixin.LootPoolAccessors;
+import daomephsta.loot_shared.zenscript.api.ZenLootCondition;
 import io.github.daomephsta.loottweaker.test.TestErrorHandler.LootTweakerException;
 import io.github.daomephsta.loottweaker.test.TestUtils;
 import io.github.daomephsta.loottweaker.test.mixin.condition.TestKilledByPlayerAccessors;
@@ -13,8 +14,7 @@ import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
 import leviathan143.loottweaker.common.zenscript.LootTableTweakManager;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
-import leviathan143.loottweaker.common.zenscript.factory.LootConditionFactory;
-import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootConditionWrapper;
+import leviathan143.loottweaker.common.zenscript.factory.StaticLootConditionFactory;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootPoolWrapper;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
 import net.minecraft.util.ResourceLocation;
@@ -35,7 +35,7 @@ public class MiscZenLootPoolWrapperTests
         ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
-        barTweaks.addConditions(new ZenLootConditionWrapper[] { LootConditionFactory.killedByPlayer() });
+        barTweaks.addConditions(new ZenLootCondition[] { StaticLootConditionFactory.killedByPlayer() });
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
         assertThat(foo.getPool("bar")).hasMatchingCondition(

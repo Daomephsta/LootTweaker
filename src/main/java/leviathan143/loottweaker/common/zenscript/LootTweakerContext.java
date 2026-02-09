@@ -1,8 +1,8 @@
 package leviathan143.loottweaker.common.zenscript;
 
 import daomephsta.loot_shared.ErrorHandler;
-import leviathan143.loottweaker.common.zenscript.factory.LootConditionFactoryImpl;
-import leviathan143.loottweaker.common.zenscript.factory.LootFunctionFactoryImpl;
+import daomephsta.loot_shared.zenscript.api.factory.LootConditionFactory;
+import daomephsta.loot_shared.zenscript.api.factory.LootFunctionFactory;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootPoolWrapper;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
 import net.minecraft.util.ResourceLocation;
@@ -27,14 +27,14 @@ public class LootTweakerContext
         return new LootTableTweakManager(this);
     }
 
-    public LootConditionFactoryImpl createLootConditionFactory()
+    public LootConditionFactory createLootConditionFactory()
     {
-        return new LootConditionFactoryImpl(this);
+        return new LootConditionFactory();
     }
 
-    public LootFunctionFactoryImpl createLootFunctionFactory()
+    public LootFunctionFactory createLootFunctionFactory()
     {
-        return new LootFunctionFactoryImpl(this);
+        return new LootFunctionFactory(this.getErrorHandler());
     }
 
     public ZenLootTableWrapper wrapLootTable(ResourceLocation id)

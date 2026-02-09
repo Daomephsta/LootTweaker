@@ -10,9 +10,9 @@ import org.apache.logging.log4j.Logger;
 import crafttweaker.CraftTweakerAPI;
 import daomephsta.loot_shared.utility.loot.LootTableFinder;
 import daomephsta.loot_shared.utility.loot.dump.LootTableDumper;
+import daomephsta.loot_shared.zenscript.impl.MutableLootTable;
 import leviathan143.loottweaker.common.LTConfig;
 import leviathan143.loottweaker.common.LootTweaker;
-import leviathan143.loottweaker.common.mutable_loot.MutableLootTable;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
@@ -97,7 +97,7 @@ public class LootTableTweakManager
         LootTableDumper dumper = LootTableDumper.robust(worldLootTables);
         for (ZenLootTableWrapper builder : tableBuilders.values())
         {
-            MutableLootTable mutableTable = new MutableLootTable(builder.getId(), new HashMap<>());
+            MutableLootTable mutableTable = new MutableLootTable(builder.getId(), new HashMap<>(), context.getErrorHandler());
             builder.applyTweakers(mutableTable);
             dumper.dump(mutableTable.toImmutable(), builder.getId());
         }
@@ -112,7 +112,7 @@ public class LootTableTweakManager
                 LOGGER.debug("Skipped modifying loot table {} because it is frozen", tableId);
                 return table;
             }
-            MutableLootTable mutableTable = new MutableLootTable(table, tableId);
+            MutableLootTable mutableTable = MutableLootTable.fromTable(table, tableId, context.getErrorHandler());
             tweakedTables.get(tableId).applyTweakers(mutableTable);
             return mutableTable.toImmutable();
         }

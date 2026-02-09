@@ -20,7 +20,7 @@ java {
     }
 }
 
-ext.MIXIN_LOADER_CLASS = 'leviathan143.loottweaker.common.MixinLoader'
+ext.MIXIN_LOADER_CLASS = 'daomephsta.loot_shared.MixinLoader'
 
 def mixins(runConfig) {
     runConfig.jvmArg "-Dfml.coreMods.load=$MIXIN_LOADER_CLASS"
@@ -54,21 +54,21 @@ minecraft {
         testClient {
             parent runs.client
             taskName "$archivesBaseName-Client-Tests"
-            mixins(it)
             workingDirectory project.file('test/client')
             property 'saddle.disable', 'false'
             property 'saddle.exitOnTestCompletion', 'true'
-            args '--mixin.config', 'loottweaker_test.mixins.json'
+            args '--mixin.config', 'loottweaker_test.mixins.json',
+                 '--mixin.config', 'daomephsta_loot_shared.mixins.json'
         }
 
         testServer {
             parent runs.server
             taskName "$archivesBaseName-Server-Tests"
-            mixins(it)
             workingDirectory project.file('test/server')
             property 'saddle.disable', 'false'
             property 'saddle.exitOnTestCompletion', 'true'
-            args '--mixin.config', 'loottweaker_test.mixins.json'
+            args '--mixin.config', 'loottweaker_test.mixins.json',
+                 '--mixin.config', 'daomephsta_loot_shared.mixins.json'
         }
     }
 }

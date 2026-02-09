@@ -3,14 +3,14 @@ package io.github.daomephsta.loottweaker.test.pool;
 import static io.github.daomephsta.loottweaker.test.TestUtils.loadTable;
 import static io.github.daomephsta.loottweaker.test.assertion.LootTweakerAssertions.assertThat;
 
+import daomephsta.loot_shared.zenscript.api.ZenLootCondition;
 import io.github.daomephsta.loottweaker.test.TestUtils;
 import io.github.daomephsta.loottweaker.test.mixin.condition.TestKilledByPlayerAccessors;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
 import leviathan143.loottweaker.common.zenscript.LootTableTweakManager;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
-import leviathan143.loottweaker.common.zenscript.factory.LootConditionFactory;
-import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootConditionWrapper;
+import leviathan143.loottweaker.common.zenscript.factory.StaticLootConditionFactory;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootPoolWrapper;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
 import net.minecraft.util.ResourceLocation;
@@ -65,7 +65,7 @@ public class LootTableEntryAdditionTests
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addLootTableEntry("loottweaker_test:qux", 2, 3,
-            new ZenLootConditionWrapper[] { LootConditionFactory.killedByPlayer() }, "corge");
+            new ZenLootCondition[] { StaticLootConditionFactory.killedByPlayer() }, "corge");
 
         LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
         assertThat(foo.getPool("bar")).extractEntry("corge")

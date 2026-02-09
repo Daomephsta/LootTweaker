@@ -11,6 +11,9 @@ import org.junit.jupiter.api.BeforeAll;
 
 import com.google.common.collect.ImmutableMap;
 
+import daomephsta.loot_shared.zenscript.api.ZenLootCondition;
+import daomephsta.loot_shared.zenscript.api.ZenLootFunction;
+import daomephsta.loot_shared.zenscript.impl.JsonMapConversions;
 import io.github.daomephsta.loottweaker.test.TestErrorHandler.LootTweakerException;
 import io.github.daomephsta.loottweaker.test.mixin.condition.TestEntityHasPropertyAccessors;
 import io.github.daomephsta.loottweaker.test.mixin.condition.TestEntityOnFireAccessors;
@@ -18,9 +21,6 @@ import io.github.daomephsta.loottweaker.test.mixin.condition.TestKilledByPlayerA
 import io.github.daomephsta.loottweaker.test.mixin.function.TestSetCountAccessors;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
-import leviathan143.loottweaker.common.zenscript.JsonMapConversions;
-import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootConditionWrapper;
-import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootFunctionWrapper;
 import net.minecraft.world.storage.loot.LootContext.EntityTarget;
 import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraft.world.storage.loot.conditions.EntityHasProperty;
@@ -33,16 +33,16 @@ import net.minecraft.world.storage.loot.properties.EntityProperty;
 
 public class JsonMapConversionTests
 {
-    private final Condition<ZenLootConditionWrapper> VALID_CONDITION = new Condition<>(
-        ZenLootConditionWrapper::isValid, "valid condition");
-    private final Condition<ZenLootFunctionWrapper> VALID_FUNCTION = new Condition<>(
-        ZenLootFunctionWrapper::isValid, "valid function");
+    private final Condition<ZenLootCondition> VALID_CONDITION = new Condition<>(
+        c -> c != ZenLootCondition.INVALID, "valid condition");
+    private final Condition<ZenLootFunction> VALID_FUNCTION = new Condition<>(
+    	f -> f != ZenLootFunction.INVALID, "valid function");
     private static JsonMapConversions.Impl jsonMapConversions;
 
     @BeforeAll
     public static void setup()
     {
-        jsonMapConversions = new JsonMapConversions.Impl(TestUtils.context());
+        jsonMapConversions = new JsonMapConversions.Impl(TestUtils.context().getErrorHandler());
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
@@ -50,7 +50,6 @@ public class JsonMapConversionTests
     {
         Map<String, Object> json = ImmutableMap.of("condition", "minecraft:killed_by_player");
         assertThat(jsonMapConversions.asLootCondition(json)).is(VALID_CONDITION)
-            .extracting(ZenLootConditionWrapper::unwrap)
             .asInstanceOf(type(KilledByPlayer.class))
             .satisfies(new Condition<>(x -> !((TestKilledByPlayerAccessors) x).isInverse(), "KilledByPlayer()"));
     }
@@ -61,7 +60,6 @@ public class JsonMapConversionTests
         Map<String, Object> json = ImmutableMap.of("condition", "minecraft:entity_properties", "entity", "this",
             "properties", ImmutableMap.of("on_fire", true));
         assertThat(jsonMapConversions.asLootCondition(json)).is(VALID_CONDITION)
-            .extracting(ZenLootConditionWrapper::unwrap)
             .asInstanceOf(type(EntityHasProperty.class))
             .satisfies(new Condition<>(entityHasProperty ->
             {
@@ -87,7 +85,6 @@ public class JsonMapConversionTests
     {
         Map<String, Object> json = ImmutableMap.of("function", "minecraft:furnace_smelt");
         assertThat(jsonMapConversions.asLootFunction(json)).is(VALID_FUNCTION)
-            .extracting(ZenLootFunctionWrapper::unwrap)
             .isInstanceOf(Smelt.class);
     }
 
@@ -97,7 +94,6 @@ public class JsonMapConversionTests
         Map<String, Object> json = ImmutableMap.of("function", "minecraft:set_count", "count",
             ImmutableMap.of("min", 0, "max", 2));
         assertThat(jsonMapConversions.asLootFunction(json)).is(VALID_FUNCTION)
-            .extracting(ZenLootFunctionWrapper::unwrap)
             .asInstanceOf(type(SetCount.class))
             .satisfies(new Condition<>(setCount ->
             {

@@ -9,9 +9,10 @@ import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ZenRegister;
 import daomephsta.loot_shared.utility.RandomValueRanges;
 import daomephsta.loot_shared.utility.loot.LootTableFinder;
+import daomephsta.loot_shared.zenscript.impl.MutableLootPool;
+import daomephsta.loot_shared.zenscript.impl.MutableLootPool.QualifiedPoolIdentifier;
+import daomephsta.loot_shared.zenscript.impl.MutableLootTable;
 import leviathan143.loottweaker.common.LootTweaker;
-import leviathan143.loottweaker.common.mutable_loot.MutableLootPool;
-import leviathan143.loottweaker.common.mutable_loot.MutableLootTable;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTableList;
@@ -59,7 +60,7 @@ public class ZenLootTableWrapper
         ZenLootPoolWrapper pool = context.wrapPool(id, poolName);
         enqueueTweaker(table ->
         {
-            MutableLootPool existing = table.getPool(poolName);
+            MutableLootPool existing = table.getPoolNullable(poolName);
             if (existing != null)
             {
                 context.getErrorHandler()
@@ -67,9 +68,10 @@ public class ZenLootTableWrapper
                         poolName, id);
                 return;
             }
-            MutableLootPool newPool = new MutableLootPool(poolName, new HashMap<>(), new ArrayList<>(),
+            MutableLootPool newPool = new MutableLootPool(new QualifiedPoolIdentifier(id, poolName), new HashMap<>(), new ArrayList<>(),
                 RandomValueRanges.checked(context.getErrorHandler(), minRolls, maxRolls),
-                RandomValueRanges.checked(context.getErrorHandler(), minBonusRolls, maxBonusRolls));
+                RandomValueRanges.checked(context.getErrorHandler(), minBonusRolls, maxBonusRolls),
+                context.getErrorHandler());
             pool.tweak(newPool);
             table.addPool(newPool);
             CraftTweakerAPI.logInfo(String.format("Added new pool %s to table %s", poolName, id));
@@ -101,7 +103,7 @@ public class ZenLootTableWrapper
     @ZenMethod
     public void clear()
     {
-        enqueueTweaker(MutableLootTable::clearPools, "Queued all pools of table %s for removal", id);
+        enqueueTweaker(MutableLootTable::removeAllPools, "Queued all pools of table %s for removal", id);
     }
 
     private void enqueueTweaker(LootTableTweaker tweaker, String format, Object... args)
