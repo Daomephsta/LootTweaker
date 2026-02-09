@@ -3,6 +3,7 @@ package leviathan143.loottweaker.common.zenscript;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.world.IWorld;
 import daomephsta.loot_shared.utility.loot.fix.LootFixer;
+import daomephsta.loot_shared.zenscript.api.LootGenerator;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
 import net.minecraft.world.storage.loot.LootTable;
@@ -33,6 +34,12 @@ public class ZenLootTableTweakManager
     {
         return TWEAK_MANAGER.newTable(id);
     }
+	
+	@ZenMethod
+	public static LootGenerator createLootGenerator(IWorld world)
+	{
+		return TWEAK_MANAGER.createLootGenerator(world); 
+	}
 
     @Mod.EventHandler
     public static void onServerStarting(FMLServerStartingEvent event)

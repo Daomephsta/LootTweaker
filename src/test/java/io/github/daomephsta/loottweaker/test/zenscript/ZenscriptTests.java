@@ -91,6 +91,13 @@ public class ZenscriptTests
         ScriptRunner.run("scripts/create-table.zs");
         loadTweakedTables();
     }
+    
+    @SaddleTest(loadPhase = LoadPhase.INIT)
+    public void lootGenerator()
+    {
+        ScriptRunner.run("scripts/loot-generator.zs");
+        loadTweakedTables();
+    }
 
     private void loadTweakedTables()
     {

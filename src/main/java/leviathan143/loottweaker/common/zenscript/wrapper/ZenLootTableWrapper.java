@@ -17,6 +17,7 @@ import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTableList;
 import stanhebben.zenscript.annotations.ZenClass;
+import stanhebben.zenscript.annotations.ZenGetter;
 import stanhebben.zenscript.annotations.ZenMethod;
 
 
@@ -109,6 +110,12 @@ public class ZenLootTableWrapper
     public void clear()
     {
         enqueueTweaker(MutableLootTable::removeAllPools, "Queued all pools of table %s for removal", id);
+    }
+    
+    @ZenGetter("id")
+    public String zen_getId()
+    {
+        return id.toString();
     }
 
     private void enqueueTweaker(LootTableTweaker tweaker, String format, Object... args)

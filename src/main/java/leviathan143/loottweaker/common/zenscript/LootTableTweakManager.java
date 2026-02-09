@@ -8,8 +8,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import crafttweaker.CraftTweakerAPI;
+import crafttweaker.api.world.IWorld;
 import daomephsta.loot_shared.utility.loot.LootTableFinder;
 import daomephsta.loot_shared.utility.loot.dump.LootTableDumper;
+import daomephsta.loot_shared.zenscript.api.LootGenerator;
 import daomephsta.loot_shared.zenscript.impl.MutableLootTable;
 import leviathan143.loottweaker.common.LTConfig;
 import leviathan143.loottweaker.common.LootTweaker;
@@ -89,6 +91,11 @@ public class LootTableTweakManager
         CraftTweakerAPI.logInfo("Created new table '" + id + "'");
         return builder;
     }
+
+	public LootGenerator createLootGenerator(IWorld world) 
+	{
+		return LootGenerator.create(world, context.getErrorHandler());
+	}
 
     public void onServerStart(MinecraftServer server)
     {
