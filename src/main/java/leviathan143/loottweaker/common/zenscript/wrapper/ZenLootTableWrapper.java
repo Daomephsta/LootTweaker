@@ -58,7 +58,12 @@ public class ZenLootTableWrapper
         float maxBonusRolls)
     {
         ZenLootPoolWrapper pool = context.wrapPool(id, poolName);
-        enqueueTweaker(table ->
+        if (poolName.startsWith("custom#")) 
+        {
+        	context.getErrorHandler().error("Pool names starting with custom# are reserved for internal Forge use");
+        	return pool;
+		}
+		enqueueTweaker(table ->
         {
             MutableLootPool existing = table.getPoolNullable(poolName);
             if (existing != null)

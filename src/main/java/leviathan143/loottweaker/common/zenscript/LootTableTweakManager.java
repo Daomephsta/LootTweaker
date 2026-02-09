@@ -1,6 +1,6 @@
 package leviathan143.loottweaker.common.zenscript;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -92,16 +92,31 @@ public class LootTableTweakManager
 
     public void onServerStart(MinecraftServer server)
     {
-        File worldLootTables = server.getActiveAnvilConverter()
-            .getFile(server.getFolderName(), "data/loot_tables");
-        LootTableDumper dumper = LootTableDumper.robust(worldLootTables);
+        Path worldLootTables = LootTableFinder.getWorldLootTablesFolder(server);
+        writeNewLootTables(server, worldLootTables);
+    	tableCustomOverrideWarnings(worldLootTables);
+    }
+
+	private void tableCustomOverrideWarnings(Path worldLootTables) 
+	{
+		for (ResourceLocation tableId : tweakedTables.keySet()) 
+		{
+			Path customTable = LootTableFinder.DEFAULT.findCustomTable(worldLootTables, tableId);
+			if (customTable != null)
+				CraftTweakerAPI.logError(String.format("Cannot edit %s as it is overridden by %s", tableId, customTable.toAbsolutePath()));
+		}
+	}
+
+	private void writeNewLootTables(MinecraftServer server, Path worldLootTables) 
+	{
+		LootTableDumper dumper = LootTableDumper.robust(worldLootTables.toFile());
         for (ZenLootTableWrapper builder : tableBuilders.values())
         {
             MutableLootTable mutableTable = new MutableLootTable(builder.getId(), new HashMap<>(), context.getErrorHandler());
             builder.applyTweakers(mutableTable);
-            dumper.dump(mutableTable.toImmutable(), builder.getId());
+            dumper.dump(server, mutableTable.toImmutable(), builder.getId());
         }
-    }
+	}
 
     public LootTable tweakTable(ResourceLocation tableId, LootTable table)
     {

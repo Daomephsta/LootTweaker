@@ -243,6 +243,11 @@ public class ZenLootPoolWrapper
 
     private void addEntry(MutableLootEntry entry, String format, Object... args)
     {
+        if (entry.getName().startsWith("custom#")) 
+        {
+        	context.getErrorHandler().error("Entry names starting with custom# are reserved for internal Forge use");
+        	return;
+		}
         enqueueTweaker(pool ->
         {
             if (pool.getEntry(entry.getName()) != null)
