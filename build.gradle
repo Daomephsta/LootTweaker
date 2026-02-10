@@ -20,12 +20,10 @@ java {
     }
 }
 
-ext.MIXIN_LOADER_CLASS = 'daomephsta.loot_shared.MixinLoader'
-
 def mixins(runConfig) {
-    runConfig.jvmArg "-Dfml.coreMods.load=$MIXIN_LOADER_CLASS"
     runConfig.jvmArg '-Dmixin.hotSwap=true'
-    runConfig.args '--mixin.config', 'daomephsta_loot_shared.mixins.json'
+    runConfig.args '--mixin.config', 'daomephsta_loot_shared.mixins.json',
+    			   '--tweakClass', 'org.spongepowered.asm.launch.MixinTweaker'
 }
 
 minecraft {
@@ -178,7 +176,6 @@ task generateDependencyMetaFiles {doLast{
         if (hasContainedDepMetadata(it.file)) return;
         def metaFile = file("${buildDir}/dependencyMeta/${it.file.name}.meta")
         metaFile.parentFile.mkdirs()
-        //The newline is very important
         metaFile.text = "Maven-Artifact: ${it.moduleVersion.id}\n"
     }
 }}
@@ -197,15 +194,12 @@ jar {
             "Implementation-Version": "${version}",
             "Implementation-Vendor": "loottweaker",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-            "FMLCorePlugin": MIXIN_LOADER_CLASS,
-            "FMLCorePluginContainsFMLMod": "true",
-            "ForceLoadAsMod": true,
             "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
+            "ForceLoadAsMod": true,
             //Add contained dependencies to the manifest
-            'ContainedDeps': fileTree("${buildDir}/dependencyMeta").collect { 
-            	it.name[0..<it.name.lastIndexOf('.')] 
-            }
-            .join(' ')
+            'ContainedDeps': configurations.named('containedDep').map { 
+            	it.incoming.artifacts.collect { it.file.name }.join(' ') 
+            },
         ])
     }
     //Package contained dependencies
