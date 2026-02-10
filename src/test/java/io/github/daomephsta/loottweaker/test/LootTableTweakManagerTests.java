@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import io.github.daomephsta.loottweaker.test.TestErrorHandler.LootTweakerException;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
-import leviathan143.loottweaker.common.zenscript.LootTableTweakManager;
+import leviathan143.loottweaker.common.zenscript.LootTableTweakManagerImpl;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import net.minecraft.util.ResourceLocation;
 
@@ -19,7 +19,7 @@ public class LootTableTweakManagerTests
     public void getTableCheckExisting()
     {
         ResourceLocation existingTableId = new ResourceLocation("loottweaker_test", "bar");
-        LootTableTweakManager tableTweakManager = context.createLootTableTweakManager();
+        LootTableTweakManagerImpl tableTweakManager = context.createLootTableTweakManager();
         tableTweakManager.getTable(existingTableId.toString());
     }
 
@@ -27,7 +27,7 @@ public class LootTableTweakManagerTests
     public void getTableCheckNonExistent()
     {
         ResourceLocation nonExistentTableId = new ResourceLocation("loottweaker_test", "non_existent_table");
-        LootTableTweakManager tableTweakManager = context.createLootTableTweakManager();
+        LootTableTweakManagerImpl tableTweakManager = context.createLootTableTweakManager();
         assertThatThrownBy(() -> tableTweakManager.getTable(nonExistentTableId.toString()))
             .isInstanceOf(LootTweakerException.class)
             .hasMessage("No loot table with name %s exists!", nonExistentTableId);
@@ -36,14 +36,14 @@ public class LootTableTweakManagerTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void tableWrapperCaching()
     {
-        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
+        LootTableTweakManagerImpl tweakManager = context.createLootTableTweakManager();
         assertThat(tweakManager.getTable("loottweaker_test:foo")).isNotNull();
         assertThat(tweakManager.getTable("loottweaker_test:foo")).isEqualTo(tweakManager.getTable("loottweaker_test:foo"));
     }
 
     public void newTable()
     {
-        LootTableTweakManager tableTweakManager = context.createLootTableTweakManager();
+        LootTableTweakManagerImpl tableTweakManager = context.createLootTableTweakManager();
         assertThat(tableTweakManager.newTable("loottweaker_test:qux")).isNotNull();
     }
 
@@ -51,7 +51,7 @@ public class LootTableTweakManagerTests
     public void newTableCollision()
     {
         String existingTableId = "loottweaker_test:foo";
-        LootTableTweakManager tableTweakManager = context.createLootTableTweakManager();
+        LootTableTweakManagerImpl tableTweakManager = context.createLootTableTweakManager();
         assertThatThrownBy(() -> tableTweakManager.newTable(existingTableId))
             .isInstanceOf(LootTweakerException.class)
             .hasMessage("Table name '%s' already in use", existingTableId);
@@ -60,7 +60,7 @@ public class LootTableTweakManagerTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void newTableGettable()
     {
-        LootTableTweakManager tableTweakManager = context.createLootTableTweakManager();
+        LootTableTweakManagerImpl tableTweakManager = context.createLootTableTweakManager();
         String tableName = "loottweaker_test:qux";
         tableTweakManager.newTable(tableName);
         tableTweakManager.getTable(tableName);
@@ -69,7 +69,7 @@ public class LootTableTweakManagerTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void newTableWarnMinecraftNamespace()
     {
-        LootTableTweakManager tableTweakManager = context.createLootTableTweakManager();
+        LootTableTweakManagerImpl tableTweakManager = context.createLootTableTweakManager();
         String implicitMinecraftNamespace = "qux";
         String explicitMinecraftNamespace = "minecraft:quuz";
         assertThatThrownBy(() -> tableTweakManager.newTable(implicitMinecraftNamespace))

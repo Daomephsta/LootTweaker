@@ -22,9 +22,9 @@ public class LootTweakerContext
         return errorHandler;
     }
 
-    public LootTableTweakManager createLootTableTweakManager()
+    public LootTableTweakManagerImpl createLootTableTweakManager()
     {
-        return new LootTableTweakManager(this);
+        return new LootTableTweakManagerImpl(this);
     }
 
     public LootConditionFactory createLootConditionFactory()

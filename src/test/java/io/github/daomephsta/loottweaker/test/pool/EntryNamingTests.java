@@ -7,7 +7,7 @@ import static io.github.daomephsta.loottweaker.test.assertion.LootTweakerAsserti
 import io.github.daomephsta.loottweaker.test.TestUtils;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
-import leviathan143.loottweaker.common.zenscript.LootTableTweakManager;
+import leviathan143.loottweaker.common.zenscript.LootTableTweakManagerImpl;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootPoolWrapper;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
@@ -23,7 +23,7 @@ public class EntryNamingTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void identicalItems()
     {
-        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
+        LootTableTweakManagerImpl tweakManager = context.createLootTableTweakManager();
         ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
@@ -37,7 +37,7 @@ public class EntryNamingTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void customNamedItemEntry()
     {
-        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
+        LootTableTweakManagerImpl tweakManager = context.createLootTableTweakManager();
         ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
@@ -51,7 +51,7 @@ public class EntryNamingTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void identicalTableReferences()
     {
-        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
+        LootTableTweakManagerImpl tweakManager = context.createLootTableTweakManager();
         ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
@@ -65,7 +65,7 @@ public class EntryNamingTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void customNamedTableReference()
     {
-        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
+        LootTableTweakManagerImpl tweakManager = context.createLootTableTweakManager();
         ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
@@ -79,7 +79,7 @@ public class EntryNamingTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void multipleEmpties()
     {
-        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
+        LootTableTweakManagerImpl tweakManager = context.createLootTableTweakManager();
         ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
@@ -93,7 +93,7 @@ public class EntryNamingTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void customNamedEmpty()
     {
-        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
+        LootTableTweakManagerImpl tweakManager = context.createLootTableTweakManager();
         ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");

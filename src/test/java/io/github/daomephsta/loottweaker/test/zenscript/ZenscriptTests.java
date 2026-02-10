@@ -8,7 +8,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import io.github.daomephsta.loottweaker.test.TestUtils;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
-import leviathan143.loottweaker.common.zenscript.LootTableTweakManager;
+import leviathan143.loottweaker.common.zenscript.LootTableTweakManagerImpl;
 import leviathan143.loottweaker.common.zenscript.ZenLootTableTweakManager;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
 import net.minecraft.util.ResourceLocation;
@@ -101,10 +101,10 @@ public class ZenscriptTests
 
     private void loadTweakedTables()
     {
-        LootTableTweakManager tweakManager = ObfuscationReflectionHelper
+        LootTableTweakManagerImpl tweakManager = ObfuscationReflectionHelper
             .getPrivateValue(ZenLootTableTweakManager.class, null, "TWEAK_MANAGER");
         Map<ResourceLocation, ZenLootTableWrapper> tweakedTables = ObfuscationReflectionHelper
-            .getPrivateValue(LootTableTweakManager.class, tweakManager, "tweakedTables");
+            .getPrivateValue(LootTableTweakManagerImpl.class, tweakManager, "tweakedTables");
         for (ResourceLocation tweakedTable : tweakedTables.keySet())
             tweakManager.withEdits(TestUtils.loadTable(tweakedTable), tweakedTable);
     }

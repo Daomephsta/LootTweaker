@@ -7,6 +7,7 @@ import java.util.Map;
 
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.api.world.IWorld;
+import daomephsta.loot_shared.LootTableTweakManager;
 import daomephsta.loot_shared.zenscript.api.LootGenerator;
 import daomephsta.loot_shared.zenscript.impl.MutableLootTable;
 import leviathan143.loottweaker.common.LTConfig;
@@ -15,13 +16,13 @@ import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
 import net.minecraft.util.ResourceLocation;
 
 
-public class LootTableTweakManager extends daomephsta.loot_shared.LootTableTweakManager
+public class LootTableTweakManagerImpl extends LootTableTweakManager
 {
     private final Map<ResourceLocation, ZenLootTableWrapper> tweakedTables = new HashMap<>();
     private final Map<ResourceLocation, ZenLootTableWrapper> tableBuilders = new HashMap<>();
     private final LootTweakerContext context;
 
-    LootTableTweakManager(LootTweakerContext context)
+    LootTableTweakManagerImpl(LootTweakerContext context)
     {
     	super(context.getErrorHandler());
         this.context = context;

@@ -12,7 +12,7 @@ import io.github.daomephsta.loottweaker.test.TestUtils;
 import io.github.daomephsta.loottweaker.test.mixin.condition.TestKilledByPlayerAccessors;
 import io.github.daomephsta.saddle.engine.SaddleTest;
 import io.github.daomephsta.saddle.engine.SaddleTest.LoadPhase;
-import leviathan143.loottweaker.common.zenscript.LootTableTweakManager;
+import leviathan143.loottweaker.common.zenscript.LootTableTweakManagerImpl;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
 import leviathan143.loottweaker.common.zenscript.factory.StaticLootConditionFactory;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootPoolWrapper;
@@ -31,7 +31,7 @@ public class MiscZenLootPoolWrapperTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void addConditions()
     {
-        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
+        LootTableTweakManagerImpl tweakManager = context.createLootTableTweakManager();
         ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
@@ -46,7 +46,7 @@ public class MiscZenLootPoolWrapperTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void removeExistingEntry()
     {
-        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
+        LootTableTweakManagerImpl tweakManager = context.createLootTableTweakManager();
         ResourceLocation barId = new ResourceLocation("loottweaker_test", "bar");
         ZenLootTableWrapper barTweaks = tweakManager.getTable(barId.toString());
         LootTable barOriginal = loadTable(barId);
@@ -60,7 +60,7 @@ public class MiscZenLootPoolWrapperTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void removeNonExistentEntry()
     {
-        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
+        LootTableTweakManagerImpl tweakManager = context.createLootTableTweakManager();
         ResourceLocation barId = new ResourceLocation("loottweaker_test", "bar");
         ZenLootTableWrapper barTweaks = tweakManager.getTable(barId.toString());
         LootTable barOriginal = loadTable(barId);
@@ -75,7 +75,7 @@ public class MiscZenLootPoolWrapperTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void clearConditions()
     {
-        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
+        LootTableTweakManagerImpl tweakManager = context.createLootTableTweakManager();
         ResourceLocation barId = new ResourceLocation("loottweaker_test", "bar");
         ZenLootTableWrapper barTweaks = tweakManager.getTable(barId.toString());
         LootTable barOriginal = loadTable(barId);
@@ -89,7 +89,7 @@ public class MiscZenLootPoolWrapperTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void clearEntries()
     {
-        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
+        LootTableTweakManagerImpl tweakManager = context.createLootTableTweakManager();
         ResourceLocation barId = new ResourceLocation("loottweaker_test", "bar");
         ZenLootTableWrapper barTweaks = tweakManager.getTable(barId.toString());
         LootTable barOriginal = loadTable(barId);
@@ -103,7 +103,7 @@ public class MiscZenLootPoolWrapperTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void setRolls()
     {
-        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
+        LootTableTweakManagerImpl tweakManager = context.createLootTableTweakManager();
         ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
@@ -118,7 +118,7 @@ public class MiscZenLootPoolWrapperTests
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
     public void setBonusRolls()
     {
-        LootTableTweakManager tweakManager = context.createLootTableTweakManager();
+        LootTableTweakManagerImpl tweakManager = context.createLootTableTweakManager();
         ResourceLocation fooId = new ResourceLocation("loottweaker_test", "foo");
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
