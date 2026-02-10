@@ -31,7 +31,7 @@ public class LootTableEntryAdditionTests
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addLootTableEntry("loottweaker_test:qux", 2, "corge");
 
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootTable foo = tweakManager.withEdits(loadTable(fooId), fooId);
         assertThat(foo.getPool("bar")).extractEntry("corge")
             .hasWeight(2)
             .hasNoLootConditions()
@@ -48,7 +48,7 @@ public class LootTableEntryAdditionTests
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addLootTableEntry("loottweaker_test:qux", 2, 3, "corge");
 
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootTable foo = tweakManager.withEdits(loadTable(fooId), fooId);
         assertThat(foo.getPool("bar")).extractEntry("corge")
             .hasWeight(2)
             .hasQuality(3)
@@ -67,7 +67,7 @@ public class LootTableEntryAdditionTests
         barTweaks.addLootTableEntry("loottweaker_test:qux", 2, 3,
             new ZenLootCondition[] { StaticLootConditionFactory.killedByPlayer() }, "corge");
 
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootTable foo = tweakManager.withEdits(loadTable(fooId), fooId);
         assertThat(foo.getPool("bar")).extractEntry("corge")
             .hasWeight(2)
             .hasQuality(3)

@@ -31,7 +31,7 @@ public class EmptyEntryAdditionTests
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addEmptyEntry(2, "corge");
 
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootTable foo = tweakManager.withEdits(loadTable(fooId), fooId);
         assertThat(foo.getPool("bar")).extractEntry("corge").hasWeight(2).hasNoLootConditions().isEmptyEntry();
     }
 
@@ -44,7 +44,7 @@ public class EmptyEntryAdditionTests
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addEmptyEntry(2, 3, "corge");
 
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootTable foo = tweakManager.withEdits(loadTable(fooId), fooId);
         assertThat(foo.getPool("bar")).extractEntry("corge")
             .hasWeight(2)
             .hasQuality(3)
@@ -62,7 +62,7 @@ public class EmptyEntryAdditionTests
         barTweaks.addEmptyEntry(2, 3, new ZenLootCondition[] { StaticLootConditionFactory.killedByPlayer() },
             "corge");
 
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootTable foo = tweakManager.withEdits(loadTable(fooId), fooId);
         assertThat(foo.getPool("bar")).extractEntry("corge")
             .hasWeight(2)
             .hasQuality(3)

@@ -37,7 +37,7 @@ public class MiscZenLootPoolWrapperTests
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addConditions(new ZenLootCondition[] { StaticLootConditionFactory.killedByPlayer() });
 
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootTable foo = tweakManager.withEdits(loadTable(fooId), fooId);
         assertThat(foo.getPool("bar")).hasMatchingCondition(
             condition -> condition instanceof KilledByPlayer && !((TestKilledByPlayerAccessors) condition).isInverse(),
             "KilledByPlayer()");
@@ -53,7 +53,7 @@ public class MiscZenLootPoolWrapperTests
         assertThat(barOriginal.getPool("baz").getEntry("qux")).isNotNull();
         ZenLootPoolWrapper bazTweaks = barTweaks.getPool("baz");
         bazTweaks.removeEntry("qux");
-        LootTable barNew = tweakManager.tweakTable(barId, barOriginal);
+        LootTable barNew = tweakManager.withEdits(barOriginal, barId);
         assertThat(barNew.getPool("baz").getEntry("qux")).isNull();
     }
 
@@ -67,7 +67,7 @@ public class MiscZenLootPoolWrapperTests
         assertThat(barOriginal.getPool("baz").getEntry("quuz")).isNull();
         ZenLootPoolWrapper bazTweaks = barTweaks.getPool("baz");
         bazTweaks.removeEntry("quuz");
-        assertThatThrownBy(() -> tweakManager.tweakTable(barId, barOriginal))
+        assertThatThrownBy(() -> tweakManager.withEdits(barOriginal, barId))
             .isInstanceOf(LootTweakerException.class)
             .hasMessage("No entry with name quuz exists in pool 'baz' of table 'loottweaker_test:bar'");
     }
@@ -82,7 +82,7 @@ public class MiscZenLootPoolWrapperTests
         assertThat(((LootPoolAccessors) barOriginal.getPool("baz")).getConditions()).isNotEmpty();
         ZenLootPoolWrapper bazTweaks = barTweaks.getPool("baz");
         bazTweaks.clearConditions();
-        LootTable barNew = tweakManager.tweakTable(barId, barOriginal);
+        LootTable barNew = tweakManager.withEdits(barOriginal, barId);
         assertThat(((LootPoolAccessors) barNew.getPool("baz")).getConditions()).isEmpty();
     }
 
@@ -96,7 +96,7 @@ public class MiscZenLootPoolWrapperTests
         assertThat(((LootPoolAccessors) barOriginal.getPool("baz")).getEntries()).isNotEmpty();
         ZenLootPoolWrapper bazTweaks = barTweaks.getPool("baz");
         bazTweaks.clearEntries();
-        LootTable barNew = tweakManager.tweakTable(barId, barOriginal);
+        LootTable barNew = tweakManager.withEdits(barOriginal, barId);
         assertThat(((LootPoolAccessors) barNew.getPool("baz")).getEntries()).isEmpty();
     }
 
@@ -109,7 +109,7 @@ public class MiscZenLootPoolWrapperTests
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.setRolls(2.0F, 5.0F);
 
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootTable foo = tweakManager.withEdits(loadTable(fooId), fooId);
         LootPool bar = foo.getPool("bar");
         assertThat(bar.getRolls()).extracting(RandomValueRange::getMin).isEqualTo(2.0F);
         assertThat(bar.getRolls()).extracting(RandomValueRange::getMax).isEqualTo(5.0F);
@@ -124,7 +124,7 @@ public class MiscZenLootPoolWrapperTests
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.setBonusRolls(1.0F, 3.0F);
 
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootTable foo = tweakManager.withEdits(loadTable(fooId), fooId);
         LootPool bar = foo.getPool("bar");
         assertThat(bar.getBonusRolls()).extracting(RandomValueRange::getMin).isEqualTo(1.0F);
         assertThat(bar.getBonusRolls()).extracting(RandomValueRange::getMax).isEqualTo(3.0F);

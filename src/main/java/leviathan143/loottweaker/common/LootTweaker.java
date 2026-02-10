@@ -1,14 +1,13 @@
 package leviathan143.loottweaker.common;
 
+import daomephsta.loot_shared.CTLoggingErrorHandler;
 import daomephsta.loot_shared.DaomephstaLootShared;
 import daomephsta.loot_shared.utility.zenscript.ZenClasses;
 import daomephsta.loot_shared.utility.zenscript.ZenSymbols;
 import leviathan143.loottweaker.common.zenscript.LootTweakerContext;
-import leviathan143.loottweaker.common.zenscript.ZenLootTableTweakManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import stanhebben.zenscript.symbols.SymbolPackage;
 
 
@@ -42,12 +41,6 @@ public class LootTweaker
     	SymbolPackage legacyPackage = ZenSymbols.createPackage("loottweaker.vanilla.loot");
         for (String simpleName : aliased)
             ZenClasses.registerAlias(legacyPackage.getName() + "." + simpleName, ZEN_PACKAGE + "." + simpleName);
-    }
-
-    @Mod.EventHandler
-    public void serverStarting(FMLServerStartingEvent event)
-    {
-        ZenLootTableTweakManager.onServerStarting(event);
     }
 
     @Mod.EventHandler

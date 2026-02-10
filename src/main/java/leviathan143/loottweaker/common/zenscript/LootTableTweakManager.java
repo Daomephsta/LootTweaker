@@ -1,35 +1,29 @@
 package leviathan143.loottweaker.common.zenscript;
 
-import java.nio.file.Path;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.api.world.IWorld;
-import daomephsta.loot_shared.utility.loot.LootTableFinder;
-import daomephsta.loot_shared.utility.loot.dump.LootTableDumper;
 import daomephsta.loot_shared.zenscript.api.LootGenerator;
 import daomephsta.loot_shared.zenscript.impl.MutableLootTable;
 import leviathan143.loottweaker.common.LTConfig;
 import leviathan143.loottweaker.common.LootTweaker;
 import leviathan143.loottweaker.common.zenscript.wrapper.ZenLootTableWrapper;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootTable;
 
 
-public class LootTableTweakManager
+public class LootTableTweakManager extends daomephsta.loot_shared.LootTableTweakManager
 {
-    private static final Logger LOGGER = LogManager.getLogger();
     private final Map<ResourceLocation, ZenLootTableWrapper> tweakedTables = new HashMap<>();
     private final Map<ResourceLocation, ZenLootTableWrapper> tableBuilders = new HashMap<>();
     private final LootTweakerContext context;
 
     LootTableTweakManager(LootTweakerContext context)
     {
+    	super(context.getErrorHandler());
         this.context = context;
     }
 
@@ -62,28 +56,9 @@ public class LootTableTweakManager
     public ZenLootTableWrapper newTable(String id)
     {
         ResourceLocation tableId = new ResourceLocation(id);
-        if (LTConfig.warnings.newTableMinecraftNamespace && tableId.getNamespace().equals("minecraft"))
+        if (!validateNewTableName(id, LootTweaker.MODID, LTConfig.warnings.newTableMinecraftNamespace))
         {
-            if (id.startsWith("minecraft"))
-            {
-                context.getErrorHandler()
-                    .warn("Table id '%s' explicitly uses the minecraft namespace, this is discouraged", id);
-            }
-            else
-            {
-                context.getErrorHandler()
-                    .warn("Table id '%s' implicitly uses the minecraft namespace, this is discouraged", id);
-            }
-        }
-        if (tableId.getNamespace().equals(LootTweaker.MODID))
-        {
-            context.getErrorHandler()
-                .warn("Table id '%s' uses the loottweaker namespace, this is discouraged", id);
-        }
-        if (LootTableFinder.DEFAULT.exists(tableId))
-        {
-            context.getErrorHandler().error("Table id '%s' already in use", id);
-            //Gotta return something non-null. This won't do anything because it'll never be applied.
+            // Return something non-null. This won't do anything because it'll never be applied.
             return context.wrapLootTable(tableId);
         }
         ZenLootTableWrapper builder = context.wrapLootTable(tableId);
@@ -97,47 +72,34 @@ public class LootTableTweakManager
 		return LootGenerator.create(world, context.getErrorHandler());
 	}
 
-    public void onServerStart(MinecraftServer server)
-    {
-        Path worldLootTables = LootTableFinder.getWorldLootTablesFolder(server);
-        writeNewLootTables(server, worldLootTables);
-    	tableCustomOverrideWarnings(worldLootTables);
-    }
-
-	private void tableCustomOverrideWarnings(Path worldLootTables) 
+	@Override
+	public Iterator<MutableLootTable> yieldNewTables() 
 	{
-		for (ResourceLocation tableId : tweakedTables.keySet()) 
-		{
-			Path customTable = LootTableFinder.DEFAULT.findCustomTable(worldLootTables, tableId);
-			if (customTable != null)
-				CraftTweakerAPI.logError(String.format("Cannot edit %s as it is overridden by %s", tableId, customTable.toAbsolutePath()));
-		}
+		return tableBuilders.values().stream()
+				.map(builder -> 
+				{
+					MutableLootTable mutable = new MutableLootTable(builder.getId(), new HashMap<>(), context.getErrorHandler());
+		            builder.applyTweakers(mutable);
+		            return mutable;
+				})
+				.iterator();
 	}
 
-	private void writeNewLootTables(MinecraftServer server, Path worldLootTables) 
+	@Override
+	public void applyEdits(MutableLootTable table) 
 	{
-		LootTableDumper dumper = LootTableDumper.robust(worldLootTables.toFile());
-        for (ZenLootTableWrapper builder : tableBuilders.values())
-        {
-            MutableLootTable mutableTable = new MutableLootTable(builder.getId(), new HashMap<>(), context.getErrorHandler());
-            builder.applyTweakers(mutableTable);
-            dumper.dump(server, mutableTable.toImmutable(), builder.getId());
-        }
+		tweakedTables.get(table.getId()).applyTweakers(table);
 	}
-
-    public LootTable tweakTable(ResourceLocation tableId, LootTable table)
-    {
-        if (tweakedTables.containsKey(tableId))
-        {
-            if (table.isFrozen())
-            {
-                LOGGER.debug("Skipped modifying loot table {} because it is frozen", tableId);
-                return table;
-            }
-            MutableLootTable mutableTable = MutableLootTable.fromTable(table, tableId, context.getErrorHandler());
-            tweakedTables.get(tableId).applyTweakers(mutableTable);
-            return mutableTable.toImmutable();
-        }
-        return table;
-    }
+	
+	@Override
+	public Collection<ResourceLocation> getEditedTableIds() 
+	{
+		return tweakedTables.keySet();
+	}
+	
+	@Override
+	public Collection<ResourceLocation> getNewTableIds() 
+	{
+		return tableBuilders.keySet();
+	}
 }

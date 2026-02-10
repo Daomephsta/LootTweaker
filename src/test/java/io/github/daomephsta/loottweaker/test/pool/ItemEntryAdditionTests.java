@@ -50,7 +50,7 @@ public class ItemEntryAdditionTests
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addItemEntry(iitemstack(Items.APPLE), 2, "qux");
 
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootTable foo = tweakManager.withEdits(loadTable(fooId), fooId);
         assertThat(foo.getPool("bar")).extractEntry("qux")
             .hasWeight(2)
             .hasNoLootConditions()
@@ -68,7 +68,7 @@ public class ItemEntryAdditionTests
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addItemEntry(iitemstack(Items.APPLE), 2, 3, "qux");
 
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootTable foo = tweakManager.withEdits(loadTable(fooId), fooId);
         assertThat(foo.getPool("bar")).extractEntry("qux")
             .hasWeight(2)
             .hasQuality(3)
@@ -88,7 +88,7 @@ public class ItemEntryAdditionTests
         barTweaks.addItemEntry(iitemstack(Items.BAKED_POTATO), 2, 3, new ZenLootFunction[0],
             new ZenLootCondition[] { StaticLootConditionFactory.killedByPlayer() }, "qux");
 
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootTable foo = tweakManager.withEdits(loadTable(fooId), fooId);
         assertThat(foo.getPool("bar")).extractEntry("qux")
             .hasWeight(2)
             .hasQuality(3)
@@ -109,7 +109,7 @@ public class ItemEntryAdditionTests
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addItemEntry(iitemstack(Items.ARROW, 3), 2, "qux");
 
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootTable foo = tweakManager.withEdits(loadTable(fooId), fooId);
         int expectedCount = 3;
         assertThat(foo.getPool("bar")).extractEntry("qux")
             .hasWeight(2)
@@ -138,7 +138,7 @@ public class ItemEntryAdditionTests
             new ZenLootFunction[] { StaticLootFunctionFactory.setCount(3, 3) }, new ZenLootCondition[0],
             "qux");
 
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootTable foo = tweakManager.withEdits(loadTable(fooId), fooId);
         int expectedCount = 3;
         assertThat(foo.getPool("bar")).extractEntry("qux")
             .hasWeight(2)
@@ -169,7 +169,7 @@ public class ItemEntryAdditionTests
         //set empty tag to work around weird Mojang code where items without NBT are undamageable
         barTweaks.addItemEntry(iitemstack(Items.BOW, 1, damage).withTag(DataMap.EMPTY, true), 2, "qux");
 
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootTable foo = tweakManager.withEdits(loadTable(fooId), fooId);
         float expectedDamage = 0.5F;
         assertThat(foo.getPool("bar")).extractEntry("qux")
             .hasWeight(2)
@@ -199,7 +199,7 @@ public class ItemEntryAdditionTests
             new ZenLootFunction[] { StaticLootFunctionFactory.setDamage(0.5F, 0.5F) },
             new ZenLootCondition[0], "qux");
 
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootTable foo = tweakManager.withEdits(loadTable(fooId), fooId);
         float expectedDamage = 0.5F;
         assertThat(foo.getPool("bar")).extractEntry("qux")
             .hasWeight(2)
@@ -227,7 +227,7 @@ public class ItemEntryAdditionTests
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addItemEntry(iitemstack(Items.DYE, 1, 8), 2, "qux");
 
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootTable foo = tweakManager.withEdits(loadTable(fooId), fooId);
         int expectedMetadata = 8;
         assertThat(foo.getPool("bar")).extractEntry("qux")
             .hasWeight(2)
@@ -256,7 +256,7 @@ public class ItemEntryAdditionTests
             new ZenLootFunction[] { StaticLootFunctionFactory.setMetadata(8, 8) }, new ZenLootCondition[0],
             "qux");
 
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootTable foo = tweakManager.withEdits(loadTable(fooId), fooId);
         int expectedMetadata = 8;
         assertThat(foo.getPool("bar")).extractEntry("qux")
             .hasWeight(2)
@@ -284,7 +284,7 @@ public class ItemEntryAdditionTests
         ZenLootPoolWrapper barTweaks = fooTweaks.getPool("bar");
         barTweaks.addItemEntry(iitemstack(Items.BREAD).withDisplayName("Super Bread"), 2, "qux");
 
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootTable foo = tweakManager.withEdits(loadTable(fooId), fooId);
         NBTTagCompound expectedTag = new NBTTagCompound();
         {
             NBTTagCompound display = new NBTTagCompound();
@@ -319,7 +319,7 @@ public class ItemEntryAdditionTests
             new ZenLootFunction[] { StaticLootFunctionFactory.setNBT(nbtData) }, new ZenLootCondition[0],
             "qux");
 
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootTable foo = tweakManager.withEdits(loadTable(fooId), fooId);
         NBTTagCompound expectedTag = new NBTTagCompound();
         {
             NBTTagCompound display = new NBTTagCompound();

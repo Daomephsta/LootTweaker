@@ -106,6 +106,6 @@ public class ZenscriptTests
         Map<ResourceLocation, ZenLootTableWrapper> tweakedTables = ObfuscationReflectionHelper
             .getPrivateValue(LootTableTweakManager.class, tweakManager, "tweakedTables");
         for (ResourceLocation tweakedTable : tweakedTables.keySet())
-            tweakManager.tweakTable(tweakedTable, TestUtils.loadTable(tweakedTable));
+            tweakManager.withEdits(TestUtils.loadTable(tweakedTable), tweakedTable);
     }
 }

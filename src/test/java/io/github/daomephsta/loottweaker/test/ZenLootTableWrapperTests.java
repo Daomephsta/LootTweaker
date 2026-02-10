@@ -30,7 +30,7 @@ public class ZenLootTableWrapperTests
         LootTable fooOriginal = loadTable(fooId);
         assertThat(fooOriginal.getPool("bar")).isNotNull();
         fooTweaks.getPool("bar");
-        tweakManager.tweakTable(fooId, fooOriginal);
+        tweakManager.withEdits(fooOriginal, fooId);
     }
 
     @SaddleTest(loadPhase = LoadPhase.PRE_INIT)
@@ -41,7 +41,7 @@ public class ZenLootTableWrapperTests
         ZenLootTableWrapper fooTweaks = tweakManager.getTable(fooId.toString());
         LootTable fooOriginal = loadTable(fooId);
         fooTweaks.getPool("quuz");
-        assertThatThrownBy(() -> tweakManager.tweakTable(fooId, fooOriginal))
+        assertThatThrownBy(() -> tweakManager.withEdits(fooOriginal, fooId))
             .isInstanceOf(LootTweakerException.class)
             .hasMessage("No loot pool with name quuz exists in table %s!", fooId);
     }
@@ -55,7 +55,7 @@ public class ZenLootTableWrapperTests
         LootTable fooOriginal = loadTable(fooId);
         assertThat(fooOriginal.getPool("bar")).isNotNull();
         fooTweaks.removePool("bar");
-        LootTable fooNew = tweakManager.tweakTable(fooId, fooOriginal);
+        LootTable fooNew = tweakManager.withEdits(fooOriginal, fooId);
         assertThat(fooNew.getPool("bar")).isNull();
     }
 
@@ -68,7 +68,7 @@ public class ZenLootTableWrapperTests
         LootTable fooOriginal = loadTable(fooId);
         assertThat(fooOriginal.getPool("quuz")).isNull();
         fooTweaks.removePool("quuz");
-        assertThatThrownBy(() -> tweakManager.tweakTable(fooId, fooOriginal))
+        assertThatThrownBy(() -> tweakManager.withEdits(fooOriginal, fooId))
             .isInstanceOf(LootTweakerException.class)
             .hasMessage("No loot pool with name quuz exists in table %s!", fooId);
     }
@@ -82,7 +82,7 @@ public class ZenLootTableWrapperTests
         LootTable fooOriginal = loadTable(fooId);
         assertThat(fooOriginal.getPool("qux")).isNull();
         fooTweaks.addPool("qux", 1, 2, 3, 4);
-        LootTable fooNew = tweakManager.tweakTable(fooId, fooOriginal);
+        LootTable fooNew = tweakManager.withEdits(fooOriginal, fooId);
         LootPool qux = fooNew.getPool("qux");
         assertThat(qux).isNotNull();
         assertThat(qux.getRolls()).extracting(RandomValueRange::getMin).isEqualTo(1.0F);

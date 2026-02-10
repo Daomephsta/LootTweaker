@@ -30,7 +30,7 @@ public class EntryNamingTests
         barTweaks.addItemEntry(iitemstack(Items.DYE, 2), 5, null);
         barTweaks.addItemEntry(iitemstack(Items.DYE, 1), 2, null);
 
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootTable foo = tweakManager.withEdits(loadTable(fooId), fooId);
         assertThat(foo.getPool("bar")).hasEntry("loottweaker#1").hasEntry("loottweaker#2");
     }
 
@@ -44,7 +44,7 @@ public class EntryNamingTests
         barTweaks.addItemEntry(iitemstack(Items.DYE, 2), 5, "garple");
         barTweaks.addItemEntry(iitemstack(Items.DYE, 1), 2, null);
 
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootTable foo = tweakManager.withEdits(loadTable(fooId), fooId);
         assertThat(foo.getPool("bar")).hasEntry("loottweaker#1").hasEntry("garple");
     }
 
@@ -58,7 +58,7 @@ public class EntryNamingTests
         barTweaks.addLootTableEntry("loottweaker_test:bar", 5, null);
         barTweaks.addLootTableEntry("loottweaker_test:bar", 2, null);
 
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootTable foo = tweakManager.withEdits(loadTable(fooId), fooId);
         assertThat(foo.getPool("bar")).hasEntry("loottweaker#1").hasEntry("loottweaker#2");
     }
 
@@ -72,7 +72,7 @@ public class EntryNamingTests
         barTweaks.addLootTableEntry("loottweaker_test:bar", 5, "garple");
         barTweaks.addLootTableEntry("loottweaker_test:bar", 2, null);
 
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootTable foo = tweakManager.withEdits(loadTable(fooId), fooId);
         assertThat(foo.getPool("bar")).hasEntry("loottweaker#1").hasEntry("garple");
     }
 
@@ -86,7 +86,7 @@ public class EntryNamingTests
         barTweaks.addEmptyEntry(5, null);
         barTweaks.addEmptyEntry(2, null);
 
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootTable foo = tweakManager.withEdits(loadTable(fooId), fooId);
         assertThat(foo.getPool("bar")).hasEntry("loottweaker#1").hasEntry("loottweaker#2");
     }
 
@@ -100,7 +100,7 @@ public class EntryNamingTests
         barTweaks.addEmptyEntry(5, "garple");
         barTweaks.addEmptyEntry(2, null);
 
-        LootTable foo = tweakManager.tweakTable(fooId, loadTable(fooId));
+        LootTable foo = tweakManager.withEdits(loadTable(fooId), fooId);
         assertThat(foo.getPool("bar")).hasEntry("loottweaker#1").hasEntry("garple");
     }
 }
