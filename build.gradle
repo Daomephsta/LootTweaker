@@ -94,6 +94,7 @@ configurations.all {
     resolutionStrategy {
         dependencySubstitution {
             substitute module('net.minecraftforge:legacydev') using module('net.minecraftforge:legacydev:0.2.4.+') because 'Fixes ATs'
+            substitute module('net.minecraftforge:mergetool') using module('net.minecraftforge:mergetool:1.2.3') withoutClassifier() because 'Fixes NPE due to Side.BUKKIT'
         }
     }
 }
