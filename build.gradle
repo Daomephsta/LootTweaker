@@ -196,6 +196,7 @@ jar {
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
             "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
             "ForceLoadAsMod": true,
+			"FMLCorePluginContainsFMLMod": "true", // Prevents the mod being loaded twice on dedicated servers
             //Add contained dependencies to the manifest
             'ContainedDeps': configurations.named('containedDep').map { 
             	it.incoming.artifacts.collect { it.file.name }.join(' ') 
