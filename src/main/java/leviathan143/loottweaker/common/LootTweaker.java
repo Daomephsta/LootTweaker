@@ -26,7 +26,7 @@ public class LootTweaker
     {
         LootTweakerNetworkChecker.install();
         LTConfig.onLoad();
-        registerDLSAliases("LootCondition", "CustomLootCondition", "LootFunction", "CustomLootFunction", "LootGenerator");
+        registerDLSAliases("LootCondition", "CustomLootCondition", "LootFunction", "CustomLootFunction", "LootContext", "LootGenerator");
         registerLegacyAliases("Conditions", "Functions", "LootCondition", "LootFunction", "LootPool", "LootTable");
     }
 

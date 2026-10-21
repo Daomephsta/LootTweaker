@@ -1,6 +1,9 @@
 import loottweaker.LootTweaker;
-import loottweaker.vanilla.loot.Conditions;
-import loottweaker.vanilla.loot.Functions;
+import loottweaker.Conditions;
+import loottweaker.Functions;
+import crafttweaker.item.IItemStack;
+import crafttweaker.util.IRandom;
+import loottweaker.LootContext;
 
 Functions.enchantRandomly(["minecraft:thorns"]);
 Functions.enchantWithLevels(11, 26, false);
@@ -17,7 +20,7 @@ val foo = LootTweaker.getTable("loottweaker_test:foo");
 val foo_bar = foo.getPool("bar");
 foo_bar.addItemEntry(<minecraft:stick>, 1, 0, 
 [
-    Functions.zenscript(function(stack, random, context)
+    Functions.zenscript(function(stack as IItemStack, random as IRandom, context as LootContext) as IItemStack
     {
         return stack * random.nextInt(1, 64);
     })
